@@ -1,9 +1,6 @@
-LESS siavs
+# LESS siavs
 
 **High-level functional specification for PUDO App.**
-
-
-[TOC]
 
 
 
