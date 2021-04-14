@@ -50,7 +50,7 @@ LESS will then offer the use of the service to the stakeholders (destinees and s
 The system must be planned to grow toward, as said, about one million users (destinees) and up to one hundred thousand PUDOs (shops), and deployment sizing should be done with these numbers in mind. It would be also perfectly acceptable to plan an initial MVO which relies on “high per user deployment cost” services in the initial phase, as long as these costs are known and predictable and a future switch off to different solutions is already planned and analysed to follow in a predictable way the user base growth.
 
 
-### 
+#
 Recipient functions
 
 _The recipient is simply the person who has chosen to use the system to collect his parcels from a PUDO._
