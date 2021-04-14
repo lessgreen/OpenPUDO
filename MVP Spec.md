@@ -107,11 +107,9 @@ Check the hypothesis that a user can give a "permanent" proxy (example: husband,
 Note: In the scenario of full Facebook / instagram integration, validate the listing and send it to involve friends closest to your home and / or to the geographically selected PUDO points.
 
 
-## Notification and collection or delegation
+## Notification and collection or delegation [NO DELEGATION IN THE MVP]
 
 When the recipient receives notification of the package available to PUDO, he can go and collect it or delegate one of his "peers" to collect it for him:
-
-
 
 1. The notification indicates that the package is available (photo of the label?)
 2. The recipient can confirm that it will collect it, send a message to PUDO or ask for it to be withdrawn from a "peer".
@@ -121,7 +119,7 @@ When the recipient receives notification of the package available to PUDO, he ca
 Hypothesis: if there are powers to "permanent" Withdrawal could be immediately notified of the arrival also to all delegates , as well as the successful withdrawal.
 
 
-## Reviews
+## Reviews [NOT IN THE MVP]
 
 Recipients using a PUDO should be able to give PUDO a review.
 
@@ -131,20 +129,16 @@ The user should be able to review a PUDO * only * after having delegated a withd
 
 The review should have the classic characteristics of an attribution of scores in stars plus a short text, with:
 
-
-
 1. Prefiltration of the text for F * words and semantic analysis (in backend)
 2. Possibility for anyone who reads a review and for the PUDO reviewed to report improper reviews / insulting (and back office management for reports, priority if the report is)
 3. from the merchantCalculation of average scores and number of reviews, to be displayed to users when viewing the PUDO in the area together with other statistics (age of the PUDO, total number of deliveries made, number ofusers, number of deliveries in the last month, ...)
 
 
-## Affiliated PUDO suggestion
+## Affiliated PUDO suggestion 
 
 The user / recipient must be able to "refer" a PUDO, proposing it as interesting, so that those who do network development can contact the shop and propose the App.
 
 The report must contain the name of the business but can optionally contain:
-
-
 
 *   Photo of the business
 *   Geolocation
@@ -165,8 +159,6 @@ In the scenario of full Facebook / Instagram integration, event notifications co
 
 The App (after registration) should open with a panel with multiple views selectable by icons, such as:
 
-
-
 *   My dashboard (the CO2 I have saved, the statistics, the scores, any notifications)
 *   My friends (with option to invite others in the address book, delegation management, etc.)
 *   My PUDO (with the options to deactivate them, add them, suggest one).
@@ -185,12 +177,11 @@ To be evaluated: access to the location, hyper-local offers in push, internal na
 
 # PUDO functions
 
-_is the establishment that offers the collection service and any additional delivery services independently and with a direct and disintermediated relationship with the recipient; in principle released from contractual relationships with the courier or with other networks._
+_A PUDO is the shop/location that offers the collection service and any additional delivery services independently and with a direct and disintermediated relationship with the recipient; in principle released from contractual relationships with the courier or with other networks._
 
 _At the time of enrollment, PUDO also accepts "virtually" to carry out as a second activity that of DEPOT (ie a delivery point agreed on behalf of the "network" with any value-added services) against standard remuneration, but this only after the formalization of a contract with the network which makes it not only PUDO but also DEPOT, and the DEPOT functions are described separately._
 
-_Scalability: 100 thousand. [Attention to any use of libraries, cloud service that has a variable cost]_
-
+_Scalability: 100 thousand. [Pay attention to the use of libraries, cloud services or things that has a variable cost]_
 
 ## Enrollment
 
@@ -209,34 +200,30 @@ A PUDO can be, according to its choice: An Open Pudo (implicit acceptance of any
 
 The PUDO then outlines its policies, namely:
 
-
-
 1. What does it want in exchange for the service (you have to buy something, you must be my regular customer, etc.)
 2. Service hours (which do not necessarily coincide with the opening hours: a bar / diner may not provide the PUDO service from 12 to 15).
 3. Size / weight limits of accepted packages
+4. Requests for permissions like sending Adv messages to the App home page of the recipient or as push notification with an explicit frequency limit (up to X per week/month) and category (special offers, extra openings/closing, free leftovers giveouts, etc...)
 
 These policies will be shown to the recipient (and must be accepted) when selecting the PUDO on the map.
 
 The functionality **What does it want in exchange for the service** is the heart of the LESS functional strategy and must be better defined from a marketing definition perspective, according to pre-defined choices by product category or type of PUDO. 
 
-The functionality **What I want in exchange for the service **will in future esxtend towards the PUDO product-service catalog, which can be in the choice of "buy something", the possibility of expressing the preference of the product-service among those of the catalog wants to purchase from the catalog (always disintermediated). 
+The functionality **What I want in exchange for the service** will in future extend towards the PUDO product-service catalog, which can be in the choice of "buy something", the possibility of expressing the preference of the product-service among those of the catalog wants to purchase from the catalog (always disintermediated). 
 
 In this way, a sort of pre-order of the product-service of the store is carried out, promoting the products-services and favoring an “almost dynamic of local commerce” even if without integrating a full management of order fulfillment in the user-pudo relationship.
 
+**In the MVP the "policy" can be simply a text box where the PUDO writes its rules or a small form with some structured data (service times, size/weight limits) and a free text to describe what they want in exchange for the service.**
 
-## "Reinforced PUD identification"
+
+## "Reinforced PUD identification" [NOT IN THE MVP]
 
 Enrolling PUDOs / exercises can optionally carry out an enrollment operation with "reinforced" identification, for two reasons:
-
-
 
 1. To be able to operate also as a DEPOT
 2. To have a "certified PUDO" badge, that is, PUDO for which LESS has taken charge to verify that it is a real and active business and that the registration is made in the name of the true legal representative; these elements are important to create trust (in addition to the review system) in users / recipients.
 
-Step:
-
-
-
+Steps:
 1. Entering the VAT number or CF of the year [The backend makes a chamberin API and extracts the legal representatives]
 2. Entering the tax code of the physical person (owner/legal responsible) and verification
 3. Signing with electronic signature of the agreement (electronic signature can also be scan of the identity document, tax code, recognition with video / selfie etc. Current KYC/AML identification providers offer the service around 1 €/person for a way deeper verification)
@@ -246,15 +233,13 @@ It will then be needed some backoffice procedure to validate and accept the PUDO
 Note: An identification with SPID with a click on the site would be nice.
 
 
-## Functional delegations
+## Functional delegations [NOT IN THE MVP]
 
 The PUDO manager must be able to “delegate” the individual functions of the PUDO to other accounts (his clerks / employees), it being understood that each user has his own unique identity.
 
 The manager must be able to see all the actions performed by his delegates, easily modify the proxies for the individual functions and / or remove them.
 
 The system of delegation is hierarchical:
-
-
 
 1. The owner of the PUDO is delegated to any function
 2. Any delegate for a function can delegate the same function in turn
@@ -263,11 +248,9 @@ The system of delegation is hierarchical:
 The backend will keep track of the history of the proxies for documentary purposes (Ex: Tizio accepted / delivered because at that moment he was delegated through X-> Y-> Z to do so).
 
 
-## Acceptance / denial of "customers"
+## Acceptance / denial of "customers" [NOT IN THE MVP]
 
 For closed pudos, a recipient acceptance function must be provided which includes:
-
-
 
 1. Notification of new recipient accreditation request
 2. Display of the list of pending authorizations
@@ -277,8 +260,6 @@ For closed pudos, a recipient acceptance function must be provided which include
 6. Kick-out and ban function
 
 For private PUDOs, a method of sending "invitations" to internal users is required, with at least two distinct approaches:
-
-
 
 1. For small-scale solutions (private club): sending of invitation with message / mail / social / local communication between devices
 2. For large-scale solutions (university, bank): API for interconnection with “corporate” systems. 
@@ -301,48 +282,41 @@ Delivery is also a critical step in terms of efficiency and speed.
 
 PUDO must be able to select the package to be delivered in various ways:
 
-
-
 1. From recipient recognition (QRcode, NFC)
 2. From photo label with processing similar to acceptance
-3. From list of packages in charge
+3. From list of packages in charge [In the MVP this might be ok as the only option]
 
 If the identification did not start from data exchange with the recipient (NFC or QRcode) then the delivery must cause a notification to the recipient's App which must be able to confirm or deny.
 
-If the recipient does not have his mobile phone with him, PUDO must be able to "force" the delivery by declaring that he has identified the recipient (from photo or by seeing a document).
+If the recipient does not have his mobile phone with him, PUDO must be able to "force" the delivery by declaring that he has identified the recipient (from photo or by seeing a document). [In the MVP this might be ok as the only option]
 
-
-## Promotional messages
+## Promotional messages [NOT IN THE MVP]
 
 A PUDO should be able to send promotional messages to recipients affiliated with him, the following must be provided:
 
-
-
-*   Limits to the number of messages (one per month?)
+*   Limits to the number of messages (one per month? as accepted by the recipient?)
 *   Possible filtering for "zombie" users (your affiliated users receive it except those for four months have not withdrawn anything from you?)
 *   Blocking of the single sender by the user (I no longer want to receive messages from this PUDO, with possible reporting of inappropriate messages)
 *   Possible reporting to the back office of management of repeated blocks by users.
 
 In principle the right to send messages to users should be clearly visible to these last ones when choosing a PUDO, together with the limits to such messages and the limits in delivery methods.
 
-In example one shop might state “I will send at most one message per month, delivered as an home-page banner” and another might state “I will send up to one message per week, delivered as a push notification”; the user will then be able to accept this as part of the PUDO selection procedure or not. Should the PUDO change its rules these changes will take place after a while, giving the user the chance to choose another PUDO.
+In example a shop might state “I will send at most one message per month, delivered as an home-page banner” and another might state “I will send up to one message per week, delivered as a push notification”; the user will then be able to accept this as part of the PUDO selection procedure or not. Should the PUDO change its rules these changes will take place after a while, giving the user the chance to choose another PUDO.
 
 
-## Catalog
+## Catalog [NOT IN THE MVP]
 
 PUDO should be able to insert in some way a “catalog” of what it offers, also to make its proposal clearer in terms of policy (beyond the “you have to buy something”).
 
 The upload procedure should be extremely simple (see ThePop) and a possible integration with FaceBook Local or other social channels should be evaluated. 
 
 
-## "Proximity marketing" functions. XXX-Define
+## "Proximity marketing" functions. XXX-To-Be-Defined
 
 
-## Backoffice Interface 
+# Backoffice Interface 
 
 There must be a backoffice interface that allows to:
-
-
 
 *   Administer the different aspects of the pudo network (activation, deactivation, insertion, ban)
 *   Provide advanced information analytics on the network status (users, volumes, activities, growth, environmental impact calculations, 
@@ -351,13 +325,15 @@ There must be a backoffice interface that allows to:
     *   Scheduling training calls from call
 *   Ticketing platform for Operations
 
+**In the MVP it is reasonable that these functions have an interface not delivered as a mobile App that gives only functions essential to the management of the network**
 
-# Future Applications Development and Integration
+
+# Future Applications Development and Integration [ALL THIS CHAPTER NOT IN THE MVP]
 
 Here are the functions that will need to be developed in second priority with respect to the PUDO application, but which will have to see its subsequent or anticipated development on the basis of opportunities for code / knowledge re-use.
 
 
-## Postman functions - Crowdship
+## Postman functions - Crowdship 
 
 Functions related to the micro-delivery areas of the CrowdShip application [https: / /github.com/lessgreen/CrowdShip](https://github.com/lessgreen/CrowdShip) .
 
