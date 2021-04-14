@@ -7,8 +7,7 @@ LESS siavs
 
 
 
-# 
-Introduction
+# Introduction
 
 This document constitutes the high-level functional specification of the App of the PUDO project.
 
@@ -50,8 +49,7 @@ LESS will then offer the use of the service to the stakeholders (destinees and s
 The system must be planned to grow toward, as said, about one million users (destinees) and up to one hundred thousand PUDOs (shops), and deployment sizing should be done with these numbers in mind. It would be also perfectly acceptable to plan an initial MVO which relies on “high per user deployment cost” services in the initial phase, as long as these costs are known and predictable and a future switch off to different solutions is already planned and analysed to follow in a predictable way the user base growth.
 
 
-#
-Recipient functions
+# Recipient functions
 
 _The recipient is simply the person who has chosen to use the system to collect his parcels from a PUDO._
 
@@ -185,8 +183,7 @@ The integration with social networks should be analyzed, for example to publish 
 To be evaluated: access to the location, hyper-local offers in push, internal navigation map with highlighted friends and cazzimazzi (a Beyond Waze?).
 
 
-# 
-PUDO functions PUDO
+# PUDO functions
 
 _is the establishment that offers the collection service and any additional delivery services independently and with a direct and disintermediated relationship with the recipient; in principle released from contractual relationships with the courier or with other networks._
 
