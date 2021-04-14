@@ -1,38 +1,3 @@
-<!-- Output copied to clipboard! -->
-
-<!-----
-NEW: Check the "Suppress top comment" option to remove this info from the output.
-
-Conversion time: 1.679 seconds.
-
-
-Using this Markdown file:
-
-1. Paste this output into your source file.
-2. See the notes and action items below regarding this conversion run.
-3. Check the rendered output (headings, lists, code blocks, tables) for proper
-   formatting and use a linkchecker before you publish this page.
-
-Conversion notes:
-
-* Docs to Markdown version 1.0β29
-* Tue Apr 13 2021 06:25:15 GMT-0700 (PDT)
-* Source doc: EN Specs
-
-WARNING:
-You have 4 H1 headings. You may want to use the "H1 -> H2" option to demote all headings by one level.
-
------>
-
-
-<p style="color: red; font-weight: bold">>>>>>  gd2md-html alert:  ERRORs: 0; WARNINGs: 1; ALERTS: 0.</p>
-<ul style="color: red; font-weight: bold"><li>See top comment block for details on ERRORs and WARNINGs. <li>In the converted Markdown or HTML, search for inline alerts that start with >>>>>  gd2md-html alert:  for specific instances that need correction.</ul>
-
-<p style="color: red; font-weight: bold">Links to alert messages:</p>
-<p style="color: red; font-weight: bold">>>>>> PLEASE check and correct alert issues and delete this message and the inline alerts.<hr></p>
-
-
-
 LESS siavs
 
 **High-level functional specification for PUDO App.**
@@ -49,37 +14,36 @@ This document constitutes the high-level functional specification of the App of 
 
 It is not a technical development specification (which will be more detailed and will contain a series of specific requirements to be contracted with the developers) nor an implementation map with functional division of the software components (which will lead to the decision of what goes into the front end and what in the back end, if you use a single App or multiple Apps, if the Apps can be based on cloud services or not, and so on).
 
-Here we only define, for each "actor" who uses the system, which are the macro-functions available to the actor.
+Here we only define, for each "actor" who uses the system, which are the macro-functions available to that actor.
 
-Each chapter indicates an actor (category of people or entities that interact with the system) and each paragraph describes a macro-function this actor has access to.
+Each chapter describes an actor (category of people or entities that interact with the system) and each paragraph describes a macro-function this actor has access to.
 
-For convenience and clarity, the actors have been indicated with names that differ from similar concepts in the jargon of couriers but would mislead (for example, while the "driver" is the one who drives the van, the "delivery man" is the one who delivers the parcels on behalf of PUDO); for the avoidance of doubt for each chapter there is a brief description of the actor.
+For convenience and clarity, the actors have been indicated with names that differ from similar concepts in the jargon of couriers that would be misleading (for example, while the "driver" is the one who drives the van, the "delivery man" is the one who delivers the parcels on behalf of PUDO); for clarity in each chapter there is a brief description of the actor.
 
 
 ## Application field
 
-In the initial phase, the project aims to develop an App which constitutes a communication platform between "disintermediated PUDO" (Pick Up and Drop Off points), points where buyers of eCommerce goods can collect their purchases by indicating them as shipping adressess to the seller.
+In the initial phase, the project aims to develop an App which constitutes a communication platform between "disintermediated PUDOs" (Disintermediated Pick Up and Drop Off points) and recipients; PUDOs are points where buyers of eCommerce goods (the "recipients") can collect their purchases by indicating the PUDO as shipping address to the seller.
 
-A PUDO is an existing shop that carries out this activity (in our model) for its interest in promoting its business and attracting customers, it could also be some subject having a physical presence on the territory and affiliated users (eg: Associations, Schools, Private Companies, Gyms, etc); potential customers are recipients of goods purchased online who, instead of waiting at home for a courier without knowing when it will step by, prefer to have the delivery address at the shop and then go to take the goods when it is comfortable for them; both will have the environmental objective as a further motivation (concentrating the deliveries of goods in a few points reduces the environmental impact of eCommerce).
+A PUDO is an existing shop that carries out this activity (in our model) to promote its business and attract customers, it could also be some subject having a physical presence on the territory and affiliated users (eg: Associations, Schools, Private Companies, Gyms, etc); potential customers are recipients of goods purchased online who, instead of waiting at home for a courier without knowing when they will step by, prefer to have the delivery address at the shop and then go to take the goods when it is comfortable; both will have the environmental cause as a further motivation (concentrating the deliveries in a few locations reduces the environmental impact of eCommerce).
 
-The platform will be offered as a free service (both for the merchant and for the recipient) and will be aimed exclusively at facilitating the meeting between these two stakeholders.
+The platform will be offered as a free service (both for the PUDO and for the recipients) and will be aimed exclusively at facilitating the meeting between these two stakeholders.
 
-Subsequent phases of the project will include:
-
-
+Subsequent phases of the project, not needing to be included in the MVP, will include:
 
 1. The possibility for the merchant to create a "showcase" of his offers, visible to users either on the App itself or on other social networks.
-2. The chance of communication between users with the establishment of "relationships", exchange of messages and, possibly, of "favors" (such as "go get this package for me").
+2. The chance of communication between destinees with the creation of "relationships", exchange of messages and, possibly, of "favors" (such as "go get this package for me").
 3. The creation of a motivational reward system (karma green points), both for users and for merchants (this exercise is a "diamond green sustainer" because it has saved a total of cubic meters of CO2; this user is an "environment black belt "Because he saved a few km of vans, helped to involve N other users, collected packages for friends, etc.). These feedbacks can be visible as badges both online (in the App itself or on social networks) and offline (think about the “TripAdvisor sticker”).
-4. The possibility for a PUDO to carry out the service also for structured distribution networks in change of a payment (with a functional logic, in this case, both contractually and economically brokered): work as a delivery point even for a "courier", being paid for each delivery, as it is for any other PUDO network (see FermoPoint, Amazon corner, InDaBox, etc.). This function ("DEPOT") will have dedicated operational specifications, generally aligned with those of any existing PUDO network for the the PUDO / DEPOT App; this does not apply to the functions of  the "user" App, as in this case the recipients do not necessarily have any App installed.
+4. The possibility for a PUDO to carry out the service also for structured distribution networks in change of a payment (with a functional logic, in this case, both contractually and economically brokered): work as a delivery point even for a "courier", being paid for each delivery, as it is for any other current PUDO network (see FermoPoint, Amazon corner, InDaBox, etc.). This function ("DEPOT") will have dedicated operational specifications, generally aligned with those of any existing PUDO network for the the PUDO+DEPOT App; this does not involve any change in the functions of  the "destinee" App, as in this case the recipients do not necessarily have any App installed.
 5. The possibility for PUDO to offer premium services such as micro-delivery (home delivery on behalf of the sender and paid for as an advanced DEPOT), delivery by appointment or off-time (paid by the sender or recipient), etc.
+6. The possibility for pudo to offer to its customers special deals (a-la "Too Good To Go"), leveraging the offline proximity relation between the PUDO and its users.
 
 The following specification is more detailed on the basic functions, it being understood that the others, merely listed above, remain in the medium-term development roadmap.
 
 
 ## Project goals and constraints
 
-As LESS we will offer the whole software suite (“OpenPUDO”) as Open Source Software copyrighted by LESS, so the developers involved will need to agree to work as contractors for LESS, to grant LESS the copyright on the code and to agree to release it as OSS.
+As LESS we will offer the whole software suite (“OpenPUDO”) as Open Source Software copyrighted by LESS, the involved developers will need to agree to work as contractors for LESS, to grant LESS the copyright on the code and to agree to release it as OSS.
 
 LESS will then offer the use of the service to the stakeholders (destinees and shops) as a free service (SaaS), it is therefore of paramount importance that the running costs at large numbers of users are taken in consideration when choosing development technologies, frameworks, external services and so on. As an example it could be perfectly acceptable to use technologies like Amazon Cognito to federate authentication of external users, but in the development plan should be considered the deployment cost of this choice that, for the predicted scale up to one million users, would impact about 4k€/month. This is acceptable, but MUST be known in advance.
 
@@ -89,9 +53,9 @@ The system must be planned to grow toward, as said, about one million users (des
 # 
 Recipient functions
 
-_The recipient is simply the person who has chosen to use the system to collect his parcels from PUDO._
+_The recipient is simply the person who has chosen to use the system to collect his parcels from a PUDO._
 
-_Scalability: 1 million. [Attention to any use of libraries, cloud service that has a variable cost]_
+_Scalability: 1 million. [Pay attention to the use of libraries, cloud services or things that has a variable cost]_
 
 
 ## Registration
@@ -106,24 +70,27 @@ Registration should be simple and "inviting" and include the following steps:
 4. Acceptance of terms of use
 5. Acceptance of privacy conditions
 
-Note on SMS with account activation OTP, verified: it is possible to system autofill on both iOS and Android and seems reasonably "friendly" (it is now accepted by users for anything), avoids many bots / spam, allows us to demonstrate our "reasonable effort" to identify the person and provide necessary elements for any interventions by the authorities and therefore seems reasonable for all cases in which an identity is not "imported" from third-party sources (social networks, OAuth).
+Note on SMS with activation OTP: it is possible to have the system autofill the OTP on both iOS and Android, this seems reasonably "friendly" (it is now accepted by users for anything), avoids many bots / spam, allows us to demonstrate our "reasonable effort" to identify the person and provide necessary elements for any interventions by the authorities; thus this approach seems reasonable for all cases in which an identity is not "imported" from third-party sources (social networks, OAuth).
 
 Evaluate full Facebook / Instagram integration as an identity management tool, having identity management as a secondary fallback and with minor featureset with validated email / sms credentials.
 
 
 ## PUDO selection and agreement acceptance
 
+Basically the recipient has to be able to choose a PUDO that is convenient for him/her based on his current location, primary address or selected address (eg: It would be convenient for me to take the packages close to my office); the PUDOs should be visible on a map and for each the essential information should be shown.
+
 Steps:
 
-
-
-1. Map view centered on geo-localized position with PUDO
+1. Map view centered on geo-localized position with PUDOs shown
 2. Display of PUDO access conditions and reviews
-3. Acceptance of "contract" with PUDO which generates a request for an agreement with PUDO itself (if it is not an open PUDO with implicit acceptance)
+3. Acceptance of "contract" with PUDO which generates a request for an agreement with PUDO itself (if it is not an open PUDO with implicit acceptance, see below)
 4. Possibility to designate several PUDO on a single account
 
+In the launch phase it could be convenient to populate the map with the location of PUDOs available from existing network, telling the user "We are sorry, this PUDO cannot be used here by now, we will contact them and let you know soon". This would be useful to give the user a decent feedback on one side, and to gather information on points that is critical to acquire on the other.
 
-## "Peer" selection
+
+
+## "Peer" selection [NOT IN THE MVP]
 
 The recipient should be able to designate other registered recipients as people to whom "[s]he could" delegate the withdrawal, his "friends".
 
