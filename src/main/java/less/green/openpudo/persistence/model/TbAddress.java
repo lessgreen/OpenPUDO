@@ -1,0 +1,62 @@
+package less.green.openpudo.persistence.model;
+
+import java.io.Serializable;
+import java.util.Date;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
+@Entity
+@Table(name = "tb_address")
+@Getter @Setter @ToString
+public class TbAddress implements Serializable {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "address_id", insertable = false, updatable = false)
+    private Long addressId;
+
+    @Column(name = "create_tms")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date createTms;
+
+    @Column(name = "update_tms")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date updateTms;
+
+    @Column(name = "street")
+    private String street;
+
+    @Column(name = "street_num")
+    private String streetNum;
+
+    @Column(name = "zip_code")
+    private String zipCode;
+
+    @Column(name = "city")
+    private String city;
+
+    @Column(name = "province")
+    private String province;
+
+    @Column(name = "country")
+    private String country;
+
+    @Column(name = "notes")
+    private String notes;
+
+    @Column(name = "lat")
+    private Double lat;
+
+    @Column(name = "lon")
+    private Double lon;
+
+}

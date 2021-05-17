@@ -85,6 +85,28 @@ public class AuthResource {
             throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.empty_mandatory_field_coalesce", "email, phoneNumber"));
         } else if (isEmpty(req.getPassword())) {
             throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.empty_mandatory_field", "password"));
+        } else if (req.getUserProfile() == null) {
+            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.empty_mandatory_field", "userProfile"));
+        } else if (isEmpty(req.getUserProfile().getFirstName())) {
+            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.empty_mandatory_field", "userProfile.firstName"));
+        } else if (isEmpty(req.getUserProfile().getLastName())) {
+            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.empty_mandatory_field", "userProfile.lastName"));
+        } else if (req.getAddress() == null) {
+            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.empty_mandatory_field", "address"));
+        } else if (isEmpty(req.getAddress().getStreet())) {
+            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.empty_mandatory_field", "address.street"));
+        } else if (isEmpty(req.getAddress().getZipCode())) {
+            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.empty_mandatory_field", "address.zipCode"));
+        } else if (isEmpty(req.getAddress().getCity())) {
+            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.empty_mandatory_field", "address.city"));
+        } else if (isEmpty(req.getAddress().getProvince())) {
+            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.empty_mandatory_field", "address.province"));
+        } else if (isEmpty(req.getAddress().getCountry())) {
+            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.empty_mandatory_field", "address.country"));
+        } else if (req.getAddress().getLat() == null) {
+            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.empty_mandatory_field", "address.lat"));
+        } else if (req.getAddress().getLon() == null) {
+            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.empty_mandatory_field", "address.lon"));
         }
 
         // more sanitizing

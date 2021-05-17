@@ -11,7 +11,7 @@ import less.green.openpudo.persistence.model.TbUser;
 
 @RequestScoped
 @Transactional(Transactional.TxType.MANDATORY)
-public class UserDao extends BaseDao<TbUser, Long> {
+public class UserDao extends BaseEntityDao<TbUser, Long> {
 
     @PersistenceContext
     EntityManager em;

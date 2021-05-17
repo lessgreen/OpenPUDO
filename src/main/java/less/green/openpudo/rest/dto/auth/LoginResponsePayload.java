@@ -10,8 +10,10 @@ import lombok.Data;
 public class LoginResponsePayload {
 
     private String accessToken;
+
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Date issueDate;
+
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Date expireDate;
 

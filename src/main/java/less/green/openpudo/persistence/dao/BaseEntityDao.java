@@ -4,12 +4,12 @@ import java.io.Serializable;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
-public abstract class BaseDao<E extends Serializable, K> {
+public abstract class BaseEntityDao<E extends Serializable, K> {
 
     private final Class<E> entityClass;
     private final String keyColumnName;
 
-    public BaseDao(Class<E> entityClass, String keyColumnName) {
+    public BaseEntityDao(Class<E> entityClass, String keyColumnName) {
         this.entityClass = entityClass;
         this.keyColumnName = keyColumnName;
     }
