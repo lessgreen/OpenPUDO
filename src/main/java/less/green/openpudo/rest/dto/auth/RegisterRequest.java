@@ -1,6 +1,5 @@
 package less.green.openpudo.rest.dto.auth;
 
-import less.green.openpudo.rest.dto.Address;
 import less.green.openpudo.rest.dto.UserProfile;
 import lombok.Data;
 
@@ -16,7 +15,5 @@ public class RegisterRequest {
     private String password;
 
     private UserProfile userProfile;
-
-    private Address address;
 
 }
