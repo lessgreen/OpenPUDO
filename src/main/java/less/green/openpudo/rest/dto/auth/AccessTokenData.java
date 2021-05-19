@@ -7,7 +7,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class LoginResponsePayload {
+public class AccessTokenData {
 
     private String accessToken;
 

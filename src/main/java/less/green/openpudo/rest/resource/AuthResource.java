@@ -26,9 +26,9 @@ import less.green.openpudo.persistence.model.TbUser;
 import less.green.openpudo.persistence.service.UserService;
 import less.green.openpudo.rest.config.exception.ApiException;
 import less.green.openpudo.rest.dto.BaseResponse;
+import less.green.openpudo.rest.dto.auth.AccessTokenData;
 import less.green.openpudo.rest.dto.auth.LoginRequest;
 import less.green.openpudo.rest.dto.auth.LoginResponse;
-import less.green.openpudo.rest.dto.auth.LoginResponsePayload;
 import less.green.openpudo.rest.dto.auth.RegisterRequest;
 import less.green.openpudo.rest.dto.auth.RenewRequest;
 import lombok.extern.log4j.Log4j2;
@@ -169,9 +169,9 @@ public class AuthResource {
         }
 
         // creating access token
-        LoginResponsePayload lrp = generateLoginResponsePayload(user.getUserId());
+        AccessTokenData resp = generateLoginResponsePayload(user.getUserId());
         log.info("[{}] Login successful for userId: {}", context.getExecutionId(), user.getUserId());
-        return new LoginResponse(context.getExecutionId(), 0, lrp);
+        return new LoginResponse(context.getExecutionId(), 0, resp);
     }
 
     @POST
@@ -201,14 +201,14 @@ public class AuthResource {
             throw new InternalServerErrorException();
         }
 
-        LoginResponsePayload lrp = generateLoginResponsePayload(payload.getSub());
-        return new LoginResponse(context.getExecutionId(), 0, lrp);
+        AccessTokenData resp = generateLoginResponsePayload(payload.getSub());
+        return new LoginResponse(context.getExecutionId(), 0, resp);
     }
 
-    private LoginResponsePayload generateLoginResponsePayload(Long userId) {
+    private AccessTokenData generateLoginResponsePayload(Long userId) {
         JwtPayload jwtPayload = jwtService.generatePayload(userId);
         String accessToken = jwtService.generateAccessToken(jwtPayload);
-        return new LoginResponsePayload(accessToken, jwtPayload.getIat(), jwtPayload.getExp());
+        return new AccessTokenData(accessToken, jwtPayload.getIat(), jwtPayload.getExp());
     }
 
     private void delayFailureResponse() {
