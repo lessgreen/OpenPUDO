@@ -127,8 +127,8 @@ public class AuthResource {
         }
 
         // all checks passed, registering use
-        TbUser user = userService.createUser(req);
-        log.info("[{}] Registered user, userId: {}", context.getExecutionId(), user.getUserId());
+        Long userId = userService.createUser(req);
+        log.info("[{}] Registered user, userId: {}", context.getExecutionId(), userId);
         return new BaseResponse(context.getExecutionId(), ApiReturnCodes.OK);
     }
 

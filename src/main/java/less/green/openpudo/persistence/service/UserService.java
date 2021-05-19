@@ -13,6 +13,7 @@ import less.green.openpudo.persistence.model.TbUser;
 import less.green.openpudo.persistence.model.TbUserProfile;
 import less.green.openpudo.rest.dto.DtoMapper;
 import less.green.openpudo.rest.dto.auth.RegisterRequest;
+import less.green.openpudo.rest.dto.user.UserProfile;
 
 @RequestScoped
 @Transactional
@@ -29,7 +30,7 @@ public class UserService {
     @Inject
     UserProfileDao userProfileDao;
 
-    public TbUser createUser(RegisterRequest req) {
+    public Long createUser(RegisterRequest req) {
         Date now = new Date();
         TbUser user = new TbUser();
         user.setCreateTms(now);
@@ -52,11 +53,26 @@ public class UserService {
         userProfile.setSsn(sanitizeString(req.getUserProfile().getSsn()));
         userProfileDao.persist(userProfile);
         userProfileDao.flush();
-        return user;
+        return user.getUserId();
     }
 
     public TbUser findUserByLogin(String login) {
         return userDao.findUserByLogin(login);
+    }
+
+    public TbUserProfile getUserProfileById(Long userId) {
+        return userProfileDao.get(userId);
+    }
+
+    public TbUserProfile updateCurrentUserProfile(Long userId, UserProfile req) {
+        Date now = new Date();
+        TbUserProfile userProfile = userProfileDao.get(userId);
+        userProfile.setUpdateTms(now);
+        userProfile.setFirstName(sanitizeString(req.getFirstName()));
+        userProfile.setLastName(sanitizeString(req.getLastName()));
+        userProfile.setSsn(sanitizeString(req.getSsn()));
+        userProfileDao.flush();
+        return userProfile;
     }
 
 }

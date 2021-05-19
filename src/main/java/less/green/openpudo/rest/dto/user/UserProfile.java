@@ -1,4 +1,4 @@
-package less.green.openpudo.rest.dto;
+package less.green.openpudo.rest.dto.user;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import java.util.Date;

@@ -51,7 +51,7 @@ public class AccessTokenFilter implements ContainerRequestFilter {
 
         // check for backdoor access
         if ("dev".equals(ProfileManager.getActiveProfile())) {
-            context.setUserId(0L);
+            context.setUserId(1L);
             return;
         }
 

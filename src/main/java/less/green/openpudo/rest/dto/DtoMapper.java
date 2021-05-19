@@ -1,5 +1,6 @@
 package less.green.openpudo.rest.dto;
 
+import less.green.openpudo.rest.dto.user.UserProfile;
 import less.green.openpudo.persistence.model.TbAddress;
 import less.green.openpudo.persistence.model.TbUserProfile;
 import org.mapstruct.Mapper;
