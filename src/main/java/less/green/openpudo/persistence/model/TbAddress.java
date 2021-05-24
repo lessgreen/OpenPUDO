@@ -1,6 +1,7 @@
 package less.green.openpudo.persistence.model;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -54,9 +55,9 @@ public class TbAddress implements Serializable {
     private String notes;
 
     @Column(name = "lat")
-    private Double lat;
+    private BigDecimal lat;
 
     @Column(name = "lon")
-    private Double lon;
+    private BigDecimal lon;
 
 }
