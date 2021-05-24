@@ -11,6 +11,7 @@ import less.green.openpudo.persistence.dao.AccountDao;
 import less.green.openpudo.persistence.dao.PudoDao;
 import less.green.openpudo.persistence.dao.PudoUserRoleDao;
 import less.green.openpudo.persistence.dao.UserDao;
+import less.green.openpudo.persistence.dao.usertype.RoleType;
 import less.green.openpudo.persistence.model.TbAccount;
 import less.green.openpudo.persistence.model.TbPudo;
 import less.green.openpudo.persistence.model.TbPudoUserRole;
@@ -71,7 +72,7 @@ public class UserService {
             role.setUserId(account.getUserId());
             role.setPudoId(pudo.getPudoId());
             role.setCreateTms(now);
-            role.setRoleType("owner");
+            role.setRoleType(RoleType.OWNER);
             pudoUserRoleDao.persist(role);
             pudoUserRoleDao.flush();
         }

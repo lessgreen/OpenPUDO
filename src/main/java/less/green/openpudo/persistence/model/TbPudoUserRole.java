@@ -3,12 +3,15 @@ package less.green.openpudo.persistence.model;
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import less.green.openpudo.persistence.dao.usertype.RoleType;
+import less.green.openpudo.persistence.dao.usertype.RoleTypeConverter;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -32,6 +35,7 @@ public class TbPudoUserRole implements Serializable {
     private Date createTms;
 
     @Column(name = "role_type")
-    private String roleType;
+    @Convert(converter = RoleTypeConverter.class)
+    private RoleType roleType;
 
 }

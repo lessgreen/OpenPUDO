@@ -6,6 +6,7 @@ import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
+import less.green.openpudo.persistence.dao.usertype.RoleType;
 import less.green.openpudo.persistence.model.TbPudo;
 
 @RequestScoped
@@ -29,7 +30,7 @@ public class PudoDao extends BaseEntityDao<TbPudo, Long> {
         try {
             TypedQuery<TbPudo> q = em.createQuery(qs, TbPudo.class);
             q.setParameter("userId", userId);
-            q.setParameter("roleType", "owner");
+            q.setParameter("roleType", RoleType.OWNER);
             return q.getSingleResult();
         } catch (NoResultException ex) {
             return null;
