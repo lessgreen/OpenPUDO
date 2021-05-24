@@ -2,9 +2,10 @@ package less.green.openpudo.persistence.model;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -14,12 +15,13 @@ import lombok.Setter;
 import lombok.ToString;
 
 @Entity
-@Table(name = "tb_user")
+@Table(name = "tb_account")
 @Getter @Setter @ToString
-public class TbUser implements Serializable {
+public class TbAccount implements Serializable {
 
     @Id
-    @Column(name = "user_id", updatable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id", insertable = false, updatable = false)
     private Long userId;
 
     @Column(name = "create_tms")
@@ -30,16 +32,22 @@ public class TbUser implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     private Date updateTms;
 
-    @Column(name = "first_name")
-    private String firstName;
+    @Column(name = "username")
+    private String username;
 
-    @Column(name = "last_name")
-    private String lastName;
+    @Column(name = "email")
+    private String email;
 
-    @Column(name = "ssn")
-    private String ssn;
+    @Column(name = "phone_number")
+    private String phoneNumber;
 
-    @Column(name = "profile_pic_id")
-    private UUID profilePicId;
+    @Column(name = "salt")
+    private String salt;
+
+    @Column(name = "password")
+    private String password;
+
+    @Column(name = "hash_specs")
+    private String hashSpecs;
 
 }

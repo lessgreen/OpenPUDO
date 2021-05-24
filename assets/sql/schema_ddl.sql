@@ -7,9 +7,10 @@ BEGIN
     END LOOP;
 END';
 
+
 -- data tables
-DROP TABLE IF EXISTS tb_user CASCADE;
-CREATE TABLE IF NOT EXISTS tb_user (
+DROP TABLE IF EXISTS tb_account CASCADE;
+CREATE TABLE IF NOT EXISTS tb_account (
 	user_id BIGSERIAL PRIMARY KEY,
 	create_tms TIMESTAMP(3) NOT NULL,
 	update_tms TIMESTAMP(3) NOT NULL,
@@ -21,14 +22,14 @@ CREATE TABLE IF NOT EXISTS tb_user (
 	hash_specs TEXT NOT NULL,
 	CHECK (COALESCE(email, phone_number) IS NOT NULL)
 );
-CREATE UNIQUE INDEX tb_user_lower_username_idx ON tb_user (lower(username));
-CREATE UNIQUE INDEX tb_user_lower_email_idx ON tb_user (lower(email));
-CREATE UNIQUE INDEX tb_user_phone_number_idx ON tb_user (phone_number);
+CREATE UNIQUE INDEX tb_account_username_idx ON tb_account (lower(username));
+CREATE UNIQUE INDEX tb_account_email_idx ON tb_account (lower(email));
+CREATE UNIQUE INDEX tb_account_phone_number_idx ON tb_account (phone_number);
 
 
-DROP TABLE IF EXISTS tb_user_profile CASCADE;
-CREATE TABLE IF NOT EXISTS tb_user_profile (
-	user_id BIGINT PRIMARY KEY REFERENCES tb_user(user_id),
+DROP TABLE IF EXISTS tb_user CASCADE;
+CREATE TABLE IF NOT EXISTS tb_user (
+	user_id BIGINT PRIMARY KEY REFERENCES tb_account(user_id),
 	create_tms TIMESTAMP(3) NOT NULL,
 	update_tms TIMESTAMP(3) NOT NULL,
 	first_name TEXT NOT NULL,
@@ -36,6 +37,29 @@ CREATE TABLE IF NOT EXISTS tb_user_profile (
 	ssn TEXT,
 	profile_pic_id UUID
 );
+
+
+DROP TABLE IF EXISTS tb_pudo CASCADE;
+CREATE TABLE IF NOT EXISTS tb_pudo (
+	pudo_id BIGSERIAL PRIMARY KEY,
+	create_tms TIMESTAMP(3) NOT NULL,
+	update_tms TIMESTAMP(3) NOT NULL,
+	business_name TEXT NOT NULL,
+	vat TEXT,
+	phone_number TEXT,
+	contact_notes TEXT
+);
+
+
+DROP TABLE IF EXISTS tb_pudo_user_role CASCADE;
+CREATE TABLE IF NOT EXISTS tb_pudo_user_role (
+	user_id BIGINT NOT NULL REFERENCES tb_user(user_id),
+	pudo_id BIGINT NOT NULL REFERENCES tb_pudo(pudo_id),
+	create_tms TIMESTAMP(3) NOT NULL,
+	role_type TEXT NOT NULL
+	CHECK (role_type IN ('owner', 'customer'))
+);
+
 
 DROP TABLE IF EXISTS tb_address CASCADE;
 CREATE TABLE IF NOT EXISTS tb_address (
@@ -53,6 +77,7 @@ CREATE TABLE IF NOT EXISTS tb_address (
 	lon DECIMAL(10,7) NOT NULL
 );
 
+
 DROP TABLE IF EXISTS tb_user_address CASCADE;
 CREATE TABLE IF NOT EXISTS tb_user_address (
 	user_id BIGINT NOT NULL REFERENCES tb_user(user_id),
@@ -61,5 +86,13 @@ CREATE TABLE IF NOT EXISTS tb_user_address (
 );
 
 
--- janitoring
+DROP TABLE IF EXISTS tb_pudo_address CASCADE;
+CREATE TABLE IF NOT EXISTS tb_pudo_address (
+	pudo_id BIGINT NOT NULL REFERENCES tb_pudo(pudo_id),
+	address_id BIGINT NOT NULL REFERENCES tb_address(address_id),
+	PRIMARY KEY(pudo_id, address_id)
+);
+
+
+-- maintenance
 VACUUM FULL ANALYZE;

@@ -2,9 +2,10 @@ package less.green.openpudo.persistence.model;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -14,13 +15,14 @@ import lombok.Setter;
 import lombok.ToString;
 
 @Entity
-@Table(name = "tb_user_profile")
+@Table(name = "tb_pudo")
 @Getter @Setter @ToString
-public class TbUserProfile implements Serializable {
+public class TbPudo implements Serializable {
 
     @Id
-    @Column(name = "user_id", insertable = true, updatable = false)
-    private Long userId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "pudo_id", insertable = false, updatable = false)
+    private Long pudoId;
 
     @Column(name = "create_tms")
     @Temporal(TemporalType.TIMESTAMP)
@@ -30,16 +32,16 @@ public class TbUserProfile implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     private Date updateTms;
 
-    @Column(name = "first_name")
-    private String firstName;
+    @Column(name = "business_name")
+    private String businessName;
 
-    @Column(name = "last_name")
-    private String lastName;
+    @Column(name = "vat")
+    private String vat;
 
-    @Column(name = "ssn")
-    private String ssn;
+    @Column(name = "phone_number")
+    private String phoneNumber;
 
-    @Column(name = "profile_pic_id")
-    private UUID profilePicId;
+    @Column(name = "contact_notes")
+    private String contactNotes;
 
 }

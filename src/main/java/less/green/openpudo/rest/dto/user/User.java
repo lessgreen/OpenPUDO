@@ -7,7 +7,7 @@ import lombok.Data;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 @Data
-public class UserProfile {
+public class User {
 
     @Schema(readOnly = true)
     private Long userId;

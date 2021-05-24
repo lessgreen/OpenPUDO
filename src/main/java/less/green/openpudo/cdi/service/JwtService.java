@@ -38,13 +38,13 @@ public class JwtService {
     @ConfigProperty(name = "jwt.secret")
     String jwtSecret;
 
-    public JwtPayload generatePayload(Long userId) {
+    public JwtPayload generatePayload(Long accountId) {
         Calendar cal = GregorianCalendar.getInstance(UTC);
         cal.setLenient(false);
         Date iat = cal.getTime();
         cal.add(EXPIRE_DATE_TIMEUNIT, EXPIRE_DATE_AMOUNT);
         Date exp = cal.getTime();
-        return new JwtPayload(PAYLOAD_ISS, userId, iat, exp);
+        return new JwtPayload(PAYLOAD_ISS, accountId, iat, exp);
     }
 
     public String generateAccessToken(JwtPayload payload) {
