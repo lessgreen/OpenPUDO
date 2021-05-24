@@ -9,7 +9,7 @@ public enum RoleType {
     @Getter
     private final String val;
 
-    private RoleType(String val) {
+    RoleType(String val) {
         this.val = val;
     }
 
