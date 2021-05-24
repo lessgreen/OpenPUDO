@@ -1,12 +1,18 @@
 package less.green.openpudo.common;
 
+import com.google.i18n.phonenumbers.NumberParseException;
+import com.google.i18n.phonenumbers.PhoneNumberUtil;
+import com.google.i18n.phonenumbers.Phonenumber;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.concurrent.TimeUnit;
+import static less.green.openpudo.common.StringUtils.isEmpty;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 public class FormatUtils {
+
+    private static final PhoneNumberUtil PNU = PhoneNumberUtil.getInstance();
 
     private FormatUtils() {
     }
@@ -56,6 +62,22 @@ public class FormatUtils {
             return BigDecimal.valueOf(bytes).divide(BigDecimal.valueOf(1_099_511_627_776L), bytes < 10L * 1_099_511_627_776L ? 2 : 1, RoundingMode.HALF_UP).toString() + " TiB";
         } else {
             return BigDecimal.valueOf(bytes).divide(BigDecimal.valueOf(1_125_899_906_842_624L), bytes < 10L * 1_125_899_906_842_624L ? 2 : 1, RoundingMode.HALF_UP).toString() + " PiB";
+        }
+    }
+
+    public static String safeNormalizePhoneNumber(String str) {
+        if (isEmpty(str)) {
+            return null;
+        }
+        try {
+            // TODO: proper handling of default country
+            Phonenumber.PhoneNumber pn = PNU.parse(str.trim(), "IT");
+            if (!PNU.isValidNumber(pn)) {
+                return null;
+            }
+            return PNU.format(pn, PhoneNumberUtil.PhoneNumberFormat.E164);
+        } catch (NumberParseException ex) {
+            return null;
         }
     }
 

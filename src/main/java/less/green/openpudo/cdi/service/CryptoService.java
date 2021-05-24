@@ -10,7 +10,7 @@ import javax.enterprise.context.ApplicationScoped;
 import less.green.openpudo.common.Encoders;
 import static less.green.openpudo.common.Encoders.BASE64_DECODER;
 import static less.green.openpudo.common.Encoders.BASE64_ENCODER;
-import less.green.openpudo.common.dto.UserSecret;
+import less.green.openpudo.common.dto.AccountSecret;
 import lombok.extern.log4j.Log4j2;
 
 @ApplicationScoped
@@ -31,13 +31,13 @@ public class CryptoService {
 
     private final SecureRandom rand = new SecureRandom();
 
-    public UserSecret generateUserSecret(String password) {
+    public AccountSecret generateAccountSecret(String password) {
         byte[] saltBytes = genSalt(DEFAULT_SALT_LENGTH_BYTE);
         byte[] passwordHashBytes = genPasswordHash(saltBytes, password);
         String saltBase64 = BASE64_ENCODER.encodeToString(saltBytes);
         String passwordHashBase64 = BASE64_ENCODER.encodeToString(passwordHashBytes);
         // we generate and store secret specs for future security improvements
-        return new UserSecret(saltBase64, passwordHashBase64, DEFAULT_SECRET_SPECS_JSON);
+        return new AccountSecret(saltBase64, passwordHashBase64, DEFAULT_SECRET_SPECS_JSON);
     }
 
     private byte[] genSalt(int length) {
@@ -65,7 +65,7 @@ public class CryptoService {
         return hash;
     }
 
-    public boolean verifyPasswordHash(UserSecret secret, String candidatePassword) {
+    public boolean verifyPasswordHash(AccountSecret secret, String candidatePassword) {
         // we assume default secret specs at the moment, but in the future we might support different specs
         byte[] saltBytes = BASE64_DECODER.decode(secret.getSaltBase64());
         byte[] candidatePasswordHashBytes = genPasswordHash(saltBytes, candidatePassword);

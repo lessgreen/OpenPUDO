@@ -7,6 +7,7 @@ public class ApiReturnCodes {
     public static final int INVALID_CREDENTIALS = 2;
     public static final int INVALID_JWT_TOKEN = 3;
     public static final int EXPIRED_JWT_TOKEN = 4;
+    public static final int UNAUTHORIZED = 5;
 
     private ApiReturnCodes() {
     }

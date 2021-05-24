@@ -2,10 +2,10 @@ package less.green.openpudo.persistence.model;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.IdClass;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -14,32 +14,24 @@ import lombok.Setter;
 import lombok.ToString;
 
 @Entity
-@Table(name = "tb_user")
+@Table(name = "tb_pudo_user_role")
+@IdClass(TbPudoUserRolePK.class)
 @Getter @Setter @ToString
-public class TbUser implements Serializable {
+public class TbPudoUserRole implements Serializable {
 
     @Id
     @Column(name = "user_id", updatable = false)
     private Long userId;
 
+    @Id
+    @Column(name = "pudo_id", updatable = false)
+    private Long pudoId;
+
     @Column(name = "create_tms")
     @Temporal(TemporalType.TIMESTAMP)
     private Date createTms;
 
-    @Column(name = "update_tms")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date updateTms;
-
-    @Column(name = "first_name")
-    private String firstName;
-
-    @Column(name = "last_name")
-    private String lastName;
-
-    @Column(name = "ssn")
-    private String ssn;
-
-    @Column(name = "profile_pic_id")
-    private UUID profilePicId;
+    @Column(name = "role_type")
+    private String roleType;
 
 }

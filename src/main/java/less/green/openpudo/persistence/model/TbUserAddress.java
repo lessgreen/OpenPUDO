@@ -17,11 +17,11 @@ import lombok.ToString;
 public class TbUserAddress implements Serializable {
 
     @Id
-    @Column(name = "user_id", insertable = true, updatable = false)
+    @Column(name = "user_id", updatable = false)
     private Long userId;
 
     @Id
-    @Column(name = "address_id", insertable = true, updatable = false)
+    @Column(name = "address_id", updatable = false)
     private Long addressId;
 
 }

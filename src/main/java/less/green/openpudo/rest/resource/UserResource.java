@@ -13,12 +13,12 @@ import less.green.openpudo.cdi.ExecutionContext;
 import less.green.openpudo.cdi.service.LocalizationService;
 import less.green.openpudo.common.ApiReturnCodes;
 import static less.green.openpudo.common.StringUtils.isEmpty;
-import less.green.openpudo.persistence.model.TbUserProfile;
+import less.green.openpudo.persistence.model.TbUser;
 import less.green.openpudo.persistence.service.UserService;
 import less.green.openpudo.rest.config.exception.ApiException;
 import less.green.openpudo.rest.dto.DtoMapper;
-import less.green.openpudo.rest.dto.user.UserProfile;
-import less.green.openpudo.rest.dto.user.UserProfileResponse;
+import less.green.openpudo.rest.dto.user.User;
+import less.green.openpudo.rest.dto.user.UserResponse;
 import lombok.extern.log4j.Log4j2;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 
@@ -27,7 +27,7 @@ import org.eclipse.microprofile.openapi.annotations.Operation;
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 @Log4j2
-public class UserProfileResource {
+public class UserResource {
 
     @Inject
     ExecutionContext context;
@@ -41,24 +41,24 @@ public class UserProfileResource {
     UserService userService;
 
     @GET
-    @Path("/{userId}/profile")
+    @Path("/{userId}")
     @Operation(summary = "Get public profile for user with provided userId")
-    public UserProfileResponse getUserProfileById(@PathParam(value = "userId") Long userId) {
-        TbUserProfile userProfile = userService.getUserProfileById(userId);
-        return new UserProfileResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapUserProfileEntityToDto(userProfile));
+    public UserResponse getUserById(@PathParam(value = "userId") Long userId) {
+        TbUser user = userService.getUserById(userId);
+        return new UserResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapUserEntityToDto(user));
     }
 
     @GET
-    @Path("/me/profile")
+    @Path("/me")
     @Operation(summary = "Get public profile for current user")
-    public UserProfileResponse getCurrentUserProfile() {
-        return getUserProfileById(context.getUserId());
+    public UserResponse getCurrentUser() {
+        return getUserById(context.getUserId());
     }
 
     @PUT
-    @Path("/me/profile")
+    @Path("/me")
     @Operation(summary = "Update public profile for current user")
-    public UserProfileResponse updateCurrentUserProfile(UserProfile req) {
+    public UserResponse updateCurrentUser(User req) {
         // sanitize input
         if (req == null) {
             throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.empty_request"));
@@ -68,8 +68,8 @@ public class UserProfileResource {
             throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.empty_mandatory_field", "lastName"));
         }
 
-        TbUserProfile userProfile = userService.updateCurrentUserProfile(context.getUserId(), req);
-        return new UserProfileResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapUserProfileEntityToDto(userProfile));
+        TbUser user = userService.updateUser(context.getUserId(), req);
+        return new UserResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapUserEntityToDto(user));
     }
 
 }
