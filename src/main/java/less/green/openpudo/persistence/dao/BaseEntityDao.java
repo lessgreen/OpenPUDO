@@ -2,9 +2,13 @@ package less.green.openpudo.persistence.dao;
 
 import java.io.Serializable;
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
 public abstract class BaseEntityDao<E extends Serializable, K> {
+
+    @PersistenceContext
+    EntityManager em;
 
     private final Class<E> entityClass;
     private final String keyColumnName;
@@ -14,27 +18,25 @@ public abstract class BaseEntityDao<E extends Serializable, K> {
         this.keyColumnName = keyColumnName;
     }
 
-    protected abstract EntityManager getEntityManager();
-
     public void flush() {
-        getEntityManager().flush();
+        em.flush();
     }
 
     public E get(K key) {
-        return getEntityManager().find(entityClass, key);
+        return em.find(entityClass, key);
     }
 
     public void persist(E ent) {
-        getEntityManager().persist(ent);
+        em.persist(ent);
     }
 
     public E merge(E ent) {
-        return getEntityManager().merge(ent);
+        return em.merge(ent);
     }
 
     public int delete(K key) {
         String qs = "DELETE FROM " + entityClass.getSimpleName() + " t WHERE t." + keyColumnName + " = :key";
-        Query q = getEntityManager().createQuery(qs);
+        Query q = em.createQuery(qs);
         q.setParameter("key", key);
         int cnt = q.executeUpdate();
         return cnt;
