@@ -1,6 +1,7 @@
 package less.green.openpudo.persistence.service;
 
 import java.util.Date;
+import java.util.List;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -41,6 +42,10 @@ public class PudoService {
         pudo.setContactNotes(req.getContactNotes());
         pudoDao.flush();
         return pudo;
+    }
+
+    public List<TbPudo> searchPudo(List<String> tokens) {
+        return pudoDao.searchPudo(tokens);
     }
 
 }

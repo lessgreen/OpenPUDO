@@ -1,5 +1,6 @@
 package less.green.openpudo.rest.dto;
 
+import java.util.List;
 import less.green.openpudo.persistence.model.TbAddress;
 import less.green.openpudo.persistence.model.TbPudo;
 import less.green.openpudo.persistence.model.TbUser;
@@ -14,6 +15,8 @@ public interface DtoMapper {
     User mapUserEntityToDto(TbUser ent);
 
     Pudo mapPudoEntityToDto(TbPudo ent);
+
+    List<Pudo> mapPudoEntityListToDtoList(List<TbPudo> ent);
 
     Address mapAddressEntityToDto(TbAddress ent);
 

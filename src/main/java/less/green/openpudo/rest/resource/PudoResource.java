@@ -1,5 +1,7 @@
 package less.green.openpudo.rest.resource;
 
+import java.util.Arrays;
+import java.util.List;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -8,6 +10,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import less.green.openpudo.cdi.ExecutionContext;
 import less.green.openpudo.cdi.service.LocalizationService;
@@ -19,6 +22,7 @@ import less.green.openpudo.persistence.service.PudoService;
 import less.green.openpudo.rest.config.exception.ApiException;
 import less.green.openpudo.rest.dto.DtoMapper;
 import less.green.openpudo.rest.dto.pudo.Pudo;
+import less.green.openpudo.rest.dto.pudo.PudoListResponse;
 import less.green.openpudo.rest.dto.pudo.PudoResponse;
 import lombok.extern.log4j.Log4j2;
 import org.eclipse.microprofile.openapi.annotations.Operation;
@@ -90,4 +94,17 @@ public class PudoResource {
         return new PudoResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapPudoEntityToDto(pudo));
     }
 
+    @GET
+    @Path("/search")
+    @Operation(summary = "Search PUDO by business name")
+    public PudoListResponse searchPudos(@QueryParam("businessName") String businessName) {
+        // sanitize input
+        if (isEmpty(businessName)) {
+            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.empty_mandatory_field", "businessName"));
+        }
+
+        List<String> tokens = Arrays.asList(businessName.split("\\s"));
+        List<TbPudo> rs = pudoService.searchPudo(tokens);
+        return new PudoListResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapPudoEntityListToDtoList(rs));
+    }
 }
