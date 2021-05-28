@@ -47,8 +47,10 @@ CREATE TABLE IF NOT EXISTS tb_pudo (
 	business_name TEXT NOT NULL,
 	vat TEXT,
 	phone_number TEXT,
-	contact_notes TEXT
+	contact_notes TEXT,
+	business_name_search tsvector GENERATED ALWAYS AS (to_tsvector('simple', business_name)) STORED
 );
+CREATE INDEX tb_pudo_business_name_search_idx ON tb_pudo USING GIN (business_name_search);
 
 
 DROP TABLE IF EXISTS tb_pudo_user_role CASCADE;
