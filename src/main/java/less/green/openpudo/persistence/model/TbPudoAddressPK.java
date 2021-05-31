@@ -6,7 +6,7 @@ import lombok.Data;
 @Data
 public class TbPudoAddressPK implements Serializable {
 
-    private Long userId;
+    private Long pudoId;
     private Long addressId;
 
 }

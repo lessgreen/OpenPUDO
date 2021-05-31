@@ -42,4 +42,8 @@ public abstract class BaseEntityDao<E extends Serializable, K> {
         return cnt;
     }
 
+    public void remove(E ent) {
+        em.remove(ent);
+    }
+
 }

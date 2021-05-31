@@ -11,14 +11,14 @@ import lombok.Setter;
 import lombok.ToString;
 
 @Entity
-@Table(name = "tb_user_address")
-@IdClass(TbUserAddressPK.class)
+@Table(name = "tb_pudo_address")
+@IdClass(TbPudoAddressPK.class)
 @Getter @Setter @ToString
 public class TbPudoAddress implements Serializable {
 
     @Id
-    @Column(name = "user_id", updatable = false)
-    private Long userId;
+    @Column(name = "pudo_id", updatable = false)
+    private Long pudoId;
 
     @Id
     @Column(name = "address_id", updatable = false)
