@@ -28,7 +28,7 @@ public class PudoDao extends BaseEntityDao<TbPudo, Long> {
         super(TbPudo.class, "pudo_id");
     }
 
-    public PudoAndAddress getPudoAndAddressById(Long pudoId) {
+    public PudoAndAddress getPudoById(Long pudoId) {
         String qs = "SELECT new less.green.openpudo.persistence.projection.PudoAndAddress(t1, t3) "
                 + "FROM TbPudo t1 LEFT JOIN TbPudoAddress t2 ON t1.pudoId = t2.pudoId "
                 + "LEFT JOIN TbAddress t3 ON t2.addressId = t3.addressId "
@@ -42,10 +42,14 @@ public class PudoDao extends BaseEntityDao<TbPudo, Long> {
         }
     }
 
-    public Long getPudoIdByOwnerUserId(Long userId) {
-        String qs = "SELECT t.pudoId FROM TbPudoUserRole t WHERE t.userId = :userId AND t.roleType = :roleType";
+    public PudoAndAddress getPudoByOwner(Long userId) {
+        String qs = "SELECT new less.green.openpudo.persistence.projection.PudoAndAddress(t1, t3) "
+                + "FROM TbPudo t1 LEFT JOIN TbPudoAddress t2 ON t1.pudoId = t2.pudoId "
+                + "LEFT JOIN TbAddress t3 ON t2.addressId = t3.addressId "
+                + "WHERE EXISTS (SELECT t4 FROM TbPudoUserRole t4 "
+                + "WHERE t4.pudoId = t1.pudoId AND t4.userId = :userId AND t4.roleType = :roleType)";
         try {
-            TypedQuery<Long> q = em.createQuery(qs, Long.class);
+            TypedQuery<PudoAndAddress> q = em.createQuery(qs, PudoAndAddress.class);
             q.setParameter("userId", userId);
             q.setParameter("roleType", RoleType.OWNER);
             return q.getSingleResult();
@@ -54,12 +58,16 @@ public class PudoDao extends BaseEntityDao<TbPudo, Long> {
         }
     }
 
-    public PudoAndAddress getPudoAndAddressByOwnerUserId(Long userId) {
-        Long pudoId = getPudoIdByOwnerUserId(userId);
-        if (pudoId == null) {
-            return null;
-        }
-        return getPudoAndAddressById(pudoId);
+    public List<PudoAndAddress> getPudoListByCustomer(Long userId) {
+        String qs = "SELECT new less.green.openpudo.persistence.projection.PudoAndAddress(t1, t3) "
+                + "FROM TbPudo t1 LEFT JOIN TbPudoAddress t2 ON t1.pudoId = t2.pudoId "
+                + "LEFT JOIN TbAddress t3 ON t2.addressId = t3.addressId "
+                + "WHERE EXISTS (SELECT t4 FROM TbPudoUserRole t4 "
+                + "WHERE t4.pudoId = t1.pudoId AND t4.userId = :userId AND t4.roleType = :roleType)";
+        TypedQuery<PudoAndAddress> q = em.createQuery(qs, PudoAndAddress.class);
+        q.setParameter("userId", userId);
+        q.setParameter("roleType", RoleType.CUSTOMER);
+        return q.getResultList();
     }
 
     public List<PudoAndAddress> searchPudo(BigDecimal latMin, BigDecimal latMax, BigDecimal lonMin, BigDecimal lonMax, List<String> tokens) {

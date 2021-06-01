@@ -50,23 +50,23 @@ public class PudoResource {
     @Path("/{pudoId}")
     @Operation(summary = "Get public info for PUDO with provided pudoId")
     public PudoResponse getPudoById(@PathParam(value = "pudoId") Long pudoId) {
-        PudoAndAddress pudo = pudoService.getPudoAndAddressById(pudoId);
+        PudoAndAddress pudo = pudoService.getPudoById(pudoId);
         return new PudoResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapPudoEntityToDto(pudo));
     }
 
     @GET
-    @Path("/mine")
+    @Path("/me")
     @Operation(summary = "Get public info for PUDO owned by current user")
     public PudoResponse getCurrentPudo() {
-        PudoAndAddress pudo = pudoService.getPudoAndAddressByOwnerUserId(context.getUserId());
+        PudoAndAddress pudo = pudoService.getPudoByOwner(context.getUserId());
         if (pudo == null) {
-            throw new ApiException(ApiReturnCodes.UNAUTHORIZED, localizationService.getMessage("error.pudo.not_pudo_owner"));
+            throw new ApiException(ApiReturnCodes.UNAUTHORIZED, localizationService.getMessage("error.user.not_pudo_owner"));
         }
         return new PudoResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapPudoEntityToDto(pudo));
     }
 
     @PUT
-    @Path("/mine")
+    @Path("/me")
     @Operation(summary = "Update public profile for current user")
     public PudoResponse updateCurrentPudo(Pudo req) {
         // sanitize input
@@ -85,12 +85,12 @@ public class PudoResource {
             req.setPhoneNumber(npn);
         }
 
-        Long pudoId = pudoService.getPudoIdByOwnerUserId(context.getUserId());
-        if (pudoId == null) {
-            throw new ApiException(ApiReturnCodes.UNAUTHORIZED, localizationService.getMessage("error.pudo.not_pudo_owner"));
+        boolean pudoOwner = pudoService.isPudoOwner(context.getUserId());
+        if (!pudoOwner) {
+            throw new ApiException(ApiReturnCodes.UNAUTHORIZED, localizationService.getMessage("error.user.not_pudo_owner"));
         }
 
-        PudoAndAddress pudo = pudoService.updatePudoByOwnerUserId(context.getUserId(), req);
+        PudoAndAddress pudo = pudoService.updatePudoByOwner(context.getUserId(), req);
         return new PudoResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapPudoEntityToDto(pudo));
     }
 

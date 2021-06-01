@@ -9,7 +9,7 @@ import static less.green.openpudo.common.StringUtils.sanitizeString;
 import less.green.openpudo.common.dto.AccountSecret;
 import less.green.openpudo.persistence.dao.AccountDao;
 import less.green.openpudo.persistence.dao.PudoDao;
-import less.green.openpudo.persistence.dao.PudoUserRoleDao;
+import less.green.openpudo.persistence.dao.RelationDao;
 import less.green.openpudo.persistence.dao.UserDao;
 import less.green.openpudo.persistence.dao.usertype.RoleType;
 import less.green.openpudo.persistence.model.TbAccount;
@@ -33,7 +33,7 @@ public class UserService {
     @Inject
     PudoDao pudoDao;
     @Inject
-    PudoUserRoleDao pudoUserRoleDao;
+    RelationDao relationDao;
 
     public Long register(RegisterRequest req) {
         Date now = new Date();
@@ -73,8 +73,8 @@ public class UserService {
             role.setPudoId(pudo.getPudoId());
             role.setCreateTms(now);
             role.setRoleType(RoleType.OWNER);
-            pudoUserRoleDao.persist(role);
-            pudoUserRoleDao.flush();
+            relationDao.persist(role);
+            relationDao.flush();
         }
         return account.getUserId();
     }
@@ -93,4 +93,5 @@ public class UserService {
         userDao.flush();
         return user;
     }
+
 }
