@@ -16,7 +16,8 @@
         <lombok.version>1.18.20</lombok.version>
         <mapstruct.version>1.4.2.Final</mapstruct.version>
         <pmd.version>3.14.0</pmd.version>
-        <libphonenumber.version>8.12.22</libphonenumber.version>
+        <libphonenumber.version>8.12.24</libphonenumber.version>
+        <unirest.version>3.11.11</unirest.version>
     </properties>
 
     <dependencyManagement>
@@ -122,6 +123,11 @@
             <groupId>com.googlecode.libphonenumber</groupId>
             <artifactId>libphonenumber</artifactId>
             <version>${libphonenumber.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.konghq</groupId>
+            <artifactId>unirest-java</artifactId>
+            <version>${unirest.version}</version>
         </dependency>
     </dependencies>
 </project>

@@ -1,10 +1,11 @@
 package less.green.openpudo.rest.dto;
 
+import java.io.Serializable;
 import java.util.UUID;
 import lombok.Data;
 
 @Data
-public class BaseResponse<T> {
+public class BaseResponse<T> implements Serializable {
 
     private UUID executionId;
     private int returnCode;

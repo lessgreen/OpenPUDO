@@ -33,6 +33,9 @@ public class TbAddress implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     private Date updateTms;
 
+    @Column(name = "label")
+    private String label;
+
     @Column(name = "street")
     private String street;
 
@@ -50,9 +53,6 @@ public class TbAddress implements Serializable {
 
     @Column(name = "country")
     private String country;
-
-    @Column(name = "notes")
-    private String notes;
 
     @Column(name = "lat")
     private BigDecimal lat;

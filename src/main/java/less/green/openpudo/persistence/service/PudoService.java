@@ -3,20 +3,24 @@ package less.green.openpudo.persistence.service;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
-import static less.green.openpudo.common.StringUtils.isEmpty;
+import less.green.openpudo.cdi.service.GeocodeService;
 import static less.green.openpudo.common.StringUtils.sanitizeString;
+import less.green.openpudo.persistence.dao.AddressDao;
 import less.green.openpudo.persistence.dao.PudoDao;
 import less.green.openpudo.persistence.dao.RelationDao;
 import less.green.openpudo.persistence.dao.usertype.RoleType;
+import less.green.openpudo.persistence.model.TbAddress;
 import less.green.openpudo.persistence.model.TbPudo;
+import less.green.openpudo.persistence.model.TbPudoAddress;
 import less.green.openpudo.persistence.model.TbPudoUserRole;
 import less.green.openpudo.persistence.projection.PudoAndAddress;
+import less.green.openpudo.rest.dto.DtoMapper;
+import less.green.openpudo.rest.dto.geojson.Feature;
 import less.green.openpudo.rest.dto.pudo.Pudo;
 import lombok.extern.log4j.Log4j2;
 
@@ -28,7 +32,14 @@ public class PudoService {
     @Inject
     PudoDao pudoDao;
     @Inject
+    AddressDao addressDao;
+    @Inject
     RelationDao relationDao;
+
+    @Inject
+    GeocodeService geocodeService;
+    @Inject
+    DtoMapper dtoMapper;
 
     public PudoAndAddress getPudoById(Long pudoId) {
         return pudoDao.getPudoById(pudoId);
@@ -48,6 +59,31 @@ public class PudoService {
         pudo.setPhoneNumber(req.getPhoneNumber());
         pudo.setContactNotes(req.getContactNotes());
         pudoDao.flush();
+        return ret;
+    }
+
+    public PudoAndAddress updatePudoAddressByOwner(Long userId, Feature feat) {
+        Date now = new Date();
+        PudoAndAddress ret = getPudoByOwner(userId);
+        TbAddress address = ret.getAddress();
+        if (address == null) {
+            address = new TbAddress();
+            address.setCreateTms(now);
+            address.setUpdateTms(now);
+            dtoMapper.mapFeatureToExistingAddressEntity(feat, address);
+            addressDao.persist(address);
+            addressDao.flush();
+            TbPudoAddress rel = new TbPudoAddress();
+            rel.setPudoId(ret.getPudo().getPudoId());
+            rel.setAddressId(address.getAddressId());
+            relationDao.persist(rel);
+            relationDao.flush();
+            ret.setAddress(address);
+        } else {
+            address.setUpdateTms(now);
+            dtoMapper.mapFeatureToExistingAddressEntity(feat, address);
+            addressDao.flush();
+        }
         return ret;
     }
 
@@ -79,7 +115,7 @@ public class PudoService {
         return getPudoListByCustomer(userId);
     }
 
-    public List<PudoAndAddress> searchPudo(BigDecimal lat, BigDecimal lon, Integer zoom, String businessName) {
+    public List<PudoAndAddress> searchPudo(BigDecimal lat, BigDecimal lon, Integer zoom) {
         // calculate map boundaries based on zoom levels, between 8 and 16, according to https://wiki.openstreetmap.org/wiki/Zoom_levels
         BigDecimal deltaDegree;
         if (zoom == 8) {
@@ -101,7 +137,7 @@ public class PudoService {
         } else if (zoom == 16) {
             deltaDegree = BigDecimal.valueOf(0.005);
         } else {
-            // should never happen, data is sanitized in service layer
+            // should never happen, data is sanitized in rest layer
             throw new IllegalArgumentException("Illegal zoom level: " + zoom);
         }
         // apply some tolerance to the map borders
@@ -114,9 +150,7 @@ public class PudoService {
         BigDecimal lonMin = lon.subtract(correctedDeltaDegree);
         BigDecimal lonMax = lon.add(correctedDeltaDegree);
 
-        // tokenizing search string
-        List<String> tokens = isEmpty(businessName) ? null : Arrays.asList(businessName.split("\\s"));
-        return pudoDao.searchPudo(latMin, latMax, lonMin, lonMax, tokens);
+        return pudoDao.searchPudo(latMin, latMax, lonMin, lonMax);
     }
 
 }

@@ -12,7 +12,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import less.green.openpudo.persistence.service.UserService;
+import less.green.openpudo.cdi.service.GeocodeService;
 import lombok.extern.log4j.Log4j2;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 
@@ -23,7 +23,7 @@ import org.eclipse.microprofile.openapi.annotations.Operation;
 @Log4j2
 public class RuntimeResource {
 
-    @Inject UserService userService;
+    @Inject GeocodeService service;
 
     @GET
     @Path("/health")
@@ -55,7 +55,6 @@ public class RuntimeResource {
     @Path("/test")
     @Operation(summary = "Test API for debugging purposes. DO NOT USE!")
     public Response test() throws Exception {
-        //return Response.ok(pn).build();
         return null;
     }
 

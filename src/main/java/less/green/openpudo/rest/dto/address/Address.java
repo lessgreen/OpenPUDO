@@ -20,29 +20,31 @@ public class Address implements Serializable {
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Date updateTms;
 
-    @Schema(required = true)
+    @Schema(readOnly = true)
+    private String label;
+
+    @Schema(readOnly = true)
     private String street;
 
+    @Schema(readOnly = true)
     private String streetNum;
 
-    @Schema(required = true)
+    @Schema(readOnly = true)
     private String zipCode;
 
-    @Schema(required = true)
+    @Schema(readOnly = true)
     private String city;
 
-    @Schema(required = true)
+    @Schema(readOnly = true)
     private String province;
 
-    @Schema(required = true)
+    @Schema(readOnly = true)
     private String country;
 
-    private String notes;
-
-    @Schema(required = true)
+    @Schema(readOnly = true)
     private Double lat;
 
-    @Schema(required = true)
+    @Schema(readOnly = true)
     private Double lon;
 
 }

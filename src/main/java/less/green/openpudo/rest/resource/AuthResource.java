@@ -75,7 +75,8 @@ public class AuthResource {
 
     @POST
     @Path("/register")
-    @Operation(summary = "Register new user", description = "This is a public API and can be invoked without a valid access token.\n\n"
+    @Operation(summary = "Register new user",
+            description = "This is a public API and can be invoked without a valid access token.\n\n"
             + "Fields 'email' and 'phoneNumber' are technically optional, but you must provide at least one of them.\n\n"
             + "If field 'pudo' is present, then the user is registering himself as a PUDO.")
     public BaseResponse register(RegisterRequest req) {
@@ -149,7 +150,8 @@ public class AuthResource {
 
     @POST
     @Path("/login")
-    @Operation(summary = "Authenticate user and generate JWT access token", description = "This is a public API and can be invoked without a valid access token.\n\n"
+    @Operation(summary = "Authenticate user and generate JWT access token",
+            description = "This is a public API and can be invoked without a valid access token.\n\n"
             + "Any failed attemp will enforce a response delay to discourage bruteforcing.")
     public LoginResponse login(LoginRequest req) {
         // sanitize input

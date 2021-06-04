@@ -68,13 +68,13 @@ CREATE TABLE IF NOT EXISTS tb_address (
 	address_id BIGSERIAL PRIMARY KEY,
 	create_tms TIMESTAMP(3) NOT NULL,
 	update_tms TIMESTAMP(3) NOT NULL,
+	label TEXT NOT NULL,
 	street TEXT NOT NULL,
 	street_num TEXT,
 	zip_code TEXT NOT NULL,
 	city TEXT NOT NULL,
 	province TEXT NOT NULL,
 	country TEXT NOT NULL,
-	notes TEXT,
 	lat DECIMAL(10,7) NOT NULL,
 	lon DECIMAL(10,7) NOT NULL
 );

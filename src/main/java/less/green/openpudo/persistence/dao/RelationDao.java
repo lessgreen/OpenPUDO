@@ -7,6 +7,7 @@ import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
 import less.green.openpudo.persistence.dao.usertype.RoleType;
+import less.green.openpudo.persistence.model.TbPudoAddress;
 import less.green.openpudo.persistence.model.TbPudoUserRole;
 
 @RequestScoped
@@ -21,6 +22,10 @@ public class RelationDao {
     }
 
     public void persist(TbPudoUserRole ent) {
+        em.persist(ent);
+    }
+
+    public void persist(TbPudoAddress ent) {
         em.persist(ent);
     }
 
