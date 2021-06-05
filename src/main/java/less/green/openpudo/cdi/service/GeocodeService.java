@@ -84,7 +84,8 @@ public class GeocodeService {
 
             Feature feat = rs.getFeatures().stream()
                     .filter(i -> i.getProperties() != null && i.getGeometry() != null && i.getGeometry().getCoordinates() != null && i.getGeometry().getCoordinates().size() >= 2)
-                    .filter(i -> resultId.equals(i.getProperties().get("gid"))).findFirst().orElseGet(null);
+                    .filter(i -> resultId.equals((String) i.getProperties().get("gid")))
+                    .findFirst().orElse(null);
             return feat;
         } catch (UnirestException ex) {
             throw new RuntimeException("Geocode service unavailable", ex);

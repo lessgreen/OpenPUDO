@@ -10,6 +10,8 @@ public class AutocompleteResult {
 
     private String resultId;
 
+    private String layer;
+
     private BigDecimal lat;
 
     private BigDecimal lon;

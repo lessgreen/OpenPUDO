@@ -2,6 +2,7 @@ package less.green.openpudo.rest.dto.address;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 import lombok.Data;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
@@ -42,9 +43,9 @@ public class Address implements Serializable {
     private String country;
 
     @Schema(readOnly = true)
-    private Double lat;
+    private BigDecimal lat;
 
     @Schema(readOnly = true)
-    private Double lon;
+    private BigDecimal lon;
 
 }

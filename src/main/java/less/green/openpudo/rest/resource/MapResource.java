@@ -14,6 +14,7 @@ import less.green.openpudo.cdi.ExecutionContext;
 import less.green.openpudo.cdi.service.GeocodeService;
 import less.green.openpudo.cdi.service.LocalizationService;
 import less.green.openpudo.common.ApiReturnCodes;
+import less.green.openpudo.common.ExceptionUtils;
 import static less.green.openpudo.common.StringUtils.isEmpty;
 import less.green.openpudo.persistence.projection.PudoAndAddress;
 import less.green.openpudo.persistence.service.PudoService;
@@ -109,6 +110,7 @@ public class MapResource {
             FeatureCollection rs = geocodeService.autocomplete(text, lat, lon);
             return new AutocompleteResultListResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapFeatureToAutocompleteResult(rs.getFeatures()));
         } catch (RuntimeException ex) {
+            log.error("[{}] {}", context.getExecutionId(), ExceptionUtils.getCompactStackTrace(ex));
             throw new ApiException(ApiReturnCodes.SERVICE_UNAVAILABLE, localizationService.getMessage("error.service_unavailable"));
         }
     }

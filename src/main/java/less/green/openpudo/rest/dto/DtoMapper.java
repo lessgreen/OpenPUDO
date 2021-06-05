@@ -32,9 +32,10 @@ public interface DtoMapper {
             return null;
         }
         AutocompleteResult ret = new AutocompleteResult();
-        Map<String, String> properties = feat.getProperties();
-        ret.setLabel(properties.get("label"));
-        ret.setResultId(properties.get("gid"));
+        Map<String, Object> properties = feat.getProperties();
+        ret.setLabel((String) properties.get("label"));
+        ret.setResultId((String) properties.get("gid"));
+        ret.setLayer((String) properties.get("layer"));
         Point geometry = feat.getGeometry();
         ret.setLat(geometry.getCoordinates().get(1));
         ret.setLon(geometry.getCoordinates().get(0));
@@ -47,14 +48,14 @@ public interface DtoMapper {
         if (feat == null) {
             return;
         }
-        Map<String, String> properties = feat.getProperties();
-        ent.setLabel(properties.get("label"));
-        ent.setStreet(properties.get("street"));
-        ent.setStreetNum(properties.get("housenumber"));
-        ent.setZipCode(properties.get("postalcode"));
-        ent.setCity(properties.get("locality"));
-        ent.setProvince(properties.get("region"));
-        ent.setCountry(properties.get("country"));
+        Map<String, Object> properties = feat.getProperties();
+        ent.setLabel((String) properties.get("label"));
+        ent.setStreet((String) properties.get("street"));
+        ent.setStreetNum((String) properties.get("housenumber"));
+        ent.setZipCode((String) properties.get("postalcode"));
+        ent.setCity((String) properties.get("locality"));
+        ent.setProvince((String) properties.get("region"));
+        ent.setCountry((String) properties.get("country"));
         Point geometry = feat.getGeometry();
         ent.setLat(geometry.getCoordinates().get(1));
         ent.setLon(geometry.getCoordinates().get(0));
