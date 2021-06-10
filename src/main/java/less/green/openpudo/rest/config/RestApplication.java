@@ -5,7 +5,7 @@ import javax.ws.rs.core.Application;
 import org.eclipse.microprofile.openapi.annotations.OpenAPIDefinition;
 import org.eclipse.microprofile.openapi.annotations.info.Info;
 
-@ApplicationPath("/api")
+@ApplicationPath("/api/v1")
 @OpenAPIDefinition(info = @Info(title = "OpenPUDO", version = "v1"))
 public class RestApplication extends Application {
 }
