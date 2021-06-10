@@ -157,7 +157,7 @@ public class PudoService {
 
     public List<PudoMarker> searchPudosByName(String text) {
         // tokenizing search string
-        List<String> tokens = Arrays.asList(text.split("\\s"));
+        List<String> tokens = Arrays.asList(text.trim().split("\\s"));
         return pudoDao.searchPudosByName(tokens);
     }
 

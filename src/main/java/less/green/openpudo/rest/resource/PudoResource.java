@@ -122,7 +122,7 @@ public class PudoResource {
             throw new ApiException(ApiReturnCodes.SERVICE_UNAVAILABLE, localizationService.getMessage("error.service_unavailable"));
         }
 
-        if (feat == null || !"address".equals(feat.getProperties().get("layer"))) {
+        if (feat == null) {
             throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.address.invalid_address"));
         }
 

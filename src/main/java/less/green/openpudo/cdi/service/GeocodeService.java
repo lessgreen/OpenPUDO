@@ -1,6 +1,7 @@
 package less.green.openpudo.cdi.service;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.enterprise.context.ApplicationScoped;
@@ -35,11 +36,20 @@ public class GeocodeService {
             GetRequest req = Unirest.get(apiUrl + "/autocomplete");
             req.queryString("api_key", apiKey);
             req.queryString("text", text);
-            req.queryString("layers", "address,street,borough,locality,macroregion,country");
             if (lat != null && lon != null) {
                 req.queryString("focus.point.lat", lat.toString());
                 req.queryString("focus.point.lon", lon.toString());
             }
+
+            // heuristic to filter too grainiy results
+            List<String> tokens = Arrays.asList(text.trim().split("\\s"));
+            boolean containNumber = tokens.stream().filter(i -> i.matches("\\d+.*")).findFirst().isPresent();
+            if (tokens.size() > 1 && containNumber) {
+                req.queryString("layers", "address,street,borough,locality,localadmin,county,macrocounty,region,macroregion,country");
+            } else {
+                req.queryString("layers", "street,borough,locality,localadmin,county,macrocounty,region,macroregion,country");
+            }
+
             // TBD: proper language selection
             req.header("Accept-Language", "it-IT,it;q=0.8,en-US;q=0.5,en;q=0.3");
 
@@ -67,6 +77,11 @@ public class GeocodeService {
             GetRequest req = Unirest.get(apiUrl + "/search");
             req.queryString("api_key", apiKey);
             req.queryString("text", text);
+
+            // this function is meant to validate previously autocompleted feature
+            // we need to assure that geocoding is done at most precise level before saving on database
+            req.queryString("layers", "address");
+
             // TBD: proper language selection
             req.header("Accept-Language", "it-IT,it;q=0.8,en-US;q=0.5,en;q=0.3");
 
