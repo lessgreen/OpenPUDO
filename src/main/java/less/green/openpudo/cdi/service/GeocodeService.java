@@ -35,6 +35,7 @@ public class GeocodeService {
             GetRequest req = Unirest.get(apiUrl + "/autocomplete");
             req.queryString("api_key", apiKey);
             req.queryString("text", text);
+            req.queryString("layers", "address,street,borough,locality,macroregion,country");
             if (lat != null && lon != null) {
                 req.queryString("focus.point.lat", lat.toString());
                 req.queryString("focus.point.lon", lon.toString());

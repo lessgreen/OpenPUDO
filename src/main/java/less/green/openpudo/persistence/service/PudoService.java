@@ -3,6 +3,7 @@ package less.green.openpudo.persistence.service;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import javax.enterprise.context.RequestScoped;
@@ -21,6 +22,7 @@ import less.green.openpudo.persistence.model.TbPudoUserRole;
 import less.green.openpudo.persistence.projection.PudoAndAddress;
 import less.green.openpudo.rest.dto.DtoMapper;
 import less.green.openpudo.rest.dto.geojson.Feature;
+import less.green.openpudo.rest.dto.map.PudoMarker;
 import less.green.openpudo.rest.dto.pudo.Pudo;
 import lombok.extern.log4j.Log4j2;
 
@@ -115,7 +117,7 @@ public class PudoService {
         return getPudoListByCustomer(userId);
     }
 
-    public List<PudoAndAddress> searchPudo(BigDecimal lat, BigDecimal lon, Integer zoom) {
+    public List<PudoMarker> searchPudosByCoordinates(BigDecimal lat, BigDecimal lon, Integer zoom) {
         // calculate map boundaries based on zoom levels, between 8 and 16, according to https://wiki.openstreetmap.org/wiki/Zoom_levels
         BigDecimal deltaDegree;
         if (zoom == 8) {
@@ -137,7 +139,7 @@ public class PudoService {
         } else if (zoom == 16) {
             deltaDegree = BigDecimal.valueOf(0.005);
         } else {
-            // should never happen, data is sanitized in rest layer
+            // should never happen, data is sanitized in controller layer
             throw new IllegalArgumentException("Illegal zoom level: " + zoom);
         }
         // apply some tolerance to the map borders
@@ -150,7 +152,13 @@ public class PudoService {
         BigDecimal lonMin = lon.subtract(correctedDeltaDegree);
         BigDecimal lonMax = lon.add(correctedDeltaDegree);
 
-        return pudoDao.searchPudo(latMin, latMax, lonMin, lonMax);
+        return pudoDao.searchPudosByCoordinates(latMin, latMax, lonMin, lonMax);
+    }
+
+    public List<PudoMarker> searchPudosByName(String text) {
+        // tokenizing search string
+        List<String> tokens = Arrays.asList(text.split("\\s"));
+        return pudoDao.searchPudosByName(tokens);
     }
 
 }

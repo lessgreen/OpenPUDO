@@ -8,7 +8,7 @@ import less.green.openpudo.persistence.projection.PudoAndAddress;
 import less.green.openpudo.rest.dto.address.Address;
 import less.green.openpudo.rest.dto.geojson.Feature;
 import less.green.openpudo.rest.dto.geojson.Point;
-import less.green.openpudo.rest.dto.map.AutocompleteResult;
+import less.green.openpudo.rest.dto.map.AddressMarker;
 import less.green.openpudo.rest.dto.pudo.Pudo;
 import less.green.openpudo.rest.dto.user.User;
 import org.mapstruct.Mapper;
@@ -21,28 +21,28 @@ public interface DtoMapper {
 
     @Mapping(source = "ent.pudo", target = ".")
     @Mapping(source = "ent.address", target = "address")
-    Pudo mapPudoEntityToDto(PudoAndAddress ent);
+    Pudo mapPudoAndAddressEntityToDto(PudoAndAddress ent);
 
-    List<Pudo> mapPudoEntityListToDtoList(List<PudoAndAddress> ent);
+    List<Pudo> mapPudoAndAddressEntityListToDtoList(List<PudoAndAddress> ent);
 
     Address mapAddressEntityToDto(TbAddress ent);
 
-    default AutocompleteResult mapFeatureToAutocompleteResult(Feature feat) {
+    default AddressMarker mapFeatureToAddressMarker(Feature feat) {
         if (feat == null) {
             return null;
         }
-        AutocompleteResult ret = new AutocompleteResult();
+        AddressMarker ret = new AddressMarker();
         Map<String, Object> properties = feat.getProperties();
         ret.setLabel((String) properties.get("label"));
         ret.setResultId((String) properties.get("gid"));
-        ret.setLayer((String) properties.get("layer"));
+        ret.setPrecision((String) properties.get("layer"));
         Point geometry = feat.getGeometry();
         ret.setLat(geometry.getCoordinates().get(1));
         ret.setLon(geometry.getCoordinates().get(0));
         return ret;
     }
 
-    List<AutocompleteResult> mapFeatureToAutocompleteResult(List<Feature> feat);
+    List<AddressMarker> mapFeatureListToAddressMarkerList(List<Feature> feat);
 
     default void mapFeatureToExistingAddressEntity(Feature feat, TbAddress ent) {
         if (feat == null) {

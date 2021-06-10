@@ -52,7 +52,7 @@ public class PudoResource {
     @Operation(summary = "Get public info for PUDO with provided pudoId")
     public PudoResponse getPudoById(@PathParam(value = "pudoId") Long pudoId) {
         PudoAndAddress pudo = pudoService.getPudoById(pudoId);
-        return new PudoResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapPudoEntityToDto(pudo));
+        return new PudoResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapPudoAndAddressEntityToDto(pudo));
     }
 
     @GET
@@ -63,7 +63,7 @@ public class PudoResource {
         if (pudo == null) {
             throw new ApiException(ApiReturnCodes.UNAUTHORIZED, localizationService.getMessage("error.user.not_pudo_owner"));
         }
-        return new PudoResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapPudoEntityToDto(pudo));
+        return new PudoResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapPudoAndAddressEntityToDto(pudo));
     }
 
     @PUT
@@ -92,7 +92,7 @@ public class PudoResource {
         }
 
         PudoAndAddress pudo = pudoService.updatePudoByOwner(context.getUserId(), req);
-        return new PudoResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapPudoEntityToDto(pudo));
+        return new PudoResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapPudoAndAddressEntityToDto(pudo));
     }
 
     @PUT
@@ -127,7 +127,7 @@ public class PudoResource {
         }
 
         PudoAndAddress pudo = pudoService.updatePudoAddressByOwner(context.getUserId(), feat);
-        return new PudoResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapPudoEntityToDto(pudo));
+        return new PudoResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapPudoAndAddressEntityToDto(pudo));
     }
 
 }

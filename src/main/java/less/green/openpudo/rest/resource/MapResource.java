@@ -1,6 +1,7 @@
 package less.green.openpudo.rest.resource;
 
 import java.math.BigDecimal;
+import java.util.LinkedList;
 import java.util.List;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -16,13 +17,17 @@ import less.green.openpudo.cdi.service.LocalizationService;
 import less.green.openpudo.common.ApiReturnCodes;
 import less.green.openpudo.common.ExceptionUtils;
 import static less.green.openpudo.common.StringUtils.isEmpty;
-import less.green.openpudo.persistence.projection.PudoAndAddress;
 import less.green.openpudo.persistence.service.PudoService;
 import less.green.openpudo.rest.config.exception.ApiException;
 import less.green.openpudo.rest.dto.DtoMapper;
+import less.green.openpudo.rest.dto.geojson.Feature;
 import less.green.openpudo.rest.dto.geojson.FeatureCollection;
-import less.green.openpudo.rest.dto.map.AutocompleteResultListResponse;
-import less.green.openpudo.rest.dto.pudo.PudoListResponse;
+import less.green.openpudo.rest.dto.map.AddressMarkerListResponse;
+import less.green.openpudo.rest.dto.map.Marker;
+import less.green.openpudo.rest.dto.map.MarkerListResponse;
+import less.green.openpudo.rest.dto.map.MarkerType;
+import less.green.openpudo.rest.dto.map.PudoMarker;
+import less.green.openpudo.rest.dto.map.PudoMarkerListResponse;
 import less.green.openpudo.rest.dto.scalar.IntegerResponse;
 import lombok.extern.log4j.Log4j2;
 import org.eclipse.microprofile.openapi.annotations.Operation;
@@ -64,9 +69,9 @@ public class MapResource {
     }
 
     @GET
-    @Path("/pudos/search")
+    @Path("/pudos")
     @Operation(summary = "Get PUDO markers to show on current map")
-    public PudoListResponse searchPudos(
+    public PudoMarkerListResponse searchPudosByCoordinates(
             @Parameter(description = "Latitude value of map center point", required = true) @QueryParam("lat") BigDecimal lat,
             @Parameter(description = "Longitude value of map center point", required = true) @QueryParam("lon") BigDecimal lon,
             @Parameter(description = "Zoom level according to https://wiki.openstreetmap.org/wiki/Zoom_levels, must be between 8 and 16", required = true) @QueryParam("zoom") Integer zoom) {
@@ -88,16 +93,16 @@ public class MapResource {
             throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.invalid_field", "zoom"));
         }
 
-        List<PudoAndAddress> rs = pudoService.searchPudo(lat, lon, zoom);
-        return new PudoListResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapPudoEntityListToDtoList(rs));
+        List<PudoMarker> rs = pudoService.searchPudosByCoordinates(lat, lon, zoom);
+        return new PudoMarkerListResponse(context.getExecutionId(), ApiReturnCodes.OK, rs);
     }
 
     @GET
-    @Path("/address/autocomplete")
-    @Operation(summary = "Address autocomplete feature",
+    @Path("/search/addresses")
+    @Operation(summary = "Address search feature based on user input autocompletion",
             description = "Coordinates parameters are optional, but the client should provide them to speed up queries and obtain more pertinent results.\n\n"
             + "This API should be throttled to prevent excessive load.")
-    public AutocompleteResultListResponse autocomplete(
+    public AddressMarkerListResponse searchAddresses(
             @Parameter(description = "Query text", required = true) @QueryParam("text") String text,
             @Parameter(description = "Latitude value of map center point") @QueryParam("lat") BigDecimal lat,
             @Parameter(description = "Longitude value of map center point") @QueryParam("lon") BigDecimal lon) {
@@ -108,11 +113,47 @@ public class MapResource {
 
         try {
             FeatureCollection rs = geocodeService.autocomplete(text, lat, lon);
-            return new AutocompleteResultListResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapFeatureToAutocompleteResult(rs.getFeatures()));
+            return new AddressMarkerListResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapFeatureListToAddressMarkerList(rs.getFeatures()));
         } catch (RuntimeException ex) {
             log.error("[{}] {}", context.getExecutionId(), ExceptionUtils.getCompactStackTrace(ex));
             throw new ApiException(ApiReturnCodes.SERVICE_UNAVAILABLE, localizationService.getMessage("error.service_unavailable"));
         }
+    }
+
+    @GET
+    @Path("/search")
+    @Operation(summary = "Global search feature based on user input autocompletion",
+            description = "This API search between PUDOs that matches business name (even partially) and addresses.\n\n"
+            + "Coordinates parameters are optional, but the client should provide them to speed up queries and obtain more pertinent results.\n\n"
+            + "This API should be throttled to prevent excessive load.")
+    public MarkerListResponse search(
+            @Parameter(description = "Query text", required = true) @QueryParam("text") String text,
+            @Parameter(description = "Latitude value of map center point") @QueryParam("lat") BigDecimal lat,
+            @Parameter(description = "Longitude value of map center point") @QueryParam("lon") BigDecimal lon) {
+        // sanitize input
+        if (isEmpty(text)) {
+            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.empty_mandatory_field", "text"));
+        }
+
+        List<Marker> ret = new LinkedList<>();
+        List<PudoMarker> prs = pudoService.searchPudosByName(text);
+        for (PudoMarker pudo : prs) {
+            ret.add(new Marker(MarkerType.PUDO, pudo));
+        }
+
+        // searching adresses
+        FeatureCollection frs;
+        try {
+            frs = geocodeService.autocomplete(text, lat, lon);
+        } catch (RuntimeException ex) {
+            log.error("[{}] {}", context.getExecutionId(), ExceptionUtils.getCompactStackTrace(ex));
+            throw new ApiException(ApiReturnCodes.SERVICE_UNAVAILABLE, localizationService.getMessage("error.service_unavailable"));
+        }
+        for (Feature feat : frs.getFeatures()) {
+            ret.add(new Marker(MarkerType.ADDRESS, dtoMapper.mapFeatureToAddressMarker(feat)));
+        }
+
+        return new MarkerListResponse(context.getExecutionId(), 0, ret);
     }
 
 }

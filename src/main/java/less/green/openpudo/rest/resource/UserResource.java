@@ -84,7 +84,7 @@ public class UserResource {
     @Operation(summary = "Get current user's favourite PUDOs")
     public PudoListResponse getCurrentUserPudos() {
         List<PudoAndAddress> pudos = pudoService.getPudoListByCustomer(context.getUserId());
-        return new PudoListResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapPudoEntityListToDtoList(pudos));
+        return new PudoListResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapPudoAndAddressEntityListToDtoList(pudos));
     }
 
     @PUT
@@ -106,7 +106,7 @@ public class UserResource {
         }
 
         List<PudoAndAddress> pudos = pudoService.addPudoToFavourites(context.getUserId(), pudoId);
-        return new PudoListResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapPudoEntityListToDtoList(pudos));
+        return new PudoListResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapPudoAndAddressEntityListToDtoList(pudos));
     }
 
     @DELETE
@@ -124,7 +124,7 @@ public class UserResource {
         }
 
         List<PudoAndAddress> pudos = pudoService.removePudoFromFavourites(context.getUserId(), pudoId);
-        return new PudoListResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapPudoEntityListToDtoList(pudos));
+        return new PudoListResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapPudoAndAddressEntityListToDtoList(pudos));
     }
 
 }
