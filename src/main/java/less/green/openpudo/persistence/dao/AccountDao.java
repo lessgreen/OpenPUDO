@@ -12,7 +12,7 @@ import less.green.openpudo.persistence.model.TbAccount;
 public class AccountDao extends BaseEntityDao<TbAccount, Long> {
 
     public AccountDao() {
-        super(TbAccount.class, "account_id");
+        super(TbAccount.class, "userId");
     }
 
     public TbAccount findAccountByLogin(String login) {

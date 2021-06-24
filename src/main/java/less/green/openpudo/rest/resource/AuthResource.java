@@ -62,11 +62,11 @@ public class AuthResource {
     ExecutionContext context;
 
     @Inject
-    LocalizationService localizationService;
-    @Inject
     CryptoService cryptoService;
     @Inject
     JwtService jwtService;
+    @Inject
+    LocalizationService localizationService;
 
     @Inject
     AccountService accountService;

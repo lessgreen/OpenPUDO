@@ -9,7 +9,7 @@ import less.green.openpudo.persistence.model.TbAddress;
 public class AddressDao extends BaseEntityDao<TbAddress, Long> {
 
     public AddressDao() {
-        super(TbAddress.class, "address_id");
+        super(TbAddress.class, "addressId");
     }
 
 }

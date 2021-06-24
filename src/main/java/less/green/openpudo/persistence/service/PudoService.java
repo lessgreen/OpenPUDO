@@ -32,14 +32,15 @@ import lombok.extern.log4j.Log4j2;
 public class PudoService {
 
     @Inject
-    PudoDao pudoDao;
+    GeocodeService geocodeService;
+
     @Inject
     AddressDao addressDao;
     @Inject
+    PudoDao pudoDao;
+    @Inject
     RelationDao relationDao;
 
-    @Inject
-    GeocodeService geocodeService;
     @Inject
     DtoMapper dtoMapper;
 

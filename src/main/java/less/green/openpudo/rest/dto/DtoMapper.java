@@ -3,9 +3,11 @@ package less.green.openpudo.rest.dto;
 import java.util.List;
 import java.util.Map;
 import less.green.openpudo.persistence.model.TbAddress;
+import less.green.openpudo.persistence.model.TbExternalFile;
 import less.green.openpudo.persistence.model.TbUser;
 import less.green.openpudo.persistence.projection.PudoAndAddress;
 import less.green.openpudo.rest.dto.address.Address;
+import less.green.openpudo.rest.dto.file.ExternalFile;
 import less.green.openpudo.rest.dto.geojson.Feature;
 import less.green.openpudo.rest.dto.geojson.Point;
 import less.green.openpudo.rest.dto.map.AddressMarker;
@@ -60,4 +62,6 @@ public interface DtoMapper {
         ent.setLat(geometry.getCoordinates().get(1));
         ent.setLon(geometry.getCoordinates().get(0));
     }
+
+    ExternalFile mapExternalFileEntityAndContentToDto(TbExternalFile ent, String contentBase64);
 }

@@ -44,14 +44,15 @@ public class MapResource {
     ExecutionContext context;
 
     @Inject
-    LocalizationService localizationService;
-    @Inject
     GeocodeService geocodeService;
     @Inject
-    DtoMapper dtoMapper;
+    LocalizationService localizationService;
 
     @Inject
     PudoService pudoService;
+
+    @Inject
+    DtoMapper dtoMapper;
 
     @GET
     @Path("/suggested-zoom")

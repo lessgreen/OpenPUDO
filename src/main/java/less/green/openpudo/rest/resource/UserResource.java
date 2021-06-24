@@ -14,18 +14,23 @@ import javax.ws.rs.core.MediaType;
 import less.green.openpudo.cdi.ExecutionContext;
 import less.green.openpudo.cdi.service.LocalizationService;
 import less.green.openpudo.common.ApiReturnCodes;
+import less.green.openpudo.common.ExceptionUtils;
 import static less.green.openpudo.common.StringUtils.isEmpty;
+import less.green.openpudo.persistence.model.TbExternalFile;
 import less.green.openpudo.persistence.model.TbUser;
 import less.green.openpudo.persistence.projection.PudoAndAddress;
 import less.green.openpudo.persistence.service.PudoService;
 import less.green.openpudo.persistence.service.UserService;
 import less.green.openpudo.rest.config.exception.ApiException;
 import less.green.openpudo.rest.dto.DtoMapper;
+import less.green.openpudo.rest.dto.file.ExternalFile;
+import less.green.openpudo.rest.dto.file.ExternalFileResponse;
 import less.green.openpudo.rest.dto.pudo.PudoListResponse;
 import less.green.openpudo.rest.dto.user.User;
 import less.green.openpudo.rest.dto.user.UserResponse;
 import lombok.extern.log4j.Log4j2;
 import org.eclipse.microprofile.openapi.annotations.Operation;
+import org.javatuples.Pair;
 
 @RequestScoped
 @Path("/users")
@@ -39,13 +44,14 @@ public class UserResource {
 
     @Inject
     LocalizationService localizationService;
-    @Inject
-    DtoMapper dtoMapper;
 
     @Inject
-    UserService userService;
-    @Inject
     PudoService pudoService;
+    @Inject
+    UserService userService;
+
+    @Inject
+    DtoMapper dtoMapper;
 
     @GET
     @Path("/{userId}")
@@ -125,6 +131,41 @@ public class UserResource {
 
         List<PudoAndAddress> pudos = pudoService.removePudoFromFavourites(context.getUserId(), pudoId);
         return new PudoListResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapPudoAndAddressEntityListToDtoList(pudos));
+    }
+
+    @PUT
+    @Path("/me/profile-pic")
+    @Operation(summary = "Update public profile picture for current user")
+    public UserResponse updateCurrentUserProfilePic(ExternalFile req) {
+        // sanitize input
+        if (req == null) {
+            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.empty_request"));
+        } else if (isEmpty(req.getMimeType())) {
+            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.empty_mandatory_field", "mimeType"));
+        } else if (isEmpty(req.getContentBase64())) {
+            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.empty_mandatory_field", "contentBase64"));
+        }
+
+        try {
+            TbUser user = userService.updateUserProfilePic(context.getUserId(), req.getMimeType(), req.getContentBase64());
+            return new UserResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapUserEntityToDto(user));
+        } catch (RuntimeException ex) {
+            log.error("[{}] {}", context.getExecutionId(), ExceptionUtils.getCompactStackTrace(ex));
+            throw new ApiException(ApiReturnCodes.SERVICE_UNAVAILABLE, localizationService.getMessage("error.service_unavailable"));
+        }
+    }
+
+    @DELETE
+    @Path("/me/profile-pic")
+    @Operation(summary = "Delete public profile picture for current user")
+    public UserResponse deleteCurrentUserProfilePic() {
+        try {
+            TbUser user = userService.deleteUserProfilePic(context.getUserId());
+            return new UserResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapUserEntityToDto(user));
+        } catch (RuntimeException ex) {
+            log.error("[{}] {}", context.getExecutionId(), ExceptionUtils.getCompactStackTrace(ex));
+            throw new ApiException(ApiReturnCodes.SERVICE_UNAVAILABLE, localizationService.getMessage("error.service_unavailable"));
+        }
     }
 
 }

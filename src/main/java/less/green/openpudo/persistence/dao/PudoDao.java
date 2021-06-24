@@ -24,7 +24,7 @@ import lombok.extern.log4j.Log4j2;
 public class PudoDao extends BaseEntityDao<TbPudo, Long> {
 
     public PudoDao() {
-        super(TbPudo.class, "pudo_id");
+        super(TbPudo.class, "pudoId");
     }
 
     public PudoAndAddress getPudoById(Long pudoId) {

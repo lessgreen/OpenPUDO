@@ -9,6 +9,14 @@ END';
 
 
 -- data tables
+DROP TABLE IF EXISTS tb_external_file CASCADE;
+CREATE TABLE IF NOT EXISTS tb_external_file (
+	external_file_id UUID PRIMARY KEY,
+	create_tms TIMESTAMP(3) NOT NULL,
+	mime_type TEXT
+);
+
+
 DROP TABLE IF EXISTS tb_account CASCADE;
 CREATE TABLE IF NOT EXISTS tb_account (
 	user_id BIGSERIAL PRIMARY KEY,
@@ -35,7 +43,7 @@ CREATE TABLE IF NOT EXISTS tb_user (
 	first_name TEXT NOT NULL,
 	last_name TEXT NOT NULL,
 	ssn TEXT,
-	profile_pic_id UUID
+	profile_pic_id UUID REFERENCES tb_external_file(external_file_id)
 );
 
 
@@ -77,14 +85,6 @@ CREATE TABLE IF NOT EXISTS tb_address (
 	country TEXT NOT NULL,
 	lat DECIMAL(10,7) NOT NULL,
 	lon DECIMAL(10,7) NOT NULL
-);
-
-
-DROP TABLE IF EXISTS tb_user_address CASCADE;
-CREATE TABLE IF NOT EXISTS tb_user_address (
-	user_id BIGINT NOT NULL REFERENCES tb_user(user_id),
-	address_id BIGINT NOT NULL REFERENCES tb_address(address_id),
-	PRIMARY KEY(user_id, address_id)
 );
 
 

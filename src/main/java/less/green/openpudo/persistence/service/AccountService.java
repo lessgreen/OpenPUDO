@@ -13,13 +13,13 @@ import less.green.openpudo.rest.dto.DtoMapper;
 public class AccountService {
 
     @Inject
-    DtoMapper dtoMapper;
-
-    @Inject
     CryptoService cryptoService;
 
     @Inject
     AccountDao accountDao;
+
+    @Inject
+    DtoMapper dtoMapper;
 
     public TbAccount findAccountByLogin(String login) {
         return accountDao.findAccountByLogin(login);
