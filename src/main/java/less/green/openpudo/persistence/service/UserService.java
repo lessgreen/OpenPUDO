@@ -1,12 +1,12 @@
 package less.green.openpudo.persistence.service;
 
-import less.green.openpudo.cdi.service.StorageService;
 import java.util.Date;
 import java.util.UUID;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import less.green.openpudo.cdi.service.CryptoService;
+import less.green.openpudo.cdi.service.StorageService;
 import static less.green.openpudo.common.StringUtils.sanitizeString;
 import less.green.openpudo.common.dto.AccountSecret;
 import less.green.openpudo.persistence.dao.AccountDao;
@@ -23,7 +23,6 @@ import less.green.openpudo.persistence.model.TbUser;
 import less.green.openpudo.rest.dto.auth.RegisterRequest;
 import less.green.openpudo.rest.dto.user.User;
 import lombok.extern.log4j.Log4j2;
-import org.javatuples.Pair;
 
 @RequestScoped
 @Transactional

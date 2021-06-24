@@ -16,7 +16,6 @@ import less.green.openpudo.cdi.service.LocalizationService;
 import less.green.openpudo.common.ApiReturnCodes;
 import less.green.openpudo.common.ExceptionUtils;
 import static less.green.openpudo.common.StringUtils.isEmpty;
-import less.green.openpudo.persistence.model.TbExternalFile;
 import less.green.openpudo.persistence.model.TbUser;
 import less.green.openpudo.persistence.projection.PudoAndAddress;
 import less.green.openpudo.persistence.service.PudoService;
@@ -24,13 +23,11 @@ import less.green.openpudo.persistence.service.UserService;
 import less.green.openpudo.rest.config.exception.ApiException;
 import less.green.openpudo.rest.dto.DtoMapper;
 import less.green.openpudo.rest.dto.file.ExternalFile;
-import less.green.openpudo.rest.dto.file.ExternalFileResponse;
 import less.green.openpudo.rest.dto.pudo.PudoListResponse;
 import less.green.openpudo.rest.dto.user.User;
 import less.green.openpudo.rest.dto.user.UserResponse;
 import lombok.extern.log4j.Log4j2;
 import org.eclipse.microprofile.openapi.annotations.Operation;
-import org.javatuples.Pair;
 
 @RequestScoped
 @Path("/users")

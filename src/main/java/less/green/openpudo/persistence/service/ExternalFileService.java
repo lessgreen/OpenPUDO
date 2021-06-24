@@ -7,7 +7,6 @@ import javax.transaction.Transactional;
 import less.green.openpudo.cdi.service.StorageService;
 import less.green.openpudo.persistence.dao.ExternalFileDao;
 import less.green.openpudo.persistence.model.TbExternalFile;
-import less.green.openpudo.persistence.model.TbUser;
 import lombok.extern.log4j.Log4j2;
 import org.javatuples.Pair;
 
