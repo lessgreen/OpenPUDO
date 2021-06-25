@@ -15,7 +15,6 @@
         <quarkus.version>1.13.3.Final</quarkus.version>
         <lombok.version>1.18.20</lombok.version>
         <mapstruct.version>1.4.2.Final</mapstruct.version>
-        <javatuples.version>1.2</javatuples.version>
         <pmd.version>3.14.0</pmd.version>
         <libphonenumber.version>8.12.25</libphonenumber.version>
         <unirest.version>3.11.11</unirest.version>
