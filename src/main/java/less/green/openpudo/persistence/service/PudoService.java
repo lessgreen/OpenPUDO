@@ -11,6 +11,7 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 import less.green.openpudo.cdi.service.GeocodeService;
 import static less.green.openpudo.common.StringUtils.sanitizeString;
+import less.green.openpudo.common.dto.tuple.Pair;
 import less.green.openpudo.persistence.dao.AddressDao;
 import less.green.openpudo.persistence.dao.PudoDao;
 import less.green.openpudo.persistence.dao.RelationDao;
@@ -19,7 +20,6 @@ import less.green.openpudo.persistence.model.TbAddress;
 import less.green.openpudo.persistence.model.TbPudo;
 import less.green.openpudo.persistence.model.TbPudoAddress;
 import less.green.openpudo.persistence.model.TbPudoUserRole;
-import less.green.openpudo.persistence.projection.PudoAndAddress;
 import less.green.openpudo.rest.dto.DtoMapper;
 import less.green.openpudo.rest.dto.geojson.Feature;
 import less.green.openpudo.rest.dto.map.PudoMarker;
@@ -44,18 +44,18 @@ public class PudoService {
     @Inject
     DtoMapper dtoMapper;
 
-    public PudoAndAddress getPudoById(Long pudoId) {
+    public Pair<TbPudo, TbAddress> getPudoById(Long pudoId) {
         return pudoDao.getPudoById(pudoId);
     }
 
-    public PudoAndAddress getPudoByOwner(Long userId) {
+    public Pair<TbPudo, TbAddress> getPudoByOwner(Long userId) {
         return pudoDao.getPudoByOwner(userId);
     }
 
-    public PudoAndAddress updatePudoByOwner(Long userId, Pudo req) {
+    public Pair<TbPudo, TbAddress> updatePudoByOwner(Long userId, Pudo req) {
         Date now = new Date();
-        PudoAndAddress ret = getPudoByOwner(userId);
-        TbPudo pudo = ret.getPudo();
+        Pair<TbPudo, TbAddress> ret = getPudoByOwner(userId);
+        TbPudo pudo = ret.getValue0();
         pudo.setUpdateTms(now);
         pudo.setBusinessName(sanitizeString(req.getBusinessName()));
         pudo.setVat(sanitizeString(req.getVat()));
@@ -65,10 +65,10 @@ public class PudoService {
         return ret;
     }
 
-    public PudoAndAddress updatePudoAddressByOwner(Long userId, Feature feat) {
+    public Pair<TbPudo, TbAddress> updatePudoAddressByOwner(Long userId, Feature feat) {
         Date now = new Date();
-        PudoAndAddress ret = getPudoByOwner(userId);
-        TbAddress address = ret.getAddress();
+        Pair<TbPudo, TbAddress> ret = getPudoByOwner(userId);
+        TbAddress address = ret.getValue1();
         if (address == null) {
             address = new TbAddress();
             address.setCreateTms(now);
@@ -77,11 +77,11 @@ public class PudoService {
             addressDao.persist(address);
             addressDao.flush();
             TbPudoAddress rel = new TbPudoAddress();
-            rel.setPudoId(ret.getPudo().getPudoId());
+            rel.setPudoId(ret.getValue0().getPudoId());
             rel.setAddressId(address.getAddressId());
             relationDao.persist(rel);
             relationDao.flush();
-            ret.setAddress(address);
+            ret.setValue1(address);
         } else {
             address.setUpdateTms(now);
             dtoMapper.mapFeatureToExistingAddressEntity(feat, address);
@@ -98,11 +98,11 @@ public class PudoService {
         return relationDao.isPudoCustomer(userId, pudoId);
     }
 
-    public List<PudoAndAddress> getPudoListByCustomer(Long userId) {
+    public List<Pair<TbPudo, TbAddress>> getPudoListByCustomer(Long userId) {
         return pudoDao.getPudoListByCustomer(userId);
     }
 
-    public List<PudoAndAddress> addPudoToFavourites(Long userId, Long pudoId) {
+    public List<Pair<TbPudo, TbAddress>> addPudoToFavourites(Long userId, Long pudoId) {
         TbPudoUserRole rel = new TbPudoUserRole();
         rel.setUserId(userId);
         rel.setPudoId(pudoId);
@@ -113,7 +113,7 @@ public class PudoService {
         return getPudoListByCustomer(userId);
     }
 
-    public List<PudoAndAddress> removePudoFromFavourites(Long userId, Long pudoId) {
+    public List<Pair<TbPudo, TbAddress>> removePudoFromFavourites(Long userId, Long pudoId) {
         relationDao.removePudoFromFavourites(userId, pudoId);
         return getPudoListByCustomer(userId);
     }

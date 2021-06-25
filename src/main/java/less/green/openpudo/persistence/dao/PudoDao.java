@@ -12,9 +12,10 @@ import javax.persistence.Query;
 import javax.persistence.Tuple;
 import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
+import less.green.openpudo.common.dto.tuple.Pair;
 import less.green.openpudo.persistence.dao.usertype.RoleType;
+import less.green.openpudo.persistence.model.TbAddress;
 import less.green.openpudo.persistence.model.TbPudo;
-import less.green.openpudo.persistence.projection.PudoAndAddress;
 import less.green.openpudo.rest.dto.map.PudoMarker;
 import lombok.extern.log4j.Log4j2;
 
@@ -27,46 +28,49 @@ public class PudoDao extends BaseEntityDao<TbPudo, Long> {
         super(TbPudo.class, "pudoId");
     }
 
-    public PudoAndAddress getPudoById(Long pudoId) {
-        String qs = "SELECT new less.green.openpudo.persistence.projection.PudoAndAddress(t1, t3) "
+    public Pair<TbPudo, TbAddress> getPudoById(Long pudoId) {
+        String qs = "SELECT t1, t3 "
                 + "FROM TbPudo t1 LEFT JOIN TbPudoAddress t2 ON t1.pudoId = t2.pudoId "
                 + "LEFT JOIN TbAddress t3 ON t2.addressId = t3.addressId "
                 + "WHERE t1.pudoId = :pudoId";
         try {
-            TypedQuery<PudoAndAddress> q = em.createQuery(qs, PudoAndAddress.class);
+            TypedQuery<Object[]> q = em.createQuery(qs, Object[].class);
             q.setParameter("pudoId", pudoId);
-            return q.getSingleResult();
+            Object[] rs = q.getSingleResult();
+            return new Pair<>((TbPudo) rs[0], (TbAddress) rs[1]);
         } catch (NoResultException ex) {
             return null;
         }
     }
 
-    public PudoAndAddress getPudoByOwner(Long userId) {
-        String qs = "SELECT new less.green.openpudo.persistence.projection.PudoAndAddress(t1, t3) "
+    public Pair<TbPudo, TbAddress> getPudoByOwner(Long userId) {
+        String qs = "SELECT t1, t3 "
                 + "FROM TbPudo t1 LEFT JOIN TbPudoAddress t2 ON t1.pudoId = t2.pudoId "
                 + "LEFT JOIN TbAddress t3 ON t2.addressId = t3.addressId "
                 + "WHERE EXISTS (SELECT t4 FROM TbPudoUserRole t4 "
                 + "WHERE t4.pudoId = t1.pudoId AND t4.userId = :userId AND t4.roleType = :roleType)";
         try {
-            TypedQuery<PudoAndAddress> q = em.createQuery(qs, PudoAndAddress.class);
+            TypedQuery<Object[]> q = em.createQuery(qs, Object[].class);
             q.setParameter("userId", userId);
             q.setParameter("roleType", RoleType.OWNER);
-            return q.getSingleResult();
+            Object[] rs = q.getSingleResult();
+            return new Pair<>((TbPudo) rs[0], (TbAddress) rs[1]);
         } catch (NoResultException ex) {
             return null;
         }
     }
 
-    public List<PudoAndAddress> getPudoListByCustomer(Long userId) {
-        String qs = "SELECT new less.green.openpudo.persistence.projection.PudoAndAddress(t1, t3) "
+    public List<Pair<TbPudo, TbAddress>> getPudoListByCustomer(Long userId) {
+        String qs = "SELECT t1, t3 "
                 + "FROM TbPudo t1 LEFT JOIN TbPudoAddress t2 ON t1.pudoId = t2.pudoId "
                 + "LEFT JOIN TbAddress t3 ON t2.addressId = t3.addressId "
                 + "WHERE EXISTS (SELECT t4 FROM TbPudoUserRole t4 "
                 + "WHERE t4.pudoId = t1.pudoId AND t4.userId = :userId AND t4.roleType = :roleType)";
-        TypedQuery<PudoAndAddress> q = em.createQuery(qs, PudoAndAddress.class);
+        TypedQuery<Object[]> q = em.createQuery(qs, Object[].class);
         q.setParameter("userId", userId);
         q.setParameter("roleType", RoleType.CUSTOMER);
-        return q.getResultList();
+        List<Object[]> rs = q.getResultList();
+        return rs.isEmpty() ? Collections.emptyList() : rs.stream().map(row -> new Pair<>((TbPudo) row[0], (TbAddress) row[1])).collect(Collectors.toList());
     }
 
     public List<PudoMarker> searchPudosByCoordinates(BigDecimal latMin, BigDecimal latMax, BigDecimal lonMin, BigDecimal lonMax) {

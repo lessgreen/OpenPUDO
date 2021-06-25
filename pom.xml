@@ -121,12 +121,6 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.javatuples</groupId>
-            <artifactId>javatuples</artifactId>
-            <version>${javatuples.version}</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
             <groupId>com.googlecode.libphonenumber</groupId>
             <artifactId>libphonenumber</artifactId>
             <version>${libphonenumber.version}</version>

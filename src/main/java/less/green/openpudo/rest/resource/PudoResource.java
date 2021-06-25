@@ -16,7 +16,9 @@ import less.green.openpudo.common.ApiReturnCodes;
 import less.green.openpudo.common.ExceptionUtils;
 import static less.green.openpudo.common.FormatUtils.safeNormalizePhoneNumber;
 import static less.green.openpudo.common.StringUtils.isEmpty;
-import less.green.openpudo.persistence.projection.PudoAndAddress;
+import less.green.openpudo.common.dto.tuple.Pair;
+import less.green.openpudo.persistence.model.TbAddress;
+import less.green.openpudo.persistence.model.TbPudo;
 import less.green.openpudo.persistence.service.PudoService;
 import less.green.openpudo.rest.config.exception.ApiException;
 import less.green.openpudo.rest.dto.DtoMapper;
@@ -52,7 +54,7 @@ public class PudoResource {
     @Path("/{pudoId}")
     @Operation(summary = "Get public info for PUDO with provided pudoId")
     public PudoResponse getPudoById(@PathParam(value = "pudoId") Long pudoId) {
-        PudoAndAddress pudo = pudoService.getPudoById(pudoId);
+        Pair<TbPudo, TbAddress> pudo = pudoService.getPudoById(pudoId);
         return new PudoResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapPudoAndAddressEntityToDto(pudo));
     }
 
@@ -60,7 +62,7 @@ public class PudoResource {
     @Path("/me")
     @Operation(summary = "Get public info for PUDO owned by current user")
     public PudoResponse getCurrentPudo() {
-        PudoAndAddress pudo = pudoService.getPudoByOwner(context.getUserId());
+        Pair<TbPudo, TbAddress> pudo = pudoService.getPudoByOwner(context.getUserId());
         if (pudo == null) {
             throw new ApiException(ApiReturnCodes.UNAUTHORIZED, localizationService.getMessage("error.user.not_pudo_owner"));
         }
@@ -92,7 +94,7 @@ public class PudoResource {
             throw new ApiException(ApiReturnCodes.UNAUTHORIZED, localizationService.getMessage("error.user.not_pudo_owner"));
         }
 
-        PudoAndAddress pudo = pudoService.updatePudoByOwner(context.getUserId(), req);
+        Pair<TbPudo, TbAddress> pudo = pudoService.updatePudoByOwner(context.getUserId(), req);
         return new PudoResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapPudoAndAddressEntityToDto(pudo));
     }
 
@@ -127,7 +129,7 @@ public class PudoResource {
             throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.address.invalid_address"));
         }
 
-        PudoAndAddress pudo = pudoService.updatePudoAddressByOwner(context.getUserId(), feat);
+        Pair<TbPudo, TbAddress> pudo = pudoService.updatePudoAddressByOwner(context.getUserId(), feat);
         return new PudoResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapPudoAndAddressEntityToDto(pudo));
     }
 

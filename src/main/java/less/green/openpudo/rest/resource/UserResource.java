@@ -19,8 +19,10 @@ import less.green.openpudo.cdi.service.LocalizationService;
 import less.green.openpudo.common.ApiReturnCodes;
 import less.green.openpudo.common.ExceptionUtils;
 import static less.green.openpudo.common.StringUtils.isEmpty;
+import less.green.openpudo.common.dto.tuple.Pair;
+import less.green.openpudo.persistence.model.TbAddress;
+import less.green.openpudo.persistence.model.TbPudo;
 import less.green.openpudo.persistence.model.TbUser;
-import less.green.openpudo.persistence.projection.PudoAndAddress;
 import less.green.openpudo.persistence.service.PudoService;
 import less.green.openpudo.persistence.service.UserService;
 import less.green.openpudo.rest.config.exception.ApiException;
@@ -95,7 +97,7 @@ public class UserResource {
     @Path("/me/pudos")
     @Operation(summary = "Get current user's favourite PUDOs")
     public PudoListResponse getCurrentUserPudos() {
-        List<PudoAndAddress> pudos = pudoService.getPudoListByCustomer(context.getUserId());
+        List<Pair<TbPudo, TbAddress>> pudos = pudoService.getPudoListByCustomer(context.getUserId());
         return new PudoListResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapPudoAndAddressEntityListToDtoList(pudos));
     }
 
@@ -108,7 +110,7 @@ public class UserResource {
         if (pudoOwner) {
             throw new ApiException(ApiReturnCodes.UNAUTHORIZED, localizationService.getMessage("error.user.pudo_owner"));
         }
-        PudoAndAddress pudo = pudoService.getPudoById(pudoId);
+        Pair<TbPudo, TbAddress> pudo = pudoService.getPudoById(pudoId);
         if (pudo == null) {
             throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.pudo.pudo_not_exists"));
         }
@@ -117,7 +119,7 @@ public class UserResource {
             throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.pudo.pudo_already_favourite"));
         }
 
-        List<PudoAndAddress> pudos = pudoService.addPudoToFavourites(context.getUserId(), pudoId);
+        List<Pair<TbPudo, TbAddress>> pudos = pudoService.addPudoToFavourites(context.getUserId(), pudoId);
         return new PudoListResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapPudoAndAddressEntityListToDtoList(pudos));
     }
 
@@ -135,7 +137,7 @@ public class UserResource {
             throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.pudo.pudo_not_favourite"));
         }
 
-        List<PudoAndAddress> pudos = pudoService.removePudoFromFavourites(context.getUserId(), pudoId);
+        List<Pair<TbPudo, TbAddress>> pudos = pudoService.removePudoFromFavourites(context.getUserId(), pudoId);
         return new PudoListResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapPudoAndAddressEntityListToDtoList(pudos));
     }
 
