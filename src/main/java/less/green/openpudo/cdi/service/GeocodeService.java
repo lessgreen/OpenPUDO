@@ -27,8 +27,8 @@ public class GeocodeService {
     static {
         Unirest.config().reset();
         Unirest.config()
-                .socketTimeout(1000)
-                .connectTimeout(1000);
+                .socketTimeout(5000)
+                .connectTimeout(5000);
     }
 
     public FeatureCollection autocomplete(String text, BigDecimal lat, BigDecimal lon) {

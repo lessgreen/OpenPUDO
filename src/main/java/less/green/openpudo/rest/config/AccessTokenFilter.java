@@ -49,15 +49,16 @@ public class AccessTokenFilter implements ContainerRequestFilter {
             return;
         }
 
-        // check for backdoor access
-        if ("dev".equals(ProfileManager.getActiveProfile())) {
+        // check for access token. header must be in the form
+        // Authorization: Bearer eyJhbGci...<snip>...yu5CSpyHI
+        String authorizationHeader = requestContext.getHeaderString(AUTHORIZATION);
+
+        // backdoor access
+        if ("dev".equals(ProfileManager.getActiveProfile()) && authorizationHeader == null) {
             context.setUserId(1L);
             return;
         }
 
-        // check for access token. header must be in the form
-        // Authorization: Bearer eyJhbGci...<snip>...yu5CSpyHI
-        String authorizationHeader = requestContext.getHeaderString(AUTHORIZATION);
         if (isEmpty(authorizationHeader)) {
             log.debug("[{}] Authorization failed: missing header", context.getExecutionId());
             throw new ApiException(ApiReturnCodes.INVALID_JWT_TOKEN, localizationService.getMessage("error.auth.invalid_access_token"));
