@@ -1,5 +1,6 @@
 package less.green.openpudo.rest.resource;
 
+import java.util.List;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -19,6 +20,7 @@ import static less.green.openpudo.common.StringUtils.isEmpty;
 import less.green.openpudo.common.dto.tuple.Pair;
 import less.green.openpudo.persistence.model.TbAddress;
 import less.green.openpudo.persistence.model.TbPudo;
+import less.green.openpudo.persistence.model.TbUser;
 import less.green.openpudo.persistence.service.PudoService;
 import less.green.openpudo.rest.config.exception.ApiException;
 import less.green.openpudo.rest.dto.DtoMapper;
@@ -26,6 +28,7 @@ import less.green.openpudo.rest.dto.address.AddressRequest;
 import less.green.openpudo.rest.dto.geojson.Feature;
 import less.green.openpudo.rest.dto.pudo.Pudo;
 import less.green.openpudo.rest.dto.pudo.PudoResponse;
+import less.green.openpudo.rest.dto.user.UserListResponse;
 import lombok.extern.log4j.Log4j2;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 
@@ -60,8 +63,9 @@ public class PudoResource {
 
     @GET
     @Path("/me")
-    @Operation(summary = "Get public info for PUDO owned by current user")
+    @Operation(summary = "Get public info for current PUDO")
     public PudoResponse getCurrentPudo() {
+        // checking permission
         Pair<TbPudo, TbAddress> pudo = pudoService.getPudoByOwner(context.getUserId());
         if (pudo == null) {
             throw new ApiException(ApiReturnCodes.UNAUTHORIZED, localizationService.getMessage("error.user.not_pudo_owner"));
@@ -71,7 +75,7 @@ public class PudoResource {
 
     @PUT
     @Path("/me")
-    @Operation(summary = "Update public info for PUDO owned by current user")
+    @Operation(summary = "Update public info for current PUDO")
     public PudoResponse updateCurrentPudo(Pudo req) {
         // sanitize input
         if (req == null) {
@@ -89,6 +93,7 @@ public class PudoResource {
             req.setPhoneNumber(npn);
         }
 
+        // checking permission
         boolean pudoOwner = pudoService.isPudoOwner(context.getUserId());
         if (!pudoOwner) {
             throw new ApiException(ApiReturnCodes.UNAUTHORIZED, localizationService.getMessage("error.user.not_pudo_owner"));
@@ -100,7 +105,7 @@ public class PudoResource {
 
     @PUT
     @Path("/me/address")
-    @Operation(summary = "Update address for PUDO owned by current user")
+    @Operation(summary = "Update address for current PUDO")
     public PudoResponse updateCurrentPudoAddress(AddressRequest req) {
         // sanitize input
         if (req == null) {
@@ -111,6 +116,7 @@ public class PudoResource {
             throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.empty_mandatory_field", "resultId"));
         }
 
+        // checking permission
         boolean pudoOwner = pudoService.isPudoOwner(context.getUserId());
         if (!pudoOwner) {
             throw new ApiException(ApiReturnCodes.UNAUTHORIZED, localizationService.getMessage("error.user.not_pudo_owner"));
@@ -131,6 +137,19 @@ public class PudoResource {
 
         Pair<TbPudo, TbAddress> pudo = pudoService.updatePudoAddressByOwner(context.getUserId(), feat);
         return new PudoResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapPudoAndAddressEntityToDto(pudo));
+    }
+
+    @GET
+    @Path("/me/users")
+    @Operation(summary = "Get current PUDO's user list")
+    public UserListResponse getCurrentPudoUsers() {
+        // checking permission
+        boolean pudoOwner = pudoService.isPudoOwner(context.getUserId());
+        if (!pudoOwner) {
+            throw new ApiException(ApiReturnCodes.UNAUTHORIZED, localizationService.getMessage("error.user.not_pudo_owner"));
+        }
+        List<TbUser> users = pudoService.getUserListByPudoOwner(context.getUserId());
+        return new UserListResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapUserEntityListToDtoList(users));
     }
 
 }

@@ -16,6 +16,7 @@ import less.green.openpudo.common.dto.tuple.Pair;
 import less.green.openpudo.persistence.dao.usertype.RoleType;
 import less.green.openpudo.persistence.model.TbAddress;
 import less.green.openpudo.persistence.model.TbPudo;
+import less.green.openpudo.persistence.model.TbUser;
 import less.green.openpudo.rest.dto.map.PudoMarker;
 import lombok.extern.log4j.Log4j2;
 
@@ -71,6 +72,19 @@ public class PudoDao extends BaseEntityDao<TbPudo, Long> {
         q.setParameter("roleType", RoleType.CUSTOMER);
         List<Object[]> rs = q.getResultList();
         return rs.isEmpty() ? Collections.emptyList() : rs.stream().map(row -> new Pair<>((TbPudo) row[0], (TbAddress) row[1])).collect(Collectors.toList());
+    }
+
+    public List<TbUser> getUserListByPudoOwner(Long userId) {
+        String qs = "SELECT t1 "
+                + "FROM TbUser t1, TbPudoUserRole t2 "
+                + "WHERE t1.userId = t2.userId AND t2.roleType = :customerRoleType "
+                + "AND t2.pudoId = (SELECT t3.pudoId FROM TbPudoUserRole t3 WHERE t3.userId = :userId AND t3.roleType = :ownerRoleType)";
+        TypedQuery<TbUser> q = em.createQuery(qs, TbUser.class);
+        q.setParameter("userId", userId);
+        q.setParameter("customerRoleType", RoleType.CUSTOMER);
+        q.setParameter("ownerRoleType", RoleType.OWNER);
+        List<TbUser> rs = q.getResultList();
+        return rs.isEmpty() ? Collections.emptyList() : rs;
     }
 
     public List<PudoMarker> searchPudosByCoordinates(BigDecimal latMin, BigDecimal latMax, BigDecimal lonMin, BigDecimal lonMax) {

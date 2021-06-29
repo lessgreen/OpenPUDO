@@ -20,6 +20,7 @@ import less.green.openpudo.persistence.model.TbAddress;
 import less.green.openpudo.persistence.model.TbPudo;
 import less.green.openpudo.persistence.model.TbPudoAddress;
 import less.green.openpudo.persistence.model.TbPudoUserRole;
+import less.green.openpudo.persistence.model.TbUser;
 import less.green.openpudo.rest.dto.DtoMapper;
 import less.green.openpudo.rest.dto.geojson.Feature;
 import less.green.openpudo.rest.dto.map.PudoMarker;
@@ -100,6 +101,10 @@ public class PudoService {
 
     public List<Pair<TbPudo, TbAddress>> getPudoListByCustomer(Long userId) {
         return pudoDao.getPudoListByCustomer(userId);
+    }
+
+    public List<TbUser> getUserListByPudoOwner(Long userId) {
+        return pudoDao.getUserListByPudoOwner(userId);
     }
 
     public List<Pair<TbPudo, TbAddress>> addPudoToFavourites(Long userId, Long pudoId) {

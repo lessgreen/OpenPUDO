@@ -22,6 +22,8 @@ public interface DtoMapper {
 
     User mapUserEntityToDto(TbUser ent);
 
+    List<User> mapUserEntityListToDtoList(List<TbUser> ent);
+
     Address mapAddressEntityToDto(TbAddress ent);
 
     @Mapping(source = "ent.value0", target = ".")
