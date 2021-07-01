@@ -10,12 +10,14 @@ import less.green.openpudo.cdi.service.StorageService;
 import static less.green.openpudo.common.StringUtils.sanitizeString;
 import less.green.openpudo.common.dto.AccountSecret;
 import less.green.openpudo.persistence.dao.AccountDao;
+import less.green.openpudo.persistence.dao.DeviceTokenDao;
 import less.green.openpudo.persistence.dao.ExternalFileDao;
 import less.green.openpudo.persistence.dao.PudoDao;
 import less.green.openpudo.persistence.dao.RelationDao;
 import less.green.openpudo.persistence.dao.UserDao;
 import less.green.openpudo.persistence.dao.usertype.RoleType;
 import less.green.openpudo.persistence.model.TbAccount;
+import less.green.openpudo.persistence.model.TbDeviceToken;
 import less.green.openpudo.persistence.model.TbExternalFile;
 import less.green.openpudo.persistence.model.TbPudo;
 import less.green.openpudo.persistence.model.TbPudoUserRole;
@@ -37,6 +39,8 @@ public class UserService {
 
     @Inject
     AccountDao accountDao;
+    @Inject
+    DeviceTokenDao deviceTokenDao;
     @Inject
     ExternalFileDao externalFileDao;
     @Inject
@@ -146,6 +150,33 @@ public class UserService {
         user.setProfilePicId(null);
         userDao.flush();
         return user;
+    }
+
+    public void upsertDeviceToken(Long userId, String deviceToken) {
+        Date now = new Date();
+        TbDeviceToken token = deviceTokenDao.get(deviceToken);
+        if (token == null) {
+            // if not found, associate it with current user
+            token = new TbDeviceToken();
+            token.setDeviceToken(deviceToken);
+            token.setUserId(userId);
+            token.setCreateTms(now);
+            token.setLastAccessTms(now);
+            deviceTokenDao.persist(token);
+            deviceTokenDao.flush();
+        } else {
+            if (userId.equals(token.getUserId())) {
+                // if found and associated with current user, update last access
+                token.setLastAccessTms(now);
+                deviceTokenDao.flush();
+            } else {
+                // if found and associated with another user, recreate association
+                token.setUserId(userId);
+                token.setCreateTms(now);
+                token.setLastAccessTms(now);
+                deviceTokenDao.flush();
+            }
+        }
     }
 
 }

@@ -26,6 +26,7 @@ import less.green.openpudo.persistence.model.TbUser;
 import less.green.openpudo.persistence.service.PudoService;
 import less.green.openpudo.persistence.service.UserService;
 import less.green.openpudo.rest.config.exception.ApiException;
+import less.green.openpudo.rest.dto.BaseResponse;
 import less.green.openpudo.rest.dto.DtoMapper;
 import less.green.openpudo.rest.dto.file.ExternalFile;
 import less.green.openpudo.rest.dto.pudo.PudoListResponse;
@@ -179,6 +180,14 @@ public class UserResource {
             log.error("[{}] {}", context.getExecutionId(), ExceptionUtils.getCompactStackTrace(ex));
             throw new ApiException(ApiReturnCodes.SERVICE_UNAVAILABLE, localizationService.getMessage("error.service_unavailable"));
         }
+    }
+
+    @PUT
+    @Path("/me/device-token/{deviceToken}")
+    @Operation(summary = "Store or refresh device token for current user")
+    public BaseResponse upsertDeviceToken(@PathParam(value = "deviceToken") String deviceToken) {
+        userService.upsertDeviceToken(context.getUserId(), deviceToken);
+        return new BaseResponse(context.getExecutionId(), ApiReturnCodes.OK);
     }
 
 }

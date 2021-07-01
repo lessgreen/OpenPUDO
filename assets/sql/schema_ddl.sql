@@ -9,14 +9,6 @@ END';
 
 
 -- data tables
-DROP TABLE IF EXISTS tb_external_file CASCADE;
-CREATE TABLE IF NOT EXISTS tb_external_file (
-	external_file_id UUID PRIMARY KEY,
-	create_tms TIMESTAMP(3) NOT NULL,
-	mime_type TEXT
-);
-
-
 DROP TABLE IF EXISTS tb_account CASCADE;
 CREATE TABLE IF NOT EXISTS tb_account (
 	user_id BIGSERIAL PRIMARY KEY,
@@ -35,6 +27,14 @@ CREATE UNIQUE INDEX tb_account_email_idx ON tb_account (lower(email));
 CREATE UNIQUE INDEX tb_account_phone_number_idx ON tb_account (phone_number);
 
 
+DROP TABLE IF EXISTS tb_external_file CASCADE;
+CREATE TABLE IF NOT EXISTS tb_external_file (
+	external_file_id UUID PRIMARY KEY,
+	create_tms TIMESTAMP(3) NOT NULL,
+	mime_type TEXT
+);
+
+
 DROP TABLE IF EXISTS tb_user CASCADE;
 CREATE TABLE IF NOT EXISTS tb_user (
 	user_id BIGINT PRIMARY KEY REFERENCES tb_account(user_id),
@@ -44,6 +44,15 @@ CREATE TABLE IF NOT EXISTS tb_user (
 	last_name TEXT NOT NULL,
 	ssn TEXT,
 	profile_pic_id UUID REFERENCES tb_external_file(external_file_id)
+);
+
+
+DROP TABLE IF EXISTS tb_device_token CASCADE;
+CREATE TABLE IF NOT EXISTS tb_device_token (
+	device_token TEXT PRIMARY KEY,
+	user_id BIGINT NOT NULL REFERENCES tb_user(user_id),
+	create_tms TIMESTAMP(3) NOT NULL,
+	last_access_tms TIMESTAMP(3) NOT NULL
 );
 
 
