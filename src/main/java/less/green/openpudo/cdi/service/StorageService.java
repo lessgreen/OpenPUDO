@@ -31,6 +31,19 @@ public class StorageService {
         }
     }
 
+    public byte[] readFileBinary(UUID externalFileId) {
+        Path filePath = getNestedFilePath(externalFileId);
+        try {
+            if (Files.exists(filePath) && Files.isRegularFile(filePath)) {
+                return Files.readAllBytes(filePath);
+            } else {
+                return null;
+            }
+        } catch (IOException ex) {
+            throw new RuntimeException("Error while accessing storage area", ex);
+        }
+    }
+
     public void saveFileBase64(UUID externalFileId, String contentBase64) {
         Path filePath = getNestedFilePath(externalFileId);
         Path parentDirPath = filePath.getParent();
@@ -45,7 +58,20 @@ public class StorageService {
         }
     }
 
-    public void deleteFileBase64(UUID externalFileId) {
+    public void saveFileBinary(UUID externalFileId, byte[] bytes) {
+        Path filePath = getNestedFilePath(externalFileId);
+        Path parentDirPath = filePath.getParent();
+        try {
+            if (!Files.exists(parentDirPath)) {
+                Files.createDirectories(parentDirPath);
+            }
+            Files.write(filePath, bytes);
+        } catch (IOException ex) {
+            throw new RuntimeException("Error while accessing storage area", ex);
+        }
+    }
+
+    public void deleteFile(UUID externalFileId) {
         Path filePath = getNestedFilePath(externalFileId);
         try {
             if (Files.exists(filePath) && Files.isRegularFile(filePath)) {

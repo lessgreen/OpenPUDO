@@ -21,17 +21,17 @@ public class ExternalFileService {
     @Inject
     ExternalFileDao externalFileDao;
 
-    public Pair<TbExternalFile, String> getExternalFile(UUID externalFileId) {
+    public Pair<TbExternalFile, byte[]> getExternalFile(UUID externalFileId) {
         TbExternalFile ext = externalFileDao.get(externalFileId);
         if (ext == null) {
             return null;
         }
-        String contentBase64 = storageService.readFileBase64(externalFileId);
-        if (contentBase64 == null) {
+        byte[] bytes = storageService.readFileBinary(externalFileId);
+        if (bytes == null) {
             log.error("External file {} exists in database but not on filesystem", externalFileId);
             return null;
         }
-        return new Pair<>(ext, contentBase64);
+        return new Pair<>(ext, bytes);
     }
 
 }

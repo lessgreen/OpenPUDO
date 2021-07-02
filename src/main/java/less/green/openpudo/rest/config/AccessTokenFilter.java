@@ -2,16 +2,15 @@ package less.green.openpudo.rest.config;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.quarkus.runtime.configuration.ProfileManager;
-import java.util.Arrays;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 import javax.annotation.Priority;
 import javax.inject.Inject;
 import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.Priorities;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
+import javax.ws.rs.container.ResourceInfo;
+import javax.ws.rs.core.Context;
 import static javax.ws.rs.core.HttpHeaders.AUTHORIZATION;
 import javax.ws.rs.ext.Provider;
 import less.green.openpudo.cdi.ExecutionContext;
@@ -28,15 +27,13 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class AccessTokenFilter implements ContainerRequestFilter {
 
-    public static final String BEARER_AUTHENTICATION_SCHEME = "Bearer";
-    private static final Set<String> PUBLIC_RESOURCES = new HashSet<>(Arrays.asList(
-            "/auth/register",
-            "/auth/login",
-            "/auth/renew"
-    ));
+    private static final String BEARER_AUTHENTICATION_SCHEME = "Bearer";
 
     @Inject
     ExecutionContext context;
+
+    @Context
+    ResourceInfo resourceInfo;
 
     @Inject
     JwtService jwtService;
@@ -45,7 +42,7 @@ public class AccessTokenFilter implements ContainerRequestFilter {
 
     @Override
     public void filter(ContainerRequestContext requestContext) {
-        if (PUBLIC_RESOURCES.contains(requestContext.getUriInfo().getPath())) {
+        if (resourceInfo.getResourceMethod().isAnnotationPresent(PublicAPI.class)) {
             return;
         }
 

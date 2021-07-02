@@ -4,11 +4,9 @@ import java.util.List;
 import java.util.Map;
 import less.green.openpudo.common.dto.tuple.Pair;
 import less.green.openpudo.persistence.model.TbAddress;
-import less.green.openpudo.persistence.model.TbExternalFile;
 import less.green.openpudo.persistence.model.TbPudo;
 import less.green.openpudo.persistence.model.TbUser;
 import less.green.openpudo.rest.dto.address.Address;
-import less.green.openpudo.rest.dto.file.ExternalFile;
 import less.green.openpudo.rest.dto.geojson.Feature;
 import less.green.openpudo.rest.dto.geojson.Point;
 import less.green.openpudo.rest.dto.map.AddressMarker;
@@ -66,5 +64,4 @@ public interface DtoMapper {
 
     List<AddressMarker> mapFeatureListToAddressMarkerList(List<Feature> feat);
 
-    ExternalFile mapExternalFileEntityAndContentToDto(TbExternalFile ent, String contentBase64);
 }

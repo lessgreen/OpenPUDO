@@ -109,16 +109,16 @@ public class UserService {
         return user;
     }
 
-    public TbUser updateUserProfilePic(Long userId, String mimeType, String contentBase64) {
+    public TbUser updateUserProfilePic(Long userId, String mimeType, byte[] bytes) {
         Date now = new Date();
         TbUser user = userDao.get(userId);
         UUID oldId = user.getProfilePicId();
         UUID newId = UUID.randomUUID();
         // save new file first
-        storageService.saveFileBase64(newId, contentBase64);
+        storageService.saveFileBinary(newId, bytes);
         // delete old file if any
         if (oldId != null) {
-            storageService.deleteFileBase64(user.getProfilePicId());
+            storageService.deleteFile(user.getProfilePicId());
         }
         // if everything is ok, we can update database
         // save new row
@@ -144,7 +144,7 @@ public class UserService {
             // nothing to do
             return user;
         }
-        storageService.deleteFileBase64(user.getProfilePicId());
+        storageService.deleteFile(user.getProfilePicId());
         // if everything is ok, we can update database
         user.setUpdateTms(now);
         user.setProfilePicId(null);

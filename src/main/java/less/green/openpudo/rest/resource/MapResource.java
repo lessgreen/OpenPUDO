@@ -18,6 +18,7 @@ import less.green.openpudo.common.ApiReturnCodes;
 import less.green.openpudo.common.ExceptionUtils;
 import static less.green.openpudo.common.StringUtils.isEmpty;
 import less.green.openpudo.persistence.service.PudoService;
+import less.green.openpudo.rest.config.PublicAPI;
 import less.green.openpudo.rest.config.exception.ApiException;
 import less.green.openpudo.rest.dto.DtoMapper;
 import less.green.openpudo.rest.dto.geojson.Feature;
@@ -56,7 +57,9 @@ public class MapResource {
 
     @GET
     @Path("/suggested-zoom")
-    @Operation(summary = "Get suggested zoom for current location", description = "This is currently a stubbed API, that returns a fixed value of 12.")
+    @PublicAPI
+    @Operation(summary = "Get suggested zoom for current location", description = "This is a public API and can be invoked without a valid access token.\n\n"
+            + "This is currently a stubbed API, that returns a fixed value of 12.")
     public IntegerResponse searchPudos(
             @Parameter(description = "Latitude value of map center point", required = true) @QueryParam("lat") BigDecimal lat,
             @Parameter(description = "Longitude value of map center point", required = true) @QueryParam("lon") BigDecimal lon) {
@@ -71,7 +74,8 @@ public class MapResource {
 
     @GET
     @Path("/pudos")
-    @Operation(summary = "Get PUDO markers to show on current map")
+    @PublicAPI
+    @Operation(summary = "Get PUDO markers to show on current map", description = "This is a public API and can be invoked without a valid access token.\n\n")
     public PudoMarkerListResponse searchPudosByCoordinates(
             @Parameter(description = "Latitude value of map center point", required = true) @QueryParam("lat") BigDecimal lat,
             @Parameter(description = "Longitude value of map center point", required = true) @QueryParam("lon") BigDecimal lon,
@@ -100,8 +104,10 @@ public class MapResource {
 
     @GET
     @Path("/search/addresses")
+    @PublicAPI
     @Operation(summary = "Address search feature based on user input autocompletion",
-            description = "Coordinates parameters are optional, but the client should provide them to speed up queries and obtain more pertinent results.\n\n"
+            description = "This is a public API and can be invoked without a valid access token.\n\n"
+            + "Coordinates parameters are optional, but the client should provide them to speed up queries and obtain more pertinent results.\n\n"
             + "This API should be throttled to prevent excessive load.")
     public AddressMarkerListResponse searchAddresses(
             @Parameter(description = "Query text", required = true) @QueryParam("text") String text,
@@ -123,8 +129,10 @@ public class MapResource {
 
     @GET
     @Path("/search")
+    @PublicAPI
     @Operation(summary = "Global search feature based on user input autocompletion",
-            description = "This API search between PUDOs that matches business name (even partially) and addresses.\n\n"
+            description = "This is a public API and can be invoked without a valid access token.\n\n"
+            + "This API search between PUDOs that matches business name (even partially) and addresses.\n\n"
             + "Coordinates parameters are optional, but the client should provide them to speed up queries and obtain more pertinent results.\n\n"
             + "This API should be throttled to prevent excessive load.")
     public MarkerListResponse search(

@@ -31,8 +31,10 @@ public class RestFilter implements ContainerRequestFilter, ContainerResponseFilt
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
         context.setStartTimestamp(System.nanoTime());
-        log.debug("[{}] {} {}{}", context.getExecutionId(), requestContext.getMethod(), requestContext.getUriInfo().getRequestUri().getPath(),
-                requestContext.getUriInfo().getRequestUri().getQuery() == null ? "" : "?" + requestContext.getUriInfo().getRequestUri().getQuery());
+        if (log.isDebugEnabled()) {
+            log.debug("[{}] {} {}{}", context.getExecutionId(), requestContext.getMethod(), requestContext.getUriInfo().getRequestUri().getPath(),
+                    requestContext.getUriInfo().getRequestUri().getQuery() == null ? "" : "?" + requestContext.getUriInfo().getRequestUri().getQuery());
+        }
         if (log.isTraceEnabled() && requestContext.hasEntity()) {
             byte[] entityBytes;
             try (InputStream originalStream = requestContext.getEntityStream()) {
@@ -53,7 +55,9 @@ public class RestFilter implements ContainerRequestFilter, ContainerResponseFilt
             log.trace("[{}] Response: {}", context.getExecutionId(), OBJECT_MAPPER.writeValueAsString(responseContext.getEntity()));
         }
         context.setEndTimestamp(System.nanoTime());
-        log.debug("[{}] {} {}", context.getExecutionId(), responseContext.getStatus(), smartElapsed(context.getEndTimestamp() - context.getStartTimestamp()));
+        if (log.isDebugEnabled()) {
+            log.debug("[{}] {} {}", context.getExecutionId(), responseContext.getStatus(), smartElapsed(context.getEndTimestamp() - context.getStartTimestamp()));
+        }
     }
 
 }

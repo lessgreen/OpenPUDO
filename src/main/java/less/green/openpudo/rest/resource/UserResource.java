@@ -1,8 +1,11 @@
 package less.green.openpudo.rest.resource;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -18,6 +21,7 @@ import less.green.openpudo.cdi.ExecutionContext;
 import less.green.openpudo.cdi.service.LocalizationService;
 import less.green.openpudo.common.ApiReturnCodes;
 import less.green.openpudo.common.ExceptionUtils;
+import less.green.openpudo.common.StreamUtils;
 import static less.green.openpudo.common.StringUtils.isEmpty;
 import less.green.openpudo.common.dto.tuple.Pair;
 import less.green.openpudo.persistence.model.TbAddress;
@@ -28,12 +32,13 @@ import less.green.openpudo.persistence.service.UserService;
 import less.green.openpudo.rest.config.exception.ApiException;
 import less.green.openpudo.rest.dto.BaseResponse;
 import less.green.openpudo.rest.dto.DtoMapper;
-import less.green.openpudo.rest.dto.file.ExternalFile;
 import less.green.openpudo.rest.dto.pudo.PudoListResponse;
 import less.green.openpudo.rest.dto.user.User;
 import less.green.openpudo.rest.dto.user.UserResponse;
 import lombok.extern.log4j.Log4j2;
 import org.eclipse.microprofile.openapi.annotations.Operation;
+import org.jboss.resteasy.plugins.providers.multipart.InputPart;
+import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
 @RequestScoped
 @Path("/users")
@@ -144,26 +149,37 @@ public class UserResource {
 
     @PUT
     @Path("/me/profile-pic")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Operation(summary = "Update public profile picture for current user")
-    public UserResponse updateCurrentUserProfilePic(ExternalFile req) {
+    public UserResponse updateCurrentUserProfilePic(MultipartFormDataInput req) {
         // sanitize input
         if (req == null) {
             throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.empty_request"));
-        } else if (isEmpty(req.getMimeType())) {
-            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.empty_mandatory_field", "mimeType"));
-        } else if (isEmpty(req.getContentBase64())) {
-            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.empty_mandatory_field", "contentBase64"));
+        }
+        Map<String, List<InputPart>> map = req.getFormDataMap();
+        final String multipartName = "foto";
+        List<InputPart> parts = map.get(multipartName);
+        if (parts == null || parts.isEmpty()) {
+            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.empty_mandatory_field", "multipart name"));
+        }
+
+        InputPart part = parts.get(0);
+        String mimeType = part.getMediaType().toString();
+        if (mimeType.contains(";")) {
+            mimeType = mimeType.split(";", -1)[0];
         }
 
         // more sanitizing
-        if (!ALLOWED_IMAGE_MIME_TYPES.contains(req.getMimeType())) {
+        if (!ALLOWED_IMAGE_MIME_TYPES.contains(mimeType)) {
             throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.invalid_field", "mimeType"));
         }
 
         try {
-            TbUser user = userService.updateUserProfilePic(context.getUserId(), req.getMimeType(), req.getContentBase64());
+            InputStream is = part.getBody(InputStream.class, null);
+            byte[] bytes = StreamUtils.readAllBytesFromInputStream(is);
+            TbUser user = userService.updateUserProfilePic(context.getUserId(), mimeType, bytes);
             return new UserResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapUserEntityToDto(user));
-        } catch (RuntimeException ex) {
+        } catch (RuntimeException | IOException ex) {
             log.error("[{}] {}", context.getExecutionId(), ExceptionUtils.getCompactStackTrace(ex));
             throw new ApiException(ApiReturnCodes.SERVICE_UNAVAILABLE, localizationService.getMessage("error.service_unavailable"));
         }

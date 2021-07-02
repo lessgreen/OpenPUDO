@@ -22,6 +22,7 @@ import less.green.openpudo.persistence.model.TbAddress;
 import less.green.openpudo.persistence.model.TbPudo;
 import less.green.openpudo.persistence.model.TbUser;
 import less.green.openpudo.persistence.service.PudoService;
+import less.green.openpudo.rest.config.PublicAPI;
 import less.green.openpudo.rest.config.exception.ApiException;
 import less.green.openpudo.rest.dto.DtoMapper;
 import less.green.openpudo.rest.dto.address.AddressRequest;
@@ -55,7 +56,8 @@ public class PudoResource {
 
     @GET
     @Path("/{pudoId}")
-    @Operation(summary = "Get public info for PUDO with provided pudoId")
+    @Operation(summary = "Get public info for PUDO with provided pudoId", description = "This is a public API and can be invoked without a valid access token.\n\n")
+    @PublicAPI
     public PudoResponse getPudoById(@PathParam(value = "pudoId") Long pudoId) {
         Pair<TbPudo, TbAddress> pudo = pudoService.getPudoById(pudoId);
         return new PudoResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapPudoAndAddressEntityToDto(pudo));

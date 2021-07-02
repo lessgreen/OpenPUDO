@@ -23,6 +23,7 @@ import less.green.openpudo.common.dto.JwtPayload;
 import less.green.openpudo.persistence.model.TbAccount;
 import less.green.openpudo.persistence.service.AccountService;
 import less.green.openpudo.persistence.service.UserService;
+import less.green.openpudo.rest.config.PublicAPI;
 import less.green.openpudo.rest.config.exception.ApiException;
 import less.green.openpudo.rest.dto.BaseResponse;
 import less.green.openpudo.rest.dto.auth.AccessTokenData;
@@ -75,6 +76,7 @@ public class AuthResource {
 
     @POST
     @Path("/register")
+    @PublicAPI
     @Operation(summary = "Register new user",
             description = "This is a public API and can be invoked without a valid access token.\n\n"
             + "Fields 'email' and 'phoneNumber' are technically optional, but you must provide at least one of them.\n\n"
@@ -150,6 +152,7 @@ public class AuthResource {
 
     @POST
     @Path("/login")
+    @PublicAPI
     @Operation(summary = "Authenticate user and generate JWT access token",
             description = "This is a public API and can be invoked without a valid access token.\n\n"
             + "Any failed attemp will enforce a response delay to discourage bruteforcing.")
@@ -194,6 +197,7 @@ public class AuthResource {
 
     @POST
     @Path("/renew")
+    @PublicAPI
     @Operation(summary = "Renew JWT access token", description = "This is a public API, and will renew a valid access token, even if expired")
     public LoginResponse renew(RenewRequest req) {
         // sanitize input
