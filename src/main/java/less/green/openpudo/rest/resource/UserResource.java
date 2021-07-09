@@ -2,11 +2,8 @@ package less.green.openpudo.rest.resource;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -20,6 +17,7 @@ import javax.ws.rs.core.MediaType;
 import less.green.openpudo.cdi.ExecutionContext;
 import less.green.openpudo.cdi.service.LocalizationService;
 import less.green.openpudo.common.ApiReturnCodes;
+import static less.green.openpudo.common.Constants.ALLOWED_IMAGE_MIME_TYPES;
 import less.green.openpudo.common.ExceptionUtils;
 import less.green.openpudo.common.StreamUtils;
 import static less.green.openpudo.common.StringUtils.isEmpty;
@@ -46,12 +44,6 @@ import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 @Consumes(MediaType.APPLICATION_JSON)
 @Log4j2
 public class UserResource {
-
-    private static final Set<String> ALLOWED_IMAGE_MIME_TYPES = new HashSet<>(Arrays.asList(
-            "image/jpeg",
-            "image/png",
-            "image/gif"
-    ));
 
     @Inject
     ExecutionContext context;

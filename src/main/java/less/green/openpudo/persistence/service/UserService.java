@@ -118,7 +118,7 @@ public class UserService {
         storageService.saveFileBinary(newId, bytes);
         // delete old file if any
         if (oldId != null) {
-            storageService.deleteFile(user.getProfilePicId());
+            storageService.deleteFile(oldId);
         }
         // if everything is ok, we can update database
         // save new row

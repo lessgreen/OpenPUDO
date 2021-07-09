@@ -65,6 +65,7 @@ CREATE TABLE IF NOT EXISTS tb_pudo (
 	vat TEXT,
 	phone_number TEXT,
 	contact_notes TEXT,
+	profile_pic_id UUID REFERENCES tb_external_file(external_file_id),
 	business_name_search tsvector GENERATED ALWAYS AS (to_tsvector('simple', business_name)) STORED
 );
 CREATE INDEX tb_pudo_business_name_search_idx ON tb_pudo USING GIN (business_name_search);
@@ -75,7 +76,8 @@ CREATE TABLE IF NOT EXISTS tb_pudo_user_role (
 	user_id BIGINT NOT NULL REFERENCES tb_user(user_id),
 	pudo_id BIGINT NOT NULL REFERENCES tb_pudo(pudo_id),
 	create_tms TIMESTAMP(3) NOT NULL,
-	role_type TEXT NOT NULL
+	role_type TEXT NOT NULL,
+	PRIMARY KEY(user_id, pudo_id),
 	CHECK (role_type IN ('owner', 'customer'))
 );
 

@@ -1,9 +1,13 @@
 package less.green.openpudo.rest.resource;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
+import java.util.Map;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -14,8 +18,10 @@ import less.green.openpudo.cdi.ExecutionContext;
 import less.green.openpudo.cdi.service.GeocodeService;
 import less.green.openpudo.cdi.service.LocalizationService;
 import less.green.openpudo.common.ApiReturnCodes;
+import static less.green.openpudo.common.Constants.ALLOWED_IMAGE_MIME_TYPES;
 import less.green.openpudo.common.ExceptionUtils;
 import static less.green.openpudo.common.FormatUtils.safeNormalizePhoneNumber;
+import less.green.openpudo.common.StreamUtils;
 import static less.green.openpudo.common.StringUtils.isEmpty;
 import less.green.openpudo.common.dto.tuple.Pair;
 import less.green.openpudo.persistence.model.TbAddress;
@@ -32,6 +38,8 @@ import less.green.openpudo.rest.dto.pudo.PudoResponse;
 import less.green.openpudo.rest.dto.user.UserListResponse;
 import lombok.extern.log4j.Log4j2;
 import org.eclipse.microprofile.openapi.annotations.Operation;
+import org.jboss.resteasy.plugins.providers.multipart.InputPart;
+import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
 @RequestScoped
 @Path("/pudos")
@@ -56,7 +64,7 @@ public class PudoResource {
 
     @GET
     @Path("/{pudoId}")
-    @Operation(summary = "Get public info for PUDO with provided pudoId", description = "This is a public API and can be invoked without a valid access token.\n\n")
+    @Operation(summary = "Get public info for PUDO with provided pudoId", description = "This is a public API and can be invoked without a valid access token.")
     @PublicAPI
     public PudoResponse getPudoById(@PathParam(value = "pudoId") Long pudoId) {
         Pair<TbPudo, TbAddress> pudo = pudoService.getPudoById(pudoId);
@@ -139,6 +147,63 @@ public class PudoResource {
 
         Pair<TbPudo, TbAddress> pudo = pudoService.updatePudoAddressByOwner(context.getUserId(), feat);
         return new PudoResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapPudoAndAddressEntityToDto(pudo));
+    }
+
+    @PUT
+    @Path("/me/profile-pic")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Operation(summary = "Update public profile picture for current PUDO")
+    public PudoResponse updateCurrentPudoProfilePic(MultipartFormDataInput req) {
+        // sanitize input
+        if (req == null) {
+            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.empty_request"));
+        }
+        Map<String, List<InputPart>> map = req.getFormDataMap();
+        final String multipartName = "foto";
+        List<InputPart> parts = map.get(multipartName);
+        if (parts == null || parts.isEmpty()) {
+            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.empty_mandatory_field", "multipart name"));
+        }
+
+        InputPart part = parts.get(0);
+        String mimeType = part.getMediaType().toString();
+        if (mimeType.contains(";")) {
+            mimeType = mimeType.split(";", -1)[0];
+        }
+
+        // more sanitizing
+        if (!ALLOWED_IMAGE_MIME_TYPES.contains(mimeType)) {
+            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.invalid_field", "mimeType"));
+        }
+
+        // checking permission
+        boolean pudoOwner = pudoService.isPudoOwner(context.getUserId());
+        if (!pudoOwner) {
+            throw new ApiException(ApiReturnCodes.UNAUTHORIZED, localizationService.getMessage("error.user.not_pudo_owner"));
+        }
+
+        try {
+            InputStream is = part.getBody(InputStream.class, null);
+            byte[] bytes = StreamUtils.readAllBytesFromInputStream(is);
+            Pair<TbPudo, TbAddress> pudo = pudoService.updatePudoProfilePicByOwner(context.getUserId(), mimeType, bytes);
+            return new PudoResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapPudoAndAddressEntityToDto(pudo));
+        } catch (RuntimeException | IOException ex) {
+            log.error("[{}] {}", context.getExecutionId(), ExceptionUtils.getCompactStackTrace(ex));
+            throw new ApiException(ApiReturnCodes.SERVICE_UNAVAILABLE, localizationService.getMessage("error.service_unavailable"));
+        }
+    }
+
+    @DELETE
+    @Path("/me/profile-pic")
+    @Operation(summary = "Delete public profile picture for current PUDO")
+    public PudoResponse deleteCurrentUserProfilePic() {
+        try {
+            Pair<TbPudo, TbAddress> pudo = pudoService.deletePudoProfilePicByOwner(context.getUserId());
+            return new PudoResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapPudoAndAddressEntityToDto(pudo));
+        } catch (RuntimeException ex) {
+            log.error("[{}] {}", context.getExecutionId(), ExceptionUtils.getCompactStackTrace(ex));
+            throw new ApiException(ApiReturnCodes.SERVICE_UNAVAILABLE, localizationService.getMessage("error.service_unavailable"));
+        }
     }
 
     @GET

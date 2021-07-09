@@ -2,6 +2,7 @@ package less.green.openpudo.persistence.model;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -43,5 +44,8 @@ public class TbPudo implements Serializable {
 
     @Column(name = "contact_notes")
     private String contactNotes;
+
+    @Column(name = "profile_pic_id")
+    private UUID profilePicId;
 
 }

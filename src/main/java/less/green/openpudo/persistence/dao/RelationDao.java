@@ -34,7 +34,7 @@ public class RelationDao {
         TypedQuery<Long> q = em.createQuery(qs, Long.class);
         q.setParameter("userId", userId);
         q.setParameter("roleType", RoleType.OWNER);
-        Long cnt = q.getSingleResult();
+        long cnt = q.getSingleResult();
         return cnt > 0;
     }
 
@@ -44,7 +44,7 @@ public class RelationDao {
         q.setParameter("userId", userId);
         q.setParameter("pudoId", pudoId);
         q.setParameter("roleType", RoleType.CUSTOMER);
-        Long cnt = q.getSingleResult();
+        long cnt = q.getSingleResult();
         return cnt > 0;
     }
 

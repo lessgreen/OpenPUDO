@@ -2,6 +2,7 @@ package less.green.openpudo.rest.dto.pudo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import java.util.Date;
+import java.util.UUID;
 import less.green.openpudo.rest.dto.address.Address;
 import lombok.Data;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
@@ -28,6 +29,9 @@ public class Pudo {
     private String phoneNumber;
 
     private String contactNotes;
+
+    @Schema(readOnly = true)
+    private UUID profilePicId;
 
     @Schema(readOnly = true)
     private Address address;

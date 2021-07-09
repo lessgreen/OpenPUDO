@@ -6,17 +6,21 @@ import java.math.RoundingMode;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import less.green.openpudo.cdi.service.GeocodeService;
+import less.green.openpudo.cdi.service.StorageService;
 import static less.green.openpudo.common.StringUtils.sanitizeString;
 import less.green.openpudo.common.dto.tuple.Pair;
 import less.green.openpudo.persistence.dao.AddressDao;
+import less.green.openpudo.persistence.dao.ExternalFileDao;
 import less.green.openpudo.persistence.dao.PudoDao;
 import less.green.openpudo.persistence.dao.RelationDao;
 import less.green.openpudo.persistence.dao.usertype.RoleType;
 import less.green.openpudo.persistence.model.TbAddress;
+import less.green.openpudo.persistence.model.TbExternalFile;
 import less.green.openpudo.persistence.model.TbPudo;
 import less.green.openpudo.persistence.model.TbPudoAddress;
 import less.green.openpudo.persistence.model.TbPudoUserRole;
@@ -34,9 +38,13 @@ public class PudoService {
 
     @Inject
     GeocodeService geocodeService;
+    @Inject
+    StorageService storageService;
 
     @Inject
     AddressDao addressDao;
+    @Inject
+    ExternalFileDao externalFileDao;
     @Inject
     PudoDao pudoDao;
     @Inject
@@ -89,6 +97,49 @@ public class PudoService {
             addressDao.flush();
         }
         return ret;
+    }
+
+    public Pair<TbPudo, TbAddress> updatePudoProfilePicByOwner(Long userId, String mimeType, byte[] bytes) {
+        Date now = new Date();
+        Pair<TbPudo, TbAddress> pudo = getPudoByOwner(userId);
+        UUID oldId = pudo.getValue0().getProfilePicId();
+        UUID newId = UUID.randomUUID();
+        // save new file first
+        storageService.saveFileBinary(newId, bytes);
+        // delete old file if any
+        if (oldId != null) {
+            storageService.deleteFile(oldId);
+        }
+        // if everything is ok, we can update database
+        // save new row
+        TbExternalFile ent = new TbExternalFile();
+        ent.setExternalFileId(newId);
+        ent.setCreateTms(now);
+        ent.setMimeType(mimeType);
+        externalFileDao.persist(ent);
+        externalFileDao.flush();
+        // switch foreign key
+        pudo.getValue0().setUpdateTms(now);
+        pudo.getValue0().setProfilePicId(newId);
+        pudoDao.flush();
+        externalFileDao.delete(oldId);
+        externalFileDao.flush();
+        return pudo;
+    }
+
+    public Pair<TbPudo, TbAddress> deletePudoProfilePicByOwner(Long userId) {
+        Date now = new Date();
+        Pair<TbPudo, TbAddress> pudo = getPudoByOwner(userId);
+        if (pudo.getValue0().getProfilePicId() == null) {
+            // nothing to do
+            return pudo;
+        }
+        storageService.deleteFile(pudo.getValue0().getProfilePicId());
+        // if everything is ok, we can update database
+        pudo.getValue0().setUpdateTms(now);
+        pudo.getValue0().setProfilePicId(null);
+        pudoDao.flush();
+        return pudo;
     }
 
     public boolean isPudoOwner(Long userId) {
