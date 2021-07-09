@@ -9,6 +9,7 @@ import less.green.openpudo.cdi.service.CryptoService;
 import less.green.openpudo.cdi.service.StorageService;
 import static less.green.openpudo.common.StringUtils.sanitizeString;
 import less.green.openpudo.common.dto.AccountSecret;
+import less.green.openpudo.common.dto.tuple.Pair;
 import less.green.openpudo.persistence.dao.AccountDao;
 import less.green.openpudo.persistence.dao.DeviceTokenDao;
 import less.green.openpudo.persistence.dao.ExternalFileDao;
@@ -94,25 +95,27 @@ public class UserService {
         return account.getUserId();
     }
 
-    public TbUser getUserById(Long userId) {
-        return userDao.get(userId);
+    public Pair<TbUser, Boolean> getUserById(Long userId) {
+        TbUser user = userDao.get(userId);
+        boolean pudoOwner = relationDao.isPudoOwner(userId);
+        return new Pair<>(user, pudoOwner);
     }
 
-    public TbUser updateUser(Long userId, User req) {
+    public Pair<TbUser, Boolean> updateUser(Long userId, User req) {
         Date now = new Date();
-        TbUser user = userDao.get(userId);
-        user.setUpdateTms(now);
-        user.setFirstName(sanitizeString(req.getFirstName()));
-        user.setLastName(sanitizeString(req.getLastName()));
-        user.setSsn(sanitizeString(req.getSsn()));
+        Pair<TbUser, Boolean> user = getUserById(userId);
+        user.getValue0().setUpdateTms(now);
+        user.getValue0().setFirstName(sanitizeString(req.getFirstName()));
+        user.getValue0().setLastName(sanitizeString(req.getLastName()));
+        user.getValue0().setSsn(sanitizeString(req.getSsn()));
         userDao.flush();
         return user;
     }
 
-    public TbUser updateUserProfilePic(Long userId, String mimeType, byte[] bytes) {
+    public Pair<TbUser, Boolean> updateUserProfilePic(Long userId, String mimeType, byte[] bytes) {
         Date now = new Date();
-        TbUser user = userDao.get(userId);
-        UUID oldId = user.getProfilePicId();
+        Pair<TbUser, Boolean> user = getUserById(userId);
+        UUID oldId = user.getValue0().getProfilePicId();
         UUID newId = UUID.randomUUID();
         // save new file first
         storageService.saveFileBinary(newId, bytes);
@@ -129,25 +132,26 @@ public class UserService {
         externalFileDao.persist(ent);
         externalFileDao.flush();
         // switch foreign key
-        user.setUpdateTms(now);
-        user.setProfilePicId(newId);
+        user.getValue0().setUpdateTms(now);
+        user.getValue0().setProfilePicId(newId);
         userDao.flush();
         externalFileDao.delete(oldId);
         externalFileDao.flush();
         return user;
     }
 
-    public TbUser deleteUserProfilePic(Long userId) {
+    public Pair<TbUser, Boolean> deleteUserProfilePic(Long userId) {
         Date now = new Date();
-        TbUser user = userDao.get(userId);
-        if (user.getProfilePicId() == null) {
+        Pair<TbUser, Boolean> user = getUserById(userId);
+        UUID oldId = user.getValue0().getProfilePicId();
+        if (oldId == null) {
             // nothing to do
             return user;
         }
-        storageService.deleteFile(user.getProfilePicId());
+        storageService.deleteFile(oldId);
         // if everything is ok, we can update database
-        user.setUpdateTms(now);
-        user.setProfilePicId(null);
+        user.getValue0().setUpdateTms(now);
+        user.getValue0().setProfilePicId(null);
         userDao.flush();
         return user;
     }

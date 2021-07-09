@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -69,7 +70,7 @@ public class PudoResource {
     @PublicAPI
     public PudoResponse getPudoById(@PathParam(value = "pudoId") Long pudoId) {
         Pair<TbPudo, TbAddress> pudo = pudoService.getPudoById(pudoId);
-        return new PudoResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapPudoAndAddressEntityToDto(pudo));
+        return new PudoResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapPudoEntityToDto(pudo));
     }
 
     @GET
@@ -81,7 +82,7 @@ public class PudoResource {
         if (pudo == null) {
             throw new ApiException(ApiReturnCodes.UNAUTHORIZED, localizationService.getMessage("error.user.not_pudo_owner"));
         }
-        return new PudoResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapPudoAndAddressEntityToDto(pudo));
+        return new PudoResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapPudoEntityToDto(pudo));
     }
 
     @PUT
@@ -111,7 +112,7 @@ public class PudoResource {
         }
 
         Pair<TbPudo, TbAddress> pudo = pudoService.updatePudoByOwner(context.getUserId(), req);
-        return new PudoResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapPudoAndAddressEntityToDto(pudo));
+        return new PudoResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapPudoEntityToDto(pudo));
     }
 
     @PUT
@@ -147,7 +148,7 @@ public class PudoResource {
         }
 
         Pair<TbPudo, TbAddress> pudo = pudoService.updatePudoAddressByOwner(context.getUserId(), feat);
-        return new PudoResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapPudoAndAddressEntityToDto(pudo));
+        return new PudoResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapPudoEntityToDto(pudo));
     }
 
     @PUT
@@ -186,7 +187,7 @@ public class PudoResource {
             InputStream is = part.getBody(InputStream.class, null);
             byte[] bytes = StreamUtils.readAllBytesFromInputStream(is);
             Pair<TbPudo, TbAddress> pudo = pudoService.updatePudoProfilePicByOwner(context.getUserId(), mimeType, bytes);
-            return new PudoResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapPudoAndAddressEntityToDto(pudo));
+            return new PudoResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapPudoEntityToDto(pudo));
         } catch (RuntimeException | IOException ex) {
             log.error("[{}] {}", context.getExecutionId(), ExceptionUtils.getCompactStackTrace(ex));
             throw new ApiException(ApiReturnCodes.SERVICE_UNAVAILABLE, localizationService.getMessage("error.service_unavailable"));
@@ -199,7 +200,7 @@ public class PudoResource {
     public PudoResponse deleteCurrentUserProfilePic() {
         try {
             Pair<TbPudo, TbAddress> pudo = pudoService.deletePudoProfilePicByOwner(context.getUserId());
-            return new PudoResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapPudoAndAddressEntityToDto(pudo));
+            return new PudoResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapPudoEntityToDto(pudo));
         } catch (RuntimeException ex) {
             log.error("[{}] {}", context.getExecutionId(), ExceptionUtils.getCompactStackTrace(ex));
             throw new ApiException(ApiReturnCodes.SERVICE_UNAVAILABLE, localizationService.getMessage("error.service_unavailable"));
@@ -216,7 +217,9 @@ public class PudoResource {
             throw new ApiException(ApiReturnCodes.UNAUTHORIZED, localizationService.getMessage("error.user.not_pudo_owner"));
         }
         List<TbUser> users = pudoService.getUserListByPudoOwner(context.getUserId());
-        return new UserListResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapUserEntityListToDtoList(users));
+        // since they are all customers, we assume pudoOwner = false
+        List<Pair<TbUser, Boolean>> customers = users.stream().map(i -> new Pair<TbUser, Boolean>(i, false)).collect(Collectors.toList());
+        return new UserListResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapUserEntityListToDtoList(customers));
     }
 
 }

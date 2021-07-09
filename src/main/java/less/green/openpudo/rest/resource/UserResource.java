@@ -64,7 +64,7 @@ public class UserResource {
     @Path("/{userId}")
     @Operation(summary = "Get public profile for user with provided userId")
     public UserResponse getUserById(@PathParam(value = "userId") Long userId) {
-        TbUser user = userService.getUserById(userId);
+        Pair<TbUser, Boolean> user = userService.getUserById(userId);
         return new UserResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapUserEntityToDto(user));
     }
 
@@ -88,7 +88,7 @@ public class UserResource {
             throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.empty_mandatory_field", "lastName"));
         }
 
-        TbUser user = userService.updateUser(context.getUserId(), req);
+        Pair<TbUser, Boolean> user = userService.updateUser(context.getUserId(), req);
         return new UserResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapUserEntityToDto(user));
     }
 
@@ -97,7 +97,7 @@ public class UserResource {
     @Operation(summary = "Get current user's favourite PUDOs")
     public PudoListResponse getCurrentUserPudos() {
         List<Pair<TbPudo, TbAddress>> pudos = pudoService.getPudoListByCustomer(context.getUserId());
-        return new PudoListResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapPudoAndAddressEntityListToDtoList(pudos));
+        return new PudoListResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapPudoEntityListToDtoList(pudos));
     }
 
     @PUT
@@ -119,7 +119,7 @@ public class UserResource {
         }
 
         List<Pair<TbPudo, TbAddress>> pudos = pudoService.addPudoToFavourites(context.getUserId(), pudoId);
-        return new PudoListResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapPudoAndAddressEntityListToDtoList(pudos));
+        return new PudoListResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapPudoEntityListToDtoList(pudos));
     }
 
     @DELETE
@@ -137,7 +137,7 @@ public class UserResource {
         }
 
         List<Pair<TbPudo, TbAddress>> pudos = pudoService.removePudoFromFavourites(context.getUserId(), pudoId);
-        return new PudoListResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapPudoAndAddressEntityListToDtoList(pudos));
+        return new PudoListResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapPudoEntityListToDtoList(pudos));
     }
 
     @PUT
@@ -169,7 +169,7 @@ public class UserResource {
         try {
             InputStream is = part.getBody(InputStream.class, null);
             byte[] bytes = StreamUtils.readAllBytesFromInputStream(is);
-            TbUser user = userService.updateUserProfilePic(context.getUserId(), mimeType, bytes);
+            Pair<TbUser, Boolean> user = userService.updateUserProfilePic(context.getUserId(), mimeType, bytes);
             return new UserResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapUserEntityToDto(user));
         } catch (RuntimeException | IOException ex) {
             log.error("[{}] {}", context.getExecutionId(), ExceptionUtils.getCompactStackTrace(ex));
@@ -182,7 +182,7 @@ public class UserResource {
     @Operation(summary = "Delete public profile picture for current user")
     public UserResponse deleteCurrentUserProfilePic() {
         try {
-            TbUser user = userService.deleteUserProfilePic(context.getUserId());
+            Pair<TbUser, Boolean> user = userService.deleteUserProfilePic(context.getUserId());
             return new UserResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapUserEntityToDto(user));
         } catch (RuntimeException ex) {
             log.error("[{}] {}", context.getExecutionId(), ExceptionUtils.getCompactStackTrace(ex));

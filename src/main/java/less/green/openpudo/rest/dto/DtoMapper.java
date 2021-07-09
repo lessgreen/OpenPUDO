@@ -18,17 +18,19 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "cdi")
 public interface DtoMapper {
 
-    User mapUserEntityToDto(TbUser ent);
+    @Mapping(source = "ent.value0", target = ".")
+    @Mapping(source = "ent.value1", target = "pudoOwner")
+    User mapUserEntityToDto(Pair<TbUser, Boolean> ent);
 
-    List<User> mapUserEntityListToDtoList(List<TbUser> ent);
+    List<User> mapUserEntityListToDtoList(List<Pair<TbUser, Boolean>> ents);
 
     Address mapAddressEntityToDto(TbAddress ent);
 
     @Mapping(source = "ent.value0", target = ".")
     @Mapping(source = "ent.value1", target = "address")
-    Pudo mapPudoAndAddressEntityToDto(Pair<TbPudo, TbAddress> ent);
+    Pudo mapPudoEntityToDto(Pair<TbPudo, TbAddress> ent);
 
-    List<Pudo> mapPudoAndAddressEntityListToDtoList(List<Pair<TbPudo, TbAddress>> ent);
+    List<Pudo> mapPudoEntityListToDtoList(List<Pair<TbPudo, TbAddress>> ents);
 
     default AddressMarker mapFeatureToAddressMarker(Feature feat) {
         if (feat == null) {

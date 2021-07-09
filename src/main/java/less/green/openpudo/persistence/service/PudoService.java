@@ -130,11 +130,12 @@ public class PudoService {
     public Pair<TbPudo, TbAddress> deletePudoProfilePicByOwner(Long userId) {
         Date now = new Date();
         Pair<TbPudo, TbAddress> pudo = getPudoByOwner(userId);
-        if (pudo.getValue0().getProfilePicId() == null) {
+        UUID oldId = pudo.getValue0().getProfilePicId();
+        if (oldId == null) {
             // nothing to do
             return pudo;
         }
-        storageService.deleteFile(pudo.getValue0().getProfilePicId());
+        storageService.deleteFile(oldId);
         // if everything is ok, we can update database
         pudo.getValue0().setUpdateTms(now);
         pudo.getValue0().setProfilePicId(null);

@@ -31,4 +31,7 @@ public class User {
     @Schema(readOnly = true)
     private UUID profilePicId;
 
+    @Schema(readOnly = true)
+    private Boolean pudoOwner;
+
 }
