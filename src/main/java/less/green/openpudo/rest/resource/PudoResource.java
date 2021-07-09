@@ -19,6 +19,7 @@ import less.green.openpudo.cdi.service.GeocodeService;
 import less.green.openpudo.cdi.service.LocalizationService;
 import less.green.openpudo.common.ApiReturnCodes;
 import static less.green.openpudo.common.Constants.ALLOWED_IMAGE_MIME_TYPES;
+import static less.green.openpudo.common.Constants.PROFILE_PIC_MULTIPART_NAME;
 import less.green.openpudo.common.ExceptionUtils;
 import static less.green.openpudo.common.FormatUtils.safeNormalizePhoneNumber;
 import less.green.openpudo.common.StreamUtils;
@@ -159,8 +160,7 @@ public class PudoResource {
             throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.empty_request"));
         }
         Map<String, List<InputPart>> map = req.getFormDataMap();
-        final String multipartName = "foto";
-        List<InputPart> parts = map.get(multipartName);
+        List<InputPart> parts = map.get(PROFILE_PIC_MULTIPART_NAME);
         if (parts == null || parts.isEmpty()) {
             throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.empty_mandatory_field", "multipart name"));
         }
