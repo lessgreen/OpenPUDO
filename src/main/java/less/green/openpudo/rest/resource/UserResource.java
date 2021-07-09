@@ -9,6 +9,7 @@ import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -32,6 +33,7 @@ import less.green.openpudo.rest.config.exception.ApiException;
 import less.green.openpudo.rest.dto.BaseResponse;
 import less.green.openpudo.rest.dto.DtoMapper;
 import less.green.openpudo.rest.dto.pudo.PudoListResponse;
+import less.green.openpudo.rest.dto.user.DeviceToken;
 import less.green.openpudo.rest.dto.user.User;
 import less.green.openpudo.rest.dto.user.UserResponse;
 import lombok.extern.log4j.Log4j2;
@@ -190,11 +192,18 @@ public class UserResource {
         }
     }
 
-    @PUT
-    @Path("/me/device-token/{deviceToken}")
+    @POST
+    @Path("/me/device-tokens")
     @Operation(summary = "Store or refresh device token for current user")
-    public BaseResponse upsertDeviceToken(@PathParam(value = "deviceToken") String deviceToken) {
-        userService.upsertDeviceToken(context.getUserId(), deviceToken);
+    public BaseResponse upsertDeviceToken(DeviceToken req) {
+        // sanitize input
+        if (req == null) {
+            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.empty_request"));
+        } else if (isEmpty(req.getDeviceToken())) {
+            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.empty_mandatory_field", "deviceToken"));
+        }
+
+        userService.upsertDeviceToken(context.getUserId(), req);
         return new BaseResponse(context.getExecutionId(), ApiReturnCodes.OK);
     }
 

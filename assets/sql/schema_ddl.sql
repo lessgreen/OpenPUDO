@@ -20,11 +20,11 @@ CREATE TABLE IF NOT EXISTS tb_account (
 	salt TEXT NOT NULL,
 	password TEXT NOT NULL,
 	hash_specs TEXT NOT NULL,
-	CHECK (COALESCE(email, phone_number) IS NOT NULL)
+	CHECK(COALESCE(email, phone_number) IS NOT NULL)
 );
-CREATE UNIQUE INDEX tb_account_username_idx ON tb_account (lower(username));
-CREATE UNIQUE INDEX tb_account_email_idx ON tb_account (lower(email));
-CREATE UNIQUE INDEX tb_account_phone_number_idx ON tb_account (phone_number);
+CREATE UNIQUE INDEX tb_account_username_idx ON tb_account(lower(username));
+CREATE UNIQUE INDEX tb_account_email_idx ON tb_account(lower(email));
+CREATE UNIQUE INDEX tb_account_phone_number_idx ON tb_account(phone_number);
 
 
 DROP TABLE IF EXISTS tb_external_file CASCADE;
@@ -52,8 +52,13 @@ CREATE TABLE IF NOT EXISTS tb_device_token (
 	device_token TEXT PRIMARY KEY,
 	user_id BIGINT NOT NULL REFERENCES tb_user(user_id),
 	create_tms TIMESTAMP(3) NOT NULL,
-	last_access_tms TIMESTAMP(3) NOT NULL
+	last_access_tms TIMESTAMP(3) NOT NULL,
+	system_name TEXT,
+	system_version TEXT,
+	model TEXT,
+	resolution TEXT
 );
+CREATE INDEX tb_device_token_user_id_idx ON tb_device_token(user_id);
 
 
 DROP TABLE IF EXISTS tb_pudo CASCADE;
@@ -78,7 +83,7 @@ CREATE TABLE IF NOT EXISTS tb_pudo_user_role (
 	create_tms TIMESTAMP(3) NOT NULL,
 	role_type TEXT NOT NULL,
 	PRIMARY KEY(user_id, pudo_id),
-	CHECK (role_type IN ('owner', 'customer'))
+	CHECK(role_type IN ('owner', 'customer'))
 );
 
 
@@ -97,6 +102,7 @@ CREATE TABLE IF NOT EXISTS tb_address (
 	lat DECIMAL(10,7) NOT NULL,
 	lon DECIMAL(10,7) NOT NULL
 );
+CREATE INDEX tb_address_lat_lon_idx ON tb_address(lat, lon);
 
 
 DROP TABLE IF EXISTS tb_pudo_address CASCADE;

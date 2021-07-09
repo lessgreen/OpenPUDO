@@ -24,6 +24,7 @@ import less.green.openpudo.persistence.model.TbPudo;
 import less.green.openpudo.persistence.model.TbPudoUserRole;
 import less.green.openpudo.persistence.model.TbUser;
 import less.green.openpudo.rest.dto.auth.RegisterRequest;
+import less.green.openpudo.rest.dto.user.DeviceToken;
 import less.green.openpudo.rest.dto.user.User;
 import lombok.extern.log4j.Log4j2;
 
@@ -156,28 +157,40 @@ public class UserService {
         return user;
     }
 
-    public void upsertDeviceToken(Long userId, String deviceToken) {
+    public void upsertDeviceToken(Long userId, DeviceToken req) {
         Date now = new Date();
-        TbDeviceToken token = deviceTokenDao.get(deviceToken);
+        TbDeviceToken token = deviceTokenDao.get(req.getDeviceToken().trim());
         if (token == null) {
             // if not found, associate it with current user
             token = new TbDeviceToken();
-            token.setDeviceToken(deviceToken);
+            token.setDeviceToken(sanitizeString(req.getDeviceToken()));
             token.setUserId(userId);
             token.setCreateTms(now);
             token.setLastAccessTms(now);
+            token.setSystemName(sanitizeString(req.getSystemName()));
+            token.setSystemVersion(sanitizeString(req.getSystemVersion()));
+            token.setModel(sanitizeString(req.getModel()));
+            token.setResolution(sanitizeString(req.getResolution()));
             deviceTokenDao.persist(token);
             deviceTokenDao.flush();
         } else {
             if (userId.equals(token.getUserId())) {
-                // if found and associated with current user, update last access
+                // if found and associated with current user, update
                 token.setLastAccessTms(now);
+                token.setSystemName(sanitizeString(req.getSystemName()));
+                token.setSystemVersion(sanitizeString(req.getSystemVersion()));
+                token.setModel(sanitizeString(req.getModel()));
+                token.setResolution(sanitizeString(req.getResolution()));
                 deviceTokenDao.flush();
             } else {
                 // if found and associated with another user, recreate association
                 token.setUserId(userId);
                 token.setCreateTms(now);
                 token.setLastAccessTms(now);
+                token.setSystemName(sanitizeString(req.getSystemName()));
+                token.setSystemVersion(sanitizeString(req.getSystemVersion()));
+                token.setModel(sanitizeString(req.getModel()));
+                token.setResolution(sanitizeString(req.getResolution()));
                 deviceTokenDao.flush();
             }
         }

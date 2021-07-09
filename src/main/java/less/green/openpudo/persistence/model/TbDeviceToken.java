@@ -32,4 +32,16 @@ public class TbDeviceToken implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     private Date lastAccessTms;
 
+    @Column(name = "system_name")
+    private String systemName;
+
+    @Column(name = "system_version")
+    private String systemVersion;
+
+    @Column(name = "model")
+    private String model;
+
+    @Column(name = "resolution")
+    private String resolution;
+
 }
