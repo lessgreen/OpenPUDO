@@ -122,6 +122,7 @@ public class PudoService {
         pudo.getValue0().setUpdateTms(now);
         pudo.getValue0().setProfilePicId(newId);
         pudoDao.flush();
+        // remove old row
         externalFileDao.delete(oldId);
         externalFileDao.flush();
         return pudo;
@@ -140,6 +141,9 @@ public class PudoService {
         pudo.getValue0().setUpdateTms(now);
         pudo.getValue0().setProfilePicId(null);
         pudoDao.flush();
+        // remove old row
+        externalFileDao.delete(oldId);
+        externalFileDao.flush();
         return pudo;
     }
 

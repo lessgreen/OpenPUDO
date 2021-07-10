@@ -136,6 +136,7 @@ public class UserService {
         user.getValue0().setUpdateTms(now);
         user.getValue0().setProfilePicId(newId);
         userDao.flush();
+        // remove old row
         externalFileDao.delete(oldId);
         externalFileDao.flush();
         return user;
@@ -154,6 +155,9 @@ public class UserService {
         user.getValue0().setUpdateTms(now);
         user.getValue0().setProfilePicId(null);
         userDao.flush();
+        // remove old row
+        externalFileDao.delete(oldId);
+        externalFileDao.flush();
         return user;
     }
 
