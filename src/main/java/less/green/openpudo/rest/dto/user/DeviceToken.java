@@ -9,6 +9,8 @@ public class DeviceToken {
     @Schema(required = true)
     private String deviceToken;
 
+    private String deviceType;
+
     private String systemName;
 
     private String systemVersion;

@@ -53,6 +53,7 @@ CREATE TABLE IF NOT EXISTS tb_device_token (
 	user_id BIGINT NOT NULL REFERENCES tb_user(user_id),
 	create_tms TIMESTAMP(3) NOT NULL,
 	last_access_tms TIMESTAMP(3) NOT NULL,
+	device_type TEXT,
 	system_name TEXT,
 	system_version TEXT,
 	model TEXT,

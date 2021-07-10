@@ -167,6 +167,7 @@ public class UserService {
             token.setUserId(userId);
             token.setCreateTms(now);
             token.setLastAccessTms(now);
+            token.setDeviceType(sanitizeString(req.getDeviceType()));
             token.setSystemName(sanitizeString(req.getSystemName()));
             token.setSystemVersion(sanitizeString(req.getSystemVersion()));
             token.setModel(sanitizeString(req.getModel()));
@@ -177,6 +178,7 @@ public class UserService {
             if (userId.equals(token.getUserId())) {
                 // if found and associated with current user, update
                 token.setLastAccessTms(now);
+                token.setDeviceType(sanitizeString(req.getDeviceType()));
                 token.setSystemName(sanitizeString(req.getSystemName()));
                 token.setSystemVersion(sanitizeString(req.getSystemVersion()));
                 token.setModel(sanitizeString(req.getModel()));
@@ -187,6 +189,7 @@ public class UserService {
                 token.setUserId(userId);
                 token.setCreateTms(now);
                 token.setLastAccessTms(now);
+                token.setDeviceType(sanitizeString(req.getDeviceType()));
                 token.setSystemName(sanitizeString(req.getSystemName()));
                 token.setSystemVersion(sanitizeString(req.getSystemVersion()));
                 token.setModel(sanitizeString(req.getModel()));
