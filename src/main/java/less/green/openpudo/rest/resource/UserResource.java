@@ -29,6 +29,7 @@ import less.green.openpudo.persistence.model.TbPudo;
 import less.green.openpudo.persistence.model.TbUser;
 import less.green.openpudo.persistence.service.PudoService;
 import less.green.openpudo.persistence.service.UserService;
+import less.green.openpudo.rest.config.BinaryAPI;
 import less.green.openpudo.rest.config.exception.ApiException;
 import less.green.openpudo.rest.dto.BaseResponse;
 import less.green.openpudo.rest.dto.DtoMapper;
@@ -145,6 +146,7 @@ public class UserResource {
     @PUT
     @Path("/me/profile-pic")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @BinaryAPI
     @Operation(summary = "Update public profile picture for current user")
     public UserResponse updateCurrentUserProfilePic(MultipartFormDataInput req) {
         // sanitize input
