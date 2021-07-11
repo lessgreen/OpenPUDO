@@ -17,6 +17,8 @@ import less.green.openpudo.common.ExceptionUtils;
 import less.green.openpudo.common.dto.tuple.Pair;
 import less.green.openpudo.persistence.model.TbExternalFile;
 import less.green.openpudo.persistence.service.ExternalFileService;
+import less.green.openpudo.rest.config.BinaryAPI;
+import less.green.openpudo.rest.config.PublicAPI;
 import less.green.openpudo.rest.config.exception.ApiException;
 import less.green.openpudo.rest.dto.DtoMapper;
 import lombok.extern.log4j.Log4j2;
@@ -43,6 +45,8 @@ public class ExternalFileResource {
 
     @GET
     @Path("/{externalFileId}")
+    @PublicAPI
+    @BinaryAPI
     @Operation(summary = "Get external file, simulating a static resource server by an http server")
     public Response getExternalFile(@PathParam(value = "externalFileId") UUID externalFileId) {
         try {

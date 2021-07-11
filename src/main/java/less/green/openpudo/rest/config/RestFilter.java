@@ -10,7 +10,8 @@ import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.container.ContainerResponseContext;
 import javax.ws.rs.container.ContainerResponseFilter;
-import javax.ws.rs.container.PreMatching;
+import javax.ws.rs.container.ResourceInfo;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.ext.Provider;
 import less.green.openpudo.cdi.ExecutionContext;
 import static less.green.openpudo.common.Encoders.OBJECT_MAPPER;
@@ -20,13 +21,15 @@ import static less.green.openpudo.common.StringUtils.isEmpty;
 import lombok.extern.log4j.Log4j2;
 
 @Provider
-@PreMatching
 @Priority(1)
 @Log4j2
 public class RestFilter implements ContainerRequestFilter, ContainerResponseFilter {
 
     @Inject
     ExecutionContext context;
+
+    @Context
+    ResourceInfo resourceInfo;
 
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
@@ -35,7 +38,7 @@ public class RestFilter implements ContainerRequestFilter, ContainerResponseFilt
             log.debug("[{}] {} {}{}", context.getExecutionId(), requestContext.getMethod(), requestContext.getUriInfo().getRequestUri().getPath(),
                     requestContext.getUriInfo().getRequestUri().getQuery() == null ? "" : "?" + requestContext.getUriInfo().getRequestUri().getQuery());
         }
-        if (log.isTraceEnabled() && requestContext.hasEntity()) {
+        if (log.isTraceEnabled() && requestContext.hasEntity() && !resourceInfo.getResourceMethod().isAnnotationPresent(BinaryAPI.class)) {
             byte[] entityBytes;
             try (InputStream originalStream = requestContext.getEntityStream()) {
                 entityBytes = readAllBytesFromInputStream(originalStream);
@@ -51,7 +54,7 @@ public class RestFilter implements ContainerRequestFilter, ContainerResponseFilt
 
     @Override
     public void filter(ContainerRequestContext requestContext, ContainerResponseContext responseContext) throws IOException {
-        if (log.isTraceEnabled() && responseContext.hasEntity()) {
+        if (log.isTraceEnabled() && responseContext.hasEntity() && !resourceInfo.getResourceMethod().isAnnotationPresent(BinaryAPI.class)) {
             log.trace("[{}] Response: {}", context.getExecutionId(), OBJECT_MAPPER.writeValueAsString(responseContext.getEntity()));
         }
         context.setEndTimestamp(System.nanoTime());
