@@ -1,16 +1,21 @@
 package less.green.openpudo.rest.resource;
 
+import com.google.firebase.messaging.FirebaseMessagingException;
+import com.google.firebase.messaging.Message;
+import com.google.firebase.messaging.Notification;
 import com.sun.management.OperatingSystemMXBean;
 import java.lang.management.ManagementFactory;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import less.green.openpudo.cdi.service.FirebaseMessagingService;
 import lombok.extern.log4j.Log4j2;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 
@@ -20,6 +25,9 @@ import org.eclipse.microprofile.openapi.annotations.Operation;
 @Consumes(value = MediaType.APPLICATION_JSON)
 @Log4j2
 public class RuntimeResource {
+
+    @Inject
+    FirebaseMessagingService firebaseMessagingService;
 
     @GET
     @Path("/health")
@@ -51,6 +59,17 @@ public class RuntimeResource {
     @Path("/test")
     @Operation(summary = "Test API for debugging purposes. DO NOT USE!")
     public Response test() throws Exception {
+        try {
+            String deviceToken = "fhpXm05UukE8hzw90A0HJT:APA91bGW5JxKLmOwJ_fGNpzkTKijvxRAJFS0MEHOOoVUoyYYvytgyZdSWFDnXEum8PFa6Vu6vfQoekuVeoQtCROIyUsbKG5qzqAdfFVSyHlZNfHjZBMcoTJpBzydj7cL6HJWXmQnnAUl";
+            Message message = Message.builder()
+                    .setToken(deviceToken)
+                    .setNotification(Notification.builder().setTitle("My title").setBody("My Body").build())
+                    .build();
+            String response = firebaseMessagingService.sendNotification(message);
+            log.info(response);
+        } catch (FirebaseMessagingException ex) {
+            log.error(ex);
+        }
         return null;
     }
 

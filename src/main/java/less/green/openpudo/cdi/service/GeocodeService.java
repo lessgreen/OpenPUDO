@@ -1,9 +1,11 @@
 package less.green.openpudo.cdi.service;
 
+import io.quarkus.runtime.Startup;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import kong.unirest.GetRequest;
 import kong.unirest.HttpResponse;
@@ -15,6 +17,7 @@ import lombok.extern.log4j.Log4j2;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 @ApplicationScoped
+@Startup
 @Log4j2
 public class GeocodeService {
 
@@ -24,7 +27,9 @@ public class GeocodeService {
     @ConfigProperty(name = "geocode.api.url")
     String apiUrl;
 
-    static {
+    @PostConstruct
+    void init() {
+        // hot reload quirk
         Unirest.config().reset();
         Unirest.config()
                 .socketTimeout(5000)

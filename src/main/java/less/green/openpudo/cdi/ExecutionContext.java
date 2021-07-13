@@ -9,8 +9,8 @@ import lombok.Data;
 public class ExecutionContext {
 
     private final UUID executionId = UUID.randomUUID();
-    private long startTimestamp;
-    private long endTimestamp;
+    private Long startTimestamp;
+    private Long endTimestamp;
     private Long userId;
 
 }

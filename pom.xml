@@ -18,6 +18,7 @@
         <pmd.version>3.14.0</pmd.version>
         <libphonenumber.version>8.12.25</libphonenumber.version>
         <unirest.version>3.11.11</unirest.version>
+        <firebase.version>8.0.0</firebase.version>
     </properties>
 
     <dependencyManagement>
@@ -132,6 +133,11 @@
             <groupId>com.konghq</groupId>
             <artifactId>unirest-java</artifactId>
             <version>${unirest.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.firebase</groupId>
+            <artifactId>firebase-admin</artifactId>
+            <version>${firebase.version}</version>
         </dependency>
     </dependencies>
     
