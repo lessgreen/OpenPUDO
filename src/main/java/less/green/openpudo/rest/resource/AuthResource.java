@@ -85,7 +85,7 @@ public class AuthResource {
         // sanitize input
         if (req == null) {
             throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.empty_request"));
-        } else if (isEmpty(req.getUsername()) && isEmpty(req.getEmail()) && isEmpty(req.getPhoneNumber())) {
+        } else if (isEmpty(req.getEmail()) && isEmpty(req.getPhoneNumber())) {
             throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.empty_mandatory_field_coalesce", "email, phoneNumber"));
         } else if (isEmpty(req.getPassword())) {
             throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.empty_mandatory_field", "password"));
