@@ -1,8 +1,12 @@
 package less.green.openpudo.rest.config.exception;
 
+import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import javax.inject.Inject;
+import javax.ws.rs.NotAcceptableException;
+import javax.ws.rs.NotAllowedException;
 import javax.ws.rs.NotFoundException;
+import javax.ws.rs.NotSupportedException;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
@@ -32,10 +36,10 @@ public class UnhandledExceptionMapper implements ExceptionMapper<Exception> {
             BaseResponse res = new BaseResponse(context.getExecutionId(), ApiReturnCodes.RESOURCE_NOT_FOUND, Response.Status.NOT_FOUND.getReasonPhrase());
             return Response.status(Response.Status.NOT_FOUND).entity(res).build();
         }
-        if (ex instanceof JsonMappingException) {
+        if (ex instanceof NotAllowedException || ex instanceof NotAcceptableException || ex instanceof NotSupportedException || ex instanceof JsonMappingException || ex instanceof JsonParseException) {
             String msg = ex.getMessage().split("\n")[0];
             log.error(msg);
-            BaseResponse res = new BaseResponse(context.getExecutionId(), ApiReturnCodes.INVALID_REQUEST, msg);
+            BaseResponse res = new BaseResponse(context.getExecutionId(), ApiReturnCodes.BAD_REQUEST, msg);
             return Response.status(Response.Status.BAD_REQUEST).entity(res).build();
         }
         log.error("[{}] {}", context.getExecutionId(), ExceptionUtils.getCompactStackTrace(ex));

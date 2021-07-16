@@ -35,7 +35,6 @@ public class UserService {
 
     @Inject
     CryptoService cryptoService;
-
     @Inject
     StorageService storageService;
 
