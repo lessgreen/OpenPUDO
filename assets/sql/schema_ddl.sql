@@ -8,6 +8,27 @@ BEGIN
 END';
 
 
+-- anag tables
+DROP TABLE IF EXISTS tb_anag_role_type CASCADE;
+CREATE TABLE IF NOT EXISTS tb_anag_role_type (
+	role_type TEXT PRIMARY KEY,
+	ordinal INTEGER NOT NULL
+);
+INSERT INTO tb_anag_role_type VALUES ('owner', 1);
+INSERT INTO tb_anag_role_type VALUES ('customer', 2);
+
+
+DROP TABLE IF EXISTS tb_anag_package_status CASCADE;
+CREATE TABLE IF NOT EXISTS tb_anag_package_status (
+	package_status TEXT PRIMARY KEY,
+	ordinal INTEGER NOT NULL
+);
+INSERT INTO tb_anag_package_status VALUES ('delivered', 1);
+INSERT INTO tb_anag_package_status VALUES ('collected', 2);
+INSERT INTO tb_anag_package_status VALUES ('confirmed', 3);
+INSERT INTO tb_anag_package_status VALUES ('returned', 4);
+
+
 -- data tables
 DROP TABLE IF EXISTS tb_account CASCADE;
 CREATE TABLE IF NOT EXISTS tb_account (
@@ -82,9 +103,8 @@ CREATE TABLE IF NOT EXISTS tb_pudo_user_role (
 	user_id BIGINT NOT NULL REFERENCES tb_user(user_id),
 	pudo_id BIGINT NOT NULL REFERENCES tb_pudo(pudo_id),
 	create_tms TIMESTAMP(3) NOT NULL,
-	role_type TEXT NOT NULL,
-	PRIMARY KEY(user_id, pudo_id),
-	CHECK(role_type IN ('owner', 'customer'))
+	role_type TEXT NOT NULL REFERENCES tb_anag_role_type(role_type),
+	PRIMARY KEY(user_id, pudo_id)
 );
 
 
@@ -112,6 +132,43 @@ CREATE TABLE IF NOT EXISTS tb_pudo_address (
 	address_id BIGINT NOT NULL REFERENCES tb_address(address_id),
 	PRIMARY KEY(pudo_id, address_id)
 );
+
+
+DROP TABLE IF EXISTS tb_package CASCADE;
+CREATE TABLE IF NOT EXISTS tb_package (
+	package_id BIGSERIAL PRIMARY KEY,
+	create_tms TIMESTAMP(3) NOT NULL,
+	update_tms TIMESTAMP(3) NOT NULL,
+	pudo_id BIGINT NOT NULL REFERENCES tb_pudo(pudo_id),
+	user_id BIGINT NOT NULL REFERENCES tb_user(user_id),
+	package_status TEXT NOT NULL REFERENCES tb_anag_package_status(package_status),
+	package_pic_id UUID REFERENCES tb_external_file(external_file_id)
+);
+CREATE INDEX tb_package_pudo_id_idx ON tb_package(pudo_id);
+CREATE INDEX tb_package_user_id_idx ON tb_package(user_id);
+
+
+DROP TABLE IF EXISTS tb_package_event CASCADE;
+CREATE TABLE IF NOT EXISTS tb_package_event (
+	package_event_id BIGSERIAL PRIMARY KEY,
+	create_tms TIMESTAMP(3) NOT NULL,
+	package_id BIGINT NOT NULL REFERENCES tb_package(package_id),
+	package_status TEXT NOT NULL REFERENCES tb_anag_package_status(package_status),
+	notes TEXT
+);
+CREATE INDEX tb_package_event_package_id_idx ON tb_package_event(package_id);
+
+
+DROP TABLE IF EXISTS tb_notification CASCADE;
+CREATE TABLE IF NOT EXISTS tb_notification (
+	notification_id BIGSERIAL PRIMARY KEY,
+	user_id BIGINT NOT NULL REFERENCES tb_user(user_id),
+	create_tms TIMESTAMP(3) NOT NULL,
+	read_tms TIMESTAMP(3),
+	title TEXT NOT NULL,
+	message TEXT NOT NULL
+);
+CREATE INDEX tb_notification_user_id_idx ON tb_notification(user_id);
 
 
 -- maintenance

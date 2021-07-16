@@ -81,7 +81,7 @@ public class PudoResource {
         // checking permission
         Pair<TbPudo, TbAddress> pudo = pudoService.getPudoByOwner(context.getUserId());
         if (pudo == null) {
-            throw new ApiException(ApiReturnCodes.UNAUTHORIZED, localizationService.getMessage("error.user.not_pudo_owner"));
+            throw new ApiException(ApiReturnCodes.FORBIDDEN, localizationService.getMessage("error.user.not_pudo_owner"));
         }
         return new PudoResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapPudoEntityToDto(pudo));
     }
@@ -109,7 +109,7 @@ public class PudoResource {
         // checking permission
         boolean pudoOwner = pudoService.isPudoOwner(context.getUserId());
         if (!pudoOwner) {
-            throw new ApiException(ApiReturnCodes.UNAUTHORIZED, localizationService.getMessage("error.user.not_pudo_owner"));
+            throw new ApiException(ApiReturnCodes.FORBIDDEN, localizationService.getMessage("error.user.not_pudo_owner"));
         }
 
         Pair<TbPudo, TbAddress> pudo = pudoService.updatePudoByOwner(context.getUserId(), req);
@@ -132,7 +132,7 @@ public class PudoResource {
         // checking permission
         boolean pudoOwner = pudoService.isPudoOwner(context.getUserId());
         if (!pudoOwner) {
-            throw new ApiException(ApiReturnCodes.UNAUTHORIZED, localizationService.getMessage("error.user.not_pudo_owner"));
+            throw new ApiException(ApiReturnCodes.FORBIDDEN, localizationService.getMessage("error.user.not_pudo_owner"));
         }
 
         // geocoding
@@ -182,7 +182,7 @@ public class PudoResource {
         // checking permission
         boolean pudoOwner = pudoService.isPudoOwner(context.getUserId());
         if (!pudoOwner) {
-            throw new ApiException(ApiReturnCodes.UNAUTHORIZED, localizationService.getMessage("error.user.not_pudo_owner"));
+            throw new ApiException(ApiReturnCodes.FORBIDDEN, localizationService.getMessage("error.user.not_pudo_owner"));
         }
 
         try {
@@ -216,7 +216,7 @@ public class PudoResource {
         // checking permission
         boolean pudoOwner = pudoService.isPudoOwner(context.getUserId());
         if (!pudoOwner) {
-            throw new ApiException(ApiReturnCodes.UNAUTHORIZED, localizationService.getMessage("error.user.not_pudo_owner"));
+            throw new ApiException(ApiReturnCodes.FORBIDDEN, localizationService.getMessage("error.user.not_pudo_owner"));
         }
         List<TbUser> users = pudoService.getUserListByPudoOwner(context.getUserId());
         // since they are all customers, we assume pudoOwner = false

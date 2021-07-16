@@ -7,10 +7,10 @@ public enum RoleType {
     CUSTOMER("customer");
 
     @Getter
-    private final String val;
+    private final String value;
 
-    RoleType(String val) {
-        this.val = val;
+    RoleType(String value) {
+        this.value = value;
     }
 
 }

@@ -5,10 +5,10 @@ import javax.persistence.Converter;
 import static less.green.openpudo.common.StringUtils.isEmpty;
 
 @Converter
-public class RoleTypeConverter implements AttributeConverter<RoleType, String> {
+public class PackageStatusConverter implements AttributeConverter<PackageStatus, String> {
 
     @Override
-    public String convertToDatabaseColumn(RoleType attribute) {
+    public String convertToDatabaseColumn(PackageStatus attribute) {
         if (attribute == null) {
             return null;
         }
@@ -16,16 +16,16 @@ public class RoleTypeConverter implements AttributeConverter<RoleType, String> {
     }
 
     @Override
-    public RoleType convertToEntityAttribute(String dbData) {
+    public PackageStatus convertToEntityAttribute(String dbData) {
         if (isEmpty(dbData)) {
             return null;
         }
-        for (RoleType i : RoleType.values()) {
+        for (PackageStatus i : PackageStatus.values()) {
             if (i.getValue().equals(dbData)) {
                 return i;
             }
         }
-        throw new IllegalArgumentException("Invalid RoleType: " + dbData);
+        throw new IllegalArgumentException("Invalid PackageStatus: " + dbData);
     }
 
 }

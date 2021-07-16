@@ -2,6 +2,7 @@ package less.green.openpudo.persistence.dao;
 
 import javax.enterprise.context.RequestScoped;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
@@ -27,6 +28,18 @@ public class RelationDao {
 
     public void persist(TbPudoAddress ent) {
         em.persist(ent);
+    }
+
+    public Long getPudoIdByOwner(Long userId) {
+        String qs = "SELECT t.pudoId FROM TbPudoUserRole t WHERE t.userId = :userId AND t.roleType = :roleType";
+        try {
+            TypedQuery<Long> q = em.createQuery(qs, Long.class);
+            q.setParameter("userId", userId);
+            q.setParameter("roleType", RoleType.OWNER);
+            return q.getSingleResult();
+        } catch (NoResultException ex) {
+            return null;
+        }
     }
 
     public boolean isPudoOwner(Long userId) {

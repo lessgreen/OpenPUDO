@@ -110,7 +110,7 @@ public class UserResource {
         // preliminary checks
         boolean pudoOwner = pudoService.isPudoOwner(context.getUserId());
         if (pudoOwner) {
-            throw new ApiException(ApiReturnCodes.UNAUTHORIZED, localizationService.getMessage("error.user.pudo_owner"));
+            throw new ApiException(ApiReturnCodes.FORBIDDEN, localizationService.getMessage("error.user.pudo_owner"));
         }
         Pair<TbPudo, TbAddress> pudo = pudoService.getPudoById(pudoId);
         if (pudo == null) {
@@ -132,7 +132,7 @@ public class UserResource {
         // preliminary checks
         boolean pudoOwner = pudoService.isPudoOwner(context.getUserId());
         if (pudoOwner) {
-            throw new ApiException(ApiReturnCodes.UNAUTHORIZED, localizationService.getMessage("error.user.pudo_owner"));
+            throw new ApiException(ApiReturnCodes.FORBIDDEN, localizationService.getMessage("error.user.pudo_owner"));
         }
         boolean pudoCustomer = pudoService.isPudoCustomer(context.getUserId(), pudoId);
         if (!pudoCustomer) {

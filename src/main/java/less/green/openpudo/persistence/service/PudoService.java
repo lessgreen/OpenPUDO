@@ -151,6 +151,10 @@ public class PudoService {
         return relationDao.isPudoOwner(userId);
     }
 
+    public Long getPudoIdByOwner(Long userId) {
+        return relationDao.getPudoIdByOwner(userId);
+    }
+
     public boolean isPudoCustomer(Long userId, Long pudoId) {
         return relationDao.isPudoCustomer(userId, pudoId);
     }
