@@ -1,8 +1,5 @@
 package less.green.openpudo.rest.resource;
 
-import com.google.firebase.messaging.FirebaseMessagingException;
-import com.google.firebase.messaging.Message;
-import com.google.firebase.messaging.Notification;
 import com.sun.management.OperatingSystemMXBean;
 import java.lang.management.ManagementFactory;
 import java.math.BigDecimal;
@@ -59,17 +56,6 @@ public class RuntimeResource {
     @Path("/test")
     @Operation(summary = "Test API for debugging purposes. DO NOT USE!")
     public Response test() throws Exception {
-        try {
-            String deviceToken = "fhpXm05UukE8hzw90A0HJT:APA91bGW5JxKLmOwJ_fGNpzkTKijvxRAJFS0MEHOOoVUoyYYvytgyZdSWFDnXEum8PFa6Vu6vfQoekuVeoQtCROIyUsbKG5qzqAdfFVSyHlZNfHjZBMcoTJpBzydj7cL6HJWXmQnnAUl";
-            Message message = Message.builder()
-                    .setToken(deviceToken)
-                    .setNotification(Notification.builder().setTitle("My title").setBody("My Body").build())
-                    .build();
-            String response = firebaseMessagingService.sendNotification(message);
-            log.info(response);
-        } catch (FirebaseMessagingException ex) {
-            log.error(ex);
-        }
         return null;
     }
 

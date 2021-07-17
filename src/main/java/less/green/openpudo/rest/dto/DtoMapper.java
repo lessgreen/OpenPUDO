@@ -12,7 +12,7 @@ import less.green.openpudo.rest.dto.address.Address;
 import less.green.openpudo.rest.dto.geojson.Feature;
 import less.green.openpudo.rest.dto.geojson.Point;
 import less.green.openpudo.rest.dto.map.AddressMarker;
-import less.green.openpudo.rest.dto.map.pack.Package;
+import less.green.openpudo.rest.dto.pack.Package;
 import less.green.openpudo.rest.dto.pudo.Pudo;
 import less.green.openpudo.rest.dto.user.User;
 import org.mapstruct.Mapper;

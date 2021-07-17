@@ -28,9 +28,9 @@ public class TbDeviceToken implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     private Date createTms;
 
-    @Column(name = "last_access_tms")
+    @Column(name = "update_tms")
     @Temporal(TemporalType.TIMESTAMP)
-    private Date lastAccessTms;
+    private Date updateTms;
 
     @Column(name = "device_type")
     private String deviceType;
@@ -46,5 +46,19 @@ public class TbDeviceToken implements Serializable {
 
     @Column(name = "resolution")
     private String resolution;
+
+    @Column(name = "last_success_tms")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date lastSuccessTms;
+
+    @Column(name = "last_success_message_id")
+    private String lastSuccessMessageId;
+
+    @Column(name = "last_failure_tms")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date lastFailureTms;
+
+    @Column(name = "failure_count")
+    private Integer failureCount;
 
 }

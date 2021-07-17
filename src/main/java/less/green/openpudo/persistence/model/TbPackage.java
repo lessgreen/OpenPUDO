@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.UUID;
 import javax.persistence.Column;
-import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -12,8 +11,6 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import less.green.openpudo.persistence.dao.usertype.PackageStatus;
-import less.green.openpudo.persistence.dao.usertype.PackageStatusConverter;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -41,10 +38,6 @@ public class TbPackage implements Serializable {
 
     @Column(name = "user_id")
     private Long userId;
-
-    @Column(name = "package_status")
-    @Convert(converter = PackageStatusConverter.class)
-    private PackageStatus packageStatus;
 
     @Column(name = "package_pic_id")
     private UUID packagePicId;

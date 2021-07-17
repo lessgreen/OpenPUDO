@@ -169,36 +169,31 @@ public class UserService {
             token.setDeviceToken(sanitizeString(req.getDeviceToken()));
             token.setUserId(userId);
             token.setCreateTms(now);
-            token.setLastAccessTms(now);
+            token.setUpdateTms(now);
             token.setDeviceType(sanitizeString(req.getDeviceType()));
             token.setSystemName(sanitizeString(req.getSystemName()));
             token.setSystemVersion(sanitizeString(req.getSystemVersion()));
             token.setModel(sanitizeString(req.getModel()));
             token.setResolution(sanitizeString(req.getResolution()));
+            token.setFailureCount(0);
             deviceTokenDao.persist(token);
             deviceTokenDao.flush();
         } else {
-            if (userId.equals(token.getUserId())) {
-                // if found and associated with current user, update
-                token.setLastAccessTms(now);
-                token.setDeviceType(sanitizeString(req.getDeviceType()));
-                token.setSystemName(sanitizeString(req.getSystemName()));
-                token.setSystemVersion(sanitizeString(req.getSystemVersion()));
-                token.setModel(sanitizeString(req.getModel()));
-                token.setResolution(sanitizeString(req.getResolution()));
-                deviceTokenDao.flush();
-            } else {
-                // if found and associated with another user, recreate association
+            if (!userId.equals(token.getUserId())) {
+                // if associated with another user, recreate association
                 token.setUserId(userId);
                 token.setCreateTms(now);
-                token.setLastAccessTms(now);
-                token.setDeviceType(sanitizeString(req.getDeviceType()));
-                token.setSystemName(sanitizeString(req.getSystemName()));
-                token.setSystemVersion(sanitizeString(req.getSystemVersion()));
-                token.setModel(sanitizeString(req.getModel()));
-                token.setResolution(sanitizeString(req.getResolution()));
-                deviceTokenDao.flush();
+                token.setLastSuccessTms(null);
+                token.setLastSuccessMessageId(null);
+                token.setLastFailureTms(null);
+                token.setFailureCount(0);
             }
+            token.setUpdateTms(now);
+            token.setDeviceType(sanitizeString(req.getDeviceType()));
+            token.setSystemName(sanitizeString(req.getSystemName()));
+            token.setSystemVersion(sanitizeString(req.getSystemVersion()));
+            token.setModel(sanitizeString(req.getModel()));
+            token.setResolution(sanitizeString(req.getResolution()));
         }
     }
 

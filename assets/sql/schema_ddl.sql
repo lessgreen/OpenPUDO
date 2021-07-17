@@ -24,8 +24,10 @@ CREATE TABLE IF NOT EXISTS tb_anag_package_status (
 	ordinal INTEGER NOT NULL
 );
 INSERT INTO tb_anag_package_status VALUES ('delivered', 1);
-INSERT INTO tb_anag_package_status VALUES ('collected', 2);
-INSERT INTO tb_anag_package_status VALUES ('confirmed', 3);
+INSERT INTO tb_anag_package_status VALUES ('notified', 2);
+INSERT INTO tb_anag_package_status VALUES ('collected', 3);
+INSERT INTO tb_anag_package_status VALUES ('accepted', 4);
+INSERT INTO tb_anag_package_status VALUES ('expired', 4);
 INSERT INTO tb_anag_package_status VALUES ('returned', 4);
 
 
@@ -73,12 +75,16 @@ CREATE TABLE IF NOT EXISTS tb_device_token (
 	device_token TEXT PRIMARY KEY,
 	user_id BIGINT NOT NULL REFERENCES tb_user(user_id),
 	create_tms TIMESTAMP(3) NOT NULL,
-	last_access_tms TIMESTAMP(3) NOT NULL,
+	update_tms TIMESTAMP(3) NOT NULL,
 	device_type TEXT,
 	system_name TEXT,
 	system_version TEXT,
 	model TEXT,
-	resolution TEXT
+	resolution TEXT,
+	last_success_tms TIMESTAMP(3),
+	last_success_message_id TEXT,
+	last_failure_tms TIMESTAMP(3),
+	failure_count INTEGER
 );
 CREATE INDEX tb_device_token_user_id_idx ON tb_device_token(user_id);
 
@@ -141,8 +147,7 @@ CREATE TABLE IF NOT EXISTS tb_package (
 	update_tms TIMESTAMP(3) NOT NULL,
 	pudo_id BIGINT NOT NULL REFERENCES tb_pudo(pudo_id),
 	user_id BIGINT NOT NULL REFERENCES tb_user(user_id),
-	package_status TEXT NOT NULL REFERENCES tb_anag_package_status(package_status),
-	package_pic_id UUID REFERENCES tb_external_file(external_file_id)
+	package_pic_id UUID
 );
 CREATE INDEX tb_package_pudo_id_idx ON tb_package(pudo_id);
 CREATE INDEX tb_package_user_id_idx ON tb_package(user_id);
@@ -156,7 +161,7 @@ CREATE TABLE IF NOT EXISTS tb_package_event (
 	package_status TEXT NOT NULL REFERENCES tb_anag_package_status(package_status),
 	notes TEXT
 );
-CREATE INDEX tb_package_event_package_id_idx ON tb_package_event(package_id);
+CREATE INDEX tb_package_event_package_id_idx ON tb_package_event(package_id, create_tms);
 
 
 DROP TABLE IF EXISTS tb_notification CASCADE;

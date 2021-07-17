@@ -1,9 +1,8 @@
 package less.green.openpudo.rest.resource;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
-import java.util.Map;
+import java.util.UUID;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -17,10 +16,9 @@ import javax.ws.rs.core.MediaType;
 import less.green.openpudo.cdi.ExecutionContext;
 import less.green.openpudo.cdi.service.LocalizationService;
 import less.green.openpudo.common.ApiReturnCodes;
-import static less.green.openpudo.common.Constants.ALLOWED_IMAGE_MIME_TYPES;
-import static less.green.openpudo.common.Constants.PROFILE_PIC_MULTIPART_NAME;
 import less.green.openpudo.common.ExceptionUtils;
-import less.green.openpudo.common.StreamUtils;
+import less.green.openpudo.common.MultipartUtils;
+import static less.green.openpudo.common.MultipartUtils.ALLOWED_IMAGE_MIME_TYPES;
 import less.green.openpudo.common.dto.tuple.Pair;
 import less.green.openpudo.persistence.model.TbPackage;
 import less.green.openpudo.persistence.model.TbPackageEvent;
@@ -28,12 +26,12 @@ import less.green.openpudo.persistence.service.PackageService;
 import less.green.openpudo.persistence.service.PudoService;
 import less.green.openpudo.rest.config.BinaryAPI;
 import less.green.openpudo.rest.config.exception.ApiException;
+import less.green.openpudo.rest.dto.BaseResponse;
 import less.green.openpudo.rest.dto.DtoMapper;
-import less.green.openpudo.rest.dto.map.pack.PackageRequest;
-import less.green.openpudo.rest.dto.map.pack.PackageResponse;
+import less.green.openpudo.rest.dto.pack.PackageRequest;
+import less.green.openpudo.rest.dto.pack.PackageResponse;
 import lombok.extern.log4j.Log4j2;
 import org.eclipse.microprofile.openapi.annotations.Operation;
-import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
 @RequestScoped
@@ -56,6 +54,50 @@ public class PackageResource {
 
     @Inject
     DtoMapper dtoMapper;
+
+    @PUT
+    @Path("/picture/{externalFileId}")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @BinaryAPI
+    @Operation(summary = "Upload delivery picture for incoming package",
+            description = "This API can be called before creating the package itself, to allow async upload, the UUID of the image must be client generated")
+    public BaseResponse uploadPackagePicture(@PathParam(value = "externalFileId") UUID externalFileId, MultipartFormDataInput req) {
+        // sanitize input
+        if (req == null) {
+            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.empty_request"));
+        }
+
+        Pair<String, byte[]> uploadedFile;
+        try {
+            uploadedFile = MultipartUtils.readUploadedFile(req);
+        } catch (IOException ex) {
+            log.error(ex.getMessage());
+            throw new ApiException(ApiReturnCodes.SERVICE_UNAVAILABLE, localizationService.getMessage("error.service_unavailable"));
+        }
+
+        // more sanitizing
+        if (uploadedFile == null) {
+            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.empty_mandatory_field", "multipart name"));
+        }
+        if (!ALLOWED_IMAGE_MIME_TYPES.contains(uploadedFile.getValue0())) {
+            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.invalid_field", "mimeType"));
+        }
+
+        // checking permission
+        // since we still know nothing about the package, operation is allowed if the current user is a pudo owner
+        boolean pudoOwner = pudoService.isPudoOwner(context.getUserId());
+        if (!pudoOwner) {
+            throw new ApiException(ApiReturnCodes.FORBIDDEN, localizationService.getMessage("error.user.not_pudo_owner"));
+        }
+
+        try {
+            packageService.uploadPackagePicture(externalFileId, uploadedFile.getValue0(), uploadedFile.getValue1());
+            return new BaseResponse(context.getExecutionId(), ApiReturnCodes.OK);
+        } catch (RuntimeException ex) {
+            log.error("[{}] {}", context.getExecutionId(), ExceptionUtils.getCompactStackTrace(ex));
+            throw new ApiException(ApiReturnCodes.SERVICE_UNAVAILABLE, localizationService.getMessage("error.service_unavailable"));
+        }
+    }
 
     @GET
     @Path("/{packageId}")
@@ -97,56 +139,6 @@ public class PackageResource {
 
         Pair<TbPackage, List<TbPackageEvent>> pack = packageService.deliveredPackage(pudoId, req);
         return new PackageResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapPackageEntityToDto(pack));
-    }
-
-    @PUT
-    @Path("/{packageId}/picture")
-    @Consumes(MediaType.MULTIPART_FORM_DATA)
-    @BinaryAPI
-    @Operation(summary = "Upload delivery picture for package with provided packageId")
-    public PackageResponse updatePackagePicture(@PathParam(value = "packageId") Long packageId, MultipartFormDataInput req) {
-        // sanitize input
-        if (req == null) {
-            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.empty_request"));
-        }
-        Map<String, List<InputPart>> map = req.getFormDataMap();
-        List<InputPart> parts = map.get(PROFILE_PIC_MULTIPART_NAME);
-        if (parts == null || parts.isEmpty()) {
-            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.empty_mandatory_field", "multipart name"));
-        }
-
-        InputPart part = parts.get(0);
-        String mimeType = part.getMediaType().toString();
-        if (mimeType.contains(";")) {
-            mimeType = mimeType.split(";", -1)[0];
-        }
-
-        // more sanitizing
-        if (!ALLOWED_IMAGE_MIME_TYPES.contains(mimeType)) {
-            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.invalid_field", "mimeType"));
-        }
-
-        TbPackage p = packageService.getPackageShallowById(packageId);
-        if (p == null) {
-            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.package.package_not_exists"));
-        }
-
-        // checking permission
-        // operation is allowed if the current user is the package pudo owner
-        Long pudoId = pudoService.getPudoIdByOwner(context.getUserId());
-        if (!p.getPudoId().equals(pudoId)) {
-            throw new ApiException(ApiReturnCodes.FORBIDDEN, localizationService.getMessage("error.forbidden"));
-        }
-
-        try {
-            InputStream is = part.getBody(InputStream.class, null);
-            byte[] bytes = StreamUtils.readAllBytesFromInputStream(is);
-            Pair<TbPackage, List<TbPackageEvent>> pack = packageService.updatePackagePicture(context.getUserId(), mimeType, bytes);
-            return new PackageResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapPackageEntityToDto(pack));
-        } catch (RuntimeException | IOException ex) {
-            log.error("[{}] {}", context.getExecutionId(), ExceptionUtils.getCompactStackTrace(ex));
-            throw new ApiException(ApiReturnCodes.SERVICE_UNAVAILABLE, localizationService.getMessage("error.service_unavailable"));
-        }
     }
 
 }

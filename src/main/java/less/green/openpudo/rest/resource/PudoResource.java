@@ -1,9 +1,7 @@
 package less.green.openpudo.rest.resource;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -19,11 +17,10 @@ import less.green.openpudo.cdi.ExecutionContext;
 import less.green.openpudo.cdi.service.GeocodeService;
 import less.green.openpudo.cdi.service.LocalizationService;
 import less.green.openpudo.common.ApiReturnCodes;
-import static less.green.openpudo.common.Constants.ALLOWED_IMAGE_MIME_TYPES;
-import static less.green.openpudo.common.Constants.PROFILE_PIC_MULTIPART_NAME;
 import less.green.openpudo.common.ExceptionUtils;
 import static less.green.openpudo.common.FormatUtils.safeNormalizePhoneNumber;
-import less.green.openpudo.common.StreamUtils;
+import less.green.openpudo.common.MultipartUtils;
+import static less.green.openpudo.common.MultipartUtils.ALLOWED_IMAGE_MIME_TYPES;
 import static less.green.openpudo.common.StringUtils.isEmpty;
 import less.green.openpudo.common.dto.tuple.Pair;
 import less.green.openpudo.persistence.model.TbAddress;
@@ -41,7 +38,6 @@ import less.green.openpudo.rest.dto.pudo.PudoResponse;
 import less.green.openpudo.rest.dto.user.UserListResponse;
 import lombok.extern.log4j.Log4j2;
 import org.eclipse.microprofile.openapi.annotations.Operation;
-import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
 @RequestScoped
@@ -162,20 +158,20 @@ public class PudoResource {
         if (req == null) {
             throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.empty_request"));
         }
-        Map<String, List<InputPart>> map = req.getFormDataMap();
-        List<InputPart> parts = map.get(PROFILE_PIC_MULTIPART_NAME);
-        if (parts == null || parts.isEmpty()) {
-            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.empty_mandatory_field", "multipart name"));
-        }
 
-        InputPart part = parts.get(0);
-        String mimeType = part.getMediaType().toString();
-        if (mimeType.contains(";")) {
-            mimeType = mimeType.split(";", -1)[0];
+        Pair<String, byte[]> uploadedFile;
+        try {
+            uploadedFile = MultipartUtils.readUploadedFile(req);
+        } catch (IOException ex) {
+            log.error(ex.getMessage());
+            throw new ApiException(ApiReturnCodes.SERVICE_UNAVAILABLE, localizationService.getMessage("error.service_unavailable"));
         }
 
         // more sanitizing
-        if (!ALLOWED_IMAGE_MIME_TYPES.contains(mimeType)) {
+        if (uploadedFile == null) {
+            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.empty_mandatory_field", "multipart name"));
+        }
+        if (!ALLOWED_IMAGE_MIME_TYPES.contains(uploadedFile.getValue0())) {
             throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.invalid_field", "mimeType"));
         }
 
@@ -186,11 +182,9 @@ public class PudoResource {
         }
 
         try {
-            InputStream is = part.getBody(InputStream.class, null);
-            byte[] bytes = StreamUtils.readAllBytesFromInputStream(is);
-            Pair<TbPudo, TbAddress> pudo = pudoService.updatePudoProfilePicByOwner(context.getUserId(), mimeType, bytes);
+            Pair<TbPudo, TbAddress> pudo = pudoService.updatePudoProfilePicByOwner(context.getUserId(), uploadedFile.getValue0(), uploadedFile.getValue1());
             return new PudoResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapPudoEntityToDto(pudo));
-        } catch (RuntimeException | IOException ex) {
+        } catch (RuntimeException ex) {
             log.error("[{}] {}", context.getExecutionId(), ExceptionUtils.getCompactStackTrace(ex));
             throw new ApiException(ApiReturnCodes.SERVICE_UNAVAILABLE, localizationService.getMessage("error.service_unavailable"));
         }

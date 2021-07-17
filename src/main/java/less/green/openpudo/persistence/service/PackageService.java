@@ -1,24 +1,34 @@
 package less.green.openpudo.persistence.service;
 
+import com.google.firebase.messaging.BatchResponse;
+import com.google.firebase.messaging.SendResponse;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+import less.green.openpudo.cdi.service.FirebaseMessagingService;
+import less.green.openpudo.cdi.service.LocalizationService;
 import less.green.openpudo.cdi.service.StorageService;
 import static less.green.openpudo.common.StringUtils.sanitizeString;
 import less.green.openpudo.common.dto.tuple.Pair;
+import less.green.openpudo.persistence.dao.DeviceTokenDao;
 import less.green.openpudo.persistence.dao.ExternalFileDao;
 import less.green.openpudo.persistence.dao.NotificationDao;
 import less.green.openpudo.persistence.dao.PackageDao;
 import less.green.openpudo.persistence.dao.PackageEventDao;
 import less.green.openpudo.persistence.dao.usertype.PackageStatus;
+import less.green.openpudo.persistence.model.TbAddress;
+import less.green.openpudo.persistence.model.TbDeviceToken;
 import less.green.openpudo.persistence.model.TbExternalFile;
+import less.green.openpudo.persistence.model.TbNotification;
 import less.green.openpudo.persistence.model.TbPackage;
 import less.green.openpudo.persistence.model.TbPackageEvent;
-import less.green.openpudo.rest.dto.map.pack.PackageRequest;
+import less.green.openpudo.persistence.model.TbPudo;
+import less.green.openpudo.rest.dto.pack.PackageRequest;
 import lombok.extern.log4j.Log4j2;
 
 @RequestScoped
@@ -27,8 +37,17 @@ import lombok.extern.log4j.Log4j2;
 public class PackageService {
 
     @Inject
+    FirebaseMessagingService firebaseMessagingService;
+    @Inject
+    LocalizationService localizationService;
+    @Inject
     StorageService storageService;
 
+    @Inject
+    PudoService pudoService;
+
+    @Inject
+    DeviceTokenDao deviceTokenDao;
     @Inject
     ExternalFileDao externalFileDao;
     @Inject
@@ -38,17 +57,8 @@ public class PackageService {
     @Inject
     NotificationDao notificationDao;
 
-    public TbPackage getPackageShallowById(Long packageId) {
-        return packageDao.get(packageId);
-    }
-
     public Pair<TbPackage, List<TbPackageEvent>> getPackageById(Long packageId) {
-        TbPackage pack = packageDao.get(packageId);
-        if (pack == null) {
-            return null;
-        }
-        List<TbPackageEvent> events = packageEventDao.getPackageEventsByPackageId(packageId);
-        return new Pair<>(pack, events);
+        return packageDao.getPackageById(packageId);
     }
 
     public Pair<TbPackage, List<TbPackageEvent>> deliveredPackage(Long pudoId, PackageRequest req) {
@@ -58,7 +68,7 @@ public class PackageService {
         pack.setUpdateTms(now);
         pack.setPudoId(pudoId);
         pack.setUserId(req.getUserId());
-        pack.setPackageStatus(PackageStatus.DELIVERED);
+        pack.setPackagePicId(req.getPackage_pic_id());
         packageDao.persist(pack);
         packageDao.flush();
         TbPackageEvent event = new TbPackageEvent();
@@ -68,36 +78,48 @@ public class PackageService {
         event.setNotes(sanitizeString(req.getNotes()));
         packageEventDao.persist(event);
         packageEventDao.flush();
+
+        Pair<TbPudo, TbAddress> pudo = pudoService.getPudoById(pudoId);
+        String notificationTitle = localizationService.getMessage("notification.package.delivered.title");
+        String notificationMessage = localizationService.getMessage("notification.package.delivered.message", pudo.getValue0().getBusinessName());
+
+        TbNotification notif = new TbNotification();
+        notif.setUserId(req.getUserId());
+        notif.setCreateTms(now);
+        notif.setTitle(notificationTitle);
+        notif.setMessage(notificationMessage);
+        notificationDao.persist(notif);
+        notificationDao.flush();
+
+        List<TbDeviceToken> deviceTokens = deviceTokenDao.getDeviceTokensByUserId(req.getUserId());
+        BatchResponse responses = firebaseMessagingService.sendNotification(deviceTokens.stream().map(i -> i.getDeviceToken()).collect(Collectors.toList()), notificationTitle, notificationMessage, null);
+        if (responses != null) {
+            for (int i = 0; i < responses.getResponses().size(); i++) {
+                TbDeviceToken curRow = deviceTokens.get(i);
+                SendResponse resp = responses.getResponses().get(i);
+                if (resp.isSuccessful()) {
+                    curRow.setLastSuccessTms(now);
+                    curRow.setLastSuccessMessageId(resp.getMessageId());
+                } else {
+                    curRow.setLastFailureTms(now);
+                    curRow.setFailureCount(curRow.getFailureCount() == null ? 1 : curRow.getFailureCount() + 1);
+                }
+            }
+            deviceTokenDao.flush();
+        }
+
         return new Pair<>(pack, Arrays.asList(event));
     }
 
-    public Pair<TbPackage, List<TbPackageEvent>> updatePackagePicture(Long packageId, String mimeType, byte[] bytes) {
+    public void uploadPackagePicture(UUID externalFileId, String mimeType, byte[] bytes) {
         Date now = new Date();
-        Pair<TbPackage, List<TbPackageEvent>> pack = getPackageById(packageId);
-        UUID oldId = pack.getValue0().getPackagePicId();
-        UUID newId = UUID.randomUUID();
-        // save new file first
-        storageService.saveFileBinary(newId, bytes);
-        // delete old file if any
-        if (oldId != null) {
-            storageService.deleteFile(oldId);
-        }
-        // if everything is ok, we can update database
-        // save new row
+        storageService.saveFileBinary(externalFileId, bytes);
         TbExternalFile ent = new TbExternalFile();
-        ent.setExternalFileId(newId);
+        ent.setExternalFileId(externalFileId);
         ent.setCreateTms(now);
         ent.setMimeType(mimeType);
         externalFileDao.persist(ent);
         externalFileDao.flush();
-        // switch foreign key
-        pack.getValue0().setUpdateTms(now);
-        pack.getValue0().setPackagePicId(newId);
-        packageDao.flush();
-        // remove old row
-        externalFileDao.delete(oldId);
-        externalFileDao.flush();
-        return pack;
     }
 
 }
