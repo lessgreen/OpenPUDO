@@ -29,7 +29,7 @@ import less.green.openpudo.rest.config.BinaryAPI;
 import less.green.openpudo.rest.config.exception.ApiException;
 import less.green.openpudo.rest.dto.BaseResponse;
 import less.green.openpudo.rest.dto.DtoMapper;
-import less.green.openpudo.rest.dto.pack.CollectedPackageRequest;
+import less.green.openpudo.rest.dto.pack.ChangePackageStatusRequest;
 import less.green.openpudo.rest.dto.pack.DeliveredPackageRequest;
 import less.green.openpudo.rest.dto.pack.PackageResponse;
 import lombok.extern.log4j.Log4j2;
@@ -170,7 +170,7 @@ public class PackageResource {
     @POST
     @Path("/{packageId}/collected")
     @Operation(summary = "Signal that the user has collected the package")
-    public PackageResponse collectedPackage(@PathParam(value = "packageId") Long packageId, CollectedPackageRequest req) {
+    public PackageResponse collectedPackage(@PathParam(value = "packageId") Long packageId, ChangePackageStatusRequest req) {
         // sanitize input
         if (req == null) {
             throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.empty_request"));
@@ -189,11 +189,43 @@ public class PackageResource {
         }
 
         // operation is allowed if the package is in delivered or notified state
-        if (pack.getValue1().get(0).getPackageStatus() != PackageStatus.DELIVERED && pack.getValue1().get(0).getPackageStatus() != PackageStatus.NOTIFIED) {
+        if (pack.getValue1().get(0).getPackageStatus() != PackageStatus.DELIVERED
+                && pack.getValue1().get(0).getPackageStatus() != PackageStatus.NOTIFIED) {
             throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage("error.package.illegal_state"));
         }
 
         pack = packageService.collectedPackage(packageId, req);
+        return new PackageResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapPackageEntityToDto(pack));
+    }
+
+    @POST
+    @Path("/{packageId}/accepted")
+    @Operation(summary = "Signal that the user confirms the package collection")
+    public PackageResponse acceptedPackage(@PathParam(value = "packageId") Long packageId, ChangePackageStatusRequest req) {
+        // sanitize input
+        if (req == null) {
+            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.empty_request"));
+        }
+
+        Pair<TbPackage, List<TbPackageEvent>> pack = packageService.getPackageById(packageId);
+        if (pack == null) {
+            throw new ApiException(ApiReturnCodes.RESOURCE_NOT_FOUND, localizationService.getMessage("error.package.package_not_exists"));
+        }
+
+        // checking permission
+        // operation is allowed if the current user is the package recipient
+        if (!pack.getValue0().getUserId().equals(context.getUserId())) {
+            throw new ApiException(ApiReturnCodes.FORBIDDEN, localizationService.getMessage("error.forbidden"));
+        }
+
+        // operation is allowed if the package is in delivered, notified or collected state
+        if (pack.getValue1().get(0).getPackageStatus() != PackageStatus.DELIVERED
+                && pack.getValue1().get(0).getPackageStatus() != PackageStatus.NOTIFIED
+                && pack.getValue1().get(0).getPackageStatus() != PackageStatus.COLLECTED) {
+            throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage("error.package.illegal_state"));
+        }
+
+        pack = packageService.acceptedPackage(packageId, req);
         return new PackageResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapPackageEntityToDto(pack));
     }
 

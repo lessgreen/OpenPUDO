@@ -28,7 +28,7 @@ import less.green.openpudo.persistence.model.TbNotification;
 import less.green.openpudo.persistence.model.TbPackage;
 import less.green.openpudo.persistence.model.TbPackageEvent;
 import less.green.openpudo.persistence.model.TbPudo;
-import less.green.openpudo.rest.dto.pack.CollectedPackageRequest;
+import less.green.openpudo.rest.dto.pack.ChangePackageStatusRequest;
 import less.green.openpudo.rest.dto.pack.DeliveredPackageRequest;
 import lombok.extern.log4j.Log4j2;
 
@@ -118,9 +118,8 @@ public class PackageService {
         return getPackageById(packageId);
     }
 
-    public Pair<TbPackage, List<TbPackageEvent>> collectedPackage(Long packageId, CollectedPackageRequest req) {
+    public Pair<TbPackage, List<TbPackageEvent>> collectedPackage(Long packageId, ChangePackageStatusRequest req) {
         Date now = new Date();
-        Pair<TbPackage, List<TbPackageEvent>> pack = getPackageById(packageId);
         TbPackageEvent event = new TbPackageEvent();
         event.setCreateTms(now);
         event.setPackageId(packageId);
@@ -129,6 +128,7 @@ public class PackageService {
         packageEventDao.persist(event);
         packageEventDao.flush();
 
+        Pair<TbPackage, List<TbPackageEvent>> pack = getPackageById(packageId);
         Pair<TbPudo, TbAddress> pudo = pudoService.getPudoById(pack.getValue0().getPudoId());
         String notificationTitle = localizationService.getMessage("notification.package.collected.title");
         String notificationMessage = localizationService.getMessage("notification.package.collected.message", pudo.getValue0().getBusinessName());
@@ -142,6 +142,31 @@ public class PackageService {
         notificationDao.flush();
 
         sendNotifications(pack.getValue0().getUserId(), notificationTitle, notificationMessage);
+        return getPackageById(packageId);
+    }
+
+    public Pair<TbPackage, List<TbPackageEvent>> acceptedPackage(Long packageId, ChangePackageStatusRequest req) {
+        Date now = new Date();
+        TbPackageEvent event = new TbPackageEvent();
+        event.setCreateTms(now);
+        event.setPackageId(packageId);
+        event.setPackageStatus(PackageStatus.ACCEPTED);
+        event.setNotes(sanitizeString(req.getNotes()));
+        packageEventDao.persist(event);
+        packageEventDao.flush();
+
+        Pair<TbPackage, List<TbPackageEvent>> pack = getPackageById(packageId);
+        String notificationTitle = localizationService.getMessage("notification.package.accepted.title");
+        String notificationMessage = localizationService.getMessage("notification.package.accepted.message");
+
+        TbNotification notif = new TbNotification();
+        notif.setUserId(pack.getValue0().getUserId());
+        notif.setCreateTms(now);
+        notif.setTitle(notificationTitle);
+        notif.setMessage(notificationMessage);
+        notificationDao.persist(notif);
+        notificationDao.flush();
+
         return getPackageById(packageId);
     }
 
