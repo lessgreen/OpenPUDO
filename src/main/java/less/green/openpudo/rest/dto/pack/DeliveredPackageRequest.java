@@ -5,7 +5,7 @@ import lombok.Data;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 @Data
-public class DeliverPackageRequest {
+public class DeliveredPackageRequest {
 
     @Schema(required = true)
     private Long userId;

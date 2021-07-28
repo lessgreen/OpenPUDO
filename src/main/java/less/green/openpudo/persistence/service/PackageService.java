@@ -28,7 +28,8 @@ import less.green.openpudo.persistence.model.TbNotification;
 import less.green.openpudo.persistence.model.TbPackage;
 import less.green.openpudo.persistence.model.TbPackageEvent;
 import less.green.openpudo.persistence.model.TbPudo;
-import less.green.openpudo.rest.dto.pack.DeliverPackageRequest;
+import less.green.openpudo.rest.dto.pack.CollectedPackageRequest;
+import less.green.openpudo.rest.dto.pack.DeliveredPackageRequest;
 import lombok.extern.log4j.Log4j2;
 
 @RequestScoped
@@ -72,7 +73,7 @@ public class PackageService {
         externalFileDao.flush();
     }
 
-    public Pair<TbPackage, List<TbPackageEvent>> deliveredPackage(Long pudoId, DeliverPackageRequest req) {
+    public Pair<TbPackage, List<TbPackageEvent>> deliveredPackage(Long pudoId, DeliveredPackageRequest req) {
         Date now = new Date();
         TbPackage pack = new TbPackage();
         pack.setCreateTms(now);
@@ -102,7 +103,51 @@ public class PackageService {
         notificationDao.persist(notif);
         notificationDao.flush();
 
-        List<TbDeviceToken> deviceTokens = deviceTokenDao.getDeviceTokensByUserId(req.getUserId());
+        sendNotifications(req.getUserId(), notificationTitle, notificationMessage);
+        return new Pair<>(pack, Arrays.asList(event));
+    }
+
+    public Pair<TbPackage, List<TbPackageEvent>> notifiedPackage(Long packageId) {
+        Date now = new Date();
+        TbPackageEvent event = new TbPackageEvent();
+        event.setCreateTms(now);
+        event.setPackageId(packageId);
+        event.setPackageStatus(PackageStatus.NOTIFIED);
+        packageEventDao.persist(event);
+        packageEventDao.flush();
+        return getPackageById(packageId);
+    }
+
+    public Pair<TbPackage, List<TbPackageEvent>> collectedPackage(Long packageId, CollectedPackageRequest req) {
+        Date now = new Date();
+        Pair<TbPackage, List<TbPackageEvent>> pack = getPackageById(packageId);
+        TbPackageEvent event = new TbPackageEvent();
+        event.setCreateTms(now);
+        event.setPackageId(packageId);
+        event.setPackageStatus(PackageStatus.COLLECTED);
+        event.setNotes(sanitizeString(req.getNotes()));
+        packageEventDao.persist(event);
+        packageEventDao.flush();
+
+        Pair<TbPudo, TbAddress> pudo = pudoService.getPudoById(pack.getValue0().getPudoId());
+        String notificationTitle = localizationService.getMessage("notification.package.collected.title");
+        String notificationMessage = localizationService.getMessage("notification.package.collected.message", pudo.getValue0().getBusinessName());
+
+        TbNotification notif = new TbNotification();
+        notif.setUserId(pack.getValue0().getUserId());
+        notif.setCreateTms(now);
+        notif.setTitle(notificationTitle);
+        notif.setMessage(notificationMessage);
+        notificationDao.persist(notif);
+        notificationDao.flush();
+
+        sendNotifications(pack.getValue0().getUserId(), notificationTitle, notificationMessage);
+        return getPackageById(packageId);
+    }
+
+    private void sendNotifications(Long userId, String notificationTitle, String notificationMessage) {
+        Date now = new Date();
+        List<TbDeviceToken> deviceTokens = deviceTokenDao.getDeviceTokensByUserId(userId);
         if (!deviceTokens.isEmpty()) {
             BatchResponse responses = firebaseMessagingService.sendNotification(deviceTokens.stream().map(i -> i.getDeviceToken()).collect(Collectors.toList()), notificationTitle, notificationMessage, null);
             if (responses != null) {
@@ -120,19 +165,6 @@ public class PackageService {
                 deviceTokenDao.flush();
             }
         }
-
-        return new Pair<>(pack, Arrays.asList(event));
-    }
-
-    public Pair<TbPackage, List<TbPackageEvent>> notifiedPackage(Long packageId) {
-        Date now = new Date();
-        TbPackageEvent event = new TbPackageEvent();
-        event.setCreateTms(now);
-        event.setPackageId(packageId);
-        event.setPackageStatus(PackageStatus.NOTIFIED);
-        packageEventDao.persist(event);
-        packageEventDao.flush();
-        return getPackageById(packageId);
     }
 
 }
