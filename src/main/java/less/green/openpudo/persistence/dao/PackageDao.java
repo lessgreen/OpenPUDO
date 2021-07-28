@@ -21,7 +21,8 @@ public class PackageDao extends BaseEntityDao<TbPackage, Long> {
         String qs = "SELECT t1, t2 "
                 + "FROM TbPackage t1, TbPackageEvent t2 "
                 + "WHERE t1.packageId = t2.packageId "
-                + "AND t2.createTms = (SELECT MAX(t3.createTms) FROM TbPackageEvent t3 WHERE t3.packageId = t1.packageId)";
+                + "AND t1.packageId = :packageId "
+                + "AND t2.createTms = (SELECT MAX(t3.createTms) FROM TbPackageEvent t3 WHERE t3.packageId = t2.packageId)";
         TypedQuery<Object[]> q = em.createQuery(qs, Object[].class);
         q.setParameter("packageId", packageId);
         Object[] rs = q.getSingleResult();
