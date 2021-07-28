@@ -6,12 +6,14 @@ import java.util.UUID;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import less.green.openpudo.cdi.ExecutionContext;
 import less.green.openpudo.cdi.service.LocalizationService;
@@ -31,9 +33,11 @@ import less.green.openpudo.rest.dto.BaseResponse;
 import less.green.openpudo.rest.dto.DtoMapper;
 import less.green.openpudo.rest.dto.pack.ChangePackageStatusRequest;
 import less.green.openpudo.rest.dto.pack.DeliveredPackageRequest;
+import less.green.openpudo.rest.dto.pack.PackageListResponse;
 import less.green.openpudo.rest.dto.pack.PackageResponse;
 import lombok.extern.log4j.Log4j2;
 import org.eclipse.microprofile.openapi.annotations.Operation;
+import org.eclipse.microprofile.openapi.annotations.parameters.Parameter;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
 @RequestScoped
@@ -99,22 +103,6 @@ public class PackageResource {
             log.error("[{}] {}", context.getExecutionId(), ExceptionUtils.getCompactStackTrace(ex));
             throw new ApiException(ApiReturnCodes.SERVICE_UNAVAILABLE, localizationService.getMessage("error.service_unavailable"));
         }
-    }
-
-    @GET
-    @Path("/{packageId}")
-    @Operation(summary = "Get info and event log for package with provided packageId")
-    public PackageResponse getPackageById(@PathParam(value = "packageId") Long packageId) {
-        Pair<TbPackage, List<TbPackageEvent>> pack = packageService.getPackageById(packageId);
-        if (pack != null) {
-            // checking permission
-            // operation is allowed if the current user is the package pudo owner or the package recipient
-            Long pudoId = pudoService.getPudoIdByOwner(context.getUserId());
-            if (!pack.getValue0().getPudoId().equals(pudoId) && !pack.getValue0().getUserId().equals(context.getUserId())) {
-                throw new ApiException(ApiReturnCodes.FORBIDDEN, localizationService.getMessage("error.forbidden"));
-            }
-        }
-        return new PackageResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapPackageEntityToDto(pack));
     }
 
     @POST
@@ -227,6 +215,35 @@ public class PackageResource {
 
         pack = packageService.acceptedPackage(packageId, req);
         return new PackageResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapPackageEntityToDto(pack));
+    }
+
+    @GET
+    @Path("/{packageId}")
+    @Operation(summary = "Get info and event log for package with provided packageId")
+    public PackageResponse getPackageById(@PathParam(value = "packageId") Long packageId) {
+        Pair<TbPackage, List<TbPackageEvent>> pack = packageService.getPackageById(packageId);
+        if (pack != null) {
+            // checking permission
+            // operation is allowed if the current user is the package pudo owner or the package recipient
+            Long pudoId = pudoService.getPudoIdByOwner(context.getUserId());
+            if (!pack.getValue0().getPudoId().equals(pudoId) && !pack.getValue0().getUserId().equals(context.getUserId())) {
+                throw new ApiException(ApiReturnCodes.FORBIDDEN, localizationService.getMessage("error.forbidden"));
+            }
+        }
+        return new PackageResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapPackageEntityToDto(pack));
+    }
+
+    @GET
+    @Path("/mine")
+    @Operation(summary = "Get package list for current user, with optional query parameters",
+            description = "If called without parameters, this API return the summary of all packages in \"open\" state for the current user, behaving differently if the caller is a user or a PUDO.\n\n"
+            + "Parameters can be used to perform an historical search, and pagination will be used only in this mode.")
+    public PackageListResponse getPackageList(
+            @Parameter(description = "Historical search", required = false) @DefaultValue("false") @QueryParam("history") boolean history,
+            @Parameter(description = "Pagination limit", required = false) @DefaultValue("20") @QueryParam("limit") int limit,
+            @Parameter(description = "Pagination offset", required = false) @DefaultValue("0") @QueryParam("offset") int offset) {
+        List<Pair<TbPackage, List<TbPackageEvent>>> packs = packageService.getPackageList(context.getUserId(), history, limit, offset);
+        return new PackageListResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapPackageEntityListToDto(packs));
     }
 
 }

@@ -170,6 +170,15 @@ public class PackageService {
         return getPackageById(packageId);
     }
 
+    public List<Pair<TbPackage, List<TbPackageEvent>>> getPackageList(Long userId, boolean history, int limit, int offset) {
+        Pair<TbPudo, TbAddress> pudo = pudoService.getPudoByOwner(userId);
+        if (pudo != null) {
+            return packageDao.getPackageShallowList(PackageDao.Pov.PUDO, pudo.getValue0().getPudoId(), history, limit, offset);
+        } else {
+            return packageDao.getPackageShallowList(PackageDao.Pov.USER, userId, history, limit, offset);
+        }
+    }
+
     private void sendNotifications(Long userId, String notificationTitle, String notificationMessage) {
         Date now = new Date();
         List<TbDeviceToken> deviceTokens = deviceTokenDao.getDeviceTokensByUserId(userId);

@@ -39,6 +39,8 @@ public interface DtoMapper {
     @Mapping(source = "ent.value1", target = "events")
     Package mapPackageEntityToDto(Pair<TbPackage, List<TbPackageEvent>> ent);
 
+    List<Package> mapPackageEntityListToDto(List<Pair<TbPackage, List<TbPackageEvent>>> ents);
+
     default AddressMarker mapFeatureToAddressMarker(Feature feat) {
         if (feat == null) {
             return null;
