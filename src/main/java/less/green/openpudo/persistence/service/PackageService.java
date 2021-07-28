@@ -28,7 +28,7 @@ import less.green.openpudo.persistence.model.TbNotification;
 import less.green.openpudo.persistence.model.TbPackage;
 import less.green.openpudo.persistence.model.TbPackageEvent;
 import less.green.openpudo.persistence.model.TbPudo;
-import less.green.openpudo.rest.dto.pack.PackageRequest;
+import less.green.openpudo.rest.dto.pack.DeliverPackageRequest;
 import lombok.extern.log4j.Log4j2;
 
 @RequestScoped
@@ -61,7 +61,18 @@ public class PackageService {
         return packageDao.getPackageById(packageId);
     }
 
-    public Pair<TbPackage, List<TbPackageEvent>> deliveredPackage(Long pudoId, PackageRequest req) {
+    public void uploadPackagePicture(UUID externalFileId, String mimeType, byte[] bytes) {
+        Date now = new Date();
+        storageService.saveFileBinary(externalFileId, bytes);
+        TbExternalFile ent = new TbExternalFile();
+        ent.setExternalFileId(externalFileId);
+        ent.setCreateTms(now);
+        ent.setMimeType(mimeType);
+        externalFileDao.persist(ent);
+        externalFileDao.flush();
+    }
+
+    public Pair<TbPackage, List<TbPackageEvent>> deliveredPackage(Long pudoId, DeliverPackageRequest req) {
         Date now = new Date();
         TbPackage pack = new TbPackage();
         pack.setCreateTms(now);
@@ -92,34 +103,36 @@ public class PackageService {
         notificationDao.flush();
 
         List<TbDeviceToken> deviceTokens = deviceTokenDao.getDeviceTokensByUserId(req.getUserId());
-        BatchResponse responses = firebaseMessagingService.sendNotification(deviceTokens.stream().map(i -> i.getDeviceToken()).collect(Collectors.toList()), notificationTitle, notificationMessage, null);
-        if (responses != null) {
-            for (int i = 0; i < responses.getResponses().size(); i++) {
-                TbDeviceToken curRow = deviceTokens.get(i);
-                SendResponse resp = responses.getResponses().get(i);
-                if (resp.isSuccessful()) {
-                    curRow.setLastSuccessTms(now);
-                    curRow.setLastSuccessMessageId(resp.getMessageId());
-                } else {
-                    curRow.setLastFailureTms(now);
-                    curRow.setFailureCount(curRow.getFailureCount() == null ? 1 : curRow.getFailureCount() + 1);
+        if (!deviceTokens.isEmpty()) {
+            BatchResponse responses = firebaseMessagingService.sendNotification(deviceTokens.stream().map(i -> i.getDeviceToken()).collect(Collectors.toList()), notificationTitle, notificationMessage, null);
+            if (responses != null) {
+                for (int i = 0; i < responses.getResponses().size(); i++) {
+                    TbDeviceToken curRow = deviceTokens.get(i);
+                    SendResponse resp = responses.getResponses().get(i);
+                    if (resp.isSuccessful()) {
+                        curRow.setLastSuccessTms(now);
+                        curRow.setLastSuccessMessageId(resp.getMessageId());
+                    } else {
+                        curRow.setLastFailureTms(now);
+                        curRow.setFailureCount(curRow.getFailureCount() == null ? 1 : curRow.getFailureCount() + 1);
+                    }
                 }
+                deviceTokenDao.flush();
             }
-            deviceTokenDao.flush();
         }
 
         return new Pair<>(pack, Arrays.asList(event));
     }
 
-    public void uploadPackagePicture(UUID externalFileId, String mimeType, byte[] bytes) {
+    public Pair<TbPackage, List<TbPackageEvent>> notifiedPackage(Long packageId) {
         Date now = new Date();
-        storageService.saveFileBinary(externalFileId, bytes);
-        TbExternalFile ent = new TbExternalFile();
-        ent.setExternalFileId(externalFileId);
-        ent.setCreateTms(now);
-        ent.setMimeType(mimeType);
-        externalFileDao.persist(ent);
-        externalFileDao.flush();
+        TbPackageEvent event = new TbPackageEvent();
+        event.setCreateTms(now);
+        event.setPackageId(packageId);
+        event.setPackageStatus(PackageStatus.NOTIFIED);
+        packageEventDao.persist(event);
+        packageEventDao.flush();
+        return getPackageById(packageId);
     }
 
 }

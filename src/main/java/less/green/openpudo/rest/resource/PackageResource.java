@@ -20,6 +20,7 @@ import less.green.openpudo.common.ExceptionUtils;
 import less.green.openpudo.common.MultipartUtils;
 import static less.green.openpudo.common.MultipartUtils.ALLOWED_IMAGE_MIME_TYPES;
 import less.green.openpudo.common.dto.tuple.Pair;
+import less.green.openpudo.persistence.dao.usertype.PackageStatus;
 import less.green.openpudo.persistence.model.TbPackage;
 import less.green.openpudo.persistence.model.TbPackageEvent;
 import less.green.openpudo.persistence.service.PackageService;
@@ -28,7 +29,7 @@ import less.green.openpudo.rest.config.BinaryAPI;
 import less.green.openpudo.rest.config.exception.ApiException;
 import less.green.openpudo.rest.dto.BaseResponse;
 import less.green.openpudo.rest.dto.DtoMapper;
-import less.green.openpudo.rest.dto.pack.PackageRequest;
+import less.green.openpudo.rest.dto.pack.DeliverPackageRequest;
 import less.green.openpudo.rest.dto.pack.PackageResponse;
 import lombok.extern.log4j.Log4j2;
 import org.eclipse.microprofile.openapi.annotations.Operation;
@@ -118,7 +119,7 @@ public class PackageResource {
     @POST
     @Path("/")
     @Operation(summary = "Signal the delivery of a package for current PUDO")
-    public PackageResponse deliveredPackage(PackageRequest req) {
+    public PackageResponse deliveredPackage(DeliverPackageRequest req) {
         // sanitize input
         if (req == null) {
             throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.empty_request"));
@@ -138,6 +139,30 @@ public class PackageResource {
         }
 
         Pair<TbPackage, List<TbPackageEvent>> pack = packageService.deliveredPackage(pudoId, req);
+        return new PackageResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapPackageEntityToDto(pack));
+    }
+
+    @POST
+    @Path("/{packageId}/notified")
+    @Operation(summary = "Signal that the user has received the delivery notification of a package")
+    public PackageResponse notifiedPackage(@PathParam(value = "packageId") Long packageId) {
+        Pair<TbPackage, List<TbPackageEvent>> pack = packageService.getPackageById(packageId);
+        if (pack == null) {
+            throw new ApiException(ApiReturnCodes.RESOURCE_NOT_FOUND, localizationService.getMessage("error.package.package_not_exists"));
+        }
+
+        // checking permission
+        // operation is allowed if the current user is the package recipient
+        if (!pack.getValue0().getUserId().equals(context.getUserId())) {
+            throw new ApiException(ApiReturnCodes.FORBIDDEN, localizationService.getMessage("error.forbidden"));
+        }
+
+        // if package has already moved past delivered state, we skip this transition and return the current state
+        if (pack.getValue1().get(0).getPackageStatus() != PackageStatus.DELIVERED) {
+            return new PackageResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapPackageEntityToDto(pack));
+        }
+
+        pack = packageService.notifiedPackage(packageId);
         return new PackageResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapPackageEntityToDto(pack));
     }
 
