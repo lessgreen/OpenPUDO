@@ -11,11 +11,9 @@ import less.green.openpudo.common.dto.tuple.Pair;
 import less.green.openpudo.persistence.dao.usertype.PackageStatus;
 import less.green.openpudo.persistence.model.TbPackage;
 import less.green.openpudo.persistence.model.TbPackageEvent;
-import lombok.extern.log4j.Log4j2;
 
 @RequestScoped
 @Transactional(Transactional.TxType.MANDATORY)
-@Log4j2
 public class PackageDao extends BaseEntityDao<TbPackage, Long> {
 
     public PackageDao() {
@@ -65,7 +63,6 @@ public class PackageDao extends BaseEntityDao<TbPackage, Long> {
             qs += " AND t2.packageStatus IN :packageStatusList";
         }
         qs += " ORDER BY t1.createTms DESC";
-        log.debug(qs);
         TypedQuery<Object[]> q = em.createQuery(qs, Object[].class);
         q.setParameter("referenceId", referenceId);
         if (!history) {

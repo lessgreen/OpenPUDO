@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 import less.green.openpudo.common.dto.tuple.Pair;
 import less.green.openpudo.persistence.model.TbAddress;
+import less.green.openpudo.persistence.model.TbNotification;
 import less.green.openpudo.persistence.model.TbPackage;
 import less.green.openpudo.persistence.model.TbPackageEvent;
 import less.green.openpudo.persistence.model.TbPudo;
@@ -12,6 +13,7 @@ import less.green.openpudo.rest.dto.address.Address;
 import less.green.openpudo.rest.dto.geojson.Feature;
 import less.green.openpudo.rest.dto.geojson.Point;
 import less.green.openpudo.rest.dto.map.AddressMarker;
+import less.green.openpudo.rest.dto.notification.Notification;
 import less.green.openpudo.rest.dto.pack.Package;
 import less.green.openpudo.rest.dto.pudo.Pudo;
 import less.green.openpudo.rest.dto.user.User;
@@ -40,6 +42,10 @@ public interface DtoMapper {
     Package mapPackageEntityToDto(Pair<TbPackage, List<TbPackageEvent>> ent);
 
     List<Package> mapPackageEntityListToDto(List<Pair<TbPackage, List<TbPackageEvent>>> ents);
+
+    Notification mapNotificationEntityToDto(TbNotification ent);
+
+    List<Notification> mapNotificationEntityToDto(List<TbNotification> ents);
 
     default AddressMarker mapFeatureToAddressMarker(Feature feat) {
         if (feat == null) {

@@ -52,7 +52,7 @@ public class AccessTokenFilter implements ContainerRequestFilter {
 
         // backdoor access
         if ("dev".equals(ProfileManager.getActiveProfile()) && authorizationHeader == null) {
-            context.setUserId(1L);
+            context.setUserId(11L);
             return;
         }
 

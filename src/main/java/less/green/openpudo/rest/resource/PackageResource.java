@@ -137,7 +137,7 @@ public class PackageResource {
     public PackageResponse notifiedPackage(@PathParam(value = "packageId") Long packageId) {
         Pair<TbPackage, List<TbPackageEvent>> pack = packageService.getPackageById(packageId);
         if (pack == null) {
-            throw new ApiException(ApiReturnCodes.RESOURCE_NOT_FOUND, localizationService.getMessage("error.package.package_not_exists"));
+            throw new ApiException(ApiReturnCodes.RESOURCE_NOT_FOUND, localizationService.getMessage("error.resource_not_exists"));
         }
 
         // checking permission
@@ -166,7 +166,7 @@ public class PackageResource {
 
         Pair<TbPackage, List<TbPackageEvent>> pack = packageService.getPackageById(packageId);
         if (pack == null) {
-            throw new ApiException(ApiReturnCodes.RESOURCE_NOT_FOUND, localizationService.getMessage("error.package.package_not_exists"));
+            throw new ApiException(ApiReturnCodes.RESOURCE_NOT_FOUND, localizationService.getMessage("error.error.resource_not_exists"));
         }
 
         // checking permission
@@ -197,7 +197,7 @@ public class PackageResource {
 
         Pair<TbPackage, List<TbPackageEvent>> pack = packageService.getPackageById(packageId);
         if (pack == null) {
-            throw new ApiException(ApiReturnCodes.RESOURCE_NOT_FOUND, localizationService.getMessage("error.package.package_not_exists"));
+            throw new ApiException(ApiReturnCodes.RESOURCE_NOT_FOUND, localizationService.getMessage("error.resource_not_exists"));
         }
 
         // checking permission
@@ -234,7 +234,7 @@ public class PackageResource {
     }
 
     @GET
-    @Path("/mine")
+    @Path("/")
     @Operation(summary = "Get package list for current user, with optional query parameters",
             description = "If called without parameters, this API return the summary of all packages in \"open\" state for the current user, behaving differently if the caller is a user or a PUDO.\n\n"
             + "Parameters can be used to perform an historical search, and pagination will be used only in this mode.")
@@ -242,6 +242,14 @@ public class PackageResource {
             @Parameter(description = "Historical search", required = false) @DefaultValue("false") @QueryParam("history") boolean history,
             @Parameter(description = "Pagination limit", required = false) @DefaultValue("20") @QueryParam("limit") int limit,
             @Parameter(description = "Pagination offset", required = false) @DefaultValue("0") @QueryParam("offset") int offset) {
+        // sanitize input
+        if (limit < 1) {
+            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.invalid_field", "limit"));
+        }
+        if (offset < 0) {
+            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.invalid_field", "offset"));
+        }
+
         List<Pair<TbPackage, List<TbPackageEvent>>> packs = packageService.getPackageList(context.getUserId(), history, limit, offset);
         return new PackageListResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapPackageEntityListToDto(packs));
     }

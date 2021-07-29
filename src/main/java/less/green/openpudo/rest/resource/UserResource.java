@@ -110,7 +110,7 @@ public class UserResource {
         }
         Pair<TbPudo, TbAddress> pudo = pudoService.getPudoById(pudoId);
         if (pudo == null) {
-            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.pudo.pudo_not_exists"));
+            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.resource_not_exists"));
         }
         boolean pudoCustomer = pudoService.isPudoCustomer(context.getUserId(), pudoId);
         if (pudoCustomer) {
