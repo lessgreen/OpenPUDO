@@ -41,4 +41,7 @@ public class TbNotification implements Serializable {
     @Column(name = "message")
     private String message;
 
+    @Column(name = "opt_data")
+    private String optData;
+
 }

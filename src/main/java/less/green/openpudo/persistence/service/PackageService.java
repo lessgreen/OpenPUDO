@@ -5,6 +5,7 @@ import com.google.firebase.messaging.SendResponse;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import javax.enterprise.context.RequestScoped;
@@ -13,6 +14,7 @@ import javax.transaction.Transactional;
 import less.green.openpudo.cdi.service.FirebaseMessagingService;
 import less.green.openpudo.cdi.service.LocalizationService;
 import less.green.openpudo.cdi.service.StorageService;
+import less.green.openpudo.common.Encoders;
 import static less.green.openpudo.common.StringUtils.sanitizeString;
 import less.green.openpudo.common.dto.tuple.Pair;
 import less.green.openpudo.persistence.dao.DeviceTokenDao;
@@ -94,16 +96,18 @@ public class PackageService {
         Pair<TbPudo, TbAddress> pudo = pudoService.getPudoById(pudoId);
         String notificationTitle = localizationService.getMessage("notification.package.delivered.title");
         String notificationMessage = localizationService.getMessage("notification.package.delivered.message", pudo.getValue0().getBusinessName());
+        Map<String, String> data = Map.of("packageId", pack.getPackageId().toString());
 
         TbNotification notif = new TbNotification();
         notif.setUserId(req.getUserId());
         notif.setCreateTms(now);
         notif.setTitle(notificationTitle);
         notif.setMessage(notificationMessage);
+        notif.setOptData(Encoders.writeValueAsStringSafe(data));
         notificationDao.persist(notif);
         notificationDao.flush();
 
-        sendNotifications(req.getUserId(), notificationTitle, notificationMessage);
+        sendNotifications(req.getUserId(), notificationTitle, notificationMessage, data);
         return new Pair<>(pack, Arrays.asList(event));
     }
 
@@ -132,16 +136,18 @@ public class PackageService {
         Pair<TbPudo, TbAddress> pudo = pudoService.getPudoById(pack.getValue0().getPudoId());
         String notificationTitle = localizationService.getMessage("notification.package.collected.title");
         String notificationMessage = localizationService.getMessage("notification.package.collected.message", pudo.getValue0().getBusinessName());
+        Map<String, String> data = Map.of("packageId", packageId.toString());
 
         TbNotification notif = new TbNotification();
         notif.setUserId(pack.getValue0().getUserId());
         notif.setCreateTms(now);
         notif.setTitle(notificationTitle);
         notif.setMessage(notificationMessage);
+        notif.setOptData(Encoders.writeValueAsStringSafe(data));
         notificationDao.persist(notif);
         notificationDao.flush();
 
-        sendNotifications(pack.getValue0().getUserId(), notificationTitle, notificationMessage);
+        sendNotifications(pack.getValue0().getUserId(), notificationTitle, notificationMessage, data);
         return getPackageById(packageId);
     }
 
@@ -164,6 +170,7 @@ public class PackageService {
         notif.setCreateTms(now);
         notif.setTitle(notificationTitle);
         notif.setMessage(notificationMessage);
+        notif.setOptData(Encoders.writeValueAsStringSafe(Map.of("packageId", packageId.toString())));
         notificationDao.persist(notif);
         notificationDao.flush();
 
@@ -179,11 +186,11 @@ public class PackageService {
         }
     }
 
-    private void sendNotifications(Long userId, String notificationTitle, String notificationMessage) {
+    private void sendNotifications(Long userId, String notificationTitle, String notificationMessage, Map<String, String> data) {
         Date now = new Date();
         List<TbDeviceToken> deviceTokens = deviceTokenDao.getDeviceTokensByUserId(userId);
         if (!deviceTokens.isEmpty()) {
-            BatchResponse responses = firebaseMessagingService.sendNotification(deviceTokens.stream().map(i -> i.getDeviceToken()).collect(Collectors.toList()), notificationTitle, notificationMessage, null);
+            BatchResponse responses = firebaseMessagingService.sendNotification(deviceTokens.stream().map(i -> i.getDeviceToken()).collect(Collectors.toList()), notificationTitle, notificationMessage, data);
             if (responses != null) {
                 for (int i = 0; i < responses.getResponses().size(); i++) {
                     TbDeviceToken curRow = deviceTokens.get(i);

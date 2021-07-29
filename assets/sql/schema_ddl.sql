@@ -171,7 +171,8 @@ CREATE TABLE IF NOT EXISTS tb_notification (
 	create_tms TIMESTAMP(3) NOT NULL,
 	read_tms TIMESTAMP(3),
 	title TEXT NOT NULL,
-	message TEXT NOT NULL
+	message TEXT NOT NULL,
+	opt_data TEXT
 );
 CREATE INDEX tb_notification_user_id_idx ON tb_notification(user_id);
 
