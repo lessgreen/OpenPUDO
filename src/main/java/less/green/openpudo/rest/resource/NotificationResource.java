@@ -59,6 +59,19 @@ public class NotificationResource {
         }
 
         List<TbNotification> notifications = notificationService.getNotificationList(context.getUserId(), limit, offset);
+        // localize notification
+        for (TbNotification notification : notifications) {
+            if (notification.getTitleParams() == null || notification.getTitleParams().length == 0) {
+                notification.setTitle(localizationService.getMessage(notification.getTitle()));
+            } else {
+                notification.setTitle(localizationService.getMessage(notification.getTitle(), (Object[]) notification.getTitleParams()));
+            }
+            if (notification.getMessageParams() == null || notification.getMessageParams().length == 0) {
+                notification.setMessage(localizationService.getMessage(notification.getMessage()));
+            } else {
+                notification.setMessage(localizationService.getMessage(notification.getMessage(), (Object[]) notification.getMessageParams()));
+            }
+        }
         return new NotificationListResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapNotificationEntityToDto(notifications));
     }
 

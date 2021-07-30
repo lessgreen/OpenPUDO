@@ -98,13 +98,15 @@ public class PackageService {
         String notificationMessage = localizationService.getMessage("notification.package.delivered.message", pudo.getValue0().getBusinessName());
         Map<String, String> data = Map.of("packageId", pack.getPackageId().toString());
 
-        TbNotification notif = new TbNotification();
-        notif.setUserId(req.getUserId());
-        notif.setCreateTms(now);
-        notif.setTitle(notificationTitle);
-        notif.setMessage(notificationMessage);
-        notif.setOptData(Encoders.writeValueAsStringSafe(data));
-        notificationDao.persist(notif);
+        TbNotification notification = new TbNotification();
+        notification.setUserId(req.getUserId());
+        notification.setCreateTms(now);
+        notification.setTitle("notification.package.delivered.title");
+        notification.setTitleParams(null);
+        notification.setMessage("notification.package.delivered.message");
+        notification.setMessageParams(new String[]{pudo.getValue0().getBusinessName()});
+        notification.setOptData(Encoders.writeValueAsStringSafe(data));
+        notificationDao.persist(notification);
         notificationDao.flush();
 
         sendNotifications(req.getUserId(), notificationTitle, notificationMessage, data);
@@ -138,13 +140,15 @@ public class PackageService {
         String notificationMessage = localizationService.getMessage("notification.package.collected.message", pudo.getValue0().getBusinessName());
         Map<String, String> data = Map.of("packageId", packageId.toString());
 
-        TbNotification notif = new TbNotification();
-        notif.setUserId(pack.getValue0().getUserId());
-        notif.setCreateTms(now);
-        notif.setTitle(notificationTitle);
-        notif.setMessage(notificationMessage);
-        notif.setOptData(Encoders.writeValueAsStringSafe(data));
-        notificationDao.persist(notif);
+        TbNotification notification = new TbNotification();
+        notification.setUserId(pack.getValue0().getUserId());
+        notification.setCreateTms(now);
+        notification.setTitle("notification.package.collected.title");
+        notification.setTitleParams(null);
+        notification.setMessage("notification.package.collected.message");
+        notification.setMessageParams(new String[]{pudo.getValue0().getBusinessName()});
+        notification.setOptData(Encoders.writeValueAsStringSafe(data));
+        notificationDao.persist(notification);
         notificationDao.flush();
 
         sendNotifications(pack.getValue0().getUserId(), notificationTitle, notificationMessage, data);
@@ -162,16 +166,16 @@ public class PackageService {
         packageEventDao.flush();
 
         Pair<TbPackage, List<TbPackageEvent>> pack = getPackageById(packageId);
-        String notificationTitle = localizationService.getMessage("notification.package.accepted.title");
-        String notificationMessage = localizationService.getMessage("notification.package.accepted.message");
 
-        TbNotification notif = new TbNotification();
-        notif.setUserId(pack.getValue0().getUserId());
-        notif.setCreateTms(now);
-        notif.setTitle(notificationTitle);
-        notif.setMessage(notificationMessage);
-        notif.setOptData(Encoders.writeValueAsStringSafe(Map.of("packageId", packageId.toString())));
-        notificationDao.persist(notif);
+        TbNotification notification = new TbNotification();
+        notification.setUserId(pack.getValue0().getUserId());
+        notification.setCreateTms(now);
+        notification.setTitle("notification.package.accepted.title");
+        notification.setTitleParams(null);
+        notification.setMessage("notification.package.accepted.message");
+        notification.setMessageParams(null);
+        notification.setOptData(Encoders.writeValueAsStringSafe(Map.of("packageId", packageId.toString())));
+        notificationDao.persist(notification);
         notificationDao.flush();
 
         return getPackageById(packageId);

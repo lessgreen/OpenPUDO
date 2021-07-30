@@ -17,7 +17,7 @@ public class LocalizationService {
         try {
             pattern = bundle.getString(key);
         } catch (MissingResourceException ex) {
-            return ex.getMessage();
+            return key;
         }
         if (params == null || params.length == 0) {
             return pattern;

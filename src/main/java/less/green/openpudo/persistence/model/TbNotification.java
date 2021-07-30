@@ -3,6 +3,7 @@ package less.green.openpudo.persistence.model;
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -10,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import less.green.openpudo.persistence.dao.usertype.StringArrayConverter;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -38,8 +40,16 @@ public class TbNotification implements Serializable {
     @Column(name = "title")
     private String title;
 
+    @Column(name = "title_params")
+    @Convert(converter = StringArrayConverter.class)
+    private String[] titleParams;
+
     @Column(name = "message")
     private String message;
+
+    @Column(name = "message_params")
+    @Convert(converter = StringArrayConverter.class)
+    private String[] messageParams;
 
     @Column(name = "opt_data")
     private String optData;
