@@ -160,7 +160,7 @@ public class UserService {
         return user;
     }
 
-    public void upsertDeviceToken(Long userId, DeviceToken req) {
+    public void upsertDeviceToken(Long userId, DeviceToken req, String applicationLanguage) {
         Date now = new Date();
         TbDeviceToken token = deviceTokenDao.get(req.getDeviceToken().trim());
         if (token == null) {
@@ -175,6 +175,7 @@ public class UserService {
             token.setSystemVersion(sanitizeString(req.getSystemVersion()));
             token.setModel(sanitizeString(req.getModel()));
             token.setResolution(sanitizeString(req.getResolution()));
+            token.setApplicationLanguage(applicationLanguage);
             token.setFailureCount(0);
             deviceTokenDao.persist(token);
             deviceTokenDao.flush();
@@ -194,6 +195,7 @@ public class UserService {
             token.setSystemVersion(sanitizeString(req.getSystemVersion()));
             token.setModel(sanitizeString(req.getModel()));
             token.setResolution(sanitizeString(req.getResolution()));
+            token.setApplicationLanguage(applicationLanguage);
         }
     }
 

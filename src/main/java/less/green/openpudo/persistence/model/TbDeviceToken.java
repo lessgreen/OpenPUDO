@@ -47,6 +47,9 @@ public class TbDeviceToken implements Serializable {
     @Column(name = "resolution")
     private String resolution;
 
+    @Column(name = "application_language")
+    private String applicationLanguage;
+
     @Column(name = "last_success_tms")
     @Temporal(TemporalType.TIMESTAMP)
     private Date lastSuccessTms;

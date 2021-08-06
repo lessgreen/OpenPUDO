@@ -81,6 +81,7 @@ CREATE TABLE IF NOT EXISTS tb_device_token (
 	system_version TEXT,
 	model TEXT,
 	resolution TEXT,
+	application_language TEXT,
 	last_success_tms TIMESTAMP(3),
 	last_success_message_id TEXT,
 	last_failure_tms TIMESTAMP(3),
