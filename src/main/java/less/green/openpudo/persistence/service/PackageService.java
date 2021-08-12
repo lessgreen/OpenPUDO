@@ -1,13 +1,10 @@
 package less.green.openpudo.persistence.service;
 
-import com.google.firebase.messaging.BatchResponse;
-import com.google.firebase.messaging.SendResponse;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -30,6 +27,7 @@ import less.green.openpudo.persistence.model.TbNotification;
 import less.green.openpudo.persistence.model.TbPackage;
 import less.green.openpudo.persistence.model.TbPackageEvent;
 import less.green.openpudo.persistence.model.TbPudo;
+import less.green.openpudo.rest.dto.notification.Notification.NotificationType;
 import less.green.openpudo.rest.dto.pack.ChangePackageStatusRequest;
 import less.green.openpudo.rest.dto.pack.DeliveredPackageRequest;
 import lombok.extern.log4j.Log4j2;
@@ -94,22 +92,30 @@ public class PackageService {
         packageEventDao.flush();
 
         Pair<TbPudo, TbAddress> pudo = pudoService.getPudoById(pudoId);
-        String notificationTitle = localizationService.getMessage("notification.package.delivered.title");
-        String notificationMessage = localizationService.getMessage("notification.package.delivered.message", pudo.getValue0().getBusinessName());
-        Map<String, String> data = Map.of("packageId", pack.getPackageId().toString());
+        String titleTemplate = "notification.package.delivered.title";
+        String[] titleParams = null;
+        String messageTemplate = "notification.package.delivered.message";
+        String[] messageParams = {pudo.getValue0().getBusinessName()};
 
         TbNotification notification = new TbNotification();
         notification.setUserId(req.getUserId());
         notification.setCreateTms(now);
-        notification.setTitle("notification.package.delivered.title");
-        notification.setTitleParams(null);
-        notification.setMessage("notification.package.delivered.message");
-        notification.setMessageParams(new String[]{pudo.getValue0().getBusinessName()});
-        notification.setOptData(Encoders.writeValueAsStringSafe(data));
+        notification.setTitle(titleTemplate);
+        notification.setTitleParams(titleParams);
+        notification.setMessage(messageTemplate);
+        notification.setMessageParams(messageParams);
         notificationDao.persist(notification);
         notificationDao.flush();
+        Map<String, String> data = Map.of(
+                "notificationType", NotificationType.PACKAGE.toString(),
+                "notificationId", notification.getNotificationId().toString(),
+                "packageId", pack.getPackageId().toString(),
+                "packageStatus", PackageStatus.DELIVERED.toString()
+        );
+        notification.setOptData(Encoders.writeValueAsStringSafe(data));
+        notificationDao.flush();
 
-        sendNotifications(req.getUserId(), notificationTitle, notificationMessage, data);
+        sendNotifications(req.getUserId(), titleTemplate, titleParams, messageTemplate, messageParams, data);
         return new Pair<>(pack, Arrays.asList(event));
     }
 
@@ -136,22 +142,30 @@ public class PackageService {
 
         Pair<TbPackage, List<TbPackageEvent>> pack = getPackageById(packageId);
         Pair<TbPudo, TbAddress> pudo = pudoService.getPudoById(pack.getValue0().getPudoId());
-        String notificationTitle = localizationService.getMessage("notification.package.collected.title");
-        String notificationMessage = localizationService.getMessage("notification.package.collected.message", pudo.getValue0().getBusinessName());
-        Map<String, String> data = Map.of("packageId", packageId.toString());
+        String titleTemplate = "notification.package.collected.title";
+        String[] titleParams = null;
+        String messageTemplate = "notification.package.collected.message";
+        String[] messageParams = {pudo.getValue0().getBusinessName()};
 
         TbNotification notification = new TbNotification();
         notification.setUserId(pack.getValue0().getUserId());
         notification.setCreateTms(now);
-        notification.setTitle("notification.package.collected.title");
-        notification.setTitleParams(null);
-        notification.setMessage("notification.package.collected.message");
-        notification.setMessageParams(new String[]{pudo.getValue0().getBusinessName()});
-        notification.setOptData(Encoders.writeValueAsStringSafe(data));
+        notification.setTitle(titleTemplate);
+        notification.setTitleParams(titleParams);
+        notification.setMessage(messageTemplate);
+        notification.setMessageParams(messageParams);
         notificationDao.persist(notification);
         notificationDao.flush();
+        Map<String, String> data = Map.of(
+                "notificationType", NotificationType.PACKAGE.toString(),
+                "notificationId", notification.getNotificationId().toString(),
+                "packageId", packageId.toString(),
+                "packageStatus", PackageStatus.COLLECTED.toString()
+        );
+        notification.setOptData(Encoders.writeValueAsStringSafe(data));
+        notificationDao.flush();
 
-        sendNotifications(pack.getValue0().getUserId(), notificationTitle, notificationMessage, data);
+        sendNotifications(pack.getValue0().getUserId(), titleTemplate, titleParams, messageTemplate, messageParams, data);
         return getPackageById(packageId);
     }
 
@@ -166,16 +180,27 @@ public class PackageService {
         packageEventDao.flush();
 
         Pair<TbPackage, List<TbPackageEvent>> pack = getPackageById(packageId);
+        String titleTemplate = "notification.package.accepted.title";
+        String[] titleParams = null;
+        String messageTemplate = "notification.package.accepted.message";
+        String[] messageParams = null;
 
         TbNotification notification = new TbNotification();
         notification.setUserId(pack.getValue0().getUserId());
         notification.setCreateTms(now);
-        notification.setTitle("notification.package.accepted.title");
-        notification.setTitleParams(null);
-        notification.setMessage("notification.package.accepted.message");
-        notification.setMessageParams(null);
-        notification.setOptData(Encoders.writeValueAsStringSafe(Map.of("packageId", packageId.toString())));
+        notification.setTitle(titleTemplate);
+        notification.setTitleParams(titleParams);
+        notification.setMessage(messageTemplate);
+        notification.setMessageParams(messageParams);
         notificationDao.persist(notification);
+        notificationDao.flush();
+        Map<String, String> data = Map.of(
+                "notificationType", NotificationType.PACKAGE.toString(),
+                "notificationId", notification.getNotificationId().toString(),
+                "packageId", packageId.toString(),
+                "packageStatus", PackageStatus.ACCEPTED.toString()
+        );
+        notification.setOptData(Encoders.writeValueAsStringSafe(data));
         notificationDao.flush();
 
         return getPackageById(packageId);
@@ -190,25 +215,36 @@ public class PackageService {
         }
     }
 
-    private void sendNotifications(Long userId, String notificationTitle, String notificationMessage, Map<String, String> data) {
-        Date now = new Date();
+    private void sendNotifications(Long userId, String titleTemplate, String[] titleParams,
+            String messageTemplate, String[] messageParams, Map<String, String> data) {
         List<TbDeviceToken> deviceTokens = deviceTokenDao.getDeviceTokensByUserId(userId);
-        if (!deviceTokens.isEmpty()) {
-            BatchResponse responses = firebaseMessagingService.sendNotification(deviceTokens.stream().map(i -> i.getDeviceToken()).collect(Collectors.toList()), notificationTitle, notificationMessage, data);
-            if (responses != null) {
-                for (int i = 0; i < responses.getResponses().size(); i++) {
-                    TbDeviceToken curRow = deviceTokens.get(i);
-                    SendResponse resp = responses.getResponses().get(i);
-                    if (resp.isSuccessful()) {
-                        curRow.setLastSuccessTms(now);
-                        curRow.setLastSuccessMessageId(resp.getMessageId());
-                    } else {
-                        curRow.setLastFailureTms(now);
-                        curRow.setFailureCount(curRow.getFailureCount() == null ? 1 : curRow.getFailureCount() + 1);
-                    }
+        if (deviceTokens != null && !deviceTokens.isEmpty()) {
+            Date now = new Date();
+            for (TbDeviceToken curRow : deviceTokens) {
+                String title;
+                if (titleParams == null || titleParams.length == 0) {
+                    title = localizationService.getMessage(titleTemplate);
+                } else {
+                    title = localizationService.getMessage(titleTemplate, (Object[]) titleParams);
                 }
-                deviceTokenDao.flush();
+                String message;
+                if (messageParams == null || messageParams.length == 0) {
+                    message = localizationService.getMessage(messageTemplate);
+                } else {
+                    message = localizationService.getMessage(messageTemplate, (Object[]) messageParams);
+                }
+                String messageId = firebaseMessagingService.sendNotification(curRow.getDeviceToken(), title, message, data);
+                if (messageId != null) {
+                    curRow.setUpdateTms(now);
+                    curRow.setLastSuccessTms(now);
+                    curRow.setLastSuccessMessageId(messageId);
+                } else {
+                    curRow.setUpdateTms(now);
+                    curRow.setLastFailureTms(now);
+                    curRow.setFailureCount(curRow.getFailureCount() == null ? 1 : curRow.getFailureCount() + 1);
+                }
             }
+            deviceTokenDao.flush();
         }
     }
 

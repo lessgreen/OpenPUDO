@@ -9,6 +9,10 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 @Data
 public class Notification {
 
+    public enum NotificationType {
+        PACKAGE
+    }
+
     @Schema(readOnly = true)
     private Long notificationId;
 
