@@ -6,6 +6,7 @@ import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -49,7 +50,8 @@ public class NotificationResource {
     @Operation(summary = "Get notifications for current user")
     public NotificationListResponse getNotificationList(
             @Parameter(description = "Pagination limit", required = false) @DefaultValue("20") @QueryParam("limit") int limit,
-            @Parameter(description = "Pagination offset", required = false) @DefaultValue("0") @QueryParam("offset") int offset) {
+            @Parameter(description = "Pagination offset", required = false) @DefaultValue("0") @QueryParam("offset") int offset,
+            @HeaderParam("Application-Language") String applicationLanguage) {
         // sanitize input
         if (limit < 1) {
             throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.invalid_field", "limit"));
@@ -62,14 +64,14 @@ public class NotificationResource {
         // localize notification
         for (TbNotification notification : notifications) {
             if (notification.getTitleParams() == null || notification.getTitleParams().length == 0) {
-                notification.setTitle(localizationService.getMessage(notification.getTitle()));
+                notification.setTitle(localizationService.getMessage(applicationLanguage, notification.getTitle()));
             } else {
-                notification.setTitle(localizationService.getMessage(notification.getTitle(), (Object[]) notification.getTitleParams()));
+                notification.setTitle(localizationService.getMessage(applicationLanguage, notification.getTitle(), (Object[]) notification.getTitleParams()));
             }
             if (notification.getMessageParams() == null || notification.getMessageParams().length == 0) {
-                notification.setMessage(localizationService.getMessage(notification.getMessage()));
+                notification.setMessage(localizationService.getMessage(applicationLanguage, notification.getMessage()));
             } else {
-                notification.setMessage(localizationService.getMessage(notification.getMessage(), (Object[]) notification.getMessageParams()));
+                notification.setMessage(localizationService.getMessage(applicationLanguage, notification.getMessage(), (Object[]) notification.getMessageParams()));
             }
         }
         return new NotificationListResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapNotificationEntityToDto(notifications));
