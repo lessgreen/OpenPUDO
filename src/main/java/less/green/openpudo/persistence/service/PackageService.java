@@ -80,7 +80,7 @@ public class PackageService {
         pack.setUpdateTms(now);
         pack.setPudoId(pudoId);
         pack.setUserId(req.getUserId());
-        pack.setPackagePicId(req.getPackage_pic_id());
+        pack.setPackagePicId(req.getPackagePicId());
         packageDao.persist(pack);
         packageDao.flush();
         TbPackageEvent event = new TbPackageEvent();

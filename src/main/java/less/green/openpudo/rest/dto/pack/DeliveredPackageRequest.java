@@ -10,7 +10,7 @@ public class DeliveredPackageRequest {
     @Schema(required = true)
     private Long userId;
 
-    private UUID package_pic_id;
+    private UUID packagePicId;
 
     private String notes;
 
