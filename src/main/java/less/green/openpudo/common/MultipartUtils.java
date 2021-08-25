@@ -13,7 +13,7 @@ import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
 public class MultipartUtils {
 
-    public static final String MULTIPART_NAME = "foto";
+    public static final String MULTIPART_NAME = "attachment";
 
     public static final Set<String> ALLOWED_IMAGE_MIME_TYPES = new HashSet<>(Arrays.asList(
             "image/jpeg",
