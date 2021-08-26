@@ -22,6 +22,7 @@ import less.green.openpudo.rest.config.exception.ApiException;
 import less.green.openpudo.rest.dto.BaseResponse;
 import less.green.openpudo.rest.dto.DtoMapper;
 import less.green.openpudo.rest.dto.notification.NotificationListResponse;
+import less.green.openpudo.rest.dto.scalar.LongResponse;
 import lombok.extern.log4j.Log4j2;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.parameters.Parameter;
@@ -75,6 +76,14 @@ public class NotificationResource {
             }
         }
         return new NotificationListResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapNotificationEntityToDto(notifications));
+    }
+
+    @GET
+    @Path("/count")
+    @Operation(summary = "Get count of unread notifications for current user")
+    public LongResponse getUnreadNotificationCount() {
+        long cnt = notificationService.getUnreadNotificationCount(context.getUserId());
+        return new LongResponse(context.getExecutionId(), ApiReturnCodes.OK, cnt);
     }
 
     @POST

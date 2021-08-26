@@ -27,6 +27,13 @@ public class NotificationDao extends BaseEntityDao<TbNotification, Long> {
         return rs.isEmpty() ? Collections.emptyList() : rs;
     }
 
+    public long getUnreadNotificationCount(Long userId) {
+        String qs = "SELECT COUNT(t) FROM TbNotification t WHERE t.userId = :userId AND t.readTms IS NULL";
+        TypedQuery<Long> q = em.createQuery(qs, Long.class);
+        q.setParameter("userId", userId);
+        return q.getSingleResult();
+    }
+
     public int markNotificationsAsRead(Long userId) {
         String qs = "UPDATE TbNotification t SET t.readTms = :now WHERE t.userId = :userId AND t.readTms IS NULL";
         Query q = em.createQuery(qs);

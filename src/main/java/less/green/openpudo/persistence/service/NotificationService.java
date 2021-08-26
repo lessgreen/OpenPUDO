@@ -25,6 +25,10 @@ public class NotificationService {
         return notificationDao.getNotificationList(userId, limit, offset);
     }
 
+    public long getUnreadNotificationCount(Long userId) {
+        return notificationDao.getUnreadNotificationCount(userId);
+    }
+
     public int markNotificationsAsRead(Long userId) {
         return notificationDao.markNotificationsAsRead(userId);
     }
