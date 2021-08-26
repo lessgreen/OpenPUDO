@@ -27,7 +27,7 @@ import less.green.openpudo.persistence.model.TbNotification;
 import less.green.openpudo.persistence.model.TbPackage;
 import less.green.openpudo.persistence.model.TbPackageEvent;
 import less.green.openpudo.persistence.model.TbPudo;
-import less.green.openpudo.rest.dto.notification.Notification.NotificationType;
+import less.green.openpudo.rest.dto.notification.PackageNotificationOptData;
 import less.green.openpudo.rest.dto.pack.ChangePackageStatusRequest;
 import less.green.openpudo.rest.dto.pack.DeliveredPackageRequest;
 import lombok.extern.log4j.Log4j2;
@@ -106,16 +106,11 @@ public class PackageService {
         notification.setMessageParams(messageParams);
         notificationDao.persist(notification);
         notificationDao.flush();
-        Map<String, String> data = Map.of(
-                "notificationType", NotificationType.PACKAGE.toString(),
-                "notificationId", notification.getNotificationId().toString(),
-                "packageId", pack.getPackageId().toString(),
-                "packageStatus", PackageStatus.DELIVERED.toString()
-        );
-        notification.setOptData(Encoders.writeValueAsStringSafe(data));
+        PackageNotificationOptData optData = new PackageNotificationOptData(notification.getNotificationId(), pack.getPackageId(), PackageStatus.DELIVERED);
+        notification.setOptData(Encoders.writeValueAsStringSafe(optData.toMap()));
         notificationDao.flush();
 
-        sendNotifications(req.getUserId(), titleTemplate, titleParams, messageTemplate, messageParams, data);
+        sendNotifications(req.getUserId(), titleTemplate, titleParams, messageTemplate, messageParams, optData.toMap());
         return new Pair<>(pack, Arrays.asList(event));
     }
 
@@ -156,16 +151,11 @@ public class PackageService {
         notification.setMessageParams(messageParams);
         notificationDao.persist(notification);
         notificationDao.flush();
-        Map<String, String> data = Map.of(
-                "notificationType", NotificationType.PACKAGE.toString(),
-                "notificationId", notification.getNotificationId().toString(),
-                "packageId", packageId.toString(),
-                "packageStatus", PackageStatus.COLLECTED.toString()
-        );
-        notification.setOptData(Encoders.writeValueAsStringSafe(data));
+        PackageNotificationOptData optData = new PackageNotificationOptData(notification.getNotificationId(), packageId, PackageStatus.COLLECTED);
+        notification.setOptData(Encoders.writeValueAsStringSafe(optData.toMap()));
         notificationDao.flush();
 
-        sendNotifications(pack.getValue0().getUserId(), titleTemplate, titleParams, messageTemplate, messageParams, data);
+        sendNotifications(pack.getValue0().getUserId(), titleTemplate, titleParams, messageTemplate, messageParams, optData.toMap());
         return getPackageById(packageId);
     }
 
@@ -194,13 +184,8 @@ public class PackageService {
         notification.setMessageParams(messageParams);
         notificationDao.persist(notification);
         notificationDao.flush();
-        Map<String, String> data = Map.of(
-                "notificationType", NotificationType.PACKAGE.toString(),
-                "notificationId", notification.getNotificationId().toString(),
-                "packageId", packageId.toString(),
-                "packageStatus", PackageStatus.ACCEPTED.toString()
-        );
-        notification.setOptData(Encoders.writeValueAsStringSafe(data));
+        PackageNotificationOptData optData = new PackageNotificationOptData(notification.getNotificationId(), packageId, PackageStatus.ACCEPTED);
+        notification.setOptData(Encoders.writeValueAsStringSafe(optData.toMap()));
         notificationDao.flush();
 
         return getPackageById(packageId);

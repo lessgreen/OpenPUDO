@@ -33,7 +33,7 @@ public class Notification {
     @Schema(readOnly = true)
     private String message;
 
-    @Schema(readOnly = true)
+    @Schema(readOnly = true, anyOf = {PackageNotificationOptData.class})
     @JsonRawValue
     private Object optData;
 
