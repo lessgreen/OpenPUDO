@@ -27,8 +27,8 @@ INSERT INTO tb_anag_package_status VALUES ('delivered', 1);
 INSERT INTO tb_anag_package_status VALUES ('notified', 2);
 INSERT INTO tb_anag_package_status VALUES ('collected', 3);
 INSERT INTO tb_anag_package_status VALUES ('accepted', 4);
-INSERT INTO tb_anag_package_status VALUES ('expired', 4);
-INSERT INTO tb_anag_package_status VALUES ('returned', 4);
+INSERT INTO tb_anag_package_status VALUES ('expired', 5);
+INSERT INTO tb_anag_package_status VALUES ('returned', 6);
 
 
 -- data tables
