@@ -16,6 +16,7 @@ import less.green.openpudo.cdi.service.GeocodeService;
 import less.green.openpudo.cdi.service.LocalizationService;
 import less.green.openpudo.common.ApiReturnCodes;
 import less.green.openpudo.common.ExceptionUtils;
+import less.green.openpudo.common.GPSUtils;
 import static less.green.openpudo.common.StringUtils.isEmpty;
 import less.green.openpudo.persistence.service.PudoService;
 import less.green.openpudo.rest.config.PublicAPI;
@@ -41,6 +42,11 @@ import org.eclipse.microprofile.openapi.annotations.parameters.Parameter;
 @Log4j2
 public class MapResource {
 
+    private static final int MIN_PUDO_COUNT_FOR_ZOOM_LEVEL = 10;
+    private static final int MAX_PUDO_MARKER_COUNT_ON_MAP = 50;
+    private static final int MAX_SEARCH_RESULT_GLOBAL = 30;
+    private static final int MAX_SEARCH_RESULT_SLICE = 15;
+
     @Inject
     ExecutionContext context;
 
@@ -59,7 +65,7 @@ public class MapResource {
     @Path("/suggested-zoom")
     @PublicAPI
     @Operation(summary = "Get suggested zoom for current location", description = "This is a public API and can be invoked without a valid access token.\n\n"
-            + "This is currently a stubbed API, that returns a fixed value of 12.")
+            + "This API calculates the minimum zoom level that provides enough PUDOs in user surroundings.")
     public IntegerResponse searchPudos(
             @Parameter(description = "Latitude value of map center point", required = true) @QueryParam("lat") BigDecimal lat,
             @Parameter(description = "Longitude value of map center point", required = true) @QueryParam("lon") BigDecimal lon) {
@@ -69,7 +75,21 @@ public class MapResource {
         } else if (lon == null) {
             throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.empty_mandatory_field", "lon"));
         }
-        return new IntegerResponse(context.getExecutionId(), ApiReturnCodes.OK, 12);
+
+        // more sanitizing
+        if (lat.compareTo(BigDecimal.valueOf(-90)) < 0 || lat.compareTo(BigDecimal.valueOf(90)) > 0) {
+            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.invalid_field", "lat"));
+        } else if (lon.compareTo(BigDecimal.valueOf(-180)) < 0 || lat.compareTo(BigDecimal.valueOf(180)) > 0) {
+            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.invalid_field", "lon"));
+        }
+
+        for (int zoom = 16; zoom > 8; zoom--) {
+            List<PudoMarker> rs = pudoService.searchPudosByCoordinates(lat, lon, zoom);
+            if (rs.size() >= MIN_PUDO_COUNT_FOR_ZOOM_LEVEL) {
+                return new IntegerResponse(context.getExecutionId(), ApiReturnCodes.OK, zoom);
+            }
+        }
+        return new IntegerResponse(context.getExecutionId(), ApiReturnCodes.OK, 8);
     }
 
     @GET
@@ -99,6 +119,11 @@ public class MapResource {
         }
 
         List<PudoMarker> rs = pudoService.searchPudosByCoordinates(lat, lon, zoom);
+        // restricting results if necessary, sorting by distance
+        if (rs.size() > MAX_PUDO_MARKER_COUNT_ON_MAP) {
+            rs = GPSUtils.sortByDistance(rs, lat.doubleValue(), lon.doubleValue());
+            rs = rs.subList(0, MAX_PUDO_MARKER_COUNT_ON_MAP);
+        }
         return new PudoMarkerListResponse(context.getExecutionId(), ApiReturnCodes.OK, rs);
     }
 
@@ -111,16 +136,30 @@ public class MapResource {
             + "This API should be throttled to prevent excessive load.")
     public AddressMarkerListResponse searchAddresses(
             @Parameter(description = "Query text", required = true) @QueryParam("text") String text,
-            @Parameter(description = "Latitude value of map center point") @QueryParam("lat") BigDecimal lat,
-            @Parameter(description = "Longitude value of map center point") @QueryParam("lon") BigDecimal lon) {
+            @Parameter(description = "Latitude value of map center point", required = false) @QueryParam("lat") BigDecimal lat,
+            @Parameter(description = "Longitude value of map center point", required = false) @QueryParam("lon") BigDecimal lon) {
         // sanitize input
         if (isEmpty(text)) {
             throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.empty_mandatory_field", "text"));
         }
 
+        // more sanitizing
+        if (lat != null && lon != null) {
+            if (lat.compareTo(BigDecimal.valueOf(-90)) < 0 || lat.compareTo(BigDecimal.valueOf(90)) > 0) {
+                throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.invalid_field", "lat"));
+            } else if (lon.compareTo(BigDecimal.valueOf(-180)) < 0 || lat.compareTo(BigDecimal.valueOf(180)) > 0) {
+                throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.invalid_field", "lon"));
+            }
+        }
+
         try {
-            FeatureCollection rs = geocodeService.autocomplete(text, lat, lon);
-            return new AddressMarkerListResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapFeatureListToAddressMarkerList(rs.getFeatures()));
+            FeatureCollection fc = geocodeService.autocomplete(text, lat, lon);
+            List<Feature> rs = fc.getFeatures();
+            // restricting results if necessary (unlikely)
+            if (rs.size() > MAX_SEARCH_RESULT_GLOBAL) {
+                rs = rs.subList(0, MAX_SEARCH_RESULT_SLICE);
+            }
+            return new AddressMarkerListResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapFeatureListToAddressMarkerList(rs));
         } catch (RuntimeException ex) {
             log.error("[{}] {}", context.getExecutionId(), ExceptionUtils.getCompactStackTrace(ex));
             throw new ApiException(ApiReturnCodes.SERVICE_UNAVAILABLE, localizationService.getMessage("error.service_unavailable"));
@@ -137,28 +176,60 @@ public class MapResource {
             + "This API should be throttled to prevent excessive load.")
     public MarkerListResponse search(
             @Parameter(description = "Query text", required = true) @QueryParam("text") String text,
-            @Parameter(description = "Latitude value of map center point") @QueryParam("lat") BigDecimal lat,
-            @Parameter(description = "Longitude value of map center point") @QueryParam("lon") BigDecimal lon) {
+            @Parameter(description = "Latitude value of map center point", required = false) @QueryParam("lat") BigDecimal lat,
+            @Parameter(description = "Longitude value of map center point", required = false) @QueryParam("lon") BigDecimal lon) {
         // sanitize input
         if (isEmpty(text)) {
             throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.empty_mandatory_field", "text"));
         }
 
+        // more sanitizing
+        if (lat != null && lon != null) {
+            if (lat.compareTo(BigDecimal.valueOf(-90)) < 0 || lat.compareTo(BigDecimal.valueOf(90)) > 0) {
+                throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.invalid_field", "lat"));
+            } else if (lon.compareTo(BigDecimal.valueOf(-180)) < 0 || lat.compareTo(BigDecimal.valueOf(180)) > 0) {
+                throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.invalid_field", "lon"));
+            }
+        }
+
+        // searching pudos
         List<Marker> ret = new LinkedList<>();
         List<PudoMarker> prs = pudoService.searchPudosByName(text);
-        for (PudoMarker pudo : prs) {
-            ret.add(new Marker(MarkerType.PUDO, pudo));
+        // sorting by distance, if we have optional coordinates
+        if (lat != null && lon != null) {
+            prs = GPSUtils.sortByDistance(prs, lat.doubleValue(), lon.doubleValue());
         }
 
         // searching adresses
-        FeatureCollection frs;
+        List<Feature> frs;
         try {
-            frs = geocodeService.autocomplete(text, lat, lon);
+            FeatureCollection fc = geocodeService.autocomplete(text, lat, lon);
+            frs = fc.getFeatures();
         } catch (RuntimeException ex) {
             log.error("[{}] {}", context.getExecutionId(), ExceptionUtils.getCompactStackTrace(ex));
             throw new ApiException(ApiReturnCodes.SERVICE_UNAVAILABLE, localizationService.getMessage("error.service_unavailable"));
         }
-        for (Feature feat : frs.getFeatures()) {
+
+        // restricting results if necessary
+        if (prs.size() + frs.size() > MAX_SEARCH_RESULT_GLOBAL) {
+            if (prs.size() >= MAX_SEARCH_RESULT_SLICE && frs.size() >= MAX_SEARCH_RESULT_SLICE) {
+                // if both subsearches have too many results
+                prs = prs.subList(0, MAX_SEARCH_RESULT_SLICE);
+                frs = frs.subList(0, MAX_SEARCH_RESULT_SLICE);
+            } else if (prs.size() >= MAX_SEARCH_RESULT_SLICE) {
+                // if too many pudos only
+                prs = prs.subList(0, MAX_SEARCH_RESULT_GLOBAL - frs.size());
+            } else {
+                // if too many addresses only (unlikely)
+                frs = frs.subList(0, MAX_SEARCH_RESULT_GLOBAL - prs.size());
+            }
+        }
+
+        // combining results
+        for (PudoMarker pudo : prs) {
+            ret.add(new Marker(MarkerType.PUDO, pudo));
+        }
+        for (Feature feat : frs) {
             ret.add(new Marker(MarkerType.ADDRESS, dtoMapper.mapFeatureToAddressMarker(feat)));
         }
 
