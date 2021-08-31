@@ -33,7 +33,10 @@ public class PackageCronService extends BaseCronService {
             for (Pair<TbPackage, List<TbPackageEvent>> pack : packs) {
                 pack = packageService.notifySentPackage(pack.getValue0().getPackageId());
                 log.info("[{}] Package: {} -> {}", executionId, pack.getValue0().getPackageId(), pack.getValue1().get(0).getPackageStatus());
-                refreshLock(executionId, PACKAGE_NOIFY_SENT_LOCK);
+
+                if (!refreshLock(executionId, PACKAGE_NOIFY_SENT_LOCK)) {
+                    return;
+                }
             }
         } catch (Exception ex) {
             log.error("[{}] {}", executionId, ExceptionUtils.getCompactStackTrace(ex));
