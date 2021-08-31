@@ -70,7 +70,7 @@ public class PackageDao extends BaseEntityDao<TbPackage, Long> {
             if (pov == Pov.PUDO) {
                 q.setParameter("packageStatusList", Arrays.asList(PackageStatus.DELIVERED, PackageStatus.NOTIFY_SENT, PackageStatus.NOTIFIED));
             } else {
-                q.setParameter("packageStatusList", Arrays.asList(PackageStatus.DELIVERED, PackageStatus.NOTIFY_SENT, PackageStatus.NOTIFIED, PackageStatus.COLLECTED));
+                q.setParameter("packageStatusList", Arrays.asList(PackageStatus.NOTIFY_SENT, PackageStatus.NOTIFIED, PackageStatus.COLLECTED));
             }
         } else {
             q.setMaxResults(limit);

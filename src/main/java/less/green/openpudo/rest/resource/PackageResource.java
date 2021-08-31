@@ -129,7 +129,7 @@ public class PackageResource {
         }
 
         Pair<TbPackage, List<TbPackageEvent>> pack = packageService.deliveredPackage(pudoId, req);
-        log.info("[{}] Created package: {} in PUDO: {}, for user: {}", context.getExecutionId(), pack.getValue0().getPackageId(), pudoId, req.getUserId());
+        log.info("[{}] Created package: {} in PUDO: {}, for user: {} -> {}", context.getExecutionId(), pack.getValue0().getPackageId(), pudoId, req.getUserId(), pack.getValue1().get(0).getPackageStatus());
         return new PackageResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapPackageEntityToDto(pack));
     }
 
