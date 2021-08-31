@@ -22,7 +22,7 @@ public class PackageCronService extends BaseCronService {
     PackageService packageService;
 
     @Scheduled(cron = "0 * * * * ?", concurrentExecution = Scheduled.ConcurrentExecution.SKIP)
-    void sendDeliveredNotifications() {
+    void notifySentPackages() {
         final UUID executionId = UUID.randomUUID();
         if (!acquireLock(executionId, PACKAGE_NOIFY_SENT_LOCK)) {
             return;
