@@ -104,6 +104,10 @@
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-jdbc-postgresql</artifactId>
         </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-scheduler</artifactId>
+        </dependency>
 
         <!-- quarkus allows an easier way to use lombok and mapstruct together, no plugin section needed -->
         <!-- https://mapstruct.org/news/2019-12-06-mapstruct-and-quarkus/ -->

@@ -89,6 +89,7 @@ public class UserResource {
         }
 
         Pair<TbUser, Boolean> user = userService.updateUser(context.getUserId(), req);
+        log.info("[{}] Updated user profile: {}", context.getExecutionId(), context.getUserId());
         return new UserResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapUserEntityToDto(user));
     }
 
@@ -119,6 +120,7 @@ public class UserResource {
         }
 
         List<Pair<TbPudo, TbAddress>> pudos = pudoService.addPudoToFavourites(context.getUserId(), pudoId);
+        log.info("[{}] Addes PUDO: {} to user: {} favourites", context.getExecutionId(), pudoId, context.getUserId());
         return new PudoListResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapPudoEntityListToDtoList(pudos));
     }
 
@@ -137,6 +139,7 @@ public class UserResource {
         }
 
         List<Pair<TbPudo, TbAddress>> pudos = pudoService.removePudoFromFavourites(context.getUserId(), pudoId);
+        log.info("[{}] Removed PUDO: {} from user: {} favourites", context.getExecutionId(), pudoId, context.getUserId());
         return new PudoListResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapPudoEntityListToDtoList(pudos));
     }
 
@@ -169,6 +172,7 @@ public class UserResource {
 
         try {
             Pair<TbUser, Boolean> user = userService.updateUserProfilePic(context.getUserId(), uploadedFile.getValue0(), uploadedFile.getValue1());
+            log.info("[{}] Updated user: {} profile picture: {}", context.getExecutionId(), context.getUserId(), user.getValue0().getProfilePicId());
             return new UserResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapUserEntityToDto(user));
         } catch (RuntimeException ex) {
             log.error("[{}] {}", context.getExecutionId(), ExceptionUtils.getCompactStackTrace(ex));
@@ -182,6 +186,7 @@ public class UserResource {
     public UserResponse deleteCurrentUserProfilePic() {
         try {
             Pair<TbUser, Boolean> user = userService.deleteUserProfilePic(context.getUserId());
+            log.info("[{}] Deleted user: {} profile picture", context.getExecutionId(), context.getUserId());
             return new UserResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapUserEntityToDto(user));
         } catch (RuntimeException ex) {
             log.error("[{}] {}", context.getExecutionId(), ExceptionUtils.getCompactStackTrace(ex));

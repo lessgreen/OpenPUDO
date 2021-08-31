@@ -2,6 +2,7 @@ package less.green.openpudo.persistence.dao;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.enterprise.context.RequestScoped;
@@ -67,14 +68,29 @@ public class PackageDao extends BaseEntityDao<TbPackage, Long> {
         q.setParameter("referenceId", referenceId);
         if (!history) {
             if (pov == Pov.PUDO) {
-                q.setParameter("packageStatusList", Arrays.asList(PackageStatus.DELIVERED, PackageStatus.NOTIFIED));
+                q.setParameter("packageStatusList", Arrays.asList(PackageStatus.DELIVERED, PackageStatus.NOTIFY_SENT, PackageStatus.NOTIFIED));
             } else {
-                q.setParameter("packageStatusList", Arrays.asList(PackageStatus.DELIVERED, PackageStatus.NOTIFIED, PackageStatus.COLLECTED));
+                q.setParameter("packageStatusList", Arrays.asList(PackageStatus.DELIVERED, PackageStatus.NOTIFY_SENT, PackageStatus.NOTIFIED, PackageStatus.COLLECTED));
             }
         } else {
             q.setMaxResults(limit);
             q.setFirstResult(offset);
         }
+        List<Object[]> rs = q.getResultList();
+        return rs.isEmpty() ? Collections.emptyList() : rs.stream().map(row -> new Pair<>((TbPackage) row[0], Arrays.asList((TbPackageEvent) row[1]))).collect(Collectors.toList());
+    }
+
+    public List<Pair<TbPackage, List<TbPackageEvent>>> getDeliveredPackageShallowList(Date timeThreshold) {
+        String qs = "SELECT t1, t2 "
+                + "FROM TbPackage t1, TbPackageEvent t2 "
+                + "WHERE t1.packageId = t2.packageId "
+                + "AND t2.createTms = (SELECT MAX(t3.createTms) FROM TbPackageEvent t3 WHERE t3.packageId = t2.packageId) "
+                + "AND t2.createTms < :timeThreshold "
+                + "AND t2.packageStatus = :packageStatus "
+                + "ORDER BY t1.createTms";
+        TypedQuery<Object[]> q = em.createQuery(qs, Object[].class);
+        q.setParameter("packageStatus", PackageStatus.DELIVERED);
+        q.setParameter("timeThreshold", timeThreshold);
         List<Object[]> rs = q.getResultList();
         return rs.isEmpty() ? Collections.emptyList() : rs.stream().map(row -> new Pair<>((TbPackage) row[0], Arrays.asList((TbPackageEvent) row[1]))).collect(Collectors.toList());
     }

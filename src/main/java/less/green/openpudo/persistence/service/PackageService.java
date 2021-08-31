@@ -1,7 +1,9 @@
 package less.green.openpudo.persistence.service;
 
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -90,15 +92,35 @@ public class PackageService {
         event.setNotes(sanitizeString(req.getNotes()));
         packageEventDao.persist(event);
         packageEventDao.flush();
+        return new Pair<>(pack, Arrays.asList(event));
+    }
 
-        Pair<TbPudo, TbAddress> pudo = pudoService.getPudoById(pudoId);
+    public List<Pair<TbPackage, List<TbPackageEvent>>> getDeliveredPackageShallowList() {
+        // get packages in delivered status for more that 2 minutes
+        Calendar cal = GregorianCalendar.getInstance();
+        cal.setLenient(false);
+        cal.add(Calendar.MINUTE, -2);
+        return packageDao.getDeliveredPackageShallowList(cal.getTime());
+    }
+
+    public Pair<TbPackage, List<TbPackageEvent>> notifySentPackage(Long packageId) {
+        Date now = new Date();
+        Pair<TbPackage, List<TbPackageEvent>> pack = packageDao.getPackageShallowById(packageId);
+        Pair<TbPudo, TbAddress> pudo = pudoService.getPudoById(pack.getValue0().getPudoId());
         String titleTemplate = "notification.package.delivered.title";
         String[] titleParams = null;
         String messageTemplate = "notification.package.delivered.message";
         String[] messageParams = {pudo.getValue0().getBusinessName()};
 
+        TbPackageEvent event = new TbPackageEvent();
+        event.setCreateTms(now);
+        event.setPackageId(pack.getValue0().getPackageId());
+        event.setPackageStatus(PackageStatus.NOTIFY_SENT);
+        packageEventDao.persist(event);
+        packageEventDao.flush();
+
         TbNotification notification = new TbNotification();
-        notification.setUserId(req.getUserId());
+        notification.setUserId(pack.getValue0().getUserId());
         notification.setCreateTms(now);
         notification.setTitle(titleTemplate);
         notification.setTitleParams(titleParams);
@@ -106,12 +128,12 @@ public class PackageService {
         notification.setMessageParams(messageParams);
         notificationDao.persist(notification);
         notificationDao.flush();
-        PackageNotificationOptData optData = new PackageNotificationOptData(notification.getNotificationId(), pack.getPackageId(), PackageStatus.DELIVERED);
+        PackageNotificationOptData optData = new PackageNotificationOptData(notification.getNotificationId(), pack.getValue0().getPackageId(), PackageStatus.NOTIFY_SENT);
         notification.setOptData(Encoders.writeValueAsStringSafe(optData.toMap()));
         notificationDao.flush();
 
-        sendNotifications(req.getUserId(), titleTemplate, titleParams, messageTemplate, messageParams, optData.toMap());
-        return new Pair<>(pack, Arrays.asList(event));
+        sendPushNotifications(pack.getValue0().getUserId(), titleTemplate, titleParams, messageTemplate, messageParams, optData.toMap());
+        return getPackageById(packageId);
     }
 
     public Pair<TbPackage, List<TbPackageEvent>> notifiedPackage(Long packageId) {
@@ -155,7 +177,7 @@ public class PackageService {
         notification.setOptData(Encoders.writeValueAsStringSafe(optData.toMap()));
         notificationDao.flush();
 
-        sendNotifications(pack.getValue0().getUserId(), titleTemplate, titleParams, messageTemplate, messageParams, optData.toMap());
+        sendPushNotifications(pack.getValue0().getUserId(), titleTemplate, titleParams, messageTemplate, messageParams, optData.toMap());
         return getPackageById(packageId);
     }
 
@@ -200,23 +222,22 @@ public class PackageService {
         }
     }
 
-    private void sendNotifications(Long userId, String titleTemplate, String[] titleParams,
-            String messageTemplate, String[] messageParams, Map<String, String> data) {
+    private void sendPushNotifications(Long userId, String titleTemplate, String[] titleParams, String messageTemplate, String[] messageParams, Map<String, String> data) {
         List<TbDeviceToken> deviceTokens = deviceTokenDao.getDeviceTokensByUserId(userId);
         if (deviceTokens != null && !deviceTokens.isEmpty()) {
             Date now = new Date();
             for (TbDeviceToken curRow : deviceTokens) {
                 String title;
                 if (titleParams == null || titleParams.length == 0) {
-                    title = localizationService.getMessage(curRow.getApplicationLanguage(), titleTemplate);
+                    title = localizationService.getLocalizedMessage(curRow.getApplicationLanguage(), titleTemplate);
                 } else {
-                    title = localizationService.getMessage(curRow.getApplicationLanguage(), titleTemplate, (Object[]) titleParams);
+                    title = localizationService.getLocalizedMessage(curRow.getApplicationLanguage(), titleTemplate, (Object[]) titleParams);
                 }
                 String message;
                 if (messageParams == null || messageParams.length == 0) {
-                    message = localizationService.getMessage(curRow.getApplicationLanguage(), messageTemplate);
+                    message = localizationService.getLocalizedMessage(curRow.getApplicationLanguage(), messageTemplate);
                 } else {
-                    message = localizationService.getMessage(curRow.getApplicationLanguage(), messageTemplate, (Object[]) messageParams);
+                    message = localizationService.getLocalizedMessage(curRow.getApplicationLanguage(), messageTemplate, (Object[]) messageParams);
                 }
                 String messageId = firebaseMessagingService.sendNotification(curRow.getDeviceToken(), title, message, data);
                 if (messageId != null) {

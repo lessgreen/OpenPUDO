@@ -109,6 +109,7 @@ public class PudoResource {
         }
 
         Pair<TbPudo, TbAddress> pudo = pudoService.updatePudoByOwner(context.getUserId(), req);
+        log.info("[{}] Updated PUDO profile: {}", context.getExecutionId(), context.getUserId(), pudo.getValue0().getPudoId());
         return new PudoResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapPudoEntityToDto(pudo));
     }
 
@@ -145,6 +146,7 @@ public class PudoResource {
         }
 
         Pair<TbPudo, TbAddress> pudo = pudoService.updatePudoAddressByOwner(context.getUserId(), feat);
+        log.info("[{}] Updated PUDO address: {}", context.getExecutionId(), context.getUserId(), pudo.getValue0().getPudoId());
         return new PudoResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapPudoEntityToDto(pudo));
     }
 
@@ -183,6 +185,7 @@ public class PudoResource {
 
         try {
             Pair<TbPudo, TbAddress> pudo = pudoService.updatePudoProfilePicByOwner(context.getUserId(), uploadedFile.getValue0(), uploadedFile.getValue1());
+            log.info("[{}] Updated PUDO: {} profile picture: {}", context.getExecutionId(), pudo.getValue0().getPudoId(), pudo.getValue0().getProfilePicId());
             return new PudoResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapPudoEntityToDto(pudo));
         } catch (RuntimeException ex) {
             log.error("[{}] {}", context.getExecutionId(), ExceptionUtils.getCompactStackTrace(ex));
@@ -196,6 +199,7 @@ public class PudoResource {
     public PudoResponse deleteCurrentUserProfilePic() {
         try {
             Pair<TbPudo, TbAddress> pudo = pudoService.deletePudoProfilePicByOwner(context.getUserId());
+            log.info("[{}] Deleted PUDO: {} profile picture", context.getExecutionId(), pudo.getValue0().getPudoId());
             return new PudoResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapPudoEntityToDto(pudo));
         } catch (RuntimeException ex) {
             log.error("[{}] {}", context.getExecutionId(), ExceptionUtils.getCompactStackTrace(ex));

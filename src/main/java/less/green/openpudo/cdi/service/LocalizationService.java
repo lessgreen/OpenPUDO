@@ -15,10 +15,10 @@ public class LocalizationService {
     private static final String DEFAULT_LANGUAGE = "en";
 
     public String getMessage(String key, Object... params) {
-        return getMessage(DEFAULT_LANGUAGE, key, params);
+        return getLocalizedMessage(DEFAULT_LANGUAGE, key, params);
     }
 
-    public String getMessage(String language, String key, Object... params) {
+    public String getLocalizedMessage(String language, String key, Object... params) {
         ResourceBundle bundle;
         if (isEmpty(language)) {
             bundle = ResourceBundle.getBundle("localization/messages", Locale.ENGLISH);

@@ -65,14 +65,14 @@ public class NotificationResource {
         // localize notification
         for (TbNotification notification : notifications) {
             if (notification.getTitleParams() == null || notification.getTitleParams().length == 0) {
-                notification.setTitle(localizationService.getMessage(applicationLanguage, notification.getTitle()));
+                notification.setTitle(localizationService.getLocalizedMessage(applicationLanguage, notification.getTitle()));
             } else {
-                notification.setTitle(localizationService.getMessage(applicationLanguage, notification.getTitle(), (Object[]) notification.getTitleParams()));
+                notification.setTitle(localizationService.getLocalizedMessage(applicationLanguage, notification.getTitle(), (Object[]) notification.getTitleParams()));
             }
             if (notification.getMessageParams() == null || notification.getMessageParams().length == 0) {
-                notification.setMessage(localizationService.getMessage(applicationLanguage, notification.getMessage()));
+                notification.setMessage(localizationService.getLocalizedMessage(applicationLanguage, notification.getMessage()));
             } else {
-                notification.setMessage(localizationService.getMessage(applicationLanguage, notification.getMessage(), (Object[]) notification.getMessageParams()));
+                notification.setMessage(localizationService.getLocalizedMessage(applicationLanguage, notification.getMessage(), (Object[]) notification.getMessageParams()));
             }
         }
         return new NotificationListResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapNotificationEntityToDto(notifications));

@@ -98,6 +98,7 @@ public class PackageResource {
 
         try {
             packageService.uploadPackagePicture(externalFileId, uploadedFile.getValue0(), uploadedFile.getValue1());
+            log.info("[{}] Uploaded package picture: {}", context.getExecutionId(), externalFileId);
             return new BaseResponse(context.getExecutionId(), ApiReturnCodes.OK);
         } catch (RuntimeException ex) {
             log.error("[{}] {}", context.getExecutionId(), ExceptionUtils.getCompactStackTrace(ex));
@@ -128,6 +129,7 @@ public class PackageResource {
         }
 
         Pair<TbPackage, List<TbPackageEvent>> pack = packageService.deliveredPackage(pudoId, req);
+        log.info("[{}] Created package: {} in PUDO: {}, for user {}", context.getExecutionId(), pack.getValue0().getPackageId(), pudoId, req.getUserId());
         return new PackageResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapPackageEntityToDto(pack));
     }
 
@@ -146,12 +148,11 @@ public class PackageResource {
             throw new ApiException(ApiReturnCodes.FORBIDDEN, localizationService.getMessage("error.forbidden"));
         }
 
-        // if package has already moved past delivered state, we skip this transition and return the current state
-        if (pack.getValue1().get(0).getPackageStatus() != PackageStatus.DELIVERED) {
-            return new PackageResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapPackageEntityToDto(pack));
+        // if package is in expected state we make the transition, otherwise we silently skip it and return the current state
+        if (pack.getValue1().get(0).getPackageStatus() == PackageStatus.NOTIFY_SENT) {
+            pack = packageService.notifiedPackage(packageId);
+            log.info("[{}] Package: {} -> {}", context.getExecutionId(), pack.getValue0().getPackageId(), pack.getValue1().get(0).getPackageStatus());
         }
-
-        pack = packageService.notifiedPackage(packageId);
         return new PackageResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapPackageEntityToDto(pack));
     }
 
@@ -176,13 +177,15 @@ public class PackageResource {
             throw new ApiException(ApiReturnCodes.FORBIDDEN, localizationService.getMessage("error.forbidden"));
         }
 
-        // operation is allowed if the package is in delivered or notified state
+        // operation is allowed if the package is in those states
         if (pack.getValue1().get(0).getPackageStatus() != PackageStatus.DELIVERED
+                && pack.getValue1().get(0).getPackageStatus() != PackageStatus.NOTIFY_SENT
                 && pack.getValue1().get(0).getPackageStatus() != PackageStatus.NOTIFIED) {
             throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage("error.package.illegal_state"));
         }
 
         pack = packageService.collectedPackage(packageId, req);
+        log.info("[{}] Package: {} -> {}", context.getExecutionId(), pack.getValue0().getPackageId(), pack.getValue1().get(0).getPackageStatus());
         return new PackageResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapPackageEntityToDto(pack));
     }
 
@@ -206,14 +209,16 @@ public class PackageResource {
             throw new ApiException(ApiReturnCodes.FORBIDDEN, localizationService.getMessage("error.forbidden"));
         }
 
-        // operation is allowed if the package is in delivered, notified or collected state
+        // operation is allowed if the package is in those states
         if (pack.getValue1().get(0).getPackageStatus() != PackageStatus.DELIVERED
+                && pack.getValue1().get(0).getPackageStatus() != PackageStatus.NOTIFY_SENT
                 && pack.getValue1().get(0).getPackageStatus() != PackageStatus.NOTIFIED
                 && pack.getValue1().get(0).getPackageStatus() != PackageStatus.COLLECTED) {
             throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage("error.package.illegal_state"));
         }
 
         pack = packageService.acceptedPackage(packageId, req);
+        log.info("[{}] Package: {} -> {}", context.getExecutionId(), pack.getValue0().getPackageId(), pack.getValue1().get(0).getPackageStatus());
         return new PackageResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapPackageEntityToDto(pack));
     }
 

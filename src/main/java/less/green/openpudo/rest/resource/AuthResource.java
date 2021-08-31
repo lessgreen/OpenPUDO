@@ -146,7 +146,7 @@ public class AuthResource {
 
         // all checks passed, registering use
         Long userId = userService.register(req);
-        log.info("[{}] Registered user, userId: {}", context.getExecutionId(), userId);
+        log.info("[{}] Registered user: {}", context.getExecutionId(), userId);
         return new BaseResponse(context.getExecutionId(), ApiReturnCodes.OK);
     }
 
@@ -191,7 +191,7 @@ public class AuthResource {
 
         // creating access token
         AccessTokenData resp = generateLoginResponsePayload(account.getUserId());
-        log.info("[{}] Login successful for userId: {}", context.getExecutionId(), account.getUserId());
+        log.info("[{}] Login successful for user: {}", context.getExecutionId(), account.getUserId());
         return new LoginResponse(context.getExecutionId(), 0, resp);
     }
 

@@ -24,11 +24,21 @@ CREATE TABLE IF NOT EXISTS tb_anag_package_status (
 	ordinal INTEGER NOT NULL
 );
 INSERT INTO tb_anag_package_status VALUES ('delivered', 1);
-INSERT INTO tb_anag_package_status VALUES ('notified', 2);
-INSERT INTO tb_anag_package_status VALUES ('collected', 3);
-INSERT INTO tb_anag_package_status VALUES ('accepted', 4);
-INSERT INTO tb_anag_package_status VALUES ('expired', 5);
-INSERT INTO tb_anag_package_status VALUES ('returned', 6);
+INSERT INTO tb_anag_package_status VALUES ('notify_sent', 2);
+INSERT INTO tb_anag_package_status VALUES ('notified', 3);
+INSERT INTO tb_anag_package_status VALUES ('collected', 4);
+INSERT INTO tb_anag_package_status VALUES ('accepted', 5);
+INSERT INTO tb_anag_package_status VALUES ('expired', 6);
+
+
+-- working tables
+DROP TABLE IF EXISTS tb_wrk_cron_lock CASCADE;
+CREATE TABLE IF NOT EXISTS tb_wrk_cron_lock (
+	lock_name TEXT PRIMARY KEY,
+	acquired_flag BOOLEAN NOT NULL,
+	acquire_tms TIMESTAMP(3) NOT NULL,
+	lease_tms TIMESTAMP(3) NOT NULL
+);
 
 
 -- data tables
@@ -123,7 +133,7 @@ CREATE TABLE IF NOT EXISTS tb_address (
 	label TEXT NOT NULL,
 	street TEXT NOT NULL,
 	street_num TEXT,
-	zip_code TEXT NOT NULL,
+	zip_code TEXT,
 	city TEXT NOT NULL,
 	province TEXT NOT NULL,
 	country TEXT NOT NULL,
