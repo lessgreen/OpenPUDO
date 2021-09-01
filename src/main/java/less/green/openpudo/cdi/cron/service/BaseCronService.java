@@ -7,7 +7,7 @@ import less.green.openpudo.persistence.service.CronLockService;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
-public class BaseCronService {
+public abstract class BaseCronService {
 
     @Inject
     CronLockService cronLockService;

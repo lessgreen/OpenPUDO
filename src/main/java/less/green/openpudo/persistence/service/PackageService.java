@@ -244,6 +244,8 @@ public class PackageService {
                     curRow.setUpdateTms(now);
                     curRow.setLastSuccessTms(now);
                     curRow.setLastSuccessMessageId(messageId);
+                    curRow.setLastFailureTms(null);
+                    curRow.setFailureCount(0);
                 } else {
                     curRow.setUpdateTms(now);
                     curRow.setLastFailureTms(now);

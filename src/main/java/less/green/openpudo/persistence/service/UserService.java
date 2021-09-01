@@ -11,20 +11,17 @@ import static less.green.openpudo.common.StringUtils.sanitizeString;
 import less.green.openpudo.common.dto.AccountSecret;
 import less.green.openpudo.common.dto.tuple.Pair;
 import less.green.openpudo.persistence.dao.AccountDao;
-import less.green.openpudo.persistence.dao.DeviceTokenDao;
 import less.green.openpudo.persistence.dao.ExternalFileDao;
 import less.green.openpudo.persistence.dao.PudoDao;
 import less.green.openpudo.persistence.dao.RelationDao;
 import less.green.openpudo.persistence.dao.UserDao;
 import less.green.openpudo.persistence.dao.usertype.RoleType;
 import less.green.openpudo.persistence.model.TbAccount;
-import less.green.openpudo.persistence.model.TbDeviceToken;
 import less.green.openpudo.persistence.model.TbExternalFile;
 import less.green.openpudo.persistence.model.TbPudo;
 import less.green.openpudo.persistence.model.TbPudoUserRole;
 import less.green.openpudo.persistence.model.TbUser;
 import less.green.openpudo.rest.dto.auth.RegisterRequest;
-import less.green.openpudo.rest.dto.user.DeviceToken;
 import less.green.openpudo.rest.dto.user.User;
 import lombok.extern.log4j.Log4j2;
 
@@ -40,8 +37,6 @@ public class UserService {
 
     @Inject
     AccountDao accountDao;
-    @Inject
-    DeviceTokenDao deviceTokenDao;
     @Inject
     ExternalFileDao externalFileDao;
     @Inject
@@ -158,45 +153,6 @@ public class UserService {
         externalFileDao.delete(oldId);
         externalFileDao.flush();
         return user;
-    }
-
-    public void upsertDeviceToken(Long userId, DeviceToken req, String applicationLanguage) {
-        Date now = new Date();
-        TbDeviceToken token = deviceTokenDao.get(req.getDeviceToken().trim());
-        if (token == null) {
-            // if not found, associate it with current user
-            token = new TbDeviceToken();
-            token.setDeviceToken(sanitizeString(req.getDeviceToken()));
-            token.setUserId(userId);
-            token.setCreateTms(now);
-            token.setUpdateTms(now);
-            token.setDeviceType(sanitizeString(req.getDeviceType()));
-            token.setSystemName(sanitizeString(req.getSystemName()));
-            token.setSystemVersion(sanitizeString(req.getSystemVersion()));
-            token.setModel(sanitizeString(req.getModel()));
-            token.setResolution(sanitizeString(req.getResolution()));
-            token.setApplicationLanguage(applicationLanguage);
-            token.setFailureCount(0);
-            deviceTokenDao.persist(token);
-            deviceTokenDao.flush();
-        } else {
-            if (!userId.equals(token.getUserId())) {
-                // if associated with another user, recreate association
-                token.setUserId(userId);
-                token.setCreateTms(now);
-                token.setLastSuccessTms(null);
-                token.setLastSuccessMessageId(null);
-                token.setLastFailureTms(null);
-                token.setFailureCount(0);
-            }
-            token.setUpdateTms(now);
-            token.setDeviceType(sanitizeString(req.getDeviceType()));
-            token.setSystemName(sanitizeString(req.getSystemName()));
-            token.setSystemVersion(sanitizeString(req.getSystemVersion()));
-            token.setModel(sanitizeString(req.getModel()));
-            token.setResolution(sanitizeString(req.getResolution()));
-            token.setApplicationLanguage(applicationLanguage);
-        }
     }
 
 }

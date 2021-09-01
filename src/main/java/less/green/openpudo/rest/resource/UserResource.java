@@ -25,6 +25,7 @@ import less.green.openpudo.common.dto.tuple.Pair;
 import less.green.openpudo.persistence.model.TbAddress;
 import less.green.openpudo.persistence.model.TbPudo;
 import less.green.openpudo.persistence.model.TbUser;
+import less.green.openpudo.persistence.service.DeviceTokenService;
 import less.green.openpudo.persistence.service.PudoService;
 import less.green.openpudo.persistence.service.UserService;
 import less.green.openpudo.rest.config.BinaryAPI;
@@ -52,6 +53,8 @@ public class UserResource {
     @Inject
     LocalizationService localizationService;
 
+    @Inject
+    DeviceTokenService deviceTokenService;
     @Inject
     PudoService pudoService;
     @Inject
@@ -205,7 +208,7 @@ public class UserResource {
             throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.empty_mandatory_field", "deviceToken"));
         }
 
-        userService.upsertDeviceToken(context.getUserId(), req, applicationLanguage);
+        deviceTokenService.upsertDeviceToken(context.getUserId(), req, applicationLanguage);
         return new BaseResponse(context.getExecutionId(), ApiReturnCodes.OK);
     }
 

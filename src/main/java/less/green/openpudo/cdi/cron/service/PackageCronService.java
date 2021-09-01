@@ -16,7 +16,7 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class PackageCronService extends BaseCronService {
 
-    private static final String PACKAGE_NOIFY_SENT_LOCK = "package.notify_sent";
+    private static final String PACKAGE_NOTIFY_SENT_LOCK = "package.notify_sent";
 
     @Inject
     PackageService packageService;
@@ -24,7 +24,7 @@ public class PackageCronService extends BaseCronService {
     @Scheduled(cron = "0 * * * * ?", concurrentExecution = Scheduled.ConcurrentExecution.SKIP)
     void notifySentPackages() {
         final UUID executionId = UUID.randomUUID();
-        if (!acquireLock(executionId, PACKAGE_NOIFY_SENT_LOCK)) {
+        if (!acquireLock(executionId, PACKAGE_NOTIFY_SENT_LOCK)) {
             return;
         }
         try {
@@ -33,14 +33,14 @@ public class PackageCronService extends BaseCronService {
                 pack = packageService.notifySentPackage(pack.getValue0().getPackageId());
                 log.info("[{}] Package: {} -> {}", executionId, pack.getValue0().getPackageId(), pack.getValue1().get(0).getPackageStatus());
 
-                if (!refreshLock(executionId, PACKAGE_NOIFY_SENT_LOCK)) {
+                if (!refreshLock(executionId, PACKAGE_NOTIFY_SENT_LOCK)) {
                     return;
                 }
             }
         } catch (Exception ex) {
             log.error("[{}] {}", executionId, ExceptionUtils.getCompactStackTrace(ex));
         } finally {
-            releaseLock(executionId, PACKAGE_NOIFY_SENT_LOCK);
+            releaseLock(executionId, PACKAGE_NOTIFY_SENT_LOCK);
         }
     }
 
