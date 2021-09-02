@@ -190,5 +190,13 @@ CREATE TABLE IF NOT EXISTS tb_notification (
 CREATE INDEX tb_notification_user_id_idx ON tb_notification(user_id);
 
 
+-- views
+CREATE OR REPLACE VIEW vw_package_status AS
+SELECT t1.*, t2.package_event_id, t2.create_tms event_create_tms, t2.package_status, t2.notes
+FROM tb_package t1, tb_package_event t2
+WHERE t1.package_id = t2.package_id
+AND t2.create_tms = (SELECT MAX(t3.create_tms) FROM tb_package_event t3 WHERE t3.package_id = t2.package_id);
+
+
 -- maintenance
 VACUUM FULL ANALYZE;
