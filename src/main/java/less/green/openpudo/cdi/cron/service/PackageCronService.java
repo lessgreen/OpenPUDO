@@ -27,6 +27,7 @@ public class PackageCronService extends BaseCronService {
         if (!acquireLock(executionId, PACKAGE_NOTIFY_SENT_LOCK)) {
             return;
         }
+        log.info("Starting cron job {}", PACKAGE_NOTIFY_SENT_LOCK);
         try {
             List<Pair<TbPackage, List<TbPackageEvent>>> packs = packageService.getDeliveredPackageShallowList();
             for (Pair<TbPackage, List<TbPackageEvent>> pack : packs) {
