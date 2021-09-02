@@ -25,17 +25,17 @@ Di seguito vengono elencati i possibili stati in cui un pacco si può trovare, e
 
 - stato `NOTIFY_SENT`: è stata inviata una notifica all'utente, indicando la presenza di un pacco da ritirare
     - lo stato passa in `NOTIFIED` mediante la chiamata all'API `/packages/{packageId}/notified`
-    - lo stato passa in `COLLECTD` mediante la chiamata all'API `/packages/{packageId}/collected`
+    - lo stato passa in `COLLECTED` mediante la chiamata all'API `/packages/{packageId}/collected`
     - lo stato passa in `ACCEPTED` mediante la chiamata all'API `/packages/{packageId}/accepted`
     - dopo 24 ore viene inviata una nuova notifica e lo stato rimane in `NOTIFY_SENT`
     - dopo 7 giorni viene inviata una nuova notifica e lo stato passa automaticamente in `EXPIRED`
 
 - stato `NOTIFIED`: l'utente ha confermate di essere informato della presenza di un pacco da ritirare
-    - lo stato passa in `COLLECTD` mediante la chiamata all'API `/packages/{packageId}/collected`
+    - lo stato passa in `COLLECTED` mediante la chiamata all'API `/packages/{packageId}/collected`
     - lo stato passa in `ACCEPTED` mediante la chiamata all'API `/packages/{packageId}/accepted`
     - dopo 7 giorni viene inviata una nuova notifica e lo stato passa automaticamente in `EXPIRED`
 
-- stato `COLLECTD`: il PUDO ha consegnato il pacco all'utente
+- stato `COLLECTED`: il PUDO ha consegnato il pacco all'utente
     - lo stato passa in `ACCEPTED` mediante la chiamata all'API `/packages/{packageId}/accepted`
     - dopo 7 giorni lo stato passa automaticamente in `ACCEPTED`
 
