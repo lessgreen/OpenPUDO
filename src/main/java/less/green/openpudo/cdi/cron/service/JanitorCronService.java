@@ -23,7 +23,7 @@ public class JanitorCronService extends BaseCronService {
         if (!acquireLock(executionId, JANITOR_DEVICE_TOKEN_LOCK)) {
             return;
         }
-        log.info("Starting cron job {}", JANITOR_DEVICE_TOKEN_LOCK);
+        log.info("[{}] Starting cron job: {}", executionId, JANITOR_DEVICE_TOKEN_LOCK);
         try {
             int cnt = deviceTokenService.removeFailedDeviceTokens();
             if (cnt > 0) {
