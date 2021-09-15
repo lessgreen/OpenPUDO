@@ -26,6 +26,7 @@ import less.green.openpudo.persistence.model.TbAddress;
 import less.green.openpudo.persistence.model.TbPudo;
 import less.green.openpudo.persistence.model.TbUser;
 import less.green.openpudo.persistence.service.DeviceTokenService;
+import less.green.openpudo.persistence.service.PackageService;
 import less.green.openpudo.persistence.service.PudoService;
 import less.green.openpudo.persistence.service.UserService;
 import less.green.openpudo.rest.config.BinaryAPI;
@@ -55,6 +56,8 @@ public class UserResource {
 
     @Inject
     DeviceTokenService deviceTokenService;
+    @Inject
+    PackageService packageService;
     @Inject
     PudoService pudoService;
     @Inject
@@ -139,6 +142,10 @@ public class UserResource {
         boolean pudoCustomer = pudoService.isPudoCustomer(context.getUserId(), pudoId);
         if (!pudoCustomer) {
             throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.pudo.pudo_not_favourite"));
+        }
+        long cnt = packageService.getActivePackageCount(pudoId, context.getUserId());
+        if (cnt > 0) {
+            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.pudo.package_in_transit"));
         }
 
         List<Pair<TbPudo, TbAddress>> pudos = pudoService.removePudoFromFavourites(context.getUserId(), pudoId);

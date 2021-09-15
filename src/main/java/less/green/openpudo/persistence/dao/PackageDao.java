@@ -70,7 +70,7 @@ public class PackageDao extends BaseEntityDao<TbPackage, Long> {
             if (pov == Pov.PUDO) {
                 q.setParameter("packageStatusList", Arrays.asList(PackageStatus.DELIVERED, PackageStatus.NOTIFY_SENT, PackageStatus.NOTIFIED));
             } else {
-                q.setParameter("packageStatusList", Arrays.asList(PackageStatus.NOTIFY_SENT, PackageStatus.NOTIFIED, PackageStatus.COLLECTED));
+                q.setParameter("packageStatusList", Arrays.asList(PackageStatus.DELIVERED, PackageStatus.NOTIFY_SENT, PackageStatus.NOTIFIED, PackageStatus.COLLECTED));
             }
         } else {
             q.setMaxResults(limit);
@@ -93,6 +93,21 @@ public class PackageDao extends BaseEntityDao<TbPackage, Long> {
         q.setParameter("timeThreshold", timeThreshold);
         List<Object[]> rs = q.getResultList();
         return rs.isEmpty() ? Collections.emptyList() : rs.stream().map(row -> new Pair<>((TbPackage) row[0], Arrays.asList((TbPackageEvent) row[1]))).collect(Collectors.toList());
+    }
+
+    public long getActivePackageCount(Long pudoId, Long userId) {
+        String qs = "SELECT COUNT(*) "
+                + "FROM TbPackage t1, TbPackageEvent t2 "
+                + "WHERE t1.packageId = t2.packageId "
+                + "AND t2.createTms = (SELECT MAX(t3.createTms) FROM TbPackageEvent t3 WHERE t3.packageId = t2.packageId) "
+                + "AND t1.pudoId = :pudoId "
+                + "AND t1.userId = :userId "
+                + "AND t2.packageStatus IN :packageStatusList";
+        TypedQuery<Long> q = em.createQuery(qs, Long.class);
+        q.setParameter("pudoId", pudoId);
+        q.setParameter("userId", userId);
+        q.setParameter("packageStatusList", Arrays.asList(PackageStatus.DELIVERED, PackageStatus.NOTIFY_SENT, PackageStatus.NOTIFIED, PackageStatus.COLLECTED));
+        return q.getSingleResult();
     }
 
 }

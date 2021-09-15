@@ -64,6 +64,10 @@ public class PackageService {
         return packageDao.getPackageById(packageId);
     }
 
+    public long getActivePackageCount(Long pudoId, Long userId) {
+        return packageDao.getActivePackageCount(pudoId, userId);
+    }
+
     public void uploadPackagePicture(UUID externalFileId, String mimeType, byte[] bytes) {
         Date now = new Date();
         storageService.saveFileBinary(externalFileId, bytes);
