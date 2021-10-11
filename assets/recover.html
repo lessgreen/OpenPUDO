@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>QuiGreen</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+        <style>
+            * {
+                box-sizing: border-box;
+            }
+
+            body {
+                background: #eee !important;	
+            }
+
+            .content {
+                background-color: #fff;
+                border: 1px solid rgba(0,0,0,0.1);
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container content my-3">
+            <div>
+                <div class="m-3">
+                    <h2 class="text-primary">Recupera password</h2>
+                </div>
+                <div id="loginDiv" class="m-3 mt-4">
+                    <label for="loginInput" class="form-label">Login (username, email o numero di telefono)</label>
+                    <input id="loginInput" type="text" class="form-control" maxlength="50" autofocus />
+                </div>
+                <div id="pinDiv" class="m-3 d-none">
+                    <label for="pinInput" class="form-label">PIN ricevuto via email o SMS</label>
+                    <input id="pinInput" type="text" class="form-control" maxlength="6" />
+                </div>
+                <div id="passwordDiv" class="m-3 d-none">
+                    <label for="passwordInput" class="form-label">Nuova password</label>
+                    <input id="passwordInput" type="password" class="form-control" maxlength="50" />
+                </div>
+                <div id="btnDiv" class="m-3 mt-5">
+                    <button id="sendRequestBtn" type="button" class="btn btn-lg btn-primary" onclick="sendRequest()">
+                        <span id="btnSpinner" class="spinner-border spinner-border-sm d-none" role="status"></span>
+                        <span>Invia richiesta</span>
+                    </button>
+                </div>
+                <div id="msgDiv" class="m-3 mt-5 mb-4 d-none">
+                    <h3 class="text-success">Operazione effettuata con successo</h3>
+                </div>
+            </div>
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+        <script>
+            var phase = 1
+            function startRequest() {
+                document.getElementById("sendRequestBtn").disabled = true
+                document.getElementById("btnSpinner").classList.remove("d-none")
+            }
+            function endRequest() {
+                document.getElementById("sendRequestBtn").disabled = false
+                document.getElementById("btnSpinner").classList.add("d-none")
+            }
+            function sendRequest() {
+                startRequest()
+                if (phase === 1) {
+                    let login = document.getElementById("loginInput").value
+                    if (login == null || login.trim() == "") {
+                        endRequest()
+                        alert("Il campo login è obbligatorio")
+                        return false
+                    }
+                    document.getElementById("loginInput").disabled = true
+                    document.getElementById("pinDiv").classList.remove("d-none")
+                    document.getElementById("passwordDiv").classList.remove("d-none")
+                    phase = 2
+                } else if (phase == 2) {
+                    let login = document.getElementById("loginInput").value
+                    let pin = document.getElementById("pinInput").value
+                    let password = document.getElementById("passwordInput").value
+                    if (pin == null || pin.trim() == "") {
+                        endRequest()
+                        alert("Il campo PIN è obbligatorio")
+                        return false
+                    }
+                    if (password == null || password.trim() == "") {
+                        endRequest()
+                        alert("Il campo password è obbligatorio")
+                        return false
+                    }
+                    document.getElementById("pinInput").disabled = true
+                    document.getElementById("passwordInput").disabled = true
+                    document.getElementById("btnDiv").classList.add("d-none")
+                    document.getElementById("msgDiv").classList.remove("d-none")
+                }
+                endRequest()
+            }
+        </script>
+    </body>
+</html>
