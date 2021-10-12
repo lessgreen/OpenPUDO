@@ -5,10 +5,7 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
-import kong.unirest.GetRequest;
-import kong.unirest.HttpResponse;
 import kong.unirest.Unirest;
 import kong.unirest.UnirestException;
 import less.green.openpudo.rest.dto.geojson.Feature;
@@ -27,18 +24,9 @@ public class GeocodeService {
     @ConfigProperty(name = "geocode.api.url")
     String apiUrl;
 
-    @PostConstruct
-    void init() {
-        // hot reload quirk
-        Unirest.config().reset();
-        Unirest.config()
-                .socketTimeout(5000)
-                .connectTimeout(5000);
-    }
-
     public FeatureCollection autocomplete(String text, BigDecimal lat, BigDecimal lon) {
         try {
-            GetRequest req = Unirest.get(apiUrl + "/autocomplete");
+            var req = Unirest.get(apiUrl + "/autocomplete");
             req.queryString("api_key", apiKey);
             req.queryString("text", text);
             if (lat != null && lon != null) {
@@ -55,10 +43,10 @@ public class GeocodeService {
                 req.queryString("layers", "street,borough,locality,localadmin,county,macrocounty,region,macroregion,country");
             }
 
-            // TBD: proper language selection
+            // TODO: proper language selection
             req.header("Accept-Language", "it-IT,it;q=0.8,en-US;q=0.5,en;q=0.3");
 
-            HttpResponse<FeatureCollection> res = req.asObject(FeatureCollection.class);
+            var res = req.asObject(FeatureCollection.class);
             if (res == null || res.getBody() == null) {
                 throw new RuntimeException("Geocode service returned empty response");
             }
@@ -79,7 +67,7 @@ public class GeocodeService {
 
     public Feature search(String text, String resultId) {
         try {
-            GetRequest req = Unirest.get(apiUrl + "/search");
+            var req = Unirest.get(apiUrl + "/search");
             req.queryString("api_key", apiKey);
             req.queryString("text", text);
 
@@ -87,10 +75,10 @@ public class GeocodeService {
             // we need to assure that geocoding is done at most precise level before saving on database
             req.queryString("layers", "address");
 
-            // TBD: proper language selection
+            // TODO: proper language selection
             req.header("Accept-Language", "it-IT,it;q=0.8,en-US;q=0.5,en;q=0.3");
 
-            HttpResponse<FeatureCollection> res = req.asObject(FeatureCollection.class);
+            var res = req.asObject(FeatureCollection.class);
             if (res == null || res.getBody() == null) {
                 throw new RuntimeException("Geocode service returned empty response");
             }
