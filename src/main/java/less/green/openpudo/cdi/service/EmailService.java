@@ -15,14 +15,13 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 @Log4j2
 public class EmailService {
 
+    private static final String MAILJET_EMAIL_API_URL = "https://api.mailjet.com/v3.1/send";
+
     @ConfigProperty(name = "mailjet.email.api.key")
     String apiKey;
 
     @ConfigProperty(name = "mailjet.email.secret.key")
     String secretKey;
-
-    @ConfigProperty(name = "mailjet.email.api.url")
-    String apiUrl;
 
     @ConfigProperty(name = "mailjet.email.from.name")
     String fromName;
@@ -33,7 +32,7 @@ public class EmailService {
     public void sendEmail(String toName, String toEmail, String subject, String text) {
         ObjectNode body = createBody(toName, toEmail, subject, text);
         try {
-            var req = Unirest.post(apiUrl)
+            var req = Unirest.post(MAILJET_EMAIL_API_URL)
                     .basicAuth(apiKey, secretKey)
                     .header("Content-Type", "application/json")
                     .body(Encoders.writeValueAsStringSafe(body));

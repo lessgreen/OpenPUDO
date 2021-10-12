@@ -18,15 +18,16 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 @Log4j2
 public class GeocodeService {
 
+    private static final String GEOCODE_API_URL = "https://api.geocode.earth/v1";
+    private static final String GEOCODE_AUTOCOMPLETE_URL = GEOCODE_API_URL + "/autocomplete";
+    private static final String GEOCODE_SEARCH_URL = GEOCODE_API_URL + "/search";
+
     @ConfigProperty(name = "geocode.api.key")
     String apiKey;
 
-    @ConfigProperty(name = "geocode.api.url")
-    String apiUrl;
-
     public FeatureCollection autocomplete(String text, BigDecimal lat, BigDecimal lon) {
         try {
-            var req = Unirest.get(apiUrl + "/autocomplete");
+            var req = Unirest.get(GEOCODE_AUTOCOMPLETE_URL);
             req.queryString("api_key", apiKey);
             req.queryString("text", text);
             if (lat != null && lon != null) {
@@ -67,7 +68,7 @@ public class GeocodeService {
 
     public Feature search(String text, String resultId) {
         try {
-            var req = Unirest.get(apiUrl + "/search");
+            var req = Unirest.get(GEOCODE_SEARCH_URL);
             req.queryString("api_key", apiKey);
             req.queryString("text", text);
 
