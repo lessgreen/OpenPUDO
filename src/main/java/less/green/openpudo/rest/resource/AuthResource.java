@@ -5,6 +5,7 @@ import java.util.regex.Pattern;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -81,38 +82,38 @@ public class AuthResource {
             description = "This is a public API and can be invoked without a valid access token.\n\n"
             + "Fields 'email' and 'phoneNumber' are technically optional, but you must provide at least one of them.\n\n"
             + "If field 'pudo' is present, then the user is registering himself as a PUDO.")
-    public BaseResponse register(RegisterRequest req) {
+    public BaseResponse register(RegisterRequest req, @HeaderParam("Application-Language") String language) {
         // sanitize input
         if (req == null) {
-            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.empty_request"));
+            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage(language, "error.empty_request"));
         } else if (isEmpty(req.getEmail()) && isEmpty(req.getPhoneNumber())) {
-            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.empty_mandatory_field_coalesce", "email, phoneNumber"));
+            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage(language, "error.empty_mandatory_field_coalesce", "email, phoneNumber"));
         } else if (isEmpty(req.getPassword())) {
-            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.empty_mandatory_field", "password"));
+            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage(language, "error.empty_mandatory_field", "password"));
         }
         // user fields
         if (req.getUser() == null) {
-            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.empty_mandatory_field", "user"));
+            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage(language, "error.empty_mandatory_field", "user"));
         } else if (isEmpty(req.getUser().getFirstName())) {
-            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.empty_mandatory_field", "user.firstName"));
+            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage(language, "error.empty_mandatory_field", "user.firstName"));
         } else if (isEmpty(req.getUser().getLastName())) {
-            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.empty_mandatory_field", "user.lastName"));
+            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage(language, "error.empty_mandatory_field", "user.lastName"));
         }
         // pudo fields
         if (req.getPudo() != null && isEmpty(req.getPudo().getBusinessName())) {
-            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.empty_mandatory_field", "pudo.businessName"));
+            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage(language, "error.empty_mandatory_field", "pudo.businessName"));
         }
 
         // more sanitizing
         String username = sanitizeString(req.getUsername());
         if (username != null && !USERNAME_PATTERN.matcher(username).matches()) {
-            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.invalid_field", "username"));
+            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage(language, "error.invalid_field", "username"));
         }
         req.setUsername(username);
 
         String email = sanitizeString(req.getEmail());
         if (email != null && !EMAIL_PATTERN.matcher(email).matches()) {
-            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.invalid_field", "email"));
+            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage(language, "error.invalid_field", "email"));
         }
         req.setEmail(email);
 
@@ -120,7 +121,7 @@ public class AuthResource {
         if (phoneNumber != null) {
             String npn = safeNormalizePhoneNumber(phoneNumber);
             if (npn == null) {
-                throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.invalid_field", "phoneNumber"));
+                throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage(language, "error.invalid_field", "phoneNumber"));
             }
             phoneNumber = npn;
         }
@@ -128,20 +129,20 @@ public class AuthResource {
 
         String password = req.getPassword();
         if (!PASSWOD_PATTERN.matcher(password).matches()) {
-            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.auth.password_too_easy"));
+            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage(language, "error.auth.password_too_easy"));
         }
 
         if (req.getPudo() != null && !isEmpty(req.getPudo().getPhoneNumber())) {
             String npn = safeNormalizePhoneNumber(req.getPudo().getPhoneNumber());
             if (npn == null) {
-                throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.invalid_field", "pudo.phoneNumber"));
+                throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage(language, "error.invalid_field", "pudo.phoneNumber"));
             }
             req.getPudo().setPhoneNumber(npn);
         }
 
         // cheack if already registered
         if (accountService.findAccountByLogin(username) != null || accountService.findAccountByLogin(email) != null || accountService.findAccountByLogin(phoneNumber) != null) {
-            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.auth.credentials_already_used"));
+            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage(language, "error.auth.credentials_already_used"));
         }
 
         // all checks passed, registering use
@@ -156,14 +157,14 @@ public class AuthResource {
     @Operation(summary = "Authenticate user and generate JWT access token",
             description = "This is a public API and can be invoked without a valid access token.\n\n"
             + "Any failed attemp will enforce a response delay to discourage bruteforcing.")
-    public LoginResponse login(LoginRequest req) {
+    public LoginResponse login(LoginRequest req, @HeaderParam("Application-Language") String language) {
         // sanitize input
         if (req == null) {
-            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.empty_request"));
+            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage(language, "error.empty_request"));
         } else if (isEmpty(req.getLogin())) {
-            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.empty_mandatory_field", "login"));
+            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage(language, "error.empty_mandatory_field", "login"));
         } else if (isEmpty(req.getPassword())) {
-            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.empty_mandatory_field", "password"));
+            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage(language, "error.empty_mandatory_field", "password"));
         }
 
         // normalizing login
@@ -179,14 +180,14 @@ public class AuthResource {
         if (account == null) {
             log.error("[{}] Failed login attempt for login '{}': account does not exists", context.getExecutionId(), login);
             delayFailureResponse();
-            throw new ApiException(ApiReturnCodes.INVALID_CREDENTIALS, localizationService.getMessage("error.auth.invalid_credentials"));
+            throw new ApiException(ApiReturnCodes.INVALID_CREDENTIALS, localizationService.getMessage(language, "error.auth.invalid_credentials"));
         }
         // verify credentials
         AccountSecret secret = new AccountSecret(account.getSalt(), account.getPassword(), account.getHashSpecs());
         if (!cryptoService.verifyPasswordHash(secret, req.getPassword())) {
             log.error("[{}] Failed login attempt for userId {}: wrong password", context.getExecutionId(), account.getUserId());
             delayFailureResponse();
-            throw new ApiException(ApiReturnCodes.INVALID_CREDENTIALS, localizationService.getMessage("error.auth.invalid_credentials"));
+            throw new ApiException(ApiReturnCodes.INVALID_CREDENTIALS, localizationService.getMessage(language, "error.auth.invalid_credentials"));
         }
 
         // creating access token
@@ -199,19 +200,19 @@ public class AuthResource {
     @Path("/renew")
     @PublicAPI
     @Operation(summary = "Renew JWT access token", description = "This is a public API, and will renew a valid access token, even if expired")
-    public LoginResponse renew(RenewRequest req) {
+    public LoginResponse renew(RenewRequest req, @HeaderParam("Application-Language") String language) {
         // sanitize input
         if (req == null) {
-            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.empty_request"));
+            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage(language, "error.empty_request"));
         } else if (isEmpty(req.getAccessToken())) {
-            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.empty_mandatory_field", "accessToken"));
+            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage(language, "error.empty_mandatory_field", "accessToken"));
         }
 
         // checking signature
         String accessToken = req.getAccessToken();
         if (jwtService.verifyAccessTokenSignature(accessToken) == false) {
             log.error("[{}] Failed renew attempt: invalid token signature", context.getExecutionId());
-            throw new ApiException(ApiReturnCodes.INVALID_JWT_TOKEN, localizationService.getMessage("error.auth.invalid_access_token"));
+            throw new ApiException(ApiReturnCodes.INVALID_JWT_TOKEN, localizationService.getMessage(language, "error.auth.invalid_access_token"));
         }
         // if access token is valid, checking for expiration
         JwtPayload payload;

@@ -12,22 +12,18 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class LocalizationService {
 
-    private static final String DEFAULT_LANGUAGE = "en";
+    private static final Locale DEFAULT_LOCALE = Locale.ENGLISH;
 
-    public String getMessage(String key, Object... params) {
-        return getLocalizedMessage(DEFAULT_LANGUAGE, key, params);
-    }
-
-    public String getLocalizedMessage(String language, String key, Object... params) {
+    public String getMessage(String language, String key, Object... params) {
         ResourceBundle bundle;
         if (isEmpty(language)) {
-            bundle = ResourceBundle.getBundle("localization/messages", Locale.ENGLISH);
+            bundle = ResourceBundle.getBundle("localization/messages", DEFAULT_LOCALE);
         } else {
             Locale locale = new Locale(language);
             bundle = ResourceBundle.getBundle("localization/messages", locale);
             if (!bundle.getLocale().getLanguage().equals(locale.getLanguage())) {
                 log.warn("Message bundle not found for language: {}", language);
-                bundle = ResourceBundle.getBundle("localization/messages", Locale.ENGLISH);
+                bundle = ResourceBundle.getBundle("localization/messages", DEFAULT_LOCALE);
             }
         }
         String pattern;
@@ -40,7 +36,7 @@ public class LocalizationService {
         if (params == null || params.length == 0) {
             return pattern;
         }
-        MessageFormat formatter = new MessageFormat(pattern, Locale.ENGLISH);
+        MessageFormat formatter = new MessageFormat(pattern, DEFAULT_LOCALE);
         String msg = formatter.format(params);
         return msg;
     }

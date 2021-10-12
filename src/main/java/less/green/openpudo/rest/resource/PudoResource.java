@@ -8,6 +8,7 @@ import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -73,11 +74,11 @@ public class PudoResource {
     @GET
     @Path("/me")
     @Operation(summary = "Get public info for current PUDO")
-    public PudoResponse getCurrentPudo() {
+    public PudoResponse getCurrentPudo(@HeaderParam("Application-Language") String language) {
         // checking permission
         Pair<TbPudo, TbAddress> pudo = pudoService.getPudoByOwner(context.getUserId());
         if (pudo == null) {
-            throw new ApiException(ApiReturnCodes.FORBIDDEN, localizationService.getMessage("error.user.not_pudo_owner"));
+            throw new ApiException(ApiReturnCodes.FORBIDDEN, localizationService.getMessage(language, "error.user.not_pudo_owner"));
         }
         return new PudoResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapPudoEntityToDto(pudo));
     }
@@ -85,19 +86,19 @@ public class PudoResource {
     @PUT
     @Path("/me")
     @Operation(summary = "Update public info for current PUDO")
-    public PudoResponse updateCurrentPudo(Pudo req) {
+    public PudoResponse updateCurrentPudo(Pudo req, @HeaderParam("Application-Language") String language) {
         // sanitize input
         if (req == null) {
-            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.empty_request"));
+            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage(language, "error.empty_request"));
         } else if (isEmpty(req.getBusinessName())) {
-            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.empty_mandatory_field", "businessName"));
+            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage(language, "error.empty_mandatory_field", "businessName"));
         }
 
         // more sanitizing
         if (!isEmpty(req.getPhoneNumber())) {
             String npn = safeNormalizePhoneNumber(req.getPhoneNumber());
             if (npn == null) {
-                throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.invalid_field", "phoneNumber"));
+                throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage(language, "error.invalid_field", "phoneNumber"));
             }
             req.setPhoneNumber(npn);
         }
@@ -105,7 +106,7 @@ public class PudoResource {
         // checking permission
         boolean pudoOwner = pudoService.isPudoOwner(context.getUserId());
         if (!pudoOwner) {
-            throw new ApiException(ApiReturnCodes.FORBIDDEN, localizationService.getMessage("error.user.not_pudo_owner"));
+            throw new ApiException(ApiReturnCodes.FORBIDDEN, localizationService.getMessage(language, "error.user.not_pudo_owner"));
         }
 
         Pair<TbPudo, TbAddress> pudo = pudoService.updatePudoByOwner(context.getUserId(), req);
@@ -116,20 +117,20 @@ public class PudoResource {
     @PUT
     @Path("/me/address")
     @Operation(summary = "Update address for current PUDO")
-    public PudoResponse updateCurrentPudoAddress(AddressRequest req) {
+    public PudoResponse updateCurrentPudoAddress(AddressRequest req, @HeaderParam("Application-Language") String language) {
         // sanitize input
         if (req == null) {
-            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.empty_request"));
+            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage(language, "error.empty_request"));
         } else if (isEmpty(req.getLabel())) {
-            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.empty_mandatory_field", "label"));
+            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage(language, "error.empty_mandatory_field", "label"));
         } else if (isEmpty(req.getResultId())) {
-            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.empty_mandatory_field", "resultId"));
+            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage(language, "error.empty_mandatory_field", "resultId"));
         }
 
         // checking permission
         boolean pudoOwner = pudoService.isPudoOwner(context.getUserId());
         if (!pudoOwner) {
-            throw new ApiException(ApiReturnCodes.FORBIDDEN, localizationService.getMessage("error.user.not_pudo_owner"));
+            throw new ApiException(ApiReturnCodes.FORBIDDEN, localizationService.getMessage(language, "error.user.not_pudo_owner"));
         }
 
         // geocoding
@@ -138,11 +139,11 @@ public class PudoResource {
             feat = geocodeService.search(req.getLabel(), req.getResultId());
         } catch (RuntimeException ex) {
             log.error("[{}] {}", context.getExecutionId(), ExceptionUtils.getCompactStackTrace(ex));
-            throw new ApiException(ApiReturnCodes.SERVICE_UNAVAILABLE, localizationService.getMessage("error.service_unavailable"));
+            throw new ApiException(ApiReturnCodes.SERVICE_UNAVAILABLE, localizationService.getMessage(language, "error.service_unavailable"));
         }
 
         if (feat == null) {
-            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.address.invalid_address"));
+            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage(language, "error.address.invalid_address"));
         }
 
         Pair<TbPudo, TbAddress> pudo = pudoService.updatePudoAddressByOwner(context.getUserId(), feat);
@@ -155,10 +156,10 @@ public class PudoResource {
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @BinaryAPI
     @Operation(summary = "Update public profile picture for current PUDO")
-    public PudoResponse updateCurrentPudoProfilePic(MultipartFormDataInput req) {
+    public PudoResponse updateCurrentPudoProfilePic(MultipartFormDataInput req, @HeaderParam("Application-Language") String language) {
         // sanitize input
         if (req == null) {
-            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.empty_request"));
+            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage(language, "error.empty_request"));
         }
 
         Pair<String, byte[]> uploadedFile;
@@ -166,21 +167,21 @@ public class PudoResource {
             uploadedFile = MultipartUtils.readUploadedFile(req);
         } catch (IOException ex) {
             log.error(ex.getMessage());
-            throw new ApiException(ApiReturnCodes.SERVICE_UNAVAILABLE, localizationService.getMessage("error.service_unavailable"));
+            throw new ApiException(ApiReturnCodes.SERVICE_UNAVAILABLE, localizationService.getMessage(language, "error.service_unavailable"));
         }
 
         // more sanitizing
         if (uploadedFile == null) {
-            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.empty_mandatory_field", "multipart name"));
+            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage(language, "error.empty_mandatory_field", "multipart name"));
         }
         if (!ALLOWED_IMAGE_MIME_TYPES.contains(uploadedFile.getValue0())) {
-            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.invalid_field", "mimeType"));
+            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage(language, "error.invalid_field", "mimeType"));
         }
 
         // checking permission
         boolean pudoOwner = pudoService.isPudoOwner(context.getUserId());
         if (!pudoOwner) {
-            throw new ApiException(ApiReturnCodes.FORBIDDEN, localizationService.getMessage("error.user.not_pudo_owner"));
+            throw new ApiException(ApiReturnCodes.FORBIDDEN, localizationService.getMessage(language, "error.user.not_pudo_owner"));
         }
 
         try {
@@ -189,32 +190,32 @@ public class PudoResource {
             return new PudoResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapPudoEntityToDto(pudo));
         } catch (RuntimeException ex) {
             log.error("[{}] {}", context.getExecutionId(), ExceptionUtils.getCompactStackTrace(ex));
-            throw new ApiException(ApiReturnCodes.SERVICE_UNAVAILABLE, localizationService.getMessage("error.service_unavailable"));
+            throw new ApiException(ApiReturnCodes.SERVICE_UNAVAILABLE, localizationService.getMessage(language, "error.service_unavailable"));
         }
     }
 
     @DELETE
     @Path("/me/profile-pic")
     @Operation(summary = "Delete public profile picture for current PUDO")
-    public PudoResponse deleteCurrentUserProfilePic() {
+    public PudoResponse deleteCurrentUserProfilePic(@HeaderParam("Application-Language") String language) {
         try {
             Pair<TbPudo, TbAddress> pudo = pudoService.deletePudoProfilePicByOwner(context.getUserId());
             log.info("[{}] Deleted PUDO: {} profile picture", context.getExecutionId(), pudo.getValue0().getPudoId());
             return new PudoResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapPudoEntityToDto(pudo));
         } catch (RuntimeException ex) {
             log.error("[{}] {}", context.getExecutionId(), ExceptionUtils.getCompactStackTrace(ex));
-            throw new ApiException(ApiReturnCodes.SERVICE_UNAVAILABLE, localizationService.getMessage("error.service_unavailable"));
+            throw new ApiException(ApiReturnCodes.SERVICE_UNAVAILABLE, localizationService.getMessage(language, "error.service_unavailable"));
         }
     }
 
     @GET
     @Path("/me/users")
     @Operation(summary = "Get current PUDO's user list")
-    public UserListResponse getCurrentPudoUsers() {
+    public UserListResponse getCurrentPudoUsers(@HeaderParam("Application-Language") String language) {
         // checking permission
         boolean pudoOwner = pudoService.isPudoOwner(context.getUserId());
         if (!pudoOwner) {
-            throw new ApiException(ApiReturnCodes.FORBIDDEN, localizationService.getMessage("error.user.not_pudo_owner"));
+            throw new ApiException(ApiReturnCodes.FORBIDDEN, localizationService.getMessage(language, "error.user.not_pudo_owner"));
         }
         List<TbUser> users = pudoService.getUserListByPudoOwner(context.getUserId());
         // since they are all customers, we assume pudoOwner = false

@@ -84,14 +84,14 @@ public class UserResource {
     @PUT
     @Path("/me")
     @Operation(summary = "Update public profile for current user")
-    public UserResponse updateCurrentUser(User req) {
+    public UserResponse updateCurrentUser(User req, @HeaderParam("Application-Language") String language) {
         // sanitize input
         if (req == null) {
-            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.empty_request"));
+            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage(language, "error.empty_request"));
         } else if (isEmpty(req.getFirstName())) {
-            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.empty_mandatory_field", "firstName"));
+            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage(language, "error.empty_mandatory_field", "firstName"));
         } else if (isEmpty(req.getLastName())) {
-            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.empty_mandatory_field", "lastName"));
+            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage(language, "error.empty_mandatory_field", "lastName"));
         }
 
         Pair<TbUser, Boolean> user = userService.updateUser(context.getUserId(), req);
@@ -102,7 +102,12 @@ public class UserResource {
     @GET
     @Path("/me/pudos")
     @Operation(summary = "Get current user's favourite PUDOs")
-    public PudoListResponse getCurrentUserPudos() {
+    public PudoListResponse getCurrentUserPudos(@HeaderParam("Application-Language") String language) {
+        // checking permission
+        boolean pudoOwner = pudoService.isPudoOwner(context.getUserId());
+        if (pudoOwner) {
+            throw new ApiException(ApiReturnCodes.FORBIDDEN, localizationService.getMessage(language, "error.user.pudo_owner"));
+        }
         List<Pair<TbPudo, TbAddress>> pudos = pudoService.getPudoListByCustomer(context.getUserId());
         return new PudoListResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapPudoEntityListToDtoList(pudos));
     }
@@ -110,19 +115,19 @@ public class UserResource {
     @PUT
     @Path("/me/pudos/{pudoId}")
     @Operation(summary = "Add PUDO to current user's favourite PUDOs")
-    public PudoListResponse addPudoToFavourites(@PathParam(value = "pudoId") Long pudoId) {
+    public PudoListResponse addPudoToFavourites(@PathParam(value = "pudoId") Long pudoId, @HeaderParam("Application-Language") String language) {
         // preliminary checks
         boolean pudoOwner = pudoService.isPudoOwner(context.getUserId());
         if (pudoOwner) {
-            throw new ApiException(ApiReturnCodes.FORBIDDEN, localizationService.getMessage("error.user.pudo_owner"));
+            throw new ApiException(ApiReturnCodes.FORBIDDEN, localizationService.getMessage(language, "error.user.pudo_owner"));
         }
         Pair<TbPudo, TbAddress> pudo = pudoService.getPudoById(pudoId);
         if (pudo == null) {
-            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.resource_not_exists"));
+            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage(language, "error.resource_not_exists"));
         }
         boolean pudoCustomer = pudoService.isPudoCustomer(context.getUserId(), pudoId);
         if (pudoCustomer) {
-            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.pudo.pudo_already_favourite"));
+            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage(language, "error.pudo.pudo_already_favourite"));
         }
 
         List<Pair<TbPudo, TbAddress>> pudos = pudoService.addPudoToFavourites(context.getUserId(), pudoId);
@@ -133,19 +138,19 @@ public class UserResource {
     @DELETE
     @Path("/me/pudos/{pudoId}")
     @Operation(summary = "Remove PUDO from current user's favourite PUDOs")
-    public PudoListResponse removePudoFromFavourites(@PathParam(value = "pudoId") Long pudoId) {
+    public PudoListResponse removePudoFromFavourites(@PathParam(value = "pudoId") Long pudoId, @HeaderParam("Application-Language") String language) {
         // preliminary checks
         boolean pudoOwner = pudoService.isPudoOwner(context.getUserId());
         if (pudoOwner) {
-            throw new ApiException(ApiReturnCodes.FORBIDDEN, localizationService.getMessage("error.user.pudo_owner"));
+            throw new ApiException(ApiReturnCodes.FORBIDDEN, localizationService.getMessage(language, "error.user.pudo_owner"));
         }
         boolean pudoCustomer = pudoService.isPudoCustomer(context.getUserId(), pudoId);
         if (!pudoCustomer) {
-            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.pudo.pudo_not_favourite"));
+            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage(language, "error.pudo.pudo_not_favourite"));
         }
         long cnt = packageService.getActivePackageCount(pudoId, context.getUserId());
         if (cnt > 0) {
-            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.pudo.package_in_transit"));
+            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage(language, "error.pudo.package_in_transit"));
         }
 
         List<Pair<TbPudo, TbAddress>> pudos = pudoService.removePudoFromFavourites(context.getUserId(), pudoId);
@@ -158,10 +163,10 @@ public class UserResource {
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @BinaryAPI
     @Operation(summary = "Update public profile picture for current user")
-    public UserResponse updateCurrentUserProfilePic(MultipartFormDataInput req) {
+    public UserResponse updateCurrentUserProfilePic(MultipartFormDataInput req, @HeaderParam("Application-Language") String language) {
         // sanitize input
         if (req == null) {
-            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.empty_request"));
+            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage(language, "error.empty_request"));
         }
 
         Pair<String, byte[]> uploadedFile;
@@ -169,15 +174,15 @@ public class UserResource {
             uploadedFile = MultipartUtils.readUploadedFile(req);
         } catch (IOException ex) {
             log.error(ex.getMessage());
-            throw new ApiException(ApiReturnCodes.SERVICE_UNAVAILABLE, localizationService.getMessage("error.service_unavailable"));
+            throw new ApiException(ApiReturnCodes.SERVICE_UNAVAILABLE, localizationService.getMessage(language, "error.service_unavailable"));
         }
 
         // more sanitizing
         if (uploadedFile == null) {
-            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.empty_mandatory_field", "multipart name"));
+            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage(language, "error.empty_mandatory_field", "multipart name"));
         }
         if (!ALLOWED_IMAGE_MIME_TYPES.contains(uploadedFile.getValue0())) {
-            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.invalid_field", "mimeType"));
+            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage(language, "error.invalid_field", "mimeType"));
         }
 
         try {
@@ -186,36 +191,36 @@ public class UserResource {
             return new UserResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapUserEntityToDto(user));
         } catch (RuntimeException ex) {
             log.error("[{}] {}", context.getExecutionId(), ExceptionUtils.getCompactStackTrace(ex));
-            throw new ApiException(ApiReturnCodes.SERVICE_UNAVAILABLE, localizationService.getMessage("error.service_unavailable"));
+            throw new ApiException(ApiReturnCodes.SERVICE_UNAVAILABLE, localizationService.getMessage(language, "error.service_unavailable"));
         }
     }
 
     @DELETE
     @Path("/me/profile-pic")
     @Operation(summary = "Delete public profile picture for current user")
-    public UserResponse deleteCurrentUserProfilePic() {
+    public UserResponse deleteCurrentUserProfilePic(@HeaderParam("Application-Language") String language) {
         try {
             Pair<TbUser, Boolean> user = userService.deleteUserProfilePic(context.getUserId());
             log.info("[{}] Deleted user: {} profile picture", context.getExecutionId(), context.getUserId());
             return new UserResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapUserEntityToDto(user));
         } catch (RuntimeException ex) {
             log.error("[{}] {}", context.getExecutionId(), ExceptionUtils.getCompactStackTrace(ex));
-            throw new ApiException(ApiReturnCodes.SERVICE_UNAVAILABLE, localizationService.getMessage("error.service_unavailable"));
+            throw new ApiException(ApiReturnCodes.SERVICE_UNAVAILABLE, localizationService.getMessage(language, "error.service_unavailable"));
         }
     }
 
     @POST
     @Path("/me/device-tokens")
     @Operation(summary = "Store or refresh device token for current user")
-    public BaseResponse upsertDeviceToken(DeviceToken req, @HeaderParam("Application-Language") String applicationLanguage) {
+    public BaseResponse upsertDeviceToken(DeviceToken req, @HeaderParam("Application-Language") String language) {
         // sanitize input
         if (req == null) {
-            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.empty_request"));
+            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage(language, "error.empty_request"));
         } else if (isEmpty(req.getDeviceToken())) {
-            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.empty_mandatory_field", "deviceToken"));
+            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage(language, "error.empty_mandatory_field", "deviceToken"));
         }
 
-        deviceTokenService.upsertDeviceToken(context.getUserId(), req, applicationLanguage);
+        deviceTokenService.upsertDeviceToken(context.getUserId(), req, language);
         return new BaseResponse(context.getExecutionId(), ApiReturnCodes.OK);
     }
 

@@ -233,15 +233,15 @@ public class PackageService {
             for (TbDeviceToken curRow : deviceTokens) {
                 String title;
                 if (titleParams == null || titleParams.length == 0) {
-                    title = localizationService.getLocalizedMessage(curRow.getApplicationLanguage(), titleTemplate);
+                    title = localizationService.getMessage(curRow.getApplicationLanguage(), titleTemplate);
                 } else {
-                    title = localizationService.getLocalizedMessage(curRow.getApplicationLanguage(), titleTemplate, (Object[]) titleParams);
+                    title = localizationService.getMessage(curRow.getApplicationLanguage(), titleTemplate, (Object[]) titleParams);
                 }
                 String message;
                 if (messageParams == null || messageParams.length == 0) {
-                    message = localizationService.getLocalizedMessage(curRow.getApplicationLanguage(), messageTemplate);
+                    message = localizationService.getMessage(curRow.getApplicationLanguage(), messageTemplate);
                 } else {
-                    message = localizationService.getLocalizedMessage(curRow.getApplicationLanguage(), messageTemplate, (Object[]) messageParams);
+                    message = localizationService.getMessage(curRow.getApplicationLanguage(), messageTemplate, (Object[]) messageParams);
                 }
                 String messageId = firebaseMessagingService.sendNotification(curRow.getDeviceToken(), title, message, data);
                 if (messageId != null) {

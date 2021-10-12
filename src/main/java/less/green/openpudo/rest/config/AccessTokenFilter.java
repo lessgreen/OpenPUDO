@@ -56,25 +56,28 @@ public class AccessTokenFilter implements ContainerRequestFilter {
             return;
         }
 
+        // get application language, if sent by client
+        String language = requestContext.getHeaderString("Application-Language");
+
         if (isEmpty(authorizationHeader)) {
             log.debug("[{}] Authorization failed: missing header", context.getExecutionId());
-            throw new ApiException(ApiReturnCodes.INVALID_JWT_TOKEN, localizationService.getMessage("error.auth.invalid_access_token"));
+            throw new ApiException(ApiReturnCodes.INVALID_JWT_TOKEN, localizationService.getMessage(language, "error.auth.invalid_access_token"));
         }
         String[] split = authorizationHeader.split("\\s", -1);
         if (!split[0].equals(BEARER_AUTHENTICATION_SCHEME)) {
             log.debug("[{}] Authorization failed: wrong authentication scheme", context.getExecutionId());
-            throw new ApiException(ApiReturnCodes.INVALID_JWT_TOKEN, localizationService.getMessage("error.auth.invalid_access_token"));
+            throw new ApiException(ApiReturnCodes.INVALID_JWT_TOKEN, localizationService.getMessage(language, "error.auth.invalid_access_token"));
         }
         if (split.length < 2) {
             log.debug("[{}] Authorization failed: missing token", context.getExecutionId());
-            throw new ApiException(ApiReturnCodes.INVALID_JWT_TOKEN, localizationService.getMessage("error.auth.invalid_access_token"));
+            throw new ApiException(ApiReturnCodes.INVALID_JWT_TOKEN, localizationService.getMessage(language, "error.auth.invalid_access_token"));
         }
 
         // checking signature
         String accessToken = split[1].trim();
         if (jwtService.verifyAccessTokenSignature(accessToken) == false) {
             log.debug("[{}] Authorization failed: invalid token signature", context.getExecutionId());
-            throw new ApiException(ApiReturnCodes.INVALID_JWT_TOKEN, localizationService.getMessage("error.auth.invalid_access_token"));
+            throw new ApiException(ApiReturnCodes.INVALID_JWT_TOKEN, localizationService.getMessage(language, "error.auth.invalid_access_token"));
         }
         // if access token is valid, checking for expiration
         JwtPayload payload;
@@ -87,7 +90,7 @@ public class AccessTokenFilter implements ContainerRequestFilter {
         }
         if (new Date().after(payload.getExp())) {
             log.debug("[{}] Authorization failed: token expired", context.getExecutionId());
-            throw new ApiException(ApiReturnCodes.EXPIRED_JWT_TOKEN, localizationService.getMessage("error.auth.expired_access_token"));
+            throw new ApiException(ApiReturnCodes.EXPIRED_JWT_TOKEN, localizationService.getMessage(language, "error.auth.expired_access_token"));
         }
 
         // if everything went fine, populate context with userId

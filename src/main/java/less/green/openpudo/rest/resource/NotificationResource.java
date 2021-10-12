@@ -52,27 +52,27 @@ public class NotificationResource {
     public NotificationListResponse getNotificationList(
             @Parameter(description = "Pagination limit", required = false) @DefaultValue("20") @QueryParam("limit") int limit,
             @Parameter(description = "Pagination offset", required = false) @DefaultValue("0") @QueryParam("offset") int offset,
-            @HeaderParam("Application-Language") String applicationLanguage) {
+            @HeaderParam("Application-Language") String language) {
         // sanitize input
         if (limit < 1) {
-            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.invalid_field", "limit"));
+            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage(language, "error.invalid_field", "limit"));
         }
         if (offset < 0) {
-            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.invalid_field", "offset"));
+            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage(language, "error.invalid_field", "offset"));
         }
 
         List<TbNotification> notifications = notificationService.getNotificationList(context.getUserId(), limit, offset);
         // localize notification
         for (TbNotification notification : notifications) {
             if (notification.getTitleParams() == null || notification.getTitleParams().length == 0) {
-                notification.setTitle(localizationService.getLocalizedMessage(applicationLanguage, notification.getTitle()));
+                notification.setTitle(localizationService.getMessage(language, notification.getTitle()));
             } else {
-                notification.setTitle(localizationService.getLocalizedMessage(applicationLanguage, notification.getTitle(), (Object[]) notification.getTitleParams()));
+                notification.setTitle(localizationService.getMessage(language, notification.getTitle(), (Object[]) notification.getTitleParams()));
             }
             if (notification.getMessageParams() == null || notification.getMessageParams().length == 0) {
-                notification.setMessage(localizationService.getLocalizedMessage(applicationLanguage, notification.getMessage()));
+                notification.setMessage(localizationService.getMessage(language, notification.getMessage()));
             } else {
-                notification.setMessage(localizationService.getLocalizedMessage(applicationLanguage, notification.getMessage(), (Object[]) notification.getMessageParams()));
+                notification.setMessage(localizationService.getMessage(language, notification.getMessage(), (Object[]) notification.getMessageParams()));
             }
         }
         return new NotificationListResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapNotificationEntityToDto(notifications));
@@ -97,14 +97,14 @@ public class NotificationResource {
     @POST
     @Path("/{notificationId}/mark-as-read")
     @Operation(summary = "Mark notification with provided notificationId as read")
-    public BaseResponse markNotificationAsRead(@PathParam(value = "notificationId") Long notificationId) {
+    public BaseResponse markNotificationAsRead(@PathParam(value = "notificationId") Long notificationId, @HeaderParam("Application-Language") String language) {
         // checking permission
         TbNotification notification = notificationService.getNotification(notificationId);
         if (notification == null) {
-            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.resource_not_exists"));
+            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage(language, "error.resource_not_exists"));
         }
         if (!notification.getUserId().equals(context.getUserId())) {
-            throw new ApiException(ApiReturnCodes.FORBIDDEN, localizationService.getMessage("error.forbidden"));
+            throw new ApiException(ApiReturnCodes.FORBIDDEN, localizationService.getMessage(language, "error.forbidden"));
         }
 
         notificationService.markNotificationAsRead(notificationId);

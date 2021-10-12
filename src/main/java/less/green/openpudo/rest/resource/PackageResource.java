@@ -8,6 +8,7 @@ import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -67,10 +68,10 @@ public class PackageResource {
     @BinaryAPI
     @Operation(summary = "Upload delivery picture for incoming package",
             description = "This API can be called before creating the package itself, to allow async upload, the UUID of the image must be client generated")
-    public BaseResponse uploadPackagePicture(@PathParam(value = "externalFileId") UUID externalFileId, MultipartFormDataInput req) {
+    public BaseResponse uploadPackagePicture(@PathParam(value = "externalFileId") UUID externalFileId, MultipartFormDataInput req, @HeaderParam("Application-Language") String language) {
         // sanitize input
         if (req == null) {
-            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.empty_request"));
+            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage(language, "error.empty_request"));
         }
 
         Pair<String, byte[]> uploadedFile;
@@ -78,22 +79,22 @@ public class PackageResource {
             uploadedFile = MultipartUtils.readUploadedFile(req);
         } catch (IOException ex) {
             log.error(ex.getMessage());
-            throw new ApiException(ApiReturnCodes.SERVICE_UNAVAILABLE, localizationService.getMessage("error.service_unavailable"));
+            throw new ApiException(ApiReturnCodes.SERVICE_UNAVAILABLE, localizationService.getMessage(language, "error.service_unavailable"));
         }
 
         // more sanitizing
         if (uploadedFile == null) {
-            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.empty_mandatory_field", "multipart name"));
+            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage(language, "error.empty_mandatory_field", "multipart name"));
         }
         if (!ALLOWED_IMAGE_MIME_TYPES.contains(uploadedFile.getValue0())) {
-            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.invalid_field", "mimeType"));
+            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage(language, "error.invalid_field", "mimeType"));
         }
 
         // checking permission
         // since we still know nothing about the package, operation is allowed if the current user is a pudo owner
         boolean pudoOwner = pudoService.isPudoOwner(context.getUserId());
         if (!pudoOwner) {
-            throw new ApiException(ApiReturnCodes.FORBIDDEN, localizationService.getMessage("error.user.not_pudo_owner"));
+            throw new ApiException(ApiReturnCodes.FORBIDDEN, localizationService.getMessage(language, "error.user.not_pudo_owner"));
         }
 
         try {
@@ -102,30 +103,30 @@ public class PackageResource {
             return new BaseResponse(context.getExecutionId(), ApiReturnCodes.OK);
         } catch (RuntimeException ex) {
             log.error("[{}] {}", context.getExecutionId(), ExceptionUtils.getCompactStackTrace(ex));
-            throw new ApiException(ApiReturnCodes.SERVICE_UNAVAILABLE, localizationService.getMessage("error.service_unavailable"));
+            throw new ApiException(ApiReturnCodes.SERVICE_UNAVAILABLE, localizationService.getMessage(language, "error.service_unavailable"));
         }
     }
 
     @POST
     @Path("/")
     @Operation(summary = "Signal the delivery of a package for current PUDO")
-    public PackageResponse deliveredPackage(DeliveredPackageRequest req) {
+    public PackageResponse deliveredPackage(DeliveredPackageRequest req, @HeaderParam("Application-Language") String language) {
         // sanitize input
         if (req == null) {
-            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.empty_request"));
+            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage(language, "error.empty_request"));
         } else if (req.getUserId() == null) {
-            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.empty_mandatory_field", "userId"));
+            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage(language, "error.empty_mandatory_field", "userId"));
         }
 
         // checking permission
         // operation is allowed if the current user is a pudo owner and there is a customer relationship
         Long pudoId = pudoService.getPudoIdByOwner(context.getUserId());
         if (pudoId == null) {
-            throw new ApiException(ApiReturnCodes.FORBIDDEN, localizationService.getMessage("error.user.not_pudo_owner"));
+            throw new ApiException(ApiReturnCodes.FORBIDDEN, localizationService.getMessage(language, "error.user.not_pudo_owner"));
         }
         boolean pudoCustomer = pudoService.isPudoCustomer(req.getUserId(), pudoId);
         if (!pudoCustomer) {
-            throw new ApiException(ApiReturnCodes.FORBIDDEN, localizationService.getMessage("error.package.customer_not_in_list"));
+            throw new ApiException(ApiReturnCodes.FORBIDDEN, localizationService.getMessage(language, "error.package.customer_not_in_list"));
         }
 
         Pair<TbPackage, List<TbPackageEvent>> pack = packageService.deliveredPackage(pudoId, req);
@@ -136,16 +137,16 @@ public class PackageResource {
     @POST
     @Path("/{packageId}/notified")
     @Operation(summary = "Signal that the user has received the delivery notification of a package")
-    public PackageResponse notifiedPackage(@PathParam(value = "packageId") Long packageId) {
+    public PackageResponse notifiedPackage(@PathParam(value = "packageId") Long packageId, @HeaderParam("Application-Language") String language) {
         Pair<TbPackage, List<TbPackageEvent>> pack = packageService.getPackageById(packageId);
         if (pack == null) {
-            throw new ApiException(ApiReturnCodes.RESOURCE_NOT_FOUND, localizationService.getMessage("error.resource_not_exists"));
+            throw new ApiException(ApiReturnCodes.RESOURCE_NOT_FOUND, localizationService.getMessage(language, "error.resource_not_exists"));
         }
 
         // checking permission
         // operation is allowed if the current user is the package recipient
         if (!pack.getValue0().getUserId().equals(context.getUserId())) {
-            throw new ApiException(ApiReturnCodes.FORBIDDEN, localizationService.getMessage("error.forbidden"));
+            throw new ApiException(ApiReturnCodes.FORBIDDEN, localizationService.getMessage(language, "error.forbidden"));
         }
 
         // if package is in expected state we make the transition, otherwise we silently skip it and return the current state
@@ -159,29 +160,29 @@ public class PackageResource {
     @POST
     @Path("/{packageId}/collected")
     @Operation(summary = "Signal that the user has collected the package")
-    public PackageResponse collectedPackage(@PathParam(value = "packageId") Long packageId, ChangePackageStatusRequest req) {
+    public PackageResponse collectedPackage(@PathParam(value = "packageId") Long packageId, ChangePackageStatusRequest req, @HeaderParam("Application-Language") String language) {
         // sanitize input
         if (req == null) {
-            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.empty_request"));
+            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage(language, "error.empty_request"));
         }
 
         Pair<TbPackage, List<TbPackageEvent>> pack = packageService.getPackageById(packageId);
         if (pack == null) {
-            throw new ApiException(ApiReturnCodes.RESOURCE_NOT_FOUND, localizationService.getMessage("error.error.resource_not_exists"));
+            throw new ApiException(ApiReturnCodes.RESOURCE_NOT_FOUND, localizationService.getMessage(language, "error.error.resource_not_exists"));
         }
 
         // checking permission
         // operation is allowed if the current user is the package pudo owner
         Long pudoId = pudoService.getPudoIdByOwner(context.getUserId());
         if (!pack.getValue0().getPudoId().equals(pudoId)) {
-            throw new ApiException(ApiReturnCodes.FORBIDDEN, localizationService.getMessage("error.forbidden"));
+            throw new ApiException(ApiReturnCodes.FORBIDDEN, localizationService.getMessage(language, "error.forbidden"));
         }
 
         // operation is allowed if the package is in those states
         if (pack.getValue1().get(0).getPackageStatus() != PackageStatus.DELIVERED
                 && pack.getValue1().get(0).getPackageStatus() != PackageStatus.NOTIFY_SENT
                 && pack.getValue1().get(0).getPackageStatus() != PackageStatus.NOTIFIED) {
-            throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage("error.package.illegal_state"));
+            throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(language, "error.package.illegal_state"));
         }
 
         pack = packageService.collectedPackage(packageId, req);
@@ -192,21 +193,21 @@ public class PackageResource {
     @POST
     @Path("/{packageId}/accepted")
     @Operation(summary = "Signal that the user confirms the package collection")
-    public PackageResponse acceptedPackage(@PathParam(value = "packageId") Long packageId, ChangePackageStatusRequest req) {
+    public PackageResponse acceptedPackage(@PathParam(value = "packageId") Long packageId, ChangePackageStatusRequest req, @HeaderParam("Application-Language") String language) {
         // sanitize input
         if (req == null) {
-            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.empty_request"));
+            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage(language, "error.empty_request"));
         }
 
         Pair<TbPackage, List<TbPackageEvent>> pack = packageService.getPackageById(packageId);
         if (pack == null) {
-            throw new ApiException(ApiReturnCodes.RESOURCE_NOT_FOUND, localizationService.getMessage("error.resource_not_exists"));
+            throw new ApiException(ApiReturnCodes.RESOURCE_NOT_FOUND, localizationService.getMessage(language, "error.resource_not_exists"));
         }
 
         // checking permission
         // operation is allowed if the current user is the package recipient
         if (!pack.getValue0().getUserId().equals(context.getUserId())) {
-            throw new ApiException(ApiReturnCodes.FORBIDDEN, localizationService.getMessage("error.forbidden"));
+            throw new ApiException(ApiReturnCodes.FORBIDDEN, localizationService.getMessage(language, "error.forbidden"));
         }
 
         // operation is allowed if the package is in those states
@@ -214,7 +215,7 @@ public class PackageResource {
                 && pack.getValue1().get(0).getPackageStatus() != PackageStatus.NOTIFY_SENT
                 && pack.getValue1().get(0).getPackageStatus() != PackageStatus.NOTIFIED
                 && pack.getValue1().get(0).getPackageStatus() != PackageStatus.COLLECTED) {
-            throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage("error.package.illegal_state"));
+            throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(language, "error.package.illegal_state"));
         }
 
         pack = packageService.acceptedPackage(packageId, req);
@@ -225,14 +226,14 @@ public class PackageResource {
     @GET
     @Path("/{packageId}")
     @Operation(summary = "Get info and event log for package with provided packageId")
-    public PackageResponse getPackageById(@PathParam(value = "packageId") Long packageId) {
+    public PackageResponse getPackageById(@PathParam(value = "packageId") Long packageId, @HeaderParam("Application-Language") String language) {
         Pair<TbPackage, List<TbPackageEvent>> pack = packageService.getPackageById(packageId);
         if (pack != null) {
             // checking permission
             // operation is allowed if the current user is the package pudo owner or the package recipient
             Long pudoId = pudoService.getPudoIdByOwner(context.getUserId());
             if (!pack.getValue0().getPudoId().equals(pudoId) && !pack.getValue0().getUserId().equals(context.getUserId())) {
-                throw new ApiException(ApiReturnCodes.FORBIDDEN, localizationService.getMessage("error.forbidden"));
+                throw new ApiException(ApiReturnCodes.FORBIDDEN, localizationService.getMessage(language, "error.forbidden"));
             }
         }
         return new PackageResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapPackageEntityToDto(pack));
@@ -246,13 +247,14 @@ public class PackageResource {
     public PackageListResponse getPackageList(
             @Parameter(description = "Historical search", required = false) @DefaultValue("false") @QueryParam("history") boolean history,
             @Parameter(description = "Pagination limit", required = false) @DefaultValue("20") @QueryParam("limit") int limit,
-            @Parameter(description = "Pagination offset", required = false) @DefaultValue("0") @QueryParam("offset") int offset) {
+            @Parameter(description = "Pagination offset", required = false) @DefaultValue("0") @QueryParam("offset") int offset,
+            @HeaderParam("Application-Language") String language) {
         // sanitize input
         if (limit < 1) {
-            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.invalid_field", "limit"));
+            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage(language, "error.invalid_field", "limit"));
         }
         if (offset < 0) {
-            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage("error.invalid_field", "offset"));
+            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage(language, "error.invalid_field", "offset"));
         }
 
         List<Pair<TbPackage, List<TbPackageEvent>>> packs = packageService.getPackageList(context.getUserId(), history, limit, offset);

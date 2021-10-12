@@ -5,6 +5,7 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -48,7 +49,7 @@ public class ExternalFileResource {
     @PublicAPI
     @BinaryAPI
     @Operation(summary = "Get external file, simulating a static resource server by an http server")
-    public Response getExternalFile(@PathParam(value = "externalFileId") UUID externalFileId) {
+    public Response getExternalFile(@PathParam(value = "externalFileId") UUID externalFileId, @HeaderParam("Application-Language") String language) {
         try {
             Pair<TbExternalFile, byte[]> ext = externalFileService.getExternalFile(externalFileId);
             if (ext == null) {
@@ -57,7 +58,7 @@ public class ExternalFileResource {
             return Response.ok(ext.getValue1()).header("Content-Type", ext.getValue0().getMimeType()).build();
         } catch (RuntimeException ex) {
             log.error("[{}] {}", context.getExecutionId(), ExceptionUtils.getCompactStackTrace(ex));
-            throw new ApiException(ApiReturnCodes.SERVICE_UNAVAILABLE, localizationService.getMessage("error.service_unavailable"));
+            throw new ApiException(ApiReturnCodes.SERVICE_UNAVAILABLE, localizationService.getMessage(language, "error.service_unavailable"));
         }
     }
 
