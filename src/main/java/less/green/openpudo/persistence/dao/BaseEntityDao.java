@@ -1,9 +1,9 @@
 package less.green.openpudo.persistence.dao;
 
-import java.io.Serializable;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import java.io.Serializable;
 
 public abstract class BaseEntityDao<E extends Serializable, K> {
 
@@ -38,8 +38,7 @@ public abstract class BaseEntityDao<E extends Serializable, K> {
         String qs = "DELETE FROM " + entityClass.getSimpleName() + " t WHERE t." + keyColumnName + " = :key";
         Query q = em.createQuery(qs);
         q.setParameter("key", key);
-        int cnt = q.executeUpdate();
-        return cnt;
+        return q.executeUpdate();
     }
 
     public void remove(E ent) {

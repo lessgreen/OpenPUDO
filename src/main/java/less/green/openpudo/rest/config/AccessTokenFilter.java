@@ -2,7 +2,15 @@ package less.green.openpudo.rest.config;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.quarkus.runtime.configuration.ProfileManager;
-import java.util.Date;
+import less.green.openpudo.cdi.ExecutionContext;
+import less.green.openpudo.cdi.service.JwtService;
+import less.green.openpudo.cdi.service.LocalizationService;
+import less.green.openpudo.common.ApiReturnCodes;
+import less.green.openpudo.common.dto.JwtPayload;
+import less.green.openpudo.rest.config.annotation.PublicAPI;
+import less.green.openpudo.rest.config.exception.ApiException;
+import lombok.extern.log4j.Log4j2;
+
 import javax.annotation.Priority;
 import javax.inject.Inject;
 import javax.ws.rs.InternalServerErrorException;
@@ -11,16 +19,11 @@ import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.container.ResourceInfo;
 import javax.ws.rs.core.Context;
-import static javax.ws.rs.core.HttpHeaders.AUTHORIZATION;
 import javax.ws.rs.ext.Provider;
-import less.green.openpudo.cdi.ExecutionContext;
-import less.green.openpudo.cdi.service.JwtService;
-import less.green.openpudo.cdi.service.LocalizationService;
-import less.green.openpudo.common.ApiReturnCodes;
+import java.util.Date;
+
+import static javax.ws.rs.core.HttpHeaders.AUTHORIZATION;
 import static less.green.openpudo.common.StringUtils.isEmpty;
-import less.green.openpudo.common.dto.JwtPayload;
-import less.green.openpudo.rest.config.exception.ApiException;
-import lombok.extern.log4j.Log4j2;
 
 @Provider
 @Priority(Priorities.AUTHENTICATION)
@@ -75,7 +78,7 @@ public class AccessTokenFilter implements ContainerRequestFilter {
 
         // checking signature
         String accessToken = split[1].trim();
-        if (jwtService.verifyAccessTokenSignature(accessToken) == false) {
+        if (!jwtService.verifyAccessTokenSignature(accessToken)) {
             log.debug("[{}] Authorization failed: invalid token signature", context.getExecutionId());
             throw new ApiException(ApiReturnCodes.INVALID_JWT_TOKEN, localizationService.getMessage(language, "error.auth.invalid_access_token"));
         }

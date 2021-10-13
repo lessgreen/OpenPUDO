@@ -1,8 +1,9 @@
 package less.green.openpudo.cdi;
 
-import java.util.UUID;
-import javax.enterprise.context.RequestScoped;
 import lombok.Data;
+
+import javax.enterprise.context.RequestScoped;
+import java.util.UUID;
 
 @RequestScoped
 @Data

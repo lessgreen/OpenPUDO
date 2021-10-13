@@ -2,9 +2,10 @@ package less.green.openpudo.rest.dto.notification;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonRawValue;
-import java.util.Date;
 import lombok.Data;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
+
+import java.util.Date;
 
 @Data
 public class Notification {

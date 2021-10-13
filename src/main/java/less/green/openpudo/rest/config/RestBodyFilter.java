@@ -1,23 +1,22 @@
 package less.green.openpudo.rest.config;
 
+import less.green.openpudo.cdi.ExecutionContext;
+import less.green.openpudo.rest.config.annotation.BinaryAPI;
+import lombok.extern.log4j.Log4j2;
+
+import javax.annotation.Priority;
+import javax.inject.Inject;
+import javax.ws.rs.container.*;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.ext.Provider;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import javax.annotation.Priority;
-import javax.inject.Inject;
-import javax.ws.rs.container.ContainerRequestContext;
-import javax.ws.rs.container.ContainerRequestFilter;
-import javax.ws.rs.container.ContainerResponseContext;
-import javax.ws.rs.container.ContainerResponseFilter;
-import javax.ws.rs.container.ResourceInfo;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.ext.Provider;
-import less.green.openpudo.cdi.ExecutionContext;
+
 import static less.green.openpudo.common.Encoders.OBJECT_MAPPER;
 import static less.green.openpudo.common.StreamUtils.readAllBytesFromInputStream;
 import static less.green.openpudo.common.StringUtils.isEmpty;
-import lombok.extern.log4j.Log4j2;
 
 @Provider
 @Priority(2)

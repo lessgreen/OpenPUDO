@@ -1,14 +1,16 @@
 package less.green.openpudo.cdi.service;
 
+import lombok.extern.log4j.Log4j2;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
+
+import javax.enterprise.context.ApplicationScoped;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.UUID;
-import javax.enterprise.context.ApplicationScoped;
+
 import static less.green.openpudo.common.Encoders.BASE64_DECODER;
 import static less.green.openpudo.common.Encoders.BASE64_ENCODER;
-import lombok.extern.log4j.Log4j2;
-import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 @ApplicationScoped
 @Log4j2

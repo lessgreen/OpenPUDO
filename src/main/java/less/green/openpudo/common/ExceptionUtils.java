@@ -61,11 +61,10 @@ public class ExceptionUtils {
     public static String getCompactStackTrace(Throwable throwable, List<String> prefixes) {
         String stackTrace = getStackTrace(throwable);
         String[] lines = stackTrace.split("\\r?\\n");
-        String ret = Arrays.stream(lines)
+        return Arrays.stream(lines)
                 .filter(i -> !i.startsWith("\t")
-                || prefixes.stream().anyMatch(pr -> !i.contains("$") && (i.contains("at " + pr + ".") || (i.contains("at ") && i.contains("/" + pr + ".")))))
+                        || prefixes.stream().anyMatch(pr -> !i.contains("$") && (i.contains("at " + pr + ".") || (i.contains("at ") && i.contains("/" + pr + ".")))))
                 .collect(Collectors.joining("\n"));
-        return ret;
     }
 
 }

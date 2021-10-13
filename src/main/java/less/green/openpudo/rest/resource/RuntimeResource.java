@@ -1,9 +1,9 @@
 package less.green.openpudo.rest.resource;
 
 import com.sun.management.OperatingSystemMXBean;
-import java.lang.management.ManagementFactory;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
+import lombok.extern.log4j.Log4j2;
+import org.eclipse.microprofile.openapi.annotations.Operation;
+
 import javax.enterprise.context.RequestScoped;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -11,8 +11,9 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import lombok.extern.log4j.Log4j2;
-import org.eclipse.microprofile.openapi.annotations.Operation;
+import java.lang.management.ManagementFactory;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 @RequestScoped
 @Path("/runtime")
@@ -28,7 +29,7 @@ public class RuntimeResource {
     public String health() {
         StringBuilder sb = new StringBuilder();
         sb.append("Application up and running");
-        OperatingSystemMXBean mx = null;
+        OperatingSystemMXBean mx;
         try {
             mx = (OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean();
         } catch (Exception ex) {

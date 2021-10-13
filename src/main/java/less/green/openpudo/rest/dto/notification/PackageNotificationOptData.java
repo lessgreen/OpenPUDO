@@ -1,11 +1,13 @@
 package less.green.openpudo.rest.dto.notification;
 
-import java.util.Map;
 import less.green.openpudo.persistence.dao.usertype.PackageStatus;
 import less.green.openpudo.rest.dto.notification.Notification.NotificationType;
-import static less.green.openpudo.rest.dto.notification.Notification.NotificationType.PACKAGE;
 import lombok.Data;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
+
+import java.util.Map;
+
+import static less.green.openpudo.rest.dto.notification.Notification.NotificationType.PACKAGE;
 
 @Data
 public class PackageNotificationOptData {

@@ -1,7 +1,8 @@
 package less.green.openpudo.rest.dto.auth;
 
-import java.util.UUID;
 import less.green.openpudo.rest.dto.BaseResponse;
+
+import java.util.UUID;
 
 public class LoginResponse extends BaseResponse<AccessTokenData> {
 

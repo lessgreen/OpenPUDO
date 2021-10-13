@@ -1,6 +1,15 @@
 package less.green.openpudo.cdi.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import less.green.openpudo.common.Encoders;
+import less.green.openpudo.common.dto.JwtHeader;
+import less.green.openpudo.common.dto.JwtPayload;
+import lombok.extern.log4j.Log4j2;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
+
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
+import javax.enterprise.context.ApplicationScoped;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -8,17 +17,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
-import javax.enterprise.context.ApplicationScoped;
-import less.green.openpudo.common.Encoders;
-import static less.green.openpudo.common.Encoders.BASE64_URL_DECODER;
-import static less.green.openpudo.common.Encoders.BASE64_URL_ENCODER;
-import static less.green.openpudo.common.Encoders.OBJECT_MAPPER;
-import less.green.openpudo.common.dto.JwtHeader;
-import less.green.openpudo.common.dto.JwtPayload;
-import lombok.extern.log4j.Log4j2;
-import org.eclipse.microprofile.config.inject.ConfigProperty;
+
+import static less.green.openpudo.common.Encoders.*;
 
 @ApplicationScoped
 @Log4j2
@@ -55,8 +55,7 @@ public class JwtService {
         byte[] signatureBytes = mac.doFinal((HEADER_INSTANCE_JSON_BASE64 + "." + payloadJsonBase64).getBytes(StandardCharsets.UTF_8));
         String signatureBase64 = BASE64_URL_ENCODER.encodeToString(signatureBytes);
 
-        String accessToken = HEADER_INSTANCE_JSON_BASE64 + "." + payloadJsonBase64 + "." + signatureBase64;
-        return accessToken;
+        return HEADER_INSTANCE_JSON_BASE64 + "." + payloadJsonBase64 + "." + signatureBase64;
     }
 
     public boolean verifyAccessTokenSignature(String candidateToken) {
@@ -72,8 +71,7 @@ public class JwtService {
 
     public JwtPayload decodePayload(String payloadJsonBase64) throws JsonProcessingException {
         String payloadJson = new String(BASE64_URL_DECODER.decode(payloadJsonBase64), StandardCharsets.UTF_8);
-        JwtPayload payload = OBJECT_MAPPER.readValue(payloadJson, JwtPayload.class);
-        return payload;
+        return OBJECT_MAPPER.readValue(payloadJson, JwtPayload.class);
     }
 
     private Mac createMac() {

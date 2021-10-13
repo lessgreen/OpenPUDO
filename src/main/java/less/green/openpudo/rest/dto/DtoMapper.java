@@ -1,14 +1,7 @@
 package less.green.openpudo.rest.dto;
 
-import java.util.List;
-import java.util.Map;
 import less.green.openpudo.common.dto.tuple.Pair;
-import less.green.openpudo.persistence.model.TbAddress;
-import less.green.openpudo.persistence.model.TbNotification;
-import less.green.openpudo.persistence.model.TbPackage;
-import less.green.openpudo.persistence.model.TbPackageEvent;
-import less.green.openpudo.persistence.model.TbPudo;
-import less.green.openpudo.persistence.model.TbUser;
+import less.green.openpudo.persistence.model.*;
 import less.green.openpudo.rest.dto.address.Address;
 import less.green.openpudo.rest.dto.geojson.Feature;
 import less.green.openpudo.rest.dto.geojson.Point;
@@ -19,6 +12,9 @@ import less.green.openpudo.rest.dto.pudo.Pudo;
 import less.green.openpudo.rest.dto.user.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+
+import java.util.List;
+import java.util.Map;
 
 @Mapper(componentModel = "cdi")
 public interface DtoMapper {

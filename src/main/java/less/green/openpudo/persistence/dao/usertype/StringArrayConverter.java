@@ -1,9 +1,11 @@
 package less.green.openpudo.persistence.dao.usertype;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import less.green.openpudo.common.Encoders;
+
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
-import less.green.openpudo.common.Encoders;
+
 import static less.green.openpudo.common.StringUtils.isEmpty;
 
 @Converter

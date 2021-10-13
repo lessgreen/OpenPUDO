@@ -1,17 +1,15 @@
 package less.green.openpudo.rest.config;
 
-import java.io.IOException;
+import less.green.openpudo.cdi.ExecutionContext;
+import lombok.extern.log4j.Log4j2;
+
 import javax.annotation.Priority;
 import javax.inject.Inject;
-import javax.ws.rs.container.ContainerRequestContext;
-import javax.ws.rs.container.ContainerRequestFilter;
-import javax.ws.rs.container.ContainerResponseContext;
-import javax.ws.rs.container.ContainerResponseFilter;
-import javax.ws.rs.container.PreMatching;
+import javax.ws.rs.container.*;
 import javax.ws.rs.ext.Provider;
-import less.green.openpudo.cdi.ExecutionContext;
+import java.io.IOException;
+
 import static less.green.openpudo.common.FormatUtils.smartElapsed;
-import lombok.extern.log4j.Log4j2;
 
 @Provider
 @PreMatching

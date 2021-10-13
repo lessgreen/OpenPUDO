@@ -1,38 +1,24 @@
 package less.green.openpudo.persistence.service;
 
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
 import less.green.openpudo.cdi.service.FirebaseMessagingService;
 import less.green.openpudo.cdi.service.LocalizationService;
 import less.green.openpudo.cdi.service.StorageService;
 import less.green.openpudo.common.Encoders;
-import static less.green.openpudo.common.StringUtils.sanitizeString;
 import less.green.openpudo.common.dto.tuple.Pair;
-import less.green.openpudo.persistence.dao.DeviceTokenDao;
-import less.green.openpudo.persistence.dao.ExternalFileDao;
-import less.green.openpudo.persistence.dao.NotificationDao;
-import less.green.openpudo.persistence.dao.PackageDao;
-import less.green.openpudo.persistence.dao.PackageEventDao;
+import less.green.openpudo.persistence.dao.*;
 import less.green.openpudo.persistence.dao.usertype.PackageStatus;
-import less.green.openpudo.persistence.model.TbAddress;
-import less.green.openpudo.persistence.model.TbDeviceToken;
-import less.green.openpudo.persistence.model.TbExternalFile;
-import less.green.openpudo.persistence.model.TbNotification;
-import less.green.openpudo.persistence.model.TbPackage;
-import less.green.openpudo.persistence.model.TbPackageEvent;
-import less.green.openpudo.persistence.model.TbPudo;
+import less.green.openpudo.persistence.model.*;
 import less.green.openpudo.rest.dto.notification.PackageNotificationOptData;
 import less.green.openpudo.rest.dto.pack.ChangePackageStatusRequest;
 import less.green.openpudo.rest.dto.pack.DeliveredPackageRequest;
 import lombok.extern.log4j.Log4j2;
+
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
+import java.util.*;
+
+import static less.green.openpudo.common.StringUtils.sanitizeString;
 
 @RequestScoped
 @Transactional
@@ -100,7 +86,7 @@ public class PackageService {
     }
 
     public List<Pair<TbPackage, List<TbPackageEvent>>> getDeliveredPackageShallowList() {
-        // get packages in delivered status for more that 2 minutes
+        // get packages in delivered status for more than 2 minutes
         Calendar cal = GregorianCalendar.getInstance();
         cal.setLenient(false);
         cal.add(Calendar.MINUTE, -2);
@@ -112,7 +98,6 @@ public class PackageService {
         Pair<TbPackage, List<TbPackageEvent>> pack = packageDao.getPackageShallowById(packageId);
         Pair<TbPudo, TbAddress> pudo = pudoService.getPudoById(pack.getValue0().getPudoId());
         String titleTemplate = "notification.package.delivered.title";
-        String[] titleParams = null;
         String messageTemplate = "notification.package.delivered.message";
         String[] messageParams = {pudo.getValue0().getBusinessName()};
 
@@ -127,7 +112,7 @@ public class PackageService {
         notification.setUserId(pack.getValue0().getUserId());
         notification.setCreateTms(now);
         notification.setTitle(titleTemplate);
-        notification.setTitleParams(titleParams);
+        notification.setTitleParams(null);
         notification.setMessage(messageTemplate);
         notification.setMessageParams(messageParams);
         notificationDao.persist(notification);
@@ -136,7 +121,7 @@ public class PackageService {
         notification.setOptData(Encoders.writeValueAsStringSafe(optData.toMap()));
         notificationDao.flush();
 
-        sendPushNotifications(pack.getValue0().getUserId(), titleTemplate, titleParams, messageTemplate, messageParams, optData.toMap());
+        sendPushNotifications(pack.getValue0().getUserId(), titleTemplate, null, messageTemplate, messageParams, optData.toMap());
         return getPackageById(packageId);
     }
 
@@ -164,7 +149,6 @@ public class PackageService {
         Pair<TbPackage, List<TbPackageEvent>> pack = getPackageById(packageId);
         Pair<TbPudo, TbAddress> pudo = pudoService.getPudoById(pack.getValue0().getPudoId());
         String titleTemplate = "notification.package.collected.title";
-        String[] titleParams = null;
         String messageTemplate = "notification.package.collected.message";
         String[] messageParams = {pudo.getValue0().getBusinessName()};
 
@@ -172,7 +156,7 @@ public class PackageService {
         notification.setUserId(pack.getValue0().getUserId());
         notification.setCreateTms(now);
         notification.setTitle(titleTemplate);
-        notification.setTitleParams(titleParams);
+        notification.setTitleParams(null);
         notification.setMessage(messageTemplate);
         notification.setMessageParams(messageParams);
         notificationDao.persist(notification);
@@ -181,7 +165,7 @@ public class PackageService {
         notification.setOptData(Encoders.writeValueAsStringSafe(optData.toMap()));
         notificationDao.flush();
 
-        sendPushNotifications(pack.getValue0().getUserId(), titleTemplate, titleParams, messageTemplate, messageParams, optData.toMap());
+        sendPushNotifications(pack.getValue0().getUserId(), titleTemplate, null, messageTemplate, messageParams, optData.toMap());
         return getPackageById(packageId);
     }
 
@@ -197,17 +181,15 @@ public class PackageService {
 
         Pair<TbPackage, List<TbPackageEvent>> pack = getPackageById(packageId);
         String titleTemplate = "notification.package.accepted.title";
-        String[] titleParams = null;
         String messageTemplate = "notification.package.accepted.message";
-        String[] messageParams = null;
 
         TbNotification notification = new TbNotification();
         notification.setUserId(pack.getValue0().getUserId());
         notification.setCreateTms(now);
         notification.setTitle(titleTemplate);
-        notification.setTitleParams(titleParams);
+        notification.setTitleParams(null);
         notification.setMessage(messageTemplate);
-        notification.setMessageParams(messageParams);
+        notification.setMessageParams(null);
         notificationDao.persist(notification);
         notificationDao.flush();
         PackageNotificationOptData optData = new PackageNotificationOptData(notification.getNotificationId(), packageId, PackageStatus.ACCEPTED);

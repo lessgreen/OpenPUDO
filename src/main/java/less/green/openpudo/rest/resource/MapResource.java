@@ -1,40 +1,32 @@
 package less.green.openpudo.rest.resource;
 
-import java.math.BigDecimal;
-import java.util.LinkedList;
-import java.util.List;
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.HeaderParam;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.MediaType;
 import less.green.openpudo.cdi.ExecutionContext;
 import less.green.openpudo.cdi.service.GeocodeService;
 import less.green.openpudo.cdi.service.LocalizationService;
 import less.green.openpudo.common.ApiReturnCodes;
 import less.green.openpudo.common.ExceptionUtils;
 import less.green.openpudo.common.GPSUtils;
-import static less.green.openpudo.common.StringUtils.isEmpty;
 import less.green.openpudo.persistence.service.PudoService;
-import less.green.openpudo.rest.config.PublicAPI;
+import less.green.openpudo.rest.config.annotation.PublicAPI;
 import less.green.openpudo.rest.config.exception.ApiException;
 import less.green.openpudo.rest.dto.DtoMapper;
 import less.green.openpudo.rest.dto.geojson.Feature;
 import less.green.openpudo.rest.dto.geojson.FeatureCollection;
-import less.green.openpudo.rest.dto.map.AddressMarkerListResponse;
-import less.green.openpudo.rest.dto.map.Marker;
-import less.green.openpudo.rest.dto.map.MarkerListResponse;
-import less.green.openpudo.rest.dto.map.MarkerType;
-import less.green.openpudo.rest.dto.map.PudoMarker;
-import less.green.openpudo.rest.dto.map.PudoMarkerListResponse;
+import less.green.openpudo.rest.dto.map.*;
 import less.green.openpudo.rest.dto.scalar.IntegerResponse;
 import lombok.extern.log4j.Log4j2;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.parameters.Parameter;
+
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
+import java.math.BigDecimal;
+import java.util.LinkedList;
+import java.util.List;
+
+import static less.green.openpudo.common.StringUtils.isEmpty;
 
 @RequestScoped
 @Path("/map")
@@ -135,12 +127,12 @@ public class MapResource {
     @PublicAPI
     @Operation(summary = "Address search feature based on user input autocompletion",
             description = "This is a public API and can be invoked without a valid access token.\n\n"
-            + "Coordinates parameters are optional, but the client should provide them to speed up queries and obtain more pertinent results.\n\n"
-            + "This API should be throttled to prevent excessive load.")
+                    + "Coordinates parameters are optional, but the client should provide them to speed up queries and obtain more pertinent results.\n\n"
+                    + "This API should be throttled to prevent excessive load.")
     public AddressMarkerListResponse searchAddresses(
             @Parameter(description = "Query text", required = true) @QueryParam("text") String text,
-            @Parameter(description = "Latitude value of map center point", required = false) @QueryParam("lat") BigDecimal lat,
-            @Parameter(description = "Longitude value of map center point", required = false) @QueryParam("lon") BigDecimal lon,
+            @Parameter(description = "Latitude value of map center point") @QueryParam("lat") BigDecimal lat,
+            @Parameter(description = "Longitude value of map center point") @QueryParam("lon") BigDecimal lon,
             @HeaderParam("Application-Language") String language) {
         // sanitize input
         if (isEmpty(text)) {
@@ -175,13 +167,13 @@ public class MapResource {
     @PublicAPI
     @Operation(summary = "Global search feature based on user input autocompletion",
             description = "This is a public API and can be invoked without a valid access token.\n\n"
-            + "This API search between PUDOs that matches business name (even partially) and addresses.\n\n"
-            + "Coordinates parameters are optional, but the client should provide them to speed up queries and obtain more pertinent results.\n\n"
-            + "This API should be throttled to prevent excessive load.")
+                    + "This API search between PUDOs that matches business name (even partially) and addresses.\n\n"
+                    + "Coordinates parameters are optional, but the client should provide them to speed up queries and obtain more pertinent results.\n\n"
+                    + "This API should be throttled to prevent excessive load.")
     public MarkerListResponse search(
             @Parameter(description = "Query text", required = true) @QueryParam("text") String text,
-            @Parameter(description = "Latitude value of map center point", required = false) @QueryParam("lat") BigDecimal lat,
-            @Parameter(description = "Longitude value of map center point", required = false) @QueryParam("lon") BigDecimal lon,
+            @Parameter(description = "Latitude value of map center point") @QueryParam("lat") BigDecimal lat,
+            @Parameter(description = "Longitude value of map center point") @QueryParam("lon") BigDecimal lon,
             @HeaderParam("Application-Language") String language) {
         // sanitize input
         if (isEmpty(text)) {

@@ -1,7 +1,8 @@
 package less.green.openpudo.rest.dto.pack;
 
-import java.util.UUID;
 import less.green.openpudo.rest.dto.BaseResponse;
+
+import java.util.UUID;
 
 public class PackageResponse extends BaseResponse<Package> {
 

@@ -1,9 +1,10 @@
 package less.green.openpudo.rest.dto.geojson;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.Data;
+
 import java.math.BigDecimal;
 import java.util.List;
-import lombok.Data;
 
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)

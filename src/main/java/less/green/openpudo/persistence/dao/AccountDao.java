@@ -1,11 +1,13 @@
 package less.green.openpudo.persistence.dao;
 
+import less.green.openpudo.persistence.model.TbAccount;
+
 import javax.enterprise.context.RequestScoped;
 import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
+
 import static less.green.openpudo.common.StringUtils.isEmpty;
-import less.green.openpudo.persistence.model.TbAccount;
 
 @RequestScoped
 @Transactional(Transactional.TxType.MANDATORY)

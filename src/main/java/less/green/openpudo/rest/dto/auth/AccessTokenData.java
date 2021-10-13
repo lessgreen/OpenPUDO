@@ -1,9 +1,10 @@
 package less.green.openpudo.rest.dto.auth;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+
+import java.util.Date;
 
 @Data
 @AllArgsConstructor

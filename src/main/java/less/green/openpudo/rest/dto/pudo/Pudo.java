@@ -1,11 +1,12 @@
 package less.green.openpudo.rest.dto.pudo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import java.util.Date;
-import java.util.UUID;
 import less.green.openpudo.rest.dto.address.Address;
 import lombok.Data;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
+
+import java.util.Date;
+import java.util.UUID;
 
 @Data
 public class Pudo {

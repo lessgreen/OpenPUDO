@@ -1,8 +1,9 @@
 package less.green.openpudo.persistence.dao;
 
+import less.green.openpudo.persistence.model.TbUser;
+
 import javax.enterprise.context.RequestScoped;
 import javax.transaction.Transactional;
-import less.green.openpudo.persistence.model.TbUser;
 
 @RequestScoped
 @Transactional(Transactional.TxType.MANDATORY)

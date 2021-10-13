@@ -1,9 +1,10 @@
 package less.green.openpudo.persistence.dao;
 
-import java.util.UUID;
+import less.green.openpudo.persistence.model.TbExternalFile;
+
 import javax.enterprise.context.RequestScoped;
 import javax.transaction.Transactional;
-import less.green.openpudo.persistence.model.TbExternalFile;
+import java.util.UUID;
 
 @RequestScoped
 @Transactional(Transactional.TxType.MANDATORY)

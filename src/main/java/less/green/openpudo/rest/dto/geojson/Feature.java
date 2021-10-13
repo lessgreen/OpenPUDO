@@ -1,8 +1,9 @@
 package less.green.openpudo.rest.dto.geojson;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import java.util.Map;
 import lombok.Data;
+
+import java.util.Map;
 
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)

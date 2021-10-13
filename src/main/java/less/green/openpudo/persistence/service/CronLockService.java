@@ -1,15 +1,17 @@
 package less.green.openpudo.persistence.service;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
-import static less.green.openpudo.common.StringUtils.isEmpty;
 import less.green.openpudo.persistence.dao.CronLockDao;
 import less.green.openpudo.persistence.model.TbWrkCronLock;
 import lombok.extern.log4j.Log4j2;
+
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+
+import static less.green.openpudo.common.StringUtils.isEmpty;
 
 @RequestScoped
 @Transactional(Transactional.TxType.REQUIRES_NEW)
@@ -46,7 +48,7 @@ public class CronLockService {
             return true;
         }
         // if lock is not held, acquire it
-        if (lock.getAcquiredFlag() == false) {
+        if (!lock.getAcquiredFlag()) {
             lock.setAcquiredFlag(true);
             lock.setAcquireTms(now);
             lock.setLeaseTms(leaseTms);
@@ -75,7 +77,7 @@ public class CronLockService {
             log.warn("Trying to refresh a non existing lock: {}", lockName);
             return false;
         }
-        if (lock.getAcquiredFlag() == false) {
+        if (!lock.getAcquiredFlag()) {
             log.warn("Trying to refresh a non held lock: {}", lockName);
             return false;
         }
@@ -100,7 +102,7 @@ public class CronLockService {
             log.warn("Trying to release a non existing lock: {}", lockName);
             return false;
         }
-        if (lock.getAcquiredFlag() == false) {
+        if (!lock.getAcquiredFlag()) {
             log.warn("Trying to release a non held lock: {}", lockName);
             return false;
         }

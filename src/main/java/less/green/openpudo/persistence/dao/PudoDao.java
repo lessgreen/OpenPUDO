@@ -1,17 +1,5 @@
 package less.green.openpudo.persistence.dao;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
-import javax.enterprise.context.RequestScoped;
-import javax.persistence.NoResultException;
-import javax.persistence.Query;
-import javax.persistence.Tuple;
-import javax.persistence.TypedQuery;
-import javax.transaction.Transactional;
 import less.green.openpudo.common.dto.tuple.Pair;
 import less.green.openpudo.persistence.dao.usertype.RoleType;
 import less.green.openpudo.persistence.model.TbAddress;
@@ -19,6 +7,19 @@ import less.green.openpudo.persistence.model.TbPudo;
 import less.green.openpudo.persistence.model.TbUser;
 import less.green.openpudo.rest.dto.map.PudoMarker;
 import lombok.extern.log4j.Log4j2;
+
+import javax.enterprise.context.RequestScoped;
+import javax.persistence.NoResultException;
+import javax.persistence.Query;
+import javax.persistence.Tuple;
+import javax.persistence.TypedQuery;
+import javax.transaction.Transactional;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RequestScoped
 @Transactional(Transactional.TxType.MANDATORY)

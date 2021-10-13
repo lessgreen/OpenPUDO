@@ -1,13 +1,13 @@
 package less.green.openpudo.common;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.stream.Collectors;
 import less.green.openpudo.rest.dto.map.PudoMarker;
 import lombok.Data;
 import lombok.extern.log4j.Log4j2;
+
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Log4j2
 public class GPSUtils {
@@ -33,9 +33,8 @@ public class GPSUtils {
             PudoMarkerDecorator dec = new PudoMarkerDecorator(marker, haversine(originLat, originLon, marker.getLat().doubleValue(), marker.getLon().doubleValue()));
             decs.add(dec);
         }
-        Collections.sort(decs, Comparator.comparingDouble(PudoMarkerDecorator::getDistance));
-        List<PudoMarker> ret = decs.stream().map(i -> i.getMarker()).collect(Collectors.toList());
-        return ret;
+        decs.sort(Comparator.comparingDouble(PudoMarkerDecorator::getDistance));
+        return decs.stream().map(PudoMarkerDecorator::getMarker).collect(Collectors.toList());
     }
 
     @Data

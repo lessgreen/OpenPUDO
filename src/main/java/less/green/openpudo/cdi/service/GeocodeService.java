@@ -1,17 +1,18 @@
 package less.green.openpudo.cdi.service;
 
 import io.quarkus.runtime.Startup;
-import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-import javax.enterprise.context.ApplicationScoped;
 import kong.unirest.Unirest;
 import kong.unirest.UnirestException;
 import less.green.openpudo.rest.dto.geojson.Feature;
 import less.green.openpudo.rest.dto.geojson.FeatureCollection;
 import lombok.extern.log4j.Log4j2;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
+
+import javax.enterprise.context.ApplicationScoped;
+import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @ApplicationScoped
 @Startup
@@ -37,7 +38,7 @@ public class GeocodeService {
 
             // heuristic to filter too grainiy results
             List<String> tokens = Arrays.asList(text.trim().split("\\s"));
-            boolean containNumber = tokens.stream().filter(i -> i.matches("\\d+.*")).findFirst().isPresent();
+            boolean containNumber = tokens.stream().anyMatch(i -> i.matches("\\d+.*"));
             if (tokens.size() > 1 && containNumber) {
                 req.queryString("layers", "address,street,borough,locality,localadmin,county,macrocounty,region,macroregion,country");
             } else {
@@ -92,11 +93,10 @@ public class GeocodeService {
                 throw new RuntimeException("Geocode service was unable to localize address");
             }
 
-            Feature feat = rs.getFeatures().stream()
+            return rs.getFeatures().stream()
                     .filter(i -> i.getProperties() != null && i.getGeometry() != null && i.getGeometry().getCoordinates() != null && i.getGeometry().getCoordinates().size() >= 2)
-                    .filter(i -> resultId.equals((String) i.getProperties().get("gid")))
+                    .filter(i -> resultId.equals(i.getProperties().get("gid")))
                     .findFirst().orElse(null);
-            return feat;
         } catch (UnirestException ex) {
             throw new RuntimeException("Geocode service unavailable", ex);
         }

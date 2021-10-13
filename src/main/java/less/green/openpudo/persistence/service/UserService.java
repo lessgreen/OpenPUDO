@@ -1,29 +1,23 @@
 package less.green.openpudo.persistence.service;
 
-import java.util.Date;
-import java.util.UUID;
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
 import less.green.openpudo.cdi.service.CryptoService;
 import less.green.openpudo.cdi.service.StorageService;
-import static less.green.openpudo.common.StringUtils.sanitizeString;
 import less.green.openpudo.common.dto.AccountSecret;
 import less.green.openpudo.common.dto.tuple.Pair;
-import less.green.openpudo.persistence.dao.AccountDao;
-import less.green.openpudo.persistence.dao.ExternalFileDao;
-import less.green.openpudo.persistence.dao.PudoDao;
-import less.green.openpudo.persistence.dao.RelationDao;
-import less.green.openpudo.persistence.dao.UserDao;
+import less.green.openpudo.persistence.dao.*;
 import less.green.openpudo.persistence.dao.usertype.RoleType;
-import less.green.openpudo.persistence.model.TbAccount;
-import less.green.openpudo.persistence.model.TbExternalFile;
-import less.green.openpudo.persistence.model.TbPudo;
-import less.green.openpudo.persistence.model.TbPudoUserRole;
-import less.green.openpudo.persistence.model.TbUser;
+import less.green.openpudo.persistence.model.*;
 import less.green.openpudo.rest.dto.auth.RegisterRequest;
 import less.green.openpudo.rest.dto.user.User;
 import lombok.extern.log4j.Log4j2;
+
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
+import java.util.Date;
+import java.util.UUID;
+
+import static less.green.openpudo.common.StringUtils.sanitizeString;
 
 @RequestScoped
 @Transactional

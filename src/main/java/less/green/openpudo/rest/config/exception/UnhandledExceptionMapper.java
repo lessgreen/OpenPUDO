@@ -2,6 +2,12 @@ package less.green.openpudo.rest.config.exception;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import less.green.openpudo.cdi.ExecutionContext;
+import less.green.openpudo.common.ApiReturnCodes;
+import less.green.openpudo.common.ExceptionUtils;
+import less.green.openpudo.rest.dto.BaseResponse;
+import lombok.extern.log4j.Log4j2;
+
 import javax.inject.Inject;
 import javax.ws.rs.NotAcceptableException;
 import javax.ws.rs.NotAllowedException;
@@ -10,11 +16,6 @@ import javax.ws.rs.NotSupportedException;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
-import less.green.openpudo.cdi.ExecutionContext;
-import less.green.openpudo.common.ApiReturnCodes;
-import less.green.openpudo.common.ExceptionUtils;
-import less.green.openpudo.rest.dto.BaseResponse;
-import lombok.extern.log4j.Log4j2;
 
 /**
  * This mapper intercepts unhandled exceptions

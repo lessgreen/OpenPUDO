@@ -1,10 +1,11 @@
 package less.green.openpudo.cdi.service;
 
 import io.quarkus.runtime.Startup;
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
 import kong.unirest.Unirest;
 import lombok.extern.log4j.Log4j2;
+
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 @Startup

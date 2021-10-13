@@ -1,11 +1,12 @@
 package less.green.openpudo.rest.dto.address;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.Data;
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
-import lombok.Data;
-import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 @Data
 public class Address implements Serializable {

@@ -1,8 +1,9 @@
 package less.green.openpudo.rest.dto.map;
 
+import less.green.openpudo.rest.dto.BaseResponse;
+
 import java.util.List;
 import java.util.UUID;
-import less.green.openpudo.rest.dto.BaseResponse;
 
 public class PudoMarkerListResponse extends BaseResponse<List<PudoMarker>> {
 

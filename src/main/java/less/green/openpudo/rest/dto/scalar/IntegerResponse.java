@@ -1,7 +1,8 @@
 package less.green.openpudo.rest.dto.scalar;
 
-import java.util.UUID;
 import less.green.openpudo.rest.dto.BaseResponse;
+
+import java.util.UUID;
 
 public class IntegerResponse extends BaseResponse<Integer> {
 

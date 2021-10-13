@@ -2,13 +2,15 @@ package less.green.openpudo.cdi.service;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.quarkus.runtime.Startup;
-import javax.enterprise.context.ApplicationScoped;
 import kong.unirest.Unirest;
 import kong.unirest.UnirestException;
 import less.green.openpudo.common.Encoders;
-import static less.green.openpudo.common.Encoders.OBJECT_MAPPER;
 import lombok.extern.log4j.Log4j2;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
+
+import javax.enterprise.context.ApplicationScoped;
+
+import static less.green.openpudo.common.Encoders.OBJECT_MAPPER;
 
 @ApplicationScoped
 @Startup

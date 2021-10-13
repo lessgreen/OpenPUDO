@@ -1,10 +1,11 @@
 package less.green.openpudo.cdi.cron.service;
 
-import java.util.UUID;
-import javax.inject.Inject;
 import less.green.openpudo.common.ExceptionUtils;
 import less.green.openpudo.persistence.service.CronLockService;
 import lombok.extern.log4j.Log4j2;
+
+import javax.inject.Inject;
+import java.util.UUID;
 
 @Log4j2
 public abstract class BaseCronService {

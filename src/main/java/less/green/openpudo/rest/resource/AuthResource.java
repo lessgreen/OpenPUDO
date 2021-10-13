@@ -1,39 +1,32 @@
 package less.green.openpudo.rest.resource;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import java.util.regex.Pattern;
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.HeaderParam;
-import javax.ws.rs.InternalServerErrorException;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
 import less.green.openpudo.cdi.ExecutionContext;
 import less.green.openpudo.cdi.service.CryptoService;
 import less.green.openpudo.cdi.service.JwtService;
 import less.green.openpudo.cdi.service.LocalizationService;
 import less.green.openpudo.common.ApiReturnCodes;
-import static less.green.openpudo.common.FormatUtils.safeNormalizePhoneNumber;
-import static less.green.openpudo.common.StringUtils.isEmpty;
-import static less.green.openpudo.common.StringUtils.sanitizeString;
 import less.green.openpudo.common.dto.AccountSecret;
 import less.green.openpudo.common.dto.JwtPayload;
 import less.green.openpudo.persistence.model.TbAccount;
 import less.green.openpudo.persistence.service.AccountService;
 import less.green.openpudo.persistence.service.UserService;
-import less.green.openpudo.rest.config.PublicAPI;
+import less.green.openpudo.rest.config.annotation.PublicAPI;
 import less.green.openpudo.rest.config.exception.ApiException;
 import less.green.openpudo.rest.dto.BaseResponse;
-import less.green.openpudo.rest.dto.auth.AccessTokenData;
-import less.green.openpudo.rest.dto.auth.LoginRequest;
-import less.green.openpudo.rest.dto.auth.LoginResponse;
-import less.green.openpudo.rest.dto.auth.RegisterRequest;
-import less.green.openpudo.rest.dto.auth.RenewRequest;
+import less.green.openpudo.rest.dto.auth.*;
 import lombok.extern.log4j.Log4j2;
 import org.eclipse.microprofile.openapi.annotations.Operation;
+
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
+import java.util.regex.Pattern;
+
+import static less.green.openpudo.common.FormatUtils.safeNormalizePhoneNumber;
+import static less.green.openpudo.common.StringUtils.isEmpty;
+import static less.green.openpudo.common.StringUtils.sanitizeString;
 
 @RequestScoped
 @Path("/auth")
@@ -80,8 +73,8 @@ public class AuthResource {
     @PublicAPI
     @Operation(summary = "Register new user",
             description = "This is a public API and can be invoked without a valid access token.\n\n"
-            + "Fields 'email' and 'phoneNumber' are technically optional, but you must provide at least one of them.\n\n"
-            + "If field 'pudo' is present, then the user is registering himself as a PUDO.")
+                    + "Fields 'email' and 'phoneNumber' are technically optional, but you must provide at least one of them.\n\n"
+                    + "If field 'pudo' is present, then the user is registering himself as a PUDO.")
     public BaseResponse register(RegisterRequest req, @HeaderParam("Application-Language") String language) {
         // sanitize input
         if (req == null) {
@@ -156,7 +149,7 @@ public class AuthResource {
     @PublicAPI
     @Operation(summary = "Authenticate user and generate JWT access token",
             description = "This is a public API and can be invoked without a valid access token.\n\n"
-            + "Any failed attemp will enforce a response delay to discourage bruteforcing.")
+                    + "Any failed attemp will enforce a response delay to discourage bruteforcing.")
     public LoginResponse login(LoginRequest req, @HeaderParam("Application-Language") String language) {
         // sanitize input
         if (req == null) {
@@ -210,7 +203,7 @@ public class AuthResource {
 
         // checking signature
         String accessToken = req.getAccessToken();
-        if (jwtService.verifyAccessTokenSignature(accessToken) == false) {
+        if (!jwtService.verifyAccessTokenSignature(accessToken)) {
             log.error("[{}] Failed renew attempt: invalid token signature", context.getExecutionId());
             throw new ApiException(ApiReturnCodes.INVALID_JWT_TOKEN, localizationService.getMessage(language, "error.auth.invalid_access_token"));
         }

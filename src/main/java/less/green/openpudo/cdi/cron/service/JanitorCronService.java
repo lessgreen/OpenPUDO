@@ -1,12 +1,13 @@
 package less.green.openpudo.cdi.cron.service;
 
 import io.quarkus.scheduler.Scheduled;
-import java.util.UUID;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 import less.green.openpudo.common.ExceptionUtils;
 import less.green.openpudo.persistence.service.DeviceTokenService;
 import lombok.extern.log4j.Log4j2;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import java.util.UUID;
 
 @ApplicationScoped
 @Log4j2

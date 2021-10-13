@@ -1,10 +1,11 @@
 package less.green.openpudo.rest.dto.user;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import java.util.Date;
-import java.util.UUID;
 import lombok.Data;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
+
+import java.util.Date;
+import java.util.UUID;
 
 @Data
 public class User {

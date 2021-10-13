@@ -1,10 +1,11 @@
 package less.green.openpudo.persistence.dao;
 
+import less.green.openpudo.persistence.model.TbWrkCronLock;
+import lombok.extern.log4j.Log4j2;
+
 import javax.enterprise.context.RequestScoped;
 import javax.persistence.LockModeType;
 import javax.transaction.Transactional;
-import less.green.openpudo.persistence.model.TbWrkCronLock;
-import lombok.extern.log4j.Log4j2;
 
 @RequestScoped
 @Transactional(Transactional.TxType.MANDATORY)

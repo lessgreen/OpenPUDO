@@ -1,15 +1,12 @@
 package less.green.openpudo.persistence.dao;
 
-import javax.enterprise.context.RequestScoped;
-import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-import javax.persistence.TypedQuery;
-import javax.transaction.Transactional;
 import less.green.openpudo.persistence.dao.usertype.RoleType;
 import less.green.openpudo.persistence.model.TbPudoAddress;
 import less.green.openpudo.persistence.model.TbPudoUserRole;
+
+import javax.enterprise.context.RequestScoped;
+import javax.persistence.*;
+import javax.transaction.Transactional;
 
 @RequestScoped
 @Transactional(Transactional.TxType.MANDATORY)
@@ -67,8 +64,7 @@ public class RelationDao {
         q.setParameter("userId", userId);
         q.setParameter("pudoId", pudoId);
         q.setParameter("roleType", RoleType.CUSTOMER);
-        int cnt = q.executeUpdate();
-        return cnt;
+        return q.executeUpdate();
     }
 
 }

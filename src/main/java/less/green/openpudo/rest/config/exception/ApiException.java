@@ -1,11 +1,16 @@
 package less.green.openpudo.rest.config.exception;
 
-import lombok.Data;
 
-@Data
+import lombok.Getter;
+
 public class ApiException extends RuntimeException {
 
+    @Getter
     private final int returnCode;
-    private final String message;
+
+    public ApiException(int returnCode, String message) {
+        super(message);
+        this.returnCode = returnCode;
+    }
 
 }

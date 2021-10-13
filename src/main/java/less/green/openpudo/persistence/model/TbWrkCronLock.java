@@ -1,20 +1,18 @@
 package less.green.openpudo.persistence.model;
 
-import java.io.Serializable;
-import java.util.Date;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import javax.persistence.*;
+import java.io.Serializable;
+import java.util.Date;
+
 @Entity
 @Table(name = "tb_wrk_cron_lock")
-@Getter @Setter @ToString
+@Getter
+@Setter
+@ToString
 public class TbWrkCronLock implements Serializable {
 
     @Id

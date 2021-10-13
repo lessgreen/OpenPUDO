@@ -1,14 +1,16 @@
 package less.green.openpudo.persistence.service;
 
-import java.util.Date;
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
-import static less.green.openpudo.common.StringUtils.sanitizeString;
 import less.green.openpudo.persistence.dao.DeviceTokenDao;
 import less.green.openpudo.persistence.model.TbDeviceToken;
 import less.green.openpudo.rest.dto.user.DeviceToken;
 import lombok.extern.log4j.Log4j2;
+
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
+import java.util.Date;
+
+import static less.green.openpudo.common.StringUtils.sanitizeString;
 
 @RequestScoped
 @Transactional

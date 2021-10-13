@@ -1,18 +1,5 @@
 package less.green.openpudo.rest.resource;
 
-import java.util.List;
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DefaultValue;
-import javax.ws.rs.GET;
-import javax.ws.rs.HeaderParam;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.MediaType;
 import less.green.openpudo.cdi.ExecutionContext;
 import less.green.openpudo.cdi.service.LocalizationService;
 import less.green.openpudo.common.ApiReturnCodes;
@@ -26,6 +13,12 @@ import less.green.openpudo.rest.dto.scalar.LongResponse;
 import lombok.extern.log4j.Log4j2;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.parameters.Parameter;
+
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
+import java.util.List;
 
 @RequestScoped
 @Path("/notifications")
@@ -50,8 +43,8 @@ public class NotificationResource {
     @Path("/")
     @Operation(summary = "Get notifications for current user")
     public NotificationListResponse getNotificationList(
-            @Parameter(description = "Pagination limit", required = false) @DefaultValue("20") @QueryParam("limit") int limit,
-            @Parameter(description = "Pagination offset", required = false) @DefaultValue("0") @QueryParam("offset") int offset,
+            @Parameter(description = "Pagination limit") @DefaultValue("20") @QueryParam("limit") int limit,
+            @Parameter(description = "Pagination offset") @DefaultValue("0") @QueryParam("offset") int offset,
             @HeaderParam("Application-Language") String language) {
         // sanitize input
         if (limit < 1) {

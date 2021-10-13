@@ -1,25 +1,20 @@
 package less.green.openpudo.persistence.model;
 
-import java.io.Serializable;
-import java.util.Date;
-import javax.persistence.Column;
-import javax.persistence.Convert;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import less.green.openpudo.persistence.dao.usertype.PackageStatus;
 import less.green.openpudo.persistence.dao.usertype.PackageStatusConverter;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import javax.persistence.*;
+import java.io.Serializable;
+import java.util.Date;
+
 @Entity
 @Table(name = "tb_package_event")
-@Getter @Setter @ToString
+@Getter
+@Setter
+@ToString
 public class TbPackageEvent implements Serializable {
 
     @Id

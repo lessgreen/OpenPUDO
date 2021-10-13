@@ -1,35 +1,18 @@
 package less.green.openpudo.rest.resource;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.stream.Collectors;
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.HeaderParam;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
 import less.green.openpudo.cdi.ExecutionContext;
 import less.green.openpudo.cdi.service.GeocodeService;
 import less.green.openpudo.cdi.service.LocalizationService;
 import less.green.openpudo.common.ApiReturnCodes;
 import less.green.openpudo.common.ExceptionUtils;
-import static less.green.openpudo.common.FormatUtils.safeNormalizePhoneNumber;
 import less.green.openpudo.common.MultipartUtils;
-import static less.green.openpudo.common.MultipartUtils.ALLOWED_IMAGE_MIME_TYPES;
-import static less.green.openpudo.common.StringUtils.isEmpty;
 import less.green.openpudo.common.dto.tuple.Pair;
 import less.green.openpudo.persistence.model.TbAddress;
 import less.green.openpudo.persistence.model.TbPudo;
 import less.green.openpudo.persistence.model.TbUser;
 import less.green.openpudo.persistence.service.PudoService;
-import less.green.openpudo.rest.config.BinaryAPI;
-import less.green.openpudo.rest.config.PublicAPI;
+import less.green.openpudo.rest.config.annotation.BinaryAPI;
+import less.green.openpudo.rest.config.annotation.PublicAPI;
 import less.green.openpudo.rest.config.exception.ApiException;
 import less.green.openpudo.rest.dto.DtoMapper;
 import less.green.openpudo.rest.dto.address.AddressRequest;
@@ -40,6 +23,18 @@ import less.green.openpudo.rest.dto.user.UserListResponse;
 import lombok.extern.log4j.Log4j2;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
+
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
+import java.io.IOException;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static less.green.openpudo.common.FormatUtils.safeNormalizePhoneNumber;
+import static less.green.openpudo.common.MultipartUtils.ALLOWED_IMAGE_MIME_TYPES;
+import static less.green.openpudo.common.StringUtils.isEmpty;
 
 @RequestScoped
 @Path("/pudos")
@@ -110,7 +105,7 @@ public class PudoResource {
         }
 
         Pair<TbPudo, TbAddress> pudo = pudoService.updatePudoByOwner(context.getUserId(), req);
-        log.info("[{}] Updated PUDO profile: {}", context.getExecutionId(), context.getUserId(), pudo.getValue0().getPudoId());
+        log.info("[{}] Updated PUDO profile: {}", context.getExecutionId(), pudo.getValue0().getPudoId());
         return new PudoResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapPudoEntityToDto(pudo));
     }
 
@@ -147,7 +142,7 @@ public class PudoResource {
         }
 
         Pair<TbPudo, TbAddress> pudo = pudoService.updatePudoAddressByOwner(context.getUserId(), feat);
-        log.info("[{}] Updated PUDO address: {}", context.getExecutionId(), context.getUserId(), pudo.getValue0().getPudoId());
+        log.info("[{}] Updated PUDO address: {}", context.getExecutionId(), pudo.getValue0().getPudoId());
         return new PudoResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapPudoEntityToDto(pudo));
     }
 
@@ -219,7 +214,7 @@ public class PudoResource {
         }
         List<TbUser> users = pudoService.getUserListByPudoOwner(context.getUserId());
         // since they are all customers, we assume pudoOwner = false
-        List<Pair<TbUser, Boolean>> customers = users.stream().map(i -> new Pair<TbUser, Boolean>(i, false)).collect(Collectors.toList());
+        List<Pair<TbUser, Boolean>> customers = users.stream().map(i -> new Pair<>(i, false)).collect(Collectors.toList());
         return new UserListResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapUserEntityListToDtoList(customers));
     }
 

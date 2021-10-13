@@ -1,34 +1,17 @@
 package less.green.openpudo.rest.resource;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.UUID;
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DefaultValue;
-import javax.ws.rs.GET;
-import javax.ws.rs.HeaderParam;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.MediaType;
 import less.green.openpudo.cdi.ExecutionContext;
 import less.green.openpudo.cdi.service.LocalizationService;
 import less.green.openpudo.common.ApiReturnCodes;
 import less.green.openpudo.common.ExceptionUtils;
 import less.green.openpudo.common.MultipartUtils;
-import static less.green.openpudo.common.MultipartUtils.ALLOWED_IMAGE_MIME_TYPES;
 import less.green.openpudo.common.dto.tuple.Pair;
 import less.green.openpudo.persistence.dao.usertype.PackageStatus;
 import less.green.openpudo.persistence.model.TbPackage;
 import less.green.openpudo.persistence.model.TbPackageEvent;
 import less.green.openpudo.persistence.service.PackageService;
 import less.green.openpudo.persistence.service.PudoService;
-import less.green.openpudo.rest.config.BinaryAPI;
+import less.green.openpudo.rest.config.annotation.BinaryAPI;
 import less.green.openpudo.rest.config.exception.ApiException;
 import less.green.openpudo.rest.dto.BaseResponse;
 import less.green.openpudo.rest.dto.DtoMapper;
@@ -40,6 +23,16 @@ import lombok.extern.log4j.Log4j2;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.parameters.Parameter;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
+
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
+import java.io.IOException;
+import java.util.List;
+import java.util.UUID;
+
+import static less.green.openpudo.common.MultipartUtils.ALLOWED_IMAGE_MIME_TYPES;
 
 @RequestScoped
 @Path("/packages")
@@ -243,11 +236,11 @@ public class PackageResource {
     @Path("/")
     @Operation(summary = "Get package list for current user, with optional query parameters",
             description = "If called without parameters, this API return the summary of all packages in \"open\" state for the current user, behaving differently if the caller is a user or a PUDO.\n\n"
-            + "Parameters can be used to perform an historical search, and pagination will be used only in this mode.")
+                    + "Parameters can be used to perform an historical search, and pagination will be used only in this mode.")
     public PackageListResponse getPackageList(
-            @Parameter(description = "Historical search", required = false) @DefaultValue("false") @QueryParam("history") boolean history,
-            @Parameter(description = "Pagination limit", required = false) @DefaultValue("20") @QueryParam("limit") int limit,
-            @Parameter(description = "Pagination offset", required = false) @DefaultValue("0") @QueryParam("offset") int offset,
+            @Parameter(description = "Historical search") @DefaultValue("false") @QueryParam("history") boolean history,
+            @Parameter(description = "Pagination limit") @DefaultValue("20") @QueryParam("limit") int limit,
+            @Parameter(description = "Pagination offset") @DefaultValue("0") @QueryParam("offset") int offset,
             @HeaderParam("Application-Language") String language) {
         // sanitize input
         if (limit < 1) {

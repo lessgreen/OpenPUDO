@@ -1,8 +1,9 @@
 package less.green.openpudo.rest.dto.pack;
 
-import java.util.UUID;
 import lombok.Data;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
+
+import java.util.UUID;
 
 @Data
 public class DeliveredPackageRequest {

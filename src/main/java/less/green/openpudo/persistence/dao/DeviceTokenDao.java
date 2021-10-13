@@ -1,12 +1,13 @@
 package less.green.openpudo.persistence.dao;
 
-import java.util.Collections;
-import java.util.List;
+import less.green.openpudo.persistence.model.TbDeviceToken;
+
 import javax.enterprise.context.RequestScoped;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
-import less.green.openpudo.persistence.model.TbDeviceToken;
+import java.util.Collections;
+import java.util.List;
 
 @RequestScoped
 @Transactional(Transactional.TxType.MANDATORY)
@@ -27,8 +28,7 @@ public class DeviceTokenDao extends BaseEntityDao<TbDeviceToken, String> {
     public int removeFailedDeviceTokens() {
         String qs = "DELETE FROM TbDeviceToken t WHERE t.failureCount >= 10";
         Query q = em.createQuery(qs);
-        int cnt = q.executeUpdate();
-        return cnt;
+        return q.executeUpdate();
     }
 
 }

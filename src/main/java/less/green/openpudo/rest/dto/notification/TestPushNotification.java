@@ -1,8 +1,9 @@
 package less.green.openpudo.rest.dto.notification;
 
-import java.util.Map;
 import lombok.Data;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
+
+import java.util.Map;
 
 @Data
 public class TestPushNotification {

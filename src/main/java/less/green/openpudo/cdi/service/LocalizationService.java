@@ -1,12 +1,14 @@
 package less.green.openpudo.cdi.service;
 
+import lombok.extern.log4j.Log4j2;
+
+import javax.enterprise.context.ApplicationScoped;
 import java.text.MessageFormat;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
-import javax.enterprise.context.ApplicationScoped;
+
 import static less.green.openpudo.common.StringUtils.isEmpty;
-import lombok.extern.log4j.Log4j2;
 
 @ApplicationScoped
 @Log4j2
@@ -37,8 +39,7 @@ public class LocalizationService {
             return pattern;
         }
         MessageFormat formatter = new MessageFormat(pattern, DEFAULT_LOCALE);
-        String msg = formatter.format(params);
-        return msg;
+        return formatter.format(params);
     }
 
 }

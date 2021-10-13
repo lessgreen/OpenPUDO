@@ -1,8 +1,9 @@
 package less.green.openpudo.rest.dto.user;
 
+import less.green.openpudo.rest.dto.BaseResponse;
+
 import java.util.List;
 import java.util.UUID;
-import less.green.openpudo.rest.dto.BaseResponse;
 
 public class UserListResponse extends BaseResponse<List<User>> {
 
