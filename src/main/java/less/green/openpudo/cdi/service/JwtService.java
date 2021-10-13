@@ -29,7 +29,7 @@ public class JwtService {
     private static final String HEADER_TYP = "JWT";
     private static final String PAYLOAD_ISS = "OpenPUDO";
     private static final JwtHeader HEADER_INSTANCE = new JwtHeader(HEADER_ALG, HEADER_TYP);
-    private static final String HEADER_INSTANCE_JSON = Encoders.writeValueAsStringSafe(HEADER_INSTANCE);
+    private static final String HEADER_INSTANCE_JSON = writeValueAsStringSafe(HEADER_INSTANCE);
     private static final String HEADER_INSTANCE_JSON_BASE64 = BASE64_URL_ENCODER.encodeToString(HEADER_INSTANCE_JSON.getBytes(StandardCharsets.UTF_8));
     private static final TimeZone UTC = TimeZone.getTimeZone("UTC");
     private static final int EXPIRE_DATE_TIMEUNIT = Calendar.MONTH;
@@ -48,7 +48,7 @@ public class JwtService {
     }
 
     public String generateAccessToken(JwtPayload payload) {
-        String payloadJson = Encoders.writeValueAsStringSafe(payload);
+        String payloadJson = writeValueAsStringSafe(payload);
         String payloadJsonBase64 = BASE64_URL_ENCODER.encodeToString(payloadJson.getBytes(StandardCharsets.UTF_8));
 
         Mac mac = createMac();
