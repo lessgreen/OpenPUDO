@@ -31,6 +31,14 @@ INSERT INTO tb_anag_package_status VALUES ('accepted', 5);
 INSERT INTO tb_anag_package_status VALUES ('expired', 6);
 
 
+DROP TABLE IF EXISTS tb_anag_otp_request_type CASCADE;
+CREATE TABLE IF NOT EXISTS tb_anag_otp_request_type (
+	request_type TEXT PRIMARY KEY,
+	ordinal INTEGER NOT NULL
+);
+INSERT INTO tb_anag_otp_request_type VALUES ('reset_password', 1);
+
+
 -- working tables
 DROP TABLE IF EXISTS tb_wrk_cron_lock CASCADE;
 CREATE TABLE IF NOT EXISTS tb_wrk_cron_lock (
@@ -95,7 +103,7 @@ CREATE TABLE IF NOT EXISTS tb_device_token (
 	last_success_tms TIMESTAMP(3),
 	last_success_message_id TEXT,
 	last_failure_tms TIMESTAMP(3),
-	failure_count INTEGER
+	failure_count INTEGER NOT NULL
 );
 CREATE INDEX tb_device_token_user_id_idx ON tb_device_token(user_id);
 
@@ -188,6 +196,19 @@ CREATE TABLE IF NOT EXISTS tb_notification (
 	opt_data TEXT
 );
 CREATE INDEX tb_notification_user_id_idx ON tb_notification(user_id);
+
+
+DROP TABLE IF EXISTS tb_otp_request CASCADE;
+CREATE TABLE IF NOT EXISTS tb_otp_request (
+	request_id UUID PRIMARY KEY,
+	user_id BIGINT NOT NULL REFERENCES tb_user(user_id),
+	create_tms TIMESTAMP(3) NOT NULL,
+	update_tms TIMESTAMP(3) NOT NULL,
+	request_type TEXT NOT NULL REFERENCES tb_anag_otp_request_type(request_type),
+	otp TEXT NOT NULL,
+	retry_count INTEGER NOT NULL
+);
+CREATE UNIQUE INDEX tb_otp_request_user_id_request_type_idx ON tb_otp_request(user_id, request_type);
 
 
 -- views

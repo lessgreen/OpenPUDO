@@ -1,7 +1,6 @@
 package less.green.openpudo.cdi.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import less.green.openpudo.common.Encoders;
 import less.green.openpudo.common.dto.JwtHeader;
 import less.green.openpudo.common.dto.JwtPayload;
 import lombok.extern.log4j.Log4j2;

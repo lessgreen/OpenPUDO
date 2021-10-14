@@ -8,7 +8,9 @@ import less.green.openpudo.cdi.service.LocalizationService;
 import less.green.openpudo.common.ApiReturnCodes;
 import less.green.openpudo.common.dto.AccountSecret;
 import less.green.openpudo.common.dto.JwtPayload;
+import less.green.openpudo.persistence.dao.usertype.OtpRequestType;
 import less.green.openpudo.persistence.model.TbAccount;
+import less.green.openpudo.persistence.model.TbOtpRequest;
 import less.green.openpudo.persistence.service.AccountService;
 import less.green.openpudo.persistence.service.UserService;
 import less.green.openpudo.rest.config.annotation.PublicAPI;
@@ -192,7 +194,8 @@ public class AuthResource {
     @POST
     @Path("/renew")
     @PublicAPI
-    @Operation(summary = "Renew JWT access token", description = "This is a public API, and will renew a valid access token, even if expired")
+    @Operation(summary = "Renew JWT access token", description = "This is a public API and can be invoked without a valid access token.\n\n" +
+            "It will renew a valid access token, even if expired")
     public LoginResponse renew(RenewRequest req, @HeaderParam("Application-Language") String language) {
         // sanitize input
         if (req == null) {
@@ -224,13 +227,13 @@ public class AuthResource {
     @POST
     @Path("/change-password")
     @Operation(summary = "Change password", description = "Change user's password. Old password must be provided and will be checked for security reasons.")
-    public BaseResponse renew(ChangePasswordRequest req, @HeaderParam("Application-Language") String language) {
+    public BaseResponse changePassword(ChangePasswordRequest req, @HeaderParam("Application-Language") String language) {
         // sanitize input
         if (req == null) {
             throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage(language, "error.empty_request"));
         } else if (isEmpty(req.getOldPassword())) {
             throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage(language, "error.empty_mandatory_field", "oldPassword"));
-        }else if (isEmpty(req.getNewPassword())) {
+        } else if (isEmpty(req.getNewPassword())) {
             throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage(language, "error.empty_mandatory_field", "newPassword"));
         }
 
@@ -249,7 +252,97 @@ public class AuthResource {
         return new BaseResponse(context.getExecutionId(), ApiReturnCodes.OK);
     }
 
+    @POST
+    @Path("/reset-password")
+    @PublicAPI
+    @Operation(summary = "Reset password", description = "This is a public API and can be invoked without a valid access token.\n\n" +
+            "It will hide details for error related to user's account for security reasons.\n\n" +
+            "This is the first API to call when an unauthenticated user wants to reset his password. Backend will generate a secure OTP and send it to the user via email or SMS.\n\n" +
+            "A subsequent call to another API must be done to confirm user's identity.")
+    public BaseResponse resetPassword(ResetPasswordRequest req, @HeaderParam("Application-Language") String language) {
+        // sanitize input
+        if (req == null) {
+            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage(language, "error.empty_request"));
+        } else if (isEmpty(req.getLogin())) {
+            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage(language, "error.empty_mandatory_field", "login"));
+        }
 
+        // normalizing login
+        String login = req.getLogin().trim();
+        // if user is logging in by something like a phone number, try to normalize
+        if (PHONENUMBER_PATTERN.matcher(login).matches()) {
+            String npn = safeNormalizePhoneNumber(login);
+            login = npn != null ? npn : login;
+        }
+
+        // search user in database
+        TbAccount account = accountService.getAccountByLogin(login);
+        if (account == null) {
+            log.error("[{}] Failed reset password attempt for login '{}': account does not exists", context.getExecutionId(), login);
+            return new BaseResponse(context.getExecutionId(), ApiReturnCodes.OK);
+        }
+
+        accountService.resetPassword(account.getUserId(), language);
+        log.info("[{}] Reset password request for user: {}", context.getExecutionId(), account.getUserId());
+        return new BaseResponse(context.getExecutionId(), ApiReturnCodes.OK);
+    }
+
+    @POST
+    @Path("/confirm-reset-password")
+    @PublicAPI
+    @Operation(summary = "Confirm reset password", description = "This is a public API and can be invoked without a valid access token.\n\n" +
+            "It will hide details for error related to user's account for security reasons.\n\n" +
+            "This is the second API to call when an unauthenticated user wants to reset his password. Backend will check OTP to confirm user's identity.")
+    public BaseResponse confirmResetPassword(ConfirmResetPasswordRequest req, @HeaderParam("Application-Language") String language) {
+        // sanitize input
+        if (req == null) {
+            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage(language, "error.empty_request"));
+        } else if (isEmpty(req.getLogin())) {
+            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage(language, "error.empty_mandatory_field", "login"));
+        } else if (isEmpty(req.getOtp())) {
+            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage(language, "error.empty_mandatory_field", "otp"));
+        } else if (isEmpty(req.getLogin())) {
+            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage(language, "error.empty_mandatory_field", "newPassword"));
+        }
+
+        // normalizing login
+        String login = req.getLogin().trim();
+        // if user is logging in by something like a phone number, try to normalize
+        if (PHONENUMBER_PATTERN.matcher(login).matches()) {
+            String npn = safeNormalizePhoneNumber(login);
+            login = npn != null ? npn : login;
+        }
+
+        // search user in database
+        TbAccount account = accountService.getAccountByLogin(login);
+        if (account == null) {
+            log.error("[{}] Failed confirm reset password attempt for login '{}': account does not exists", context.getExecutionId(), login);
+            delayFailureResponse();
+            throw new ApiException(ApiReturnCodes.INVALID_CREDENTIALS, localizationService.getMessage(language, "error.auth.invalid_credentials"));
+        }
+
+        // search existing request in database
+        TbOtpRequest otpRequest = accountService.getOtpRequestByUserIdAndRequestType(account.getUserId(), OtpRequestType.RESET_PASSWORD);
+        if (otpRequest == null) {
+            log.error("[{}] Failed confirm reset password attempt for user '{}': request does not exists", context.getExecutionId(), account.getUserId());
+            delayFailureResponse();
+            throw new ApiException(ApiReturnCodes.INVALID_CREDENTIALS, localizationService.getMessage(language, "error.auth.invalid_credentials"));
+        }
+
+        // checking OTP and password
+        if (!otpRequest.getOtp().equals(req.getOtp())) {
+            log.error("[{}] Failed confirm reset password attempt for user '{}': wrong OTP", context.getExecutionId(), account.getUserId());
+            delayFailureResponse();
+            throw new ApiException(ApiReturnCodes.INVALID_CREDENTIALS, localizationService.getMessage(language, "error.auth.invalid_credentials"));
+        }
+        if (!PASSWOD_PATTERN.matcher(req.getNewPassword()).matches()) {
+            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage(language, "error.auth.password_too_easy"));
+        }
+
+        accountService.confirmResetPassword(account.getUserId(), req.getNewPassword(), otpRequest.getRequestId());
+        log.info("[{}] Reset password confirmed for user: {}", context.getExecutionId(), account.getUserId());
+        return new BaseResponse(context.getExecutionId(), ApiReturnCodes.OK);
+    }
 
     private AccessTokenData generateLoginResponsePayload(Long userId) {
         JwtPayload jwtPayload = jwtService.generatePayload(userId);
