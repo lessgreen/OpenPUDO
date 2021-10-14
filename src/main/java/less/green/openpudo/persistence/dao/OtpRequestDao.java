@@ -5,8 +5,10 @@ import less.green.openpudo.persistence.model.TbOtpRequest;
 
 import javax.enterprise.context.RequestScoped;
 import javax.persistence.NoResultException;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
+import java.util.Date;
 import java.util.UUID;
 
 @RequestScoped
@@ -27,6 +29,13 @@ public class OtpRequestDao extends BaseEntityDao<TbOtpRequest, UUID> {
         } catch (NoResultException ex) {
             return null;
         }
+    }
+
+    public int removeExpiredOtpRequests(Date timeThreshold) {
+        String qs = "DELETE FROM TbOtpRequest t WHERE t.updateTms < :timeThreshold";
+        Query q = em.createQuery(qs);
+        q.setParameter("timeThreshold", timeThreshold);
+        return q.executeUpdate();
     }
 
 }

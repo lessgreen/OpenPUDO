@@ -19,7 +19,9 @@ import lombok.extern.log4j.Log4j2;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -141,6 +143,15 @@ public class AccountService {
             }
         }
         return emailException == null && smsException == null;
+    }
+
+    public int removeExpiredOtpRequests() {
+        // remove OTP requests being stale for more than 24 hours
+        Calendar cal = GregorianCalendar.getInstance();
+        cal.setLenient(false);
+        cal.add(Calendar.MINUTE, -5);
+        log.info(cal.getTime());
+        return otpRequestDao.removeExpiredOtpRequests(cal.getTime());
     }
 
 }
