@@ -25,7 +25,7 @@ public class RuntimeResource {
     @GET
     @Path("/health")
     @Produces(value = MediaType.TEXT_PLAIN)
-    @Operation(summary = "Provides health informations about the current instance")
+    @Operation(summary = "Provides health info about the current instance")
     public String health() {
         StringBuilder sb = new StringBuilder();
         sb.append("Application up and running");

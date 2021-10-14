@@ -37,8 +37,8 @@ public class MapResource {
 
     private static final int MIN_PUDO_COUNT_FOR_ZOOM_LEVEL = 10;
     private static final int MAX_PUDO_MARKER_COUNT_ON_MAP = 50;
-    private static final int MAX_SEARCH_RESULT_GLOBAL = 30;
-    private static final int MAX_SEARCH_RESULT_SLICE = 15;
+    private static final int MAX_SEARCH_RESULT_GLOBAL = 20;
+    private static final int MAX_SEARCH_RESULT_SLICE = 10;
 
     @Inject
     ExecutionContext context;
