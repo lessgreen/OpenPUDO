@@ -39,7 +39,7 @@ public class AuthResource {
     // validation regex uses zero-width lookahead:
     // (?=.{6,20}$) -> 6 to 20 chars
     // (?![_.]) -> no dot or underscore at the beginning
-    // (?!.*[_.]{2}) -> no consecutives dot or underscores
+    // (?!.*[_.]{2}) -> no consecutive dot or underscores
     // [a-zA-Z0-9._]+ -> allowed chars: numbers and letters in mixed case, dot and underscore
     // (?<![_.]) -> no dot or underscore at the end
     private static final String USERNAME_REGEX = "^(?=.{6,20}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$";
@@ -48,7 +48,7 @@ public class AuthResource {
     // (?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]) -> at least one lowercase latter, one uppercase, one number
     private static final String PASSWORD_REGEX = "^(?=.{8,}$)(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).+$";
     private static final Pattern PASSWOD_PATTERN = Pattern.compile(PASSWORD_REGEX);
-    private static final String EMAIL_REGEX = "(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])";
+    private static final String EMAIL_REGEX = "(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)])";
     private static final Pattern EMAIL_PATTERN = Pattern.compile(EMAIL_REGEX);
     private static final String PHONENUMBER_REGEX = "^\\+?[0-9 ]{8,}$";
     private static final Pattern PHONENUMBER_PATTERN = Pattern.compile(PHONENUMBER_REGEX);
@@ -133,8 +133,8 @@ public class AuthResource {
             req.getPudo().setPhoneNumber(npn);
         }
 
-        // cheack if already registered
-        if (accountService.findAccountByLogin(username) != null || accountService.findAccountByLogin(email) != null || accountService.findAccountByLogin(phoneNumber) != null) {
+        // check if already registered
+        if (accountService.getAccountByLogin(username) != null || accountService.getAccountByLogin(email) != null || accountService.getAccountByLogin(phoneNumber) != null) {
             throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage(language, "error.auth.credentials_already_used"));
         }
 
@@ -149,7 +149,7 @@ public class AuthResource {
     @PublicAPI
     @Operation(summary = "Authenticate user and generate JWT access token",
             description = "This is a public API and can be invoked without a valid access token.\n\n"
-                    + "Any failed attemp will enforce a response delay to discourage bruteforcing.")
+                    + "Any failed attempt will enforce a response delay to discourage bruteforce.")
     public LoginResponse login(LoginRequest req, @HeaderParam("Application-Language") String language) {
         // sanitize input
         if (req == null) {
@@ -162,14 +162,14 @@ public class AuthResource {
 
         // normalizing login
         String login = req.getLogin().trim();
-        // if user is logging in by something like a phone numer, try to normalize
+        // if user is logging in by something like a phone number, try to normalize
         if (PHONENUMBER_PATTERN.matcher(login).matches()) {
             String npn = safeNormalizePhoneNumber(login);
             login = npn != null ? npn : login;
         }
 
         // search user in database
-        TbAccount account = accountService.findAccountByLogin(login);
+        TbAccount account = accountService.getAccountByLogin(login);
         if (account == null) {
             log.error("[{}] Failed login attempt for login '{}': account does not exists", context.getExecutionId(), login);
             delayFailureResponse();
@@ -212,7 +212,7 @@ public class AuthResource {
         try {
             payload = jwtService.decodePayload(accessToken.split("\\.", -1)[1]);
         } catch (JsonProcessingException ex) {
-            // we have a valid signature for an unparsable payload, this should NEVER happen, triggering an internal server error
+            // we have a valid signature for a not parsable payload, this should NEVER happen, triggering an internal server error
             log.error("[{}] Authorization failed: invalid token payload with valid signature", context.getExecutionId());
             throw new InternalServerErrorException();
         }
@@ -220,6 +220,36 @@ public class AuthResource {
         AccessTokenData resp = generateLoginResponsePayload(payload.getSub());
         return new LoginResponse(context.getExecutionId(), 0, resp);
     }
+
+    @POST
+    @Path("/change-password")
+    @Operation(summary = "Change password", description = "Change user's password. Old password must be provided and will be checked for security reasons.")
+    public BaseResponse renew(ChangePasswordRequest req, @HeaderParam("Application-Language") String language) {
+        // sanitize input
+        if (req == null) {
+            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage(language, "error.empty_request"));
+        } else if (isEmpty(req.getOldPassword())) {
+            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage(language, "error.empty_mandatory_field", "oldPassword"));
+        }else if (isEmpty(req.getNewPassword())) {
+            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage(language, "error.empty_mandatory_field", "newPassword"));
+        }
+
+        // search user in database
+        TbAccount account = accountService.getAccountByUserId(context.getUserId());
+        // verify credentials
+        AccountSecret secret = new AccountSecret(account.getSalt(), account.getPassword(), account.getHashSpecs());
+        if (!cryptoService.verifyPasswordHash(secret, req.getOldPassword())) {
+            log.error("[{}] Failed change password attempt for userId {}: wrong password", context.getExecutionId(), account.getUserId());
+            throw new ApiException(ApiReturnCodes.INVALID_CREDENTIALS, localizationService.getMessage(language, "error.auth.invalid_credentials"));
+        }
+
+        // all checks passed, changing password
+        accountService.changePassword(context.getUserId(), req.getNewPassword());
+        log.info("[{}] Changed password for user: {}", context.getExecutionId(), context.getUserId());
+        return new BaseResponse(context.getExecutionId(), ApiReturnCodes.OK);
+    }
+
+
 
     private AccessTokenData generateLoginResponsePayload(Long userId) {
         JwtPayload jwtPayload = jwtService.generatePayload(userId);

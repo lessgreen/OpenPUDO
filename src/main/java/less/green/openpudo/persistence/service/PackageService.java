@@ -226,16 +226,16 @@ public class PackageService {
                     message = localizationService.getMessage(curRow.getApplicationLanguage(), messageTemplate, (Object[]) messageParams);
                 }
                 String messageId = firebaseMessagingService.sendNotification(curRow.getDeviceToken(), title, message, data);
+
+                curRow.setUpdateTms(now);
                 if (messageId != null) {
-                    curRow.setUpdateTms(now);
                     curRow.setLastSuccessTms(now);
                     curRow.setLastSuccessMessageId(messageId);
                     curRow.setLastFailureTms(null);
                     curRow.setFailureCount(0);
                 } else {
-                    curRow.setUpdateTms(now);
                     curRow.setLastFailureTms(now);
-                    curRow.setFailureCount(curRow.getFailureCount() == null ? 1 : curRow.getFailureCount() + 1);
+                    curRow.setFailureCount(curRow.getFailureCount() + 1);
                 }
             }
             deviceTokenDao.flush();

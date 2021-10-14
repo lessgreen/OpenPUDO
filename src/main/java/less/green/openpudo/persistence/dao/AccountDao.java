@@ -17,7 +17,7 @@ public class AccountDao extends BaseEntityDao<TbAccount, Long> {
         super(TbAccount.class, "userId");
     }
 
-    public TbAccount findAccountByLogin(String login) {
+    public TbAccount getAccountByLogin(String login) {
         if (isEmpty(login)) {
             return null;
         }
