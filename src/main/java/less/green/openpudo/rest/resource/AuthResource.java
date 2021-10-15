@@ -26,7 +26,8 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.regex.Pattern;
 
-import static less.green.openpudo.common.FormatUtils.safeNormalizePhoneNumber;
+import static less.green.openpudo.common.FormatUtils.normalizeLoginSafe;
+import static less.green.openpudo.common.FormatUtils.normalizePhoneNumberSafe;
 import static less.green.openpudo.common.StringUtils.isEmpty;
 import static less.green.openpudo.common.StringUtils.sanitizeString;
 
@@ -52,8 +53,6 @@ public class AuthResource {
     private static final Pattern PASSWOD_PATTERN = Pattern.compile(PASSWORD_REGEX);
     private static final String EMAIL_REGEX = "(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)])";
     private static final Pattern EMAIL_PATTERN = Pattern.compile(EMAIL_REGEX);
-    private static final String PHONENUMBER_REGEX = "^\\+?[0-9 ]{8,}$";
-    private static final Pattern PHONENUMBER_PATTERN = Pattern.compile(PHONENUMBER_REGEX);
 
     @Inject
     ExecutionContext context;
@@ -114,7 +113,7 @@ public class AuthResource {
 
         String phoneNumber = sanitizeString(req.getPhoneNumber());
         if (phoneNumber != null) {
-            String npn = safeNormalizePhoneNumber(phoneNumber);
+            String npn = normalizePhoneNumberSafe(phoneNumber, language);
             if (npn == null) {
                 throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage(language, "error.invalid_field", "phoneNumber"));
             }
@@ -127,12 +126,16 @@ public class AuthResource {
             throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage(language, "error.auth.password_too_easy"));
         }
 
-        if (req.getPudo() != null && !isEmpty(req.getPudo().getPhoneNumber())) {
-            String npn = safeNormalizePhoneNumber(req.getPudo().getPhoneNumber());
-            if (npn == null) {
-                throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage(language, "error.invalid_field", "pudo.phoneNumber"));
+        if (req.getPudo() != null) {
+            String pudoPhoneNumber = sanitizeString(req.getPudo().getPhoneNumber());
+            if (pudoPhoneNumber != null) {
+                String npn = normalizePhoneNumberSafe(pudoPhoneNumber, language);
+                if (npn == null) {
+                    throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage(language, "error.invalid_field", "pudo.phoneNumber"));
+                }
+                pudoPhoneNumber = npn;
             }
-            req.getPudo().setPhoneNumber(npn);
+            req.getPudo().setPhoneNumber(pudoPhoneNumber);
         }
 
         // check if already registered
@@ -163,12 +166,7 @@ public class AuthResource {
         }
 
         // normalizing login
-        String login = req.getLogin().trim();
-        // if user is logging in by something like a phone number, try to normalize
-        if (PHONENUMBER_PATTERN.matcher(login).matches()) {
-            String npn = safeNormalizePhoneNumber(login);
-            login = npn != null ? npn : login;
-        }
+        String login = normalizeLoginSafe(req.getLogin(), language);
 
         // search user in database
         TbAccount account = accountService.getAccountByLogin(login);
@@ -268,12 +266,7 @@ public class AuthResource {
         }
 
         // normalizing login
-        String login = req.getLogin().trim();
-        // if user is logging in by something like a phone number, try to normalize
-        if (PHONENUMBER_PATTERN.matcher(login).matches()) {
-            String npn = safeNormalizePhoneNumber(login);
-            login = npn != null ? npn : login;
-        }
+        String login = normalizeLoginSafe(req.getLogin(), language);
 
         // search user in database
         TbAccount account = accountService.getAccountByLogin(login);
@@ -306,12 +299,7 @@ public class AuthResource {
         }
 
         // normalizing login
-        String login = req.getLogin().trim();
-        // if user is logging in by something like a phone number, try to normalize
-        if (PHONENUMBER_PATTERN.matcher(login).matches()) {
-            String npn = safeNormalizePhoneNumber(login);
-            login = npn != null ? npn : login;
-        }
+        String login = normalizeLoginSafe(req.getLogin(), language);
 
         // search user in database
         TbAccount account = accountService.getAccountByLogin(login);

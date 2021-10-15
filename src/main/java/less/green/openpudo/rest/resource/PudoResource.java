@@ -32,7 +32,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static less.green.openpudo.common.FormatUtils.safeNormalizePhoneNumber;
+import static less.green.openpudo.common.FormatUtils.normalizePhoneNumberSafe;
 import static less.green.openpudo.common.MultipartUtils.ALLOWED_IMAGE_MIME_TYPES;
 import static less.green.openpudo.common.StringUtils.isEmpty;
 
@@ -91,7 +91,7 @@ public class PudoResource {
 
         // more sanitizing
         if (!isEmpty(req.getPhoneNumber())) {
-            String npn = safeNormalizePhoneNumber(req.getPhoneNumber());
+            String npn = normalizePhoneNumberSafe(req.getPhoneNumber(), language);
             if (npn == null) {
                 throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage(language, "error.invalid_field", "phoneNumber"));
             }

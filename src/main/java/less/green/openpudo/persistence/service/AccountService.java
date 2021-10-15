@@ -150,7 +150,6 @@ public class AccountService {
         Calendar cal = GregorianCalendar.getInstance();
         cal.setLenient(false);
         cal.add(Calendar.MINUTE, -5);
-        log.info(cal.getTime());
         return otpRequestDao.removeExpiredOtpRequests(cal.getTime());
     }
 
