@@ -83,7 +83,7 @@
                                     login: login
                                 };
                                 try {
-                                    const response = await postData("http://localhost:8080/api/v1/auth/reset-password", requestBody);
+                                    const response = await postData("https://api.quigreen.it/api/v1/auth/reset-password", requestBody);
                                 } catch (err) {
                                     endRequest();
                                     document.getElementById("loginInput").disabled = false;
@@ -126,7 +126,7 @@
                                     newPassword: password1
                                 };
                                 try {
-                                    const response = await postData("http://localhost:8080/api/v1/auth/confirm-reset-password", requestBody);
+                                    const response = await postData("https://api.quigreen.it/api/v1/auth/confirm-reset-password", requestBody);
                                 } catch (err) {
                                     endRequest();
                                     document.getElementById("otpInput").disabled = false;
