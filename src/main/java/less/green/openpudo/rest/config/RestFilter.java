@@ -22,6 +22,10 @@ public class RestFilter implements ContainerRequestFilter, ContainerResponseFilt
 
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
+        // skip filtering for preflight requests
+        if (requestContext.getMethod().equals("OPTIONS")) {
+            return;
+        }
         context.setStartTimestamp(System.nanoTime());
         log.info("[{}] {} {}{}", context.getExecutionId(), requestContext.getMethod(), requestContext.getUriInfo().getRequestUri().getPath(),
                 requestContext.getUriInfo().getRequestUri().getQuery() == null ? "" : "?" + requestContext.getUriInfo().getRequestUri().getQuery());
@@ -30,6 +34,10 @@ public class RestFilter implements ContainerRequestFilter, ContainerResponseFilt
 
     @Override
     public void filter(ContainerRequestContext requestContext, ContainerResponseContext responseContext) throws IOException {
+        // skip filtering for preflight requests
+        if (requestContext.getMethod().equals("OPTIONS")) {
+            return;
+        }
         context.setEndTimestamp(System.nanoTime());
         log.info("[{}] {} {}", context.getExecutionId(), responseContext.getStatus(), smartElapsed(context.getEndTimestamp() - context.getStartTimestamp()));
     }
