@@ -131,7 +131,7 @@ public class PudoResource {
         // geocoding
         Feature feat;
         try {
-            feat = geocodeService.search(req.getLabel(), req.getResultId());
+            feat = geocodeService.search(language, req.getLabel(), req.getResultId());
         } catch (RuntimeException ex) {
             log.error("[{}] {}", context.getExecutionId(), ExceptionUtils.getCompactStackTrace(ex));
             throw new ApiException(ApiReturnCodes.SERVICE_UNAVAILABLE, localizationService.getMessage(language, "error.service_unavailable"));

@@ -149,7 +149,7 @@ public class MapResource {
         }
 
         try {
-            FeatureCollection fc = geocodeService.autocomplete(text, lat, lon);
+            FeatureCollection fc = geocodeService.autocomplete(language, text, lat, lon);
             List<Feature> rs = fc.getFeatures();
             // restricting results if necessary (unlikely)
             if (rs.size() > MAX_SEARCH_RESULT_GLOBAL) {
@@ -200,7 +200,7 @@ public class MapResource {
         // searching adresses
         List<Feature> frs;
         try {
-            FeatureCollection fc = geocodeService.autocomplete(text, lat, lon);
+            FeatureCollection fc = geocodeService.autocomplete(language, text, lat, lon);
             frs = fc.getFeatures();
         } catch (RuntimeException ex) {
             log.error("[{}] {}", context.getExecutionId(), ExceptionUtils.getCompactStackTrace(ex));

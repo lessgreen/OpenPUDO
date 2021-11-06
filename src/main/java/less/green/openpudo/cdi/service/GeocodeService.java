@@ -14,6 +14,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static less.green.openpudo.common.StringUtils.isEmpty;
+
 @ApplicationScoped
 @Startup
 @Log4j2
@@ -26,7 +28,7 @@ public class GeocodeService {
     @ConfigProperty(name = "geocode.api.key")
     String apiKey;
 
-    public FeatureCollection autocomplete(String text, BigDecimal lat, BigDecimal lon) {
+    public FeatureCollection autocomplete(String language, String text, BigDecimal lat, BigDecimal lon) {
         try {
             var req = Unirest.get(GEOCODE_AUTOCOMPLETE_URL);
             req.queryString("api_key", apiKey);
@@ -45,8 +47,11 @@ public class GeocodeService {
                 req.queryString("layers", "street,borough,locality,localadmin,county,macrocounty,region,macroregion,country");
             }
 
-            // TODO: proper language selection
-            req.header("Accept-Language", "it-IT,it;q=0.8,en-US;q=0.5,en;q=0.3");
+            if (!isEmpty(language)) {
+                req.header("Accept-Language", language);
+            } else {
+                req.header("Accept-Language", "en");
+            }
 
             var res = req.asObject(FeatureCollection.class);
             if (res == null || res.getBody() == null) {
@@ -67,7 +72,7 @@ public class GeocodeService {
         }
     }
 
-    public Feature search(String text, String resultId) {
+    public Feature search(String language, String text, String resultId) {
         try {
             var req = Unirest.get(GEOCODE_SEARCH_URL);
             req.queryString("api_key", apiKey);
@@ -77,8 +82,11 @@ public class GeocodeService {
             // we need to assure that geocoding is done at most precise level before saving on database
             req.queryString("layers", "address");
 
-            // TODO: proper language selection
-            req.header("Accept-Language", "it-IT,it;q=0.8,en-US;q=0.5,en;q=0.3");
+            if (!isEmpty(language)) {
+                req.header("Accept-Language", language);
+            } else {
+                req.header("Accept-Language", "en");
+            }
 
             var res = req.asObject(FeatureCollection.class);
             if (res == null || res.getBody() == null) {
