@@ -23,7 +23,7 @@ import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.math.BigDecimal;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 import static less.green.openpudo.common.StringUtils.isEmpty;
@@ -36,9 +36,8 @@ import static less.green.openpudo.common.StringUtils.isEmpty;
 public class MapResource {
 
     private static final int MIN_PUDO_COUNT_FOR_ZOOM_LEVEL = 10;
-    private static final int MAX_PUDO_MARKER_COUNT_ON_MAP = 50;
-    private static final int MAX_SEARCH_RESULT_GLOBAL = 20;
-    private static final int MAX_SEARCH_RESULT_SLICE = 10;
+    private static final int MAX_PUDO_MARKER_COUNT_ON_MAP = 25;
+    private static final int MAX_SEARCH_RESULTS = 5;
 
     @Inject
     ExecutionContext context;
@@ -152,8 +151,8 @@ public class MapResource {
             FeatureCollection fc = geocodeService.autocomplete(language, text, lat, lon);
             List<Feature> rs = fc.getFeatures();
             // restricting results if necessary (unlikely)
-            if (rs.size() > MAX_SEARCH_RESULT_GLOBAL) {
-                rs = rs.subList(0, MAX_SEARCH_RESULT_SLICE);
+            if (rs.size() > MAX_SEARCH_RESULTS) {
+                rs = rs.subList(0, MAX_SEARCH_RESULTS);
             }
             return new AddressMarkerListResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapFeatureListToAddressMarkerList(rs));
         } catch (RuntimeException ex) {
@@ -190,14 +189,13 @@ public class MapResource {
         }
 
         // searching pudos
-        List<Marker> ret = new LinkedList<>();
         List<PudoMarker> prs = pudoService.searchPudosByName(text);
         // sorting by distance, if we have optional coordinates
         if (lat != null && lon != null) {
             prs = GPSUtils.sortByDistance(prs, lat.doubleValue(), lon.doubleValue());
         }
 
-        // searching adresses
+        // searching addresses
         List<Feature> frs;
         try {
             FeatureCollection fc = geocodeService.autocomplete(language, text, lat, lon);
@@ -208,21 +206,15 @@ public class MapResource {
         }
 
         // restricting results if necessary
-        if (prs.size() + frs.size() > MAX_SEARCH_RESULT_GLOBAL) {
-            if (prs.size() >= MAX_SEARCH_RESULT_SLICE && frs.size() >= MAX_SEARCH_RESULT_SLICE) {
-                // if both subsearches have too many results
-                prs = prs.subList(0, MAX_SEARCH_RESULT_SLICE);
-                frs = frs.subList(0, MAX_SEARCH_RESULT_SLICE);
-            } else if (prs.size() >= MAX_SEARCH_RESULT_SLICE) {
-                // if too many pudos only
-                prs = prs.subList(0, MAX_SEARCH_RESULT_GLOBAL - frs.size());
-            } else {
-                // if too many addresses only (unlikely)
-                frs = frs.subList(0, MAX_SEARCH_RESULT_GLOBAL - prs.size());
-            }
+        if (prs.size() >= MAX_SEARCH_RESULTS) {
+            prs = prs.subList(0, MAX_SEARCH_RESULTS);
+        }
+        if (frs.size() >= MAX_SEARCH_RESULTS) {
+            frs = frs.subList(0, MAX_SEARCH_RESULTS);
         }
 
         // combining results
+        List<Marker> ret = new ArrayList<>(prs.size() + frs.size());
         for (PudoMarker pudo : prs) {
             ret.add(new Marker(MarkerType.PUDO, pudo));
         }
