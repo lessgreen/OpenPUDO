@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>QuiGreen</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+        <style>
+            * {
+                box-sizing: border-box;
+            }
+
+            body {
+                background: #eee !important;
+            }
+
+            .content {
+                background-color: #fff;
+                border: 1px solid rgba(0,0,0,0.1);
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container content my-3">
+            <div>
+                <div class="m-3">
+                    <h2 class="text-primary">Recupera password</h2>
+                </div>
+                <div id="loginDiv" class="m-3 mt-4">
+                    <label for="loginInput" class="form-label">Login (username, email o numero di telefono)</label>
+                    <input id="loginInput" type="text" class="form-control" maxlength="50" autofocus />
+                </div>
+                <div id="msgDiv1" class="m-3 mt-5 mb-4 d-none">
+                    <h3 class="text-success">Ti stiamo inviando i dati per il recupero agli indirizzi forniti in fase di registrazione.</h3>
+                    <h3 class="text-success">Attendi la ricezione e prosegui compilando i campi sottostanti.</h3>
+                </div>
+                <div id="otpDiv" class="m-3 d-none">
+                    <label for="otpInput" class="form-label">PIN ricevuto via email o SMS</label>
+                    <input id="otpInput" type="text" class="form-control" maxlength="6" />
+                </div>
+                <div id="passwordDiv1" class="m-3 d-none">
+                    <label for="passwordInput1" class="form-label">Nuova password</label>
+                    <input id="passwordInput1" type="password" class="form-control" maxlength="50" />
+                </div>
+                <div id="passwordDiv2" class="m-3 d-none">
+                    <label for="passwordInput2" class="form-label">Conferma nuova password</label>
+                    <input id="passwordInput2" type="password" class="form-control" maxlength="50" />
+                </div>
+                <div id="btnDiv" class="m-3 mt-5">
+                    <button id="sendRequestBtn" type="button" class="btn btn-lg btn-primary" onclick="sendRequest()">
+                        <span id="btnSpinner" class="spinner-border spinner-border-sm d-none" role="status"></span>
+                        <span>Invia richiesta</span>
+                    </button>
+                </div>
+                <div id="msgDiv" class="m-3 mt-5 mb-4 d-none">
+                    <h3 class="text-success">Richiesta inviata con successo. La tua richiesta sarà gestita dai nostri sistemi pochi minuti.</h3>
+                </div>
+            </div>
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+        <script>
+                        var phase = 1;
+                        function startRequest() {
+                            document.getElementById("sendRequestBtn").disabled = true;
+                            document.getElementById("btnSpinner").classList.remove("d-none");
+                        }
+                        function endRequest() {
+                            document.getElementById("sendRequestBtn").disabled = false;
+                            document.getElementById("btnSpinner").classList.add("d-none");
+                        }
+                        async function sendRequest() {
+                            startRequest();
+                            if (phase === 1) {
+                                let login = document.getElementById("loginInput").value;
+                                if (login === null || login.trim() === "") {
+                                    endRequest();
+                                    alert("Il campo login è obbligatorio");
+                                    return false;
+                                }
+                                document.getElementById("loginInput").disabled = true;
+
+                                const requestBody = {
+                                    login: login
+                                };
+                                try {
+                                    const response = await postData("https://api.quigreen.it/api/v1/auth/reset-password", requestBody);
+                                } catch (err) {
+                                    endRequest();
+                                    document.getElementById("loginInput").disabled = false;
+                                    alert(err.message);
+                                    return;
+                                }
+
+                                document.getElementById("msgDiv1").classList.remove("d-none");
+                                document.getElementById("otpDiv").classList.remove("d-none");
+                                document.getElementById("passwordDiv1").classList.remove("d-none");
+                                document.getElementById("passwordDiv2").classList.remove("d-none");
+                                phase = 2;
+                            } else if (phase === 2) {
+                                let login = document.getElementById("loginInput").value;
+                                let otp = document.getElementById("otpInput").value;
+                                let password1 = document.getElementById("passwordInput1").value;
+                                let password2 = document.getElementById("passwordInput2").value;
+                                if (otp === null || otp.trim() === "") {
+                                    endRequest();
+                                    alert("Il campo PIN è obbligatorio");
+                                    return false;
+                                }
+                                if (password1 === null || password1.trim() === "" || password2 === null || password2.trim() === "") {
+                                    endRequest();
+                                    alert("Il campo password è obbligatorio");
+                                    return false;
+                                }
+                                if (password1 !== password2) {
+                                    endRequest();
+                                    alert("Le due password sono diverse");
+                                    return false;
+                                }
+                                document.getElementById("otpInput").disabled = true;
+                                document.getElementById("passwordInput1").disabled = true;
+                                document.getElementById("passwordInput2").disabled = true;
+
+                                const requestBody = {
+                                    login: login,
+                                    otp: otp,
+                                    newPassword: password1
+                                };
+                                try {
+                                    const response = await postData("https://api.quigreen.it/api/v1/auth/confirm-reset-password", requestBody);
+                                } catch (err) {
+                                    endRequest();
+                                    document.getElementById("otpInput").disabled = false;
+                                    document.getElementById("passwordInput1").disabled = false;
+                                    document.getElementById("passwordInput2").disabled = false;
+                                    alert(err.message);
+                                    return;
+                                }
+
+                                document.getElementById("btnDiv").classList.add("d-none");
+                                document.getElementById("msgDiv").classList.remove("d-none");
+                            }
+                            endRequest();
+                        }
+                        async function postData(url, requestBody) {
+                            let response;
+                            try {
+                                response = await fetch(url, {
+                                    method: "POST",
+                                    cache: "no-cache",
+                                    headers: {
+                                        "Content-Type": "application/json",
+                                        "Application-Language": "it"
+                                    },
+                                    body: JSON.stringify(requestBody)
+                                });
+                                if (!response.ok) {
+                                    throw new Error();
+                                }
+                            } catch (err) {
+                                throw new Error("Servizio non disponibile, si prega di riprovare più tardi");
+                            }
+                            const responseBody = await response.json();
+                            if (responseBody.message) {
+                                throw new Error(responseBody.message);
+                            }
+                            return responseBody;
+                        }
+        </script>
+    </body>
+</html>
