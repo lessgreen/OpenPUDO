@@ -1,0 +1,130 @@
+{
+    "it": {
+        "updatePackageScreen": {
+            "navTitle": "Nuovo pacco",
+            "takePhoto": "Scatta una foto all'etichetta",
+            "nextButton": "Avanti",
+            "selectUser": "Seleziona un utente",
+            "addNote": "Aggiungi una nota",
+            "doneTitle": "Fatto!",
+            "closeButton": "Chiudi",
+            "doneDescription": "Abbiamo inviato una notifica all'utente. Grazie!"
+        },
+        "notificationDetailsScreen": {
+            "navTitle": "Dettaglio notifica"
+        },
+        "notificationsScreen": {
+            "navTitle": "Notifiche"
+        },
+        "businessPudoProfileScreen": {
+            "navTitle": "Il tuo profilo business"
+        },
+        "pudoPublicProfileScreen": {
+            "navTitle": "Dettagli PUDO",
+            "addressNotAvailable": "Indirizzo non disponibile.",
+            "addPudo": "Aggiungi ai tuoi PUDO",
+            "removePudo": "Rimuovi dai favoriti"
+        },
+        "editBusinessProfileScreen": {
+            "contactNotesPlaceHolder": "Note di contatto",
+            "navTitle": "Modifica il tuo profilo aziendale",
+            "submit": "Salva",
+            "businessNamePlaceHolder": "Nome azienda",
+            "invalidBusinessName": "Nome azienda non valido",
+            "phonePlaceHolder": "Numero di telefono",
+            "invalidPhone": "Numero di telefono non valido",
+            "addressPlaceHolder": "Indirizzo",
+            "invalidAddress": "Indirizzo non valido",
+            "contactsNotesPlaceHolder": "Note di contatto",
+            "invalidContactsNotes": "Note di contatto non valide",
+            "vatPlaceHolder": "Partita IVA",
+            "invalidVat": "Partita IVA non calida",
+            "camera": "Fotocamera",
+            "gallery": "Galleria",
+            "delete": "Rimuovi foto",
+            "chooseAnOption": "Scegli un'opzione:",
+            "cancel": "Annulla"
+        },
+        "editUserProfileScreen": {
+            "navTitle": "Edita il tuo profilo",
+            "submit": "Salva",
+            "firstNamePlaceHolder": "Nome",
+            "invalidFirstName": "Nome non valido",
+            "lastNamePlaceHolder": "Cognome",
+            "invalidLastName": "Cognome non valido",
+            "ssnPlaceHolder": "Codice fiscale",
+            "invalidSsn": "Codice fiscale non valido",
+            "camera": "Fotocamera",
+            "gallery": "Galleria",
+            "delete": "Rimuovi foto",
+            "chooseAnOption": "Scegli un'opzione:",
+            "cancel": "Annulla"
+        },
+        "mapScreen": {
+            "searchPlaceholder": "Cerca..." 
+        },
+        "myPackagesScreen": {
+            "navTitle": "Le tue spedizioni",
+            "packagesNotFound": "Non hai ancora nessuna attività."
+        },
+        "myPudosScreen": {
+            "navTitle": "I tuoi pudo",
+            "pudosNotFound": "Non hai pudo conservati."
+        },
+        "profileScreen": {
+            "navTitle": "Profilo",
+            "yourPudos": "I tuoi pudo",
+            "yourBusiness": "Il tuo profilo Business",
+            "yourShipment": "Le tue spedizioni",
+            "logout": "Esci",
+            "accessHere": "Accedi qui"
+        },
+        "registrationScreen": {
+            "navTitle": "Registrati",
+            "subHeading": "Benvenuto! Prima di continuare è necessario registrarsi in pochi e semplici passaggi.",
+            "registrati": "Registrati",
+            "iamuser": "Sono un utente",
+            "iampudo": "Sono un pudo",
+            "emailPlaceholder": "Email",
+            "invalidEmail": "Email non valida",
+            "passwordPlaceholder": "Password",
+            "invalidPassword": "Password troppo semplice",
+            "phonePlaceholder": "Numero di telefono",
+            "invalidPhone": "Numero di telefono non valido",
+            "usernamePlaceholder": "Username",
+            "firstNamePlaceholder": "Nome",
+            "lastNamePlaceholder": "Cognome",
+            "ssnPlaceholder": "Codice fiscale",
+            "pudoNamePlaceholder": "Nome del pudo",
+            "pudoAddressPlaceholder": "Indirizzo attività",
+            "pivaPlaceholder": "Partita IVA",
+            "registrationSuccess": "Grazie per esserti registrato.",
+            "invalidSSN": "E' richiesto il tuo codice fiscale.",
+            "invalidFirstName": "Nome non valido",
+            "invalidLastName": "Cognome non valido",
+            "invalidBusinessName": "Nome azienda non valido",
+            "invalidVAT": "Partita IVA non valida",
+            "invalidUsername": "Nome utente non valido",
+            "thanksTitle": "Grazie"
+        },
+        "loginScreen": {
+            "navTitle": "Accedi",
+            "headerTitle": "Benvenuto! Prima di continuare è necessario autenticarsi.",
+            "usernameHint": "nome utente",
+            "passwordHint": "password",
+            "usernameFail": "E' necessario inserire un valore.",
+            "passwordFail": "E' necessario inserire un valore.",
+            "accediButton": "Accedi",
+            "notRegistered": "Non sei registrato?",
+            "registerHere": "Registrati qui.",
+            "passwordForgot": "Hai dimenticato la password?",
+            "passwordFogotButton": "Premi qui."
+        },
+        "alert": {
+            "alertTitle": "Attenzione",
+            "genericTitle": "Errore",
+            "closeButton": "Chiudi",
+            "internetRequired": "E' richiesta una connessione internet."
+        }
+    }
+}

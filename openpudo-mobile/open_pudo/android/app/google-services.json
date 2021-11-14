@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "872893646474",
+    "project_id": "quigreen-1a754",
+    "storage_bucket": "quigreen-1a754.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:872893646474:android:ccacd528cb98df67ec0f73",
+        "android_client_info": {
+          "package_name": "green.less.openpudoquigreen"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "872893646474-6tug95388rv1suks9borhghk95bqq3sk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDKfVn9rS_wYvil7QS-FHMj8d6nyeQv4o4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "872893646474-6tug95388rv1suks9borhghk95bqq3sk.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "872893646474-pc8onl0gr5j683rq6sah8d17k579240h.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "green.less.openpudo-quigreen"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
