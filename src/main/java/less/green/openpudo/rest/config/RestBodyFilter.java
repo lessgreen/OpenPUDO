@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
-import static less.green.openpudo.common.Encoders.OBJECT_MAPPER;
+import static less.green.openpudo.common.Encoders.OBJECT_MAPPER_COMPACT;
 import static less.green.openpudo.common.StreamUtils.readAllBytesFromInputStream;
 import static less.green.openpudo.common.StringUtils.isEmpty;
 
@@ -52,7 +52,7 @@ public class RestBodyFilter implements ContainerRequestFilter, ContainerResponse
             return;
         }
         if (log.isTraceEnabled() && responseContext.hasEntity() && !resourceInfo.getResourceMethod().isAnnotationPresent(BinaryAPI.class)) {
-            log.trace("[{}] Response: {}", context.getExecutionId(), OBJECT_MAPPER.writeValueAsString(responseContext.getEntity()));
+            log.trace("[{}] Response: {}", context.getExecutionId(), OBJECT_MAPPER_COMPACT.writeValueAsString(responseContext.getEntity()));
         }
     }
 

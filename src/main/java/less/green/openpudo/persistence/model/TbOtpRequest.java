@@ -1,7 +1,7 @@
 package less.green.openpudo.persistence.model;
 
-import less.green.openpudo.persistence.dao.usertype.OtpRequestType;
-import less.green.openpudo.persistence.dao.usertype.OtpRequestTypeConverter;
+import less.green.openpudo.persistence.model.usertype.OtpRequestType;
+import less.green.openpudo.persistence.model.usertype.OtpRequestTypeConverter;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -22,9 +22,6 @@ public class TbOtpRequest implements Serializable {
     @Column(name = "request_id", updatable = false)
     private UUID requestId;
 
-    @Column(name = "user_id")
-    private Long userId;
-
     @Column(name = "create_tms")
     @Temporal(TemporalType.TIMESTAMP)
     private Date createTms;
@@ -37,10 +34,24 @@ public class TbOtpRequest implements Serializable {
     @Convert(converter = OtpRequestTypeConverter.class)
     private OtpRequestType requestType;
 
+    @Column(name = "user_id")
+    private Long userId;
+
+    @Column(name = "phone_number")
+    private String phoneNumber;
+
     @Column(name = "otp")
     private String otp;
 
-    @Column(name = "retry_count")
-    private Integer retryCount;
+    @Column(name = "send_count")
+    private Integer sendCount;
+
+    // transient properties
+    public String getRecipient() {
+        if (userId != null) {
+            return "userId: " + userId.toString();
+        }
+        return "phoneNumber: " + phoneNumber;
+    }
 
 }

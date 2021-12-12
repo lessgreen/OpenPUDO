@@ -6,13 +6,11 @@ Ogni chiamata API restituisce un codice che fornisce informazioni sullo stato de
 A parte il codice 0 che indica sempre una operazione avvenuta con successo, quando possibile vengono riutilizzati gli HTTP status codes,
 per una più immediata comprensione, qualora non fosse necessario un maggior livello di dettaglio.  
 - 0: `OK` -> la chiamata ha avuto successo
-- 1: `INVALID_REQUEST` -> il payload della chiamata non è correttamente valorizzato,
-  viene generalmente accompagnato da un messaggio che ne spiega il motivo (ad esempio: campo obbligatorio non valorizzato)
-- 2: `INVALID_CREDENTIALS` -> tentativo di login effettuato con credenziali non valide
-- 3: `INVALID_JWT_TOKEN` -> API invocata con token JWT non valido
-- 4: `EXPIRED_JWT_TOKEN` -> API invocata con token JWT scaduto
-- 400: `BAD_REQUEST` -> chiamata sintatticamente valida, fallita per cause imputabili al chiamante (ad esempio: modifiche di stato incompatibili con le logiche applicative)
-- 403: `FORBIDDEN` = 403 -> chiamata fallita per privilegi mancanti (ad esempio: update su entità di proprietà di un altro utente)
+- 400: `BAD_REQUEST` -> chiamata sintatticamente valida, fallita per cause semantiche imputabili al chiamante (ad esempio: errori di formato o modifiche di stato incompatibili con le logiche applicative)
+- 401: `INVALID_JWT_TOKEN` -> API invocata con token JWT non valido
+- 401: `EXPIRED_JWT_TOKEN` -> API invocata con token JWT scaduto
+- 401: `INVALID_OTP` -> tentativo di login effettuato con codice OTP non valido
+- 403: `FORBIDDEN` -> chiamata fallita per privilegi mancanti (ad esempio: update su entità di proprietà di un altro utente)
 - 404: `RESOURCE_NOT_FOUND` -> chiamata fallita per operazione dispositiva su entità inesistente
 - 500: `INTERNAL_SERVER_ERROR` -> chiamata fallita per cause imputabili al back-end (ad esempio: bug, problemi di comunicazione col database)
 - 503: `SERVICE_UNAVAILABLE` -> chiamata fallita per cause imputabili a sistemi terzi (ad esempio: geolocalizzazione, storage)

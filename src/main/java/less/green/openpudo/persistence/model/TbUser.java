@@ -1,5 +1,7 @@
 package less.green.openpudo.persistence.model;
 
+import less.green.openpudo.persistence.model.usertype.AccountType;
+import less.green.openpudo.persistence.model.usertype.AccountTypeConverter;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -7,7 +9,6 @@ import lombok.ToString;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
-import java.util.UUID;
 
 @Entity
 @Table(name = "tb_user")
@@ -24,20 +25,18 @@ public class TbUser implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     private Date createTms;
 
-    @Column(name = "update_tms")
+    @Column(name = "last_login_tms")
     @Temporal(TemporalType.TIMESTAMP)
-    private Date updateTms;
+    private Date lastLoginTms;
 
-    @Column(name = "first_name")
-    private String firstName;
+    @Column(name = "account_type")
+    @Convert(converter = AccountTypeConverter.class)
+    private AccountType accountType;
 
-    @Column(name = "last_name")
-    private String lastName;
+    @Column(name = "test_account_flag")
+    private Boolean testAccountFlag;
 
-    @Column(name = "ssn")
-    private String ssn;
-
-    @Column(name = "profile_pic_id")
-    private UUID profilePicId;
+    @Column(name = "phone_number")
+    private String phoneNumber;
 
 }

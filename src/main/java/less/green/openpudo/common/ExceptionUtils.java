@@ -50,21 +50,17 @@ public class ExceptionUtils {
         return sw.toString();
     }
 
-    public static String getCompactStackTrace(Throwable throwable) {
-        return getCompactStackTrace(throwable, Arrays.asList("less.green.openpudo"));
+    public static List<String> getStackTraceLines(Throwable throwable) {
+        return Arrays.asList(getStackTrace(throwable).split("\\r?\\n"));
     }
 
-    public static String getCompactStackTrace(Throwable throwable, String prefix) {
-        return getCompactStackTrace(throwable, Arrays.asList(prefix));
+    public static String getRelevantStackTrace(Throwable throwable) {
+        List<String> lines = getStackTraceLines(throwable);
+        return lines.stream().filter(l -> isRelevantLine(l, "less.green.openpudo")).collect(Collectors.joining("\n"));
     }
 
-    public static String getCompactStackTrace(Throwable throwable, List<String> prefixes) {
-        String stackTrace = getStackTrace(throwable);
-        String[] lines = stackTrace.split("\\r?\\n");
-        return Arrays.stream(lines)
-                .filter(i -> !i.startsWith("\t")
-                        || prefixes.stream().anyMatch(pr -> !i.contains("$") && (i.contains("at " + pr + ".") || (i.contains("at ") && i.contains("/" + pr + ".")))))
-                .collect(Collectors.joining("\n"));
+    private static boolean isRelevantLine(String line, String prefix) {
+        return !line.startsWith("\t") || (!line.contains("$") && (line.contains("at " + prefix + ".") || (line.contains("at ") && line.contains("/" + prefix + "."))));
     }
 
 }

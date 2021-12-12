@@ -9,13 +9,30 @@ END';
 
 
 -- anag tables
-DROP TABLE IF EXISTS tb_anag_role_type CASCADE;
-CREATE TABLE IF NOT EXISTS tb_anag_role_type (
-	role_type TEXT PRIMARY KEY,
+DROP TABLE IF EXISTS tb_anag_account_type CASCADE;
+CREATE TABLE IF NOT EXISTS tb_anag_account_type (
+	account_type TEXT PRIMARY KEY,
 	ordinal INTEGER NOT NULL
 );
-INSERT INTO tb_anag_role_type VALUES ('owner', 1);
-INSERT INTO tb_anag_role_type VALUES ('customer', 2);
+INSERT INTO tb_anag_account_type VALUES ('pudo', 1);
+INSERT INTO tb_anag_account_type VALUES ('customer', 2);
+
+
+DROP TABLE IF EXISTS tb_anag_otp_request_type CASCADE;
+CREATE TABLE IF NOT EXISTS tb_anag_otp_request_type (
+	request_type TEXT PRIMARY KEY,
+	ordinal INTEGER NOT NULL
+);
+INSERT INTO tb_anag_otp_request_type VALUES ('login', 1);
+
+
+DROP TABLE IF EXISTS tb_anag_relation_type CASCADE;
+CREATE TABLE IF NOT EXISTS tb_anag_relation_type (
+	relation_type TEXT PRIMARY KEY,
+	ordinal INTEGER NOT NULL
+);
+INSERT INTO tb_anag_relation_type VALUES ('owner', 1);
+INSERT INTO tb_anag_relation_type VALUES ('customer', 2);
 
 
 DROP TABLE IF EXISTS tb_anag_package_status CASCADE;
@@ -31,14 +48,6 @@ INSERT INTO tb_anag_package_status VALUES ('accepted', 5);
 INSERT INTO tb_anag_package_status VALUES ('expired', 6);
 
 
-DROP TABLE IF EXISTS tb_anag_otp_request_type CASCADE;
-CREATE TABLE IF NOT EXISTS tb_anag_otp_request_type (
-	request_type TEXT PRIMARY KEY,
-	ordinal INTEGER NOT NULL
-);
-INSERT INTO tb_anag_otp_request_type VALUES ('reset_password', 1);
-
-
 -- working tables
 DROP TABLE IF EXISTS tb_wrk_cron_lock CASCADE;
 CREATE TABLE IF NOT EXISTS tb_wrk_cron_lock (
@@ -50,41 +59,37 @@ CREATE TABLE IF NOT EXISTS tb_wrk_cron_lock (
 
 
 -- data tables
-DROP TABLE IF EXISTS tb_account CASCADE;
-CREATE TABLE IF NOT EXISTS tb_account (
+DROP TABLE IF EXISTS tb_user CASCADE;
+CREATE TABLE IF NOT EXISTS tb_user (
 	user_id BIGSERIAL PRIMARY KEY,
 	create_tms TIMESTAMP(3) NOT NULL,
-	update_tms TIMESTAMP(3) NOT NULL,
-	username TEXT,
-	email TEXT,
-	phone_number TEXT,
-	salt TEXT NOT NULL,
-	password TEXT NOT NULL,
-	hash_specs TEXT NOT NULL,
-	CHECK(COALESCE(email, phone_number) IS NOT NULL)
+	last_login_tms TIMESTAMP(3) NOT NULL,
+	account_type TEXT NOT NULL REFERENCES tb_anag_account_type(account_type),
+	test_account_flag BOOLEAN NOT NULL,
+	phone_number TEXT NOT NULL
 );
-CREATE UNIQUE INDEX tb_account_username_idx ON tb_account(lower(username));
-CREATE UNIQUE INDEX tb_account_email_idx ON tb_account(lower(email));
-CREATE UNIQUE INDEX tb_account_phone_number_idx ON tb_account(phone_number);
+CREATE UNIQUE INDEX tb_user_phone_number_idx ON tb_user(phone_number);
+
+
+DROP TABLE IF EXISTS tb_otp_request CASCADE;
+CREATE TABLE IF NOT EXISTS tb_otp_request (
+	request_id UUID PRIMARY KEY,
+	create_tms TIMESTAMP(3) NOT NULL,
+	update_tms TIMESTAMP(3) NOT NULL,
+	request_type TEXT NOT NULL REFERENCES tb_anag_otp_request_type(request_type),
+	user_id BIGINT REFERENCES tb_user(user_id),
+	phone_number TEXT,
+	otp TEXT NOT NULL,
+	send_count INTEGER NOT NULL,
+	CHECK(num_nonnulls(user_id, phone_number) = 1)
+);
 
 
 DROP TABLE IF EXISTS tb_external_file CASCADE;
 CREATE TABLE IF NOT EXISTS tb_external_file (
 	external_file_id UUID PRIMARY KEY,
 	create_tms TIMESTAMP(3) NOT NULL,
-	mime_type TEXT
-);
-
-
-DROP TABLE IF EXISTS tb_user CASCADE;
-CREATE TABLE IF NOT EXISTS tb_user (
-	user_id BIGINT PRIMARY KEY REFERENCES tb_account(user_id),
-	create_tms TIMESTAMP(3) NOT NULL,
-	update_tms TIMESTAMP(3) NOT NULL,
-	first_name TEXT NOT NULL,
-	last_name TEXT NOT NULL,
-	ssn TEXT,
-	profile_pic_id UUID REFERENCES tb_external_file(external_file_id)
+	mime_type TEXT NOT NULL
 );
 
 
@@ -108,34 +113,34 @@ CREATE TABLE IF NOT EXISTS tb_device_token (
 CREATE INDEX tb_device_token_user_id_idx ON tb_device_token(user_id);
 
 
+DROP TABLE IF EXISTS tb_user_profile CASCADE;
+CREATE TABLE IF NOT EXISTS tb_user_profile (
+	user_id BIGINT PRIMARY KEY REFERENCES tb_user(user_id),
+	create_tms TIMESTAMP(3) NOT NULL,
+	update_tms TIMESTAMP(3) NOT NULL,
+	first_name TEXT,
+	last_name TEXT,
+	profile_pic_id UUID REFERENCES tb_external_file(external_file_id)
+);
+
+
 DROP TABLE IF EXISTS tb_pudo CASCADE;
 CREATE TABLE IF NOT EXISTS tb_pudo (
 	pudo_id BIGSERIAL PRIMARY KEY,
 	create_tms TIMESTAMP(3) NOT NULL,
 	update_tms TIMESTAMP(3) NOT NULL,
 	business_name TEXT NOT NULL,
-	vat TEXT,
 	phone_number TEXT,
-	contact_notes TEXT,
+	notes TEXT,
 	profile_pic_id UUID REFERENCES tb_external_file(external_file_id),
 	business_name_search tsvector GENERATED ALWAYS AS (to_tsvector('simple', business_name)) STORED
 );
 CREATE INDEX tb_pudo_business_name_search_idx ON tb_pudo USING GIN (business_name_search);
 
 
-DROP TABLE IF EXISTS tb_pudo_user_role CASCADE;
-CREATE TABLE IF NOT EXISTS tb_pudo_user_role (
-	user_id BIGINT NOT NULL REFERENCES tb_user(user_id),
-	pudo_id BIGINT NOT NULL REFERENCES tb_pudo(pudo_id),
-	create_tms TIMESTAMP(3) NOT NULL,
-	role_type TEXT NOT NULL REFERENCES tb_anag_role_type(role_type),
-	PRIMARY KEY(user_id, pudo_id)
-);
-
-
 DROP TABLE IF EXISTS tb_address CASCADE;
 CREATE TABLE IF NOT EXISTS tb_address (
-	address_id BIGSERIAL PRIMARY KEY,
+	pudo_id BIGINT PRIMARY KEY REFERENCES tb_pudo(pudo_id),
 	create_tms TIMESTAMP(3) NOT NULL,
 	update_tms TIMESTAMP(3) NOT NULL,
 	label TEXT NOT NULL,
@@ -151,11 +156,13 @@ CREATE TABLE IF NOT EXISTS tb_address (
 CREATE INDEX tb_address_lat_lon_idx ON tb_address(lat, lon);
 
 
-DROP TABLE IF EXISTS tb_pudo_address CASCADE;
-CREATE TABLE IF NOT EXISTS tb_pudo_address (
+DROP TABLE IF EXISTS tb_user_pudo_relation CASCADE;
+CREATE TABLE IF NOT EXISTS tb_user_pudo_relation (
+	user_id BIGINT NOT NULL REFERENCES tb_user(user_id),
 	pudo_id BIGINT NOT NULL REFERENCES tb_pudo(pudo_id),
-	address_id BIGINT NOT NULL REFERENCES tb_address(address_id),
-	PRIMARY KEY(pudo_id, address_id)
+	create_tms TIMESTAMP(3) NOT NULL,
+	relation_type TEXT NOT NULL REFERENCES tb_anag_relation_type(relation_type),
+	PRIMARY KEY(user_id, pudo_id)
 );
 
 
@@ -166,7 +173,7 @@ CREATE TABLE IF NOT EXISTS tb_package (
 	update_tms TIMESTAMP(3) NOT NULL,
 	pudo_id BIGINT NOT NULL REFERENCES tb_pudo(pudo_id),
 	user_id BIGINT NOT NULL REFERENCES tb_user(user_id),
-	package_pic_id UUID
+	package_pic_id UUID REFERENCES tb_external_file(external_file_id)
 );
 CREATE INDEX tb_package_pudo_id_idx ON tb_package(pudo_id);
 CREATE INDEX tb_package_user_id_idx ON tb_package(user_id);
@@ -178,6 +185,7 @@ CREATE TABLE IF NOT EXISTS tb_package_event (
 	create_tms TIMESTAMP(3) NOT NULL,
 	package_id BIGINT NOT NULL REFERENCES tb_package(package_id),
 	package_status TEXT NOT NULL REFERENCES tb_anag_package_status(package_status),
+	auto_flag BOOLEAN NOT NULL,
 	notes TEXT
 );
 CREATE INDEX tb_package_event_package_id_idx ON tb_package_event(package_id, create_tms);
@@ -196,19 +204,6 @@ CREATE TABLE IF NOT EXISTS tb_notification (
 	opt_data TEXT
 );
 CREATE INDEX tb_notification_user_id_idx ON tb_notification(user_id);
-
-
-DROP TABLE IF EXISTS tb_otp_request CASCADE;
-CREATE TABLE IF NOT EXISTS tb_otp_request (
-	request_id UUID PRIMARY KEY,
-	user_id BIGINT NOT NULL REFERENCES tb_user(user_id),
-	create_tms TIMESTAMP(3) NOT NULL,
-	update_tms TIMESTAMP(3) NOT NULL,
-	request_type TEXT NOT NULL REFERENCES tb_anag_otp_request_type(request_type),
-	otp TEXT NOT NULL,
-	retry_count INTEGER NOT NULL
-);
-CREATE UNIQUE INDEX tb_otp_request_user_id_request_type_idx ON tb_otp_request(user_id, request_type);
 
 
 -- views
