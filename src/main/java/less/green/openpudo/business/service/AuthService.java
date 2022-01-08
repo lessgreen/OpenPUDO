@@ -1,5 +1,11 @@
-package less.green.openpudo.persistence.service;
+package less.green.openpudo.business.service;
 
+import less.green.openpudo.business.dao.OtpRequestDao;
+import less.green.openpudo.business.dao.UserDao;
+import less.green.openpudo.business.model.TbOtpRequest;
+import less.green.openpudo.business.model.TbUser;
+import less.green.openpudo.business.model.usertype.AccountType;
+import less.green.openpudo.business.model.usertype.OtpRequestType;
 import less.green.openpudo.cdi.ExecutionContext;
 import less.green.openpudo.cdi.service.JwtService;
 import less.green.openpudo.cdi.service.LocalizationService;
@@ -9,12 +15,6 @@ import less.green.openpudo.common.ExceptionUtils;
 import less.green.openpudo.common.dto.jwt.AccessProfile;
 import less.green.openpudo.common.dto.jwt.AccessTokenData;
 import less.green.openpudo.common.dto.jwt.JwtPrivateClaims;
-import less.green.openpudo.persistence.dao.OtpRequestDao;
-import less.green.openpudo.persistence.dao.UserDao;
-import less.green.openpudo.persistence.model.TbOtpRequest;
-import less.green.openpudo.persistence.model.TbUser;
-import less.green.openpudo.persistence.model.usertype.AccountType;
-import less.green.openpudo.persistence.model.usertype.OtpRequestType;
 import less.green.openpudo.rest.config.exception.ApiException;
 import lombok.extern.log4j.Log4j2;
 

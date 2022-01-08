@@ -8,7 +8,6 @@ import javax.inject.Inject;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.ext.Provider;
-import java.io.IOException;
 
 import static less.green.openpudo.common.StringUtils.isEmpty;
 
@@ -23,7 +22,7 @@ public class ApplicationLanguageFilter implements ContainerRequestFilter {
     ExecutionContext context;
 
     @Override
-    public void filter(ContainerRequestContext requestContext) throws IOException {
+    public void filter(ContainerRequestContext requestContext) {
         // get application language, if sent by client, and save it into context
         String language = requestContext.getHeaderString(LANGUAGE_HEADER);
         if (!isEmpty(language)) {

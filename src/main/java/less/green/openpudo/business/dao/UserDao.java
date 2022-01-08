@@ -1,6 +1,6 @@
-package less.green.openpudo.persistence.dao;
+package less.green.openpudo.business.dao;
 
-import less.green.openpudo.persistence.model.TbUser;
+import less.green.openpudo.business.model.TbUser;
 import lombok.extern.log4j.Log4j2;
 
 import javax.enterprise.context.RequestScoped;

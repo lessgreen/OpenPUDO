@@ -1,4 +1,4 @@
-package less.green.openpudo.persistence.model.usertype;
+package less.green.openpudo.business.model.usertype;
 
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;

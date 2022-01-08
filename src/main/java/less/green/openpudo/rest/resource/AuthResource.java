@@ -1,11 +1,11 @@
 package less.green.openpudo.rest.resource;
 
+import less.green.openpudo.business.service.AuthService;
 import less.green.openpudo.cdi.ExecutionContext;
 import less.green.openpudo.cdi.service.LocalizationService;
 import less.green.openpudo.common.ApiReturnCodes;
 import less.green.openpudo.common.PhoneNumberUtils;
 import less.green.openpudo.common.dto.jwt.AccessTokenData;
-import less.green.openpudo.persistence.service.AuthService;
 import less.green.openpudo.rest.config.annotation.PublicAPI;
 import less.green.openpudo.rest.config.exception.ApiException;
 import less.green.openpudo.rest.dto.BaseResponse;
@@ -53,7 +53,7 @@ public class AuthResource {
             throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.empty_request"));
         } else if (isEmpty(req.getPhoneNumber())) {
             throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.empty_mandatory_field", "phoneNumber"));
-        } else if (!req.getPhoneNumber().trim().startsWith("+")) {
+        } else if (!PhoneNumberUtils.PHONENUMBER_PATTERN.matcher(req.getPhoneNumber()).matches()) {
             throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.invalid_field", "phoneNumber"));
         }
         // normalizing phone number
@@ -80,7 +80,7 @@ public class AuthResource {
             throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.empty_mandatory_field", "phoneNumber"));
         } else if (isEmpty(req.getOtp())) {
             throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.empty_mandatory_field", "otp"));
-        } else if (!req.getPhoneNumber().trim().startsWith("+")) {
+        } else if (!PhoneNumberUtils.PHONENUMBER_PATTERN.matcher(req.getPhoneNumber()).matches()) {
             throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.invalid_field", "phoneNumber"));
         }
         // normalizing phone number

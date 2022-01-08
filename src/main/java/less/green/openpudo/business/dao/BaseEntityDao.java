@@ -1,4 +1,4 @@
-package less.green.openpudo.persistence.dao;
+package less.green.openpudo.business.dao;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;

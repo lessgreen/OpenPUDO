@@ -7,9 +7,14 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.regex.Pattern;
+
 import static less.green.openpudo.common.StringUtils.isEmpty;
 
 public class PhoneNumberUtils {
+
+    private static final String PHONENUMBER_REGEX = "^\\+[0-9 ]{1,30}$";
+    public static final Pattern PHONENUMBER_PATTERN = Pattern.compile(PHONENUMBER_REGEX);
 
     private static final PhoneNumberUtil PNU = PhoneNumberUtil.getInstance();
 

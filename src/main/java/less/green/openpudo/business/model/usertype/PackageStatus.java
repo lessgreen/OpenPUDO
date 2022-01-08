@@ -1,4 +1,4 @@
-package less.green.openpudo.persistence.model.usertype;
+package less.green.openpudo.business.model.usertype;
 
 import lombok.Getter;
 

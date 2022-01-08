@@ -1,4 +1,4 @@
-package less.green.openpudo.common.dto.geojson;
+package less.green.openpudo.rest.dto.geojson;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;

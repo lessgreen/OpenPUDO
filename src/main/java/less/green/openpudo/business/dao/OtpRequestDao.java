@@ -1,7 +1,7 @@
-package less.green.openpudo.persistence.dao;
+package less.green.openpudo.business.dao;
 
-import less.green.openpudo.persistence.model.TbOtpRequest;
-import less.green.openpudo.persistence.model.usertype.OtpRequestType;
+import less.green.openpudo.business.model.TbOtpRequest;
+import less.green.openpudo.business.model.usertype.OtpRequestType;
 import lombok.extern.log4j.Log4j2;
 
 import javax.enterprise.context.RequestScoped;

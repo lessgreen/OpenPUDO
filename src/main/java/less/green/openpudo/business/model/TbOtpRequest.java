@@ -1,7 +1,7 @@
-package less.green.openpudo.persistence.model;
+package less.green.openpudo.business.model;
 
-import less.green.openpudo.persistence.model.usertype.OtpRequestType;
-import less.green.openpudo.persistence.model.usertype.OtpRequestTypeConverter;
+import less.green.openpudo.business.model.usertype.OtpRequestType;
+import less.green.openpudo.business.model.usertype.OtpRequestTypeConverter;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;

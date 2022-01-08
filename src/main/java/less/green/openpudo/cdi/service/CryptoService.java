@@ -1,5 +1,6 @@
 package less.green.openpudo.cdi.service;
 
+import less.green.openpudo.common.Encoders;
 import lombok.extern.log4j.Log4j2;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
@@ -35,6 +36,13 @@ public class CryptoService {
             throw new AssertionError("Invalid SecretKeySpec", ex);
         }
         return mac;
+    }
+
+    public String signObject(Object obj) {
+        Mac mac = createMac();
+        String json = Encoders.writeValueAsStringSafe(obj);
+        byte[] signature = mac.doFinal(json.getBytes(StandardCharsets.UTF_8));
+        return Encoders.BASE64_URL_ENCODER.encodeToString(signature);
     }
 
 }

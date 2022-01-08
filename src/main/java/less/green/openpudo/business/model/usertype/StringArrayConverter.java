@@ -1,4 +1,4 @@
-package less.green.openpudo.persistence.model.usertype;
+package less.green.openpudo.business.model.usertype;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import less.green.openpudo.common.Encoders;
