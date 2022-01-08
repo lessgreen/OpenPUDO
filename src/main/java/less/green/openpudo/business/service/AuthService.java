@@ -128,20 +128,23 @@ public class AuthService {
         } else {
             // is user is registered, we generate full access token
             ret = jwtService.generateUserTokenData(user.getUserId(), mapAccountTypeToAccessProfile(user.getAccountType()));
+            user.setLastLoginTms(new Date());
         }
         otpRequestDao.remove(otpRequest);
         otpRequestDao.flush();
+        log.info("[{}] Login successful for {}", context.getExecutionId(), otpRequest.getRecipient());
         return ret;
     }
 
     private AccessProfile mapAccountTypeToAccessProfile(AccountType accountType) {
-        if (accountType == AccountType.PUDO) {
-            return AccessProfile.PUDO;
-        } else if (accountType == AccountType.CUSTOMER) {
-            return AccessProfile.CUSTOMER;
+        switch (accountType) {
+            case PUDO:
+                return AccessProfile.PUDO;
+            case CUSTOMER:
+                return AccessProfile.CUSTOMER;
+            default:
+                throw new AssertionError("Unsupported mapping for AccountType: " + accountType);
         }
-        // hopefully unreachable code
-        throw new AssertionError("Unsupported mapping for AccountType: " + accountType.toString());
     }
 
     private void sendOtpMessage(String phoneNumber, String otp, String language) {
