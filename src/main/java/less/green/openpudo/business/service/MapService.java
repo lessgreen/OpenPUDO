@@ -8,8 +8,8 @@ import less.green.openpudo.common.ApiReturnCodes;
 import less.green.openpudo.common.ExceptionUtils;
 import less.green.openpudo.rest.config.exception.ApiException;
 import less.green.openpudo.rest.dto.DtoMapper;
-import less.green.openpudo.rest.dto.geojson.Feature;
-import less.green.openpudo.rest.dto.geojson.FeatureCollection;
+import less.green.openpudo.common.dto.geojson.Feature;
+import less.green.openpudo.common.dto.geojson.FeatureCollection;
 import less.green.openpudo.rest.dto.map.AddressMarker;
 import lombok.extern.log4j.Log4j2;
 

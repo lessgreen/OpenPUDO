@@ -1,8 +1,8 @@
 package less.green.openpudo.rest.dto;
 
 import less.green.openpudo.common.GPSUtils;
-import less.green.openpudo.rest.dto.geojson.Feature;
-import less.green.openpudo.rest.dto.geojson.Point;
+import less.green.openpudo.common.dto.geojson.Feature;
+import less.green.openpudo.common.dto.geojson.Point;
 import less.green.openpudo.rest.dto.map.AddressMarker;
 import org.mapstruct.Mapper;
 

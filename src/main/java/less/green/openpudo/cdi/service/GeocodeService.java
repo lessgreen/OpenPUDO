@@ -3,8 +3,8 @@ package less.green.openpudo.cdi.service;
 import io.quarkus.runtime.Startup;
 import kong.unirest.Unirest;
 import kong.unirest.UnirestException;
-import less.green.openpudo.rest.dto.geojson.Feature;
-import less.green.openpudo.rest.dto.geojson.FeatureCollection;
+import less.green.openpudo.common.dto.geojson.Feature;
+import less.green.openpudo.common.dto.geojson.FeatureCollection;
 import lombok.extern.log4j.Log4j2;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
