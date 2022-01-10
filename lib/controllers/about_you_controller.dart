@@ -8,6 +8,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:qui_green/resources/res.dart';
 
 class AboutYouController extends StatefulWidget {
   const AboutYouController({Key? key}) : super(key: key);
@@ -31,7 +32,8 @@ class _AboutYouControllerState extends State<AboutYouController> {
         body: Stack(
           children: [
             Center(
-              child: SvgPicture.asset('assets/aboutYouArt.svg', semanticsLabel: 'Art Background'),
+              child: SvgPicture.asset(ImageSrc.aboutYouArt,
+                  semanticsLabel: 'Art Background'),
             ),
             Column(
               children: [
@@ -40,7 +42,10 @@ class _AboutYouControllerState extends State<AboutYouController> {
                   children: [
                     Text(
                       'Raccontaci qualcosa su di te',
-                      style: Theme.of(context).textTheme.headline6?.copyWith(letterSpacing: 0.6),
+                      style: Theme.of(context)
+                          .textTheme
+                          .headline6
+                          ?.copyWith(letterSpacing: 0.6),
                     ),
                   ],
                 ),
@@ -67,19 +72,26 @@ class _AboutYouControllerState extends State<AboutYouController> {
                       Expanded(
                         child: TextButton(
                           style: ButtonStyle(
-                              padding: MaterialStateProperty.all(const EdgeInsets.all(18)),
-                              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                              padding: MaterialStateProperty.all(
+                                  const EdgeInsets.all(18)),
+                              shape: MaterialStateProperty.all<
+                                  RoundedRectangleBorder>(
                                 RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(34.0),
-                                  side: BorderSide(color: Theme.of(context).primaryColor),
+                                  side: BorderSide(
+                                      color: Theme.of(context).primaryColor),
                                 ),
                               ),
-                              foregroundColor: MaterialStateProperty.all(Colors.white),
-                              textStyle: MaterialStateProperty.all(Theme.of(context).textTheme.bodyText2),
-                              backgroundColor: MaterialStateProperty.all(Theme.of(context).primaryColor)),
+                              foregroundColor:
+                                  MaterialStateProperty.all(Colors.white),
+                              textStyle: MaterialStateProperty.all(
+                                  Theme.of(context).textTheme.bodyText2),
+                              backgroundColor: MaterialStateProperty.all(
+                                  Theme.of(context).primaryColor)),
                           child: const Text('Voglio ricevere un pacco'),
                           onPressed: () {
-                            Navigator.of(context).pushReplacementNamed('/userPosition');
+                            Navigator.of(context)
+                                .pushReplacementNamed('/userPosition');
                           },
                         ),
                       ),
@@ -93,16 +105,22 @@ class _AboutYouControllerState extends State<AboutYouController> {
                       Expanded(
                         child: TextButton(
                           style: ButtonStyle(
-                              padding: MaterialStateProperty.all(const EdgeInsets.all(18)),
-                              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                              padding: MaterialStateProperty.all(
+                                  const EdgeInsets.all(18)),
+                              shape: MaterialStateProperty.all<
+                                  RoundedRectangleBorder>(
                                 RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(34.0),
-                                  side: BorderSide(color: Theme.of(context).primaryColor),
+                                  side: BorderSide(
+                                      color: Theme.of(context).primaryColor),
                                 ),
                               ),
-                              foregroundColor: MaterialStateProperty.all(Colors.white),
-                              textStyle: MaterialStateProperty.all(Theme.of(context).textTheme.bodyText2),
-                              backgroundColor: MaterialStateProperty.all(Theme.of(context).primaryColor)),
+                              foregroundColor:
+                                  MaterialStateProperty.all(Colors.white),
+                              textStyle: MaterialStateProperty.all(
+                                  Theme.of(context).textTheme.bodyText2),
+                              backgroundColor: MaterialStateProperty.all(
+                                  Theme.of(context).primaryColor)),
                           child: const Text('Voglio fornire un servizio'),
                           onPressed: () {
                             Navigator.of(context).pop();

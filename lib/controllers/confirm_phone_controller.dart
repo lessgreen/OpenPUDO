@@ -10,6 +10,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:qui_green/resources/res.dart';
 
 class ConfirmPhoneController extends StatefulWidget {
   const ConfirmPhoneController({Key? key}) : super(key: key);
@@ -37,7 +38,8 @@ class _ConfirmPhoneControllerState extends State<ConfirmPhoneController> {
         body: Stack(
           children: [
             Center(
-              child: SvgPicture.asset('assets/smsArt.svg', semanticsLabel: 'Art Background'),
+              child: SvgPicture.asset(ImageSrc.smsArt,
+                  semanticsLabel: 'Art Background'),
             ),
             ListView(
               physics: const NeverScrollableScrollPhysics(),
@@ -49,7 +51,10 @@ class _ConfirmPhoneControllerState extends State<ConfirmPhoneController> {
                   children: [
                     Text(
                       'Inserisci il codice di conferma',
-                      style: Theme.of(context).textTheme.headline6?.copyWith(letterSpacing: 0.6),
+                      style: Theme.of(context)
+                          .textTheme
+                          .headline6
+                          ?.copyWith(letterSpacing: 0.6),
                     ),
                   ],
                 ),
@@ -71,7 +76,10 @@ class _ConfirmPhoneControllerState extends State<ConfirmPhoneController> {
                 Padding(
                   padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
                   child: CupertinoTextField(
-                    decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Theme.of(context).primaryColor))),
+                    decoration: BoxDecoration(
+                        border: Border(
+                            bottom: BorderSide(
+                                color: Theme.of(context).primaryColor))),
                     focusNode: _confirmValueFocus,
                     suffix: TextButton(
                       child: Text(_confirmValueFocus.hasFocus ? 'DONE' : ''),
@@ -102,7 +110,8 @@ class _ConfirmPhoneControllerState extends State<ConfirmPhoneController> {
               child: TextButton(
                 style: ButtonStyle(
                     minimumSize: MaterialStateProperty.all(const Size(200, 30)),
-                    padding: MaterialStateProperty.all(const EdgeInsets.all(18)),
+                    padding:
+                        MaterialStateProperty.all(const EdgeInsets.all(18)),
                     shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                       RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(34.0),
@@ -110,8 +119,10 @@ class _ConfirmPhoneControllerState extends State<ConfirmPhoneController> {
                       ),
                     ),
                     foregroundColor: MaterialStateProperty.all(Colors.white),
-                    textStyle: MaterialStateProperty.all(Theme.of(context).textTheme.bodyText2),
-                    backgroundColor: MaterialStateProperty.all(Theme.of(context).primaryColor)),
+                    textStyle: MaterialStateProperty.all(
+                        Theme.of(context).textTheme.bodyText2),
+                    backgroundColor: MaterialStateProperty.all(
+                        Theme.of(context).primaryColor)),
                 child: const Text('Invia'),
                 onPressed: () {
                   Navigator.of(context).pushReplacementNamed('/aboutYou');

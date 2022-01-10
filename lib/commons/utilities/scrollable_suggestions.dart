@@ -25,13 +25,17 @@ class ScrollableSuggestions extends StatelessWidget {
       child: Padding(
         padding: EdgeInsets.fromLTRB(16, 4, 16, (keyboardVisible ? 0 : 50)),
         child: Container(
-          decoration: BoxDecoration(color: Colors.white.withOpacity(0.9), borderRadius: const BorderRadius.all(Radius.circular(18))),
+          decoration: BoxDecoration(
+              color: Colors.white.withOpacity(0.9),
+              borderRadius: const BorderRadius.all(Radius.circular(18))),
           child: Padding(
             padding: const EdgeInsets.fromLTRB(0, 0, 4, 0),
             child: CupertinoScrollbar(
               child: ListView(
                 shrinkWrap: true,
-                keyboardDismissBehavior: dismissOnDrag ? ScrollViewKeyboardDismissBehavior.onDrag : ScrollViewKeyboardDismissBehavior.manual,
+                keyboardDismissBehavior: dismissOnDrag
+                    ? ScrollViewKeyboardDismissBehavior.onDrag
+                    : ScrollViewKeyboardDismissBehavior.manual,
                 physics: const AlwaysScrollableScrollPhysics(),
                 children: [
                   ListTile(

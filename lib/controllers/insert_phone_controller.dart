@@ -10,7 +10,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:qui_green/commons/keyboard_visibility.dart';
+import 'package:qui_green/commons/utilities/keyboard_visibility.dart';
+import 'package:qui_green/resources/res.dart';
 
 class InsertPhoneController extends StatefulWidget {
   const InsertPhoneController({Key? key}) : super(key: key);
@@ -40,7 +41,8 @@ class _InsertPhoneControllerState extends State<InsertPhoneController> {
               children: [
                 PositionedDirectional(
                   top: 200,
-                  child: SvgPicture.asset('assets/smsArt.svg', semanticsLabel: 'Art Background'),
+                  child: SvgPicture.asset(ImageSrc.smsArt,
+                      semanticsLabel: 'Art Background'),
                 ),
                 isKeyboardVisible
                     ? const SizedBox()
@@ -50,20 +52,28 @@ class _InsertPhoneControllerState extends State<InsertPhoneController> {
                         bottom: 50,
                         child: TextButton(
                           style: ButtonStyle(
-                              minimumSize: MaterialStateProperty.all(const Size(200, 30)),
-                              padding: MaterialStateProperty.all(const EdgeInsets.all(18)),
-                              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                              minimumSize: MaterialStateProperty.all(
+                                  const Size(200, 30)),
+                              padding: MaterialStateProperty.all(
+                                  const EdgeInsets.all(18)),
+                              shape: MaterialStateProperty.all<
+                                  RoundedRectangleBorder>(
                                 RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(34.0),
-                                  side: BorderSide(color: Theme.of(context).primaryColor),
+                                  side: BorderSide(
+                                      color: Theme.of(context).primaryColor),
                                 ),
                               ),
-                              foregroundColor: MaterialStateProperty.all(Colors.white),
-                              textStyle: MaterialStateProperty.all(Theme.of(context).textTheme.bodyText2),
-                              backgroundColor: MaterialStateProperty.all(Theme.of(context).primaryColor)),
+                              foregroundColor:
+                                  MaterialStateProperty.all(Colors.white),
+                              textStyle: MaterialStateProperty.all(
+                                  Theme.of(context).textTheme.bodyText2),
+                              backgroundColor: MaterialStateProperty.all(
+                                  Theme.of(context).primaryColor)),
                           child: const Text('Invia'),
                           onPressed: () {
-                            Navigator.of(context).pushReplacementNamed('/confirmPhone');
+                            Navigator.of(context)
+                                .pushReplacementNamed('/confirmPhone');
                           },
                         ),
                       ),
@@ -96,7 +106,10 @@ class _InsertPhoneControllerState extends State<InsertPhoneController> {
                     Padding(
                       padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
                       child: CupertinoTextField(
-                        decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Theme.of(context).primaryColor))),
+                        decoration: BoxDecoration(
+                            border: Border(
+                                bottom: BorderSide(
+                                    color: Theme.of(context).primaryColor))),
                         autofocus: false,
                         focusNode: _phoneNumber,
                         suffix: TextButton(

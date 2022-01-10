@@ -11,10 +11,10 @@ import 'package:flutter/material.dart';
 import 'package:qui_green/controllers/about_you_controller.dart';
 import 'package:qui_green/controllers/confirm_phone_controller.dart';
 import 'package:qui_green/controllers/insert_phone_controller.dart';
-import 'package:qui_green/controllers/login_controller.dart';
+import 'package:qui_green/controllers/auth/pages/login_controller.dart';
 import 'package:qui_green/controllers/user_position_controller.dart';
-import '../controllers/home_controller.dart';
-import '../main.dart';
+import '../../controllers/home_controller.dart';
+import '../../app.dart';
 
 dynamic routeWithSetting(RouteSettings settings) {
   log("current route name: ${settings.name}");

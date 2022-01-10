@@ -5,9 +5,16 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "qui_green",
+            "name": "qui_green - Dev",
             "request": "launch",
-            "type": "dart"
+            "type": "dart",
+            "program": "lib/dev/main.dart",
+        },
+        {
+            "name": "qui_green - Prod",
+            "request": "launch",
+            "type": "dart",
+            "program": "lib/dev/main.dart",
         },
         {
             "name": "qui_green (profile mode)",

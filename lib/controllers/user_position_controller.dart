@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:location/location.dart';
+import 'package:qui_green/resources/res.dart';
 
 class UserPositionController extends StatefulWidget {
   const UserPositionController({Key? key}) : super(key: key);
@@ -63,7 +64,8 @@ class _UserPositionControllerState extends State<UserPositionController> {
               start: 0,
               end: 0,
               top: 200,
-              child: SvgPicture.asset('assets/userPositionArt.svg', semanticsLabel: 'Art Background'),
+              child: SvgPicture.asset(ImageSrc.userPositionArt,
+                  semanticsLabel: 'Art Background'),
             ),
             PositionedDirectional(
               start: 20,
@@ -72,7 +74,8 @@ class _UserPositionControllerState extends State<UserPositionController> {
               child: TextButton(
                 style: ButtonStyle(
                     minimumSize: MaterialStateProperty.all(const Size(200, 30)),
-                    padding: MaterialStateProperty.all(const EdgeInsets.all(18)),
+                    padding:
+                        MaterialStateProperty.all(const EdgeInsets.all(18)),
                     shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                       RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(34.0),
@@ -80,8 +83,10 @@ class _UserPositionControllerState extends State<UserPositionController> {
                       ),
                     ),
                     foregroundColor: MaterialStateProperty.all(Colors.white),
-                    textStyle: MaterialStateProperty.all(Theme.of(context).textTheme.bodyText2),
-                    backgroundColor: MaterialStateProperty.all(Theme.of(context).primaryColor)),
+                    textStyle: MaterialStateProperty.all(
+                        Theme.of(context).textTheme.bodyText2),
+                    backgroundColor: MaterialStateProperty.all(
+                        Theme.of(context).primaryColor)),
                 child: const Text('Ok, grazie!'),
                 onPressed: () {
                   _tryGetUserLocation().then((value) {
@@ -97,7 +102,8 @@ class _UserPositionControllerState extends State<UserPositionController> {
               child: TextButton(
                 style: ButtonStyle(
                     minimumSize: MaterialStateProperty.all(const Size(200, 30)),
-                    padding: MaterialStateProperty.all(const EdgeInsets.all(18)),
+                    padding:
+                        MaterialStateProperty.all(const EdgeInsets.all(18)),
                     shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                       RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(34.0),
@@ -105,8 +111,10 @@ class _UserPositionControllerState extends State<UserPositionController> {
                       ),
                     ),
                     foregroundColor: MaterialStateProperty.all(Colors.white),
-                    textStyle: MaterialStateProperty.all(Theme.of(context).textTheme.bodyText2),
-                    backgroundColor: MaterialStateProperty.all(Theme.of(context).primaryColor)),
+                    textStyle: MaterialStateProperty.all(
+                        Theme.of(context).textTheme.bodyText2),
+                    backgroundColor: MaterialStateProperty.all(
+                        Theme.of(context).primaryColor)),
                 child: const Text('Inserisci indirizzo'),
                 onPressed: () {
                   Navigator.of(context).pushReplacementNamed('/confirmPhone');
