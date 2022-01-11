@@ -18,6 +18,7 @@ import java.util.Date;
 public class TbUser implements Serializable {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id", updatable = false)
     private Long userId;
 

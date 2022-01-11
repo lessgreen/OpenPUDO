@@ -1,9 +1,12 @@
 package less.green.openpudo.business.service;
 
+import io.quarkus.runtime.configuration.ProfileManager;
 import less.green.openpudo.business.dao.OtpRequestDao;
 import less.green.openpudo.business.dao.UserDao;
+import less.green.openpudo.business.dao.UserProfileDao;
 import less.green.openpudo.business.model.TbOtpRequest;
 import less.green.openpudo.business.model.TbUser;
+import less.green.openpudo.business.model.TbUserProfile;
 import less.green.openpudo.business.model.usertype.AccountType;
 import less.green.openpudo.business.model.usertype.OtpRequestType;
 import less.green.openpudo.cdi.ExecutionContext;
@@ -16,6 +19,7 @@ import less.green.openpudo.common.dto.jwt.AccessProfile;
 import less.green.openpudo.common.dto.jwt.AccessTokenData;
 import less.green.openpudo.common.dto.jwt.JwtPrivateClaims;
 import less.green.openpudo.rest.config.exception.ApiException;
+import less.green.openpudo.rest.dto.auth.RegisterCustomerRequest;
 import lombok.extern.log4j.Log4j2;
 
 import javax.enterprise.context.RequestScoped;
@@ -24,6 +28,8 @@ import javax.transaction.Transactional;
 import java.util.Date;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
+
+import static less.green.openpudo.common.StringUtils.sanitizeString;
 
 @RequestScoped
 @Transactional(Transactional.TxType.REQUIRED)
@@ -47,6 +53,8 @@ public class AuthService {
     OtpRequestDao otpRequestDao;
     @Inject
     UserDao userDao;
+    @Inject
+    UserProfileDao userProfileDao;
 
     public void loginSend(String phoneNumber) {
         // searching for user
@@ -136,6 +144,36 @@ public class AuthService {
         return ret;
     }
 
+    public AccessTokenData registerCustomer(RegisterCustomerRequest req) {
+        // searching for user
+        TbUser user = userDao.getUserByPhoneNumber(context.getPrivateClaims().getPhoneNumber());
+        if (user != null) {
+            log.error("[{}] Register request for already registered user: {}", context.getExecutionId(), user.getUserId());
+            throw new ApiException(ApiReturnCodes.FORBIDDEN, localizationService.getMessage(context.getLanguage(), "error.auth.already_registered"));
+        }
+        Date now = new Date();
+        user = new TbUser();
+        user.setCreateTms(now);
+        user.setLastLoginTms(now);
+        user.setAccountType(AccountType.CUSTOMER);
+        user.setTestAccountFlag(false);
+        // we trust the phone number contained in the signed private claims
+        user.setPhoneNumber(context.getPrivateClaims().getPhoneNumber());
+        userDao.persist(user);
+        userDao.flush();
+        TbUserProfile userProfile = new TbUserProfile();
+        userProfile.setUserId(user.getUserId());
+        userProfile.setCreateTms(now);
+        userProfile.setUpdateTms(now);
+        userProfile.setFirstName(sanitizeString(req.getUserProfile().getFirstName()));
+        userProfile.setLastName(sanitizeString(req.getUserProfile().getLastName()));
+        userProfile.setProfilePicId(null);
+        userProfileDao.persist(userProfile);
+        userProfileDao.flush();
+        log.info("[{}] Registered user {} as {}", context.getExecutionId(), user.getUserId(), user.getAccountType());
+        return jwtService.generateUserTokenData(user.getUserId(), mapAccountTypeToAccessProfile(user.getAccountType()));
+    }
+
     private AccessProfile mapAccountTypeToAccessProfile(AccountType accountType) {
         switch (accountType) {
             case PUDO:
@@ -150,7 +188,11 @@ public class AuthService {
     private void sendOtpMessage(String phoneNumber, String otp, String language) {
         String text = localizationService.getMessage(language, "message.otp", otp);
         try {
-            smsService.sendSms(phoneNumber, text);
+            if ("dev".equals(ProfileManager.getActiveProfile())) {
+                log.debug(text);
+            } else {
+                smsService.sendSms(phoneNumber, text);
+            }
         } catch (RuntimeException ex) {
             log.error("[{}] {}", context.getExecutionId(), ExceptionUtils.getRelevantStackTrace(ex));
             throw new ApiException(ApiReturnCodes.SERVICE_UNAVAILABLE, localizationService.getMessage(language, "error.service_unavailable"));

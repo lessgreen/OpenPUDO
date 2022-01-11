@@ -1,4 +1,4 @@
-package less.green.openpudo.common.dto.jwt;
+package less.green.openpudo.rest.dto.map;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,8 +7,10 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class JwtPrivateClaims {
+public class SignedAddressMarker {
 
-    private String phoneNumber;
+    private AddressMarker address;
+
+    private String signature;
 
 }

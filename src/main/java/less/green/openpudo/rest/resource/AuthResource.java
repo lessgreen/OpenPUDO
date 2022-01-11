@@ -6,14 +6,17 @@ import less.green.openpudo.cdi.service.LocalizationService;
 import less.green.openpudo.common.ApiReturnCodes;
 import less.green.openpudo.common.PhoneNumberUtils;
 import less.green.openpudo.common.dto.jwt.AccessTokenData;
+import less.green.openpudo.rest.config.annotation.ProtectedAPI;
 import less.green.openpudo.rest.config.annotation.PublicAPI;
 import less.green.openpudo.rest.config.exception.ApiException;
 import less.green.openpudo.rest.dto.BaseResponse;
 import less.green.openpudo.rest.dto.auth.LoginConfirmRequest;
 import less.green.openpudo.rest.dto.auth.LoginConfirmResponse;
 import less.green.openpudo.rest.dto.auth.LoginSendRequest;
+import less.green.openpudo.rest.dto.auth.RegisterCustomerRequest;
 import lombok.extern.log4j.Log4j2;
 import org.eclipse.microprofile.openapi.annotations.Operation;
+import org.eclipse.microprofile.openapi.annotations.security.SecurityRequirement;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -40,6 +43,7 @@ public class AuthResource {
 
     @Inject
     AuthService authService;
+
 
     @POST
     @Path("/login/send")
@@ -90,6 +94,25 @@ public class AuthResource {
         }
 
         AccessTokenData ret = authService.loginConfirm(pns.getNormalizedPhoneNumber(), req.getOtp());
+        return new LoginConfirmResponse(context.getExecutionId(), ApiReturnCodes.OK, ret);
+    }
+
+    @POST
+    @Path("/register/customer")
+    @ProtectedAPI
+    @SecurityRequirement(name = "JWT")
+    @Operation(summary = "Register new user with Customer profile")
+    public LoginConfirmResponse registerCustomer(RegisterCustomerRequest req) {
+        // sanitize input
+        if (req == null) {
+            throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.empty_request"));
+        } else if (req.getUserProfile() == null) {
+            throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.empty_mandatory_field", "userProfile"));
+        } else if (context.getPrivateClaims() == null || context.getPrivateClaims().getPhoneNumber() == null) {
+            throw new ApiException(ApiReturnCodes.INVALID_JWT_TOKEN, localizationService.getMessage(context.getLanguage(), "error.auth.invalid_access_token"));
+        }
+
+        AccessTokenData ret = authService.registerCustomer(req);
         return new LoginConfirmResponse(context.getExecutionId(), ApiReturnCodes.OK, ret);
     }
 

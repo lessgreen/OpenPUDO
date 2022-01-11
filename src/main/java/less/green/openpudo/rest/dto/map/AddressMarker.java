@@ -31,6 +31,5 @@ public class AddressMarker {
 
     private BigDecimal distanceFromOrigin;
 
-    private String addressSignature;
 
 }

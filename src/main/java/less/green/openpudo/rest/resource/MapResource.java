@@ -6,11 +6,12 @@ import less.green.openpudo.cdi.service.LocalizationService;
 import less.green.openpudo.common.ApiReturnCodes;
 import less.green.openpudo.rest.config.annotation.ProtectedAPI;
 import less.green.openpudo.rest.config.exception.ApiException;
-import less.green.openpudo.rest.dto.map.AddressMarker;
-import less.green.openpudo.rest.dto.map.AddressMarkerListResponse;
+import less.green.openpudo.rest.dto.map.SignedAddressMarker;
+import less.green.openpudo.rest.dto.map.SignedAddressMarkerListResponse;
 import lombok.extern.log4j.Log4j2;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.parameters.Parameter;
+import org.eclipse.microprofile.openapi.annotations.security.SecurityRequirement;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -40,10 +41,11 @@ public class MapResource {
     @GET
     @Path("/search/address")
     @ProtectedAPI
+    @SecurityRequirement(name = "JWT")
     @Operation(summary = "Address search feature based on user input autocompletion",
             description = "Coordinates parameters are optional, but the client should provide them to speed up queries and obtain more pertinent results.\n\n"
                     + "This API should be throttled to prevent excessive load.")
-    public AddressMarkerListResponse searchAddress(
+    public SignedAddressMarkerListResponse searchAddress(
             @Parameter(description = "Query text", required = true) @QueryParam("text") String text,
             @Parameter(description = "Latitude value of map center point") @QueryParam("lat") BigDecimal lat,
             @Parameter(description = "Longitude value of map center point") @QueryParam("lon") BigDecimal lon) {
@@ -61,8 +63,8 @@ public class MapResource {
             }
         }
 
-        List<AddressMarker> ret = mapService.searchAddress(text, lat, lon);
-        return new AddressMarkerListResponse(context.getExecutionId(), ApiReturnCodes.OK, ret);
+        List<SignedAddressMarker> ret = mapService.searchAddress(text, lat, lon);
+        return new SignedAddressMarkerListResponse(context.getExecutionId(), ApiReturnCodes.OK, ret);
     }
 
 }
