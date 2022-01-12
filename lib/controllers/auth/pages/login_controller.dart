@@ -11,7 +11,8 @@ import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:qui_green/controllers/auth/viewmodel/login_controller_viewmodel.dart';
 import 'package:qui_green/resources/res.dart';
-import 'package:qui_green/singletons/network.dart';
+import 'package:qui_green/resources/routes_enum.dart';
+import 'package:qui_green/singletons/network/network.dart';
 
 class LoginController extends StatefulWidget {
   const LoginController({Key? key}) : super(key: key);
@@ -82,29 +83,10 @@ class _LoginControllerState extends State<LoginController> {
                     end: 20,
                     bottom: 50,
                     child: TextButton(
-                      style: ButtonStyle(
-                          minimumSize:
-                              MaterialStateProperty.all(const Size(200, 30)),
-                          padding: MaterialStateProperty.all(
-                              const EdgeInsets.all(18)),
-                          shape:
-                              MaterialStateProperty.all<RoundedRectangleBorder>(
-                            RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(34.0),
-                              side: BorderSide(
-                                  color: Theme.of(context).primaryColor),
-                            ),
-                          ),
-                          foregroundColor:
-                              MaterialStateProperty.all(Colors.white),
-                          textStyle: MaterialStateProperty.all(
-                              Theme.of(context).textTheme.bodyText2),
-                          backgroundColor: MaterialStateProperty.all(
-                              Theme.of(context).primaryColor)),
                       child: const Text('Accedi con il tuo numero di telefono'),
                       onPressed: () {
                         Navigator.of(context)
-                            .pushReplacementNamed('/insertPhone');
+                            .pushReplacementNamed(Routes.insertPhone);
                       },
                     ),
                   ),

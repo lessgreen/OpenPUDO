@@ -11,7 +11,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:qui_green/commons/utilities/keyboard_visibility.dart';
+import 'package:qui_green/commons/widgets/main_button.dart';
+import 'package:qui_green/commons/widgets/text_field_button.dart';
 import 'package:qui_green/resources/res.dart';
+import 'package:qui_green/resources/routes_enum.dart';
 
 class InsertPhoneController extends StatefulWidget {
   const InsertPhoneController({Key? key}) : super(key: key);
@@ -31,113 +34,81 @@ class _InsertPhoneControllerState extends State<InsertPhoneController> {
         return WillPopScope(
           onWillPop: () async => false,
           child: Scaffold(
-            resizeToAvoidBottomInset: true,
+            resizeToAvoidBottomInset: false,
             appBar: AppBar(
               backgroundColor: Colors.transparent,
               systemOverlayStyle: SystemUiOverlayStyle.dark,
               leading: const SizedBox(),
             ),
-            body: Stack(
+            body: Column(
               children: [
-                PositionedDirectional(
-                  top: 200,
-                  child: SvgPicture.asset(ImageSrc.smsArt,
-                      semanticsLabel: 'Art Background'),
+                Center(
+                  child: Text(
+                    'Inserisci il tuo numero telefonico',
+                    style: Theme.of(context).textTheme.headline6,
+                  ),
                 ),
-                isKeyboardVisible
-                    ? const SizedBox()
-                    : PositionedDirectional(
-                        start: 20,
-                        end: 20,
-                        bottom: 50,
-                        child: TextButton(
-                          style: ButtonStyle(
-                              minimumSize: MaterialStateProperty.all(
-                                  const Size(200, 30)),
-                              padding: MaterialStateProperty.all(
-                                  const EdgeInsets.all(18)),
-                              shape: MaterialStateProperty.all<
-                                  RoundedRectangleBorder>(
-                                RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(34.0),
-                                  side: BorderSide(
-                                      color: Theme.of(context).primaryColor),
-                                ),
-                              ),
-                              foregroundColor:
-                                  MaterialStateProperty.all(Colors.white),
-                              textStyle: MaterialStateProperty.all(
-                                  Theme.of(context).textTheme.bodyText2),
-                              backgroundColor: MaterialStateProperty.all(
-                                  Theme.of(context).primaryColor)),
-                          child: const Text('Invia'),
-                          onPressed: () {
-                            Navigator.of(context)
-                                .pushReplacementNamed('/confirmPhone');
-                          },
-                        ),
-                      ),
-                Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          'Inserisci il tuo numero telefonico',
-                          style: Theme.of(context).textTheme.headline6,
-                        ),
-                      ],
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+                  child: Center(
+                    child: Text(
+                      'Ti invieremo un sms di conferma\nper assicurarci che sei tu.',
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.subtitle1,
                     ),
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Expanded(
-                            child: Text(
-                              'Ti invieremo un sms di conferma\nper assicurarci che sei tu.',
-                              textAlign: TextAlign.center,
-                              style: Theme.of(context).textTheme.subtitle1,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-                      child: CupertinoTextField(
-                        decoration: BoxDecoration(
-                            border: Border(
-                                bottom: BorderSide(
-                                    color: Theme.of(context).primaryColor))),
-                        autofocus: false,
-                        focusNode: _phoneNumber,
-                        suffix: TextButton(
-                          child: Text(_phoneNumber.hasFocus ? 'DONE' : ''),
-                          onPressed: _phoneNumber.hasFocus
-                              ? () {
-                                  setState(() {
-                                    _phoneNumber.unfocus();
-                                  });
-                                }
-                              : null,
-                        ),
-                        keyboardType: TextInputType.phone,
-                        textInputAction: TextInputAction.done,
-                        onChanged: (newValue) {
-                          _phoneNumberValue = newValue;
-                        },
-                        onTap: () {
-                          setState(() {});
-                        },
-                      ),
-                    ),
-                    // ScrollableSuggestions(
-                    //   keyboardVisible: isKeyboardVisible,
-                    //   dismissOnDrag: false,
-                    // ),
-                  ],
+                  ),
                 ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+                  child: CupertinoTextField(
+                    decoration: BoxDecoration(
+                        border: Border(
+                            bottom: BorderSide(
+                                color: Theme.of(context).primaryColor))),
+                    autofocus: false,
+                    focusNode: _phoneNumber,
+                    suffix: TextFieldButton(
+                      onPressed: () {
+                        setState(() {
+                          _phoneNumber.unfocus();
+                        });
+                      },
+                      text: isKeyboardVisible ? 'DONE' : "",
+                    ),
+                    keyboardType: TextInputType.phone,
+                    textInputAction: TextInputAction.done,
+                    onChanged: (newValue) {
+                      _phoneNumberValue = newValue;
+                    },
+                    onTap: () {
+                      setState(() {});
+                    },
+                  ),
+                ),
+                const SizedBox(
+                  height: Dimension.paddingL,
+                ),
+                SvgPicture.asset(ImageSrc.smsArt,
+                    semanticsLabel: 'Art Background'),
+                const Spacer(),
+                AnimatedCrossFade(
+                  crossFadeState: isKeyboardVisible
+                      ? CrossFadeState.showSecond
+                      : CrossFadeState.showFirst,
+                  secondChild: const SizedBox(),
+                  firstChild: MainButton(
+                    onPressed: () {
+                      Navigator.of(context)
+                          .pushReplacementNamed(Routes.confirmPhone);
+                    },
+                    text: 'Invia',
+                  ),
+                  duration: const Duration(milliseconds: 150),
+                ),
+                // ScrollableSuggestions(
+                //   keyboardVisible: isKeyboardVisible,
+                //   dismissOnDrag: false,
+                // ),
               ],
             ),
           ),

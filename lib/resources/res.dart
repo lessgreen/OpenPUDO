@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart' show Color, Colors, MaterialColor;
+import 'package:flutter/material.dart' show Color;
 
 class Dimension {
   static const paddingXS = 4.0;

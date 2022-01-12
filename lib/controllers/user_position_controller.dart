@@ -10,7 +10,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:location/location.dart';
+import 'package:qui_green/commons/widgets/main_button.dart';
 import 'package:qui_green/resources/res.dart';
+import 'package:qui_green/resources/routes_enum.dart';
 
 class UserPositionController extends StatefulWidget {
   const UserPositionController({Key? key}) : super(key: key);
@@ -21,7 +23,7 @@ class UserPositionController extends StatefulWidget {
 
 class _UserPositionControllerState extends State<UserPositionController> {
   Future<LocationData?> _tryGetUserLocation() async {
-    Location location = new Location();
+    Location location = Location();
 
     bool _serviceEnabled;
     PermissionStatus _permissionGranted;
@@ -58,97 +60,51 @@ class _UserPositionControllerState extends State<UserPositionController> {
           systemOverlayStyle: SystemUiOverlayStyle.dark,
           leading: const SizedBox(),
         ),
-        body: Stack(
+        body: Column(
           children: [
-            PositionedDirectional(
-              start: 0,
-              end: 0,
-              top: 200,
-              child: SvgPicture.asset(ImageSrc.userPositionArt,
-                  semanticsLabel: 'Art Background'),
-            ),
-            PositionedDirectional(
-              start: 20,
-              end: 20,
-              bottom: 116,
-              child: TextButton(
-                style: ButtonStyle(
-                    minimumSize: MaterialStateProperty.all(const Size(200, 30)),
-                    padding:
-                        MaterialStateProperty.all(const EdgeInsets.all(18)),
-                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(34.0),
-                        side: BorderSide(color: Theme.of(context).primaryColor),
-                      ),
-                    ),
-                    foregroundColor: MaterialStateProperty.all(Colors.white),
-                    textStyle: MaterialStateProperty.all(
-                        Theme.of(context).textTheme.bodyText2),
-                    backgroundColor: MaterialStateProperty.all(
-                        Theme.of(context).primaryColor)),
-                child: const Text('Ok, grazie!'),
-                onPressed: () {
-                  _tryGetUserLocation().then((value) {
-                    print("acquired position: $value");
-                  });
-                },
+            Center(
+              child: Text(
+                'Vediamo dove ti trovi',
+                style: Theme.of(context).textTheme.headline6,
               ),
             ),
-            PositionedDirectional(
-              start: 20,
-              end: 20,
-              bottom: 50,
-              child: TextButton(
-                style: ButtonStyle(
-                    minimumSize: MaterialStateProperty.all(const Size(200, 30)),
-                    padding:
-                        MaterialStateProperty.all(const EdgeInsets.all(18)),
-                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(34.0),
-                        side: BorderSide(color: Theme.of(context).primaryColor),
-                      ),
-                    ),
-                    foregroundColor: MaterialStateProperty.all(Colors.white),
-                    textStyle: MaterialStateProperty.all(
-                        Theme.of(context).textTheme.bodyText2),
-                    backgroundColor: MaterialStateProperty.all(
-                        Theme.of(context).primaryColor)),
-                child: const Text('Inserisci indirizzo'),
-                onPressed: () {
-                  Navigator.of(context).pushReplacementNamed('/confirmPhone');
-                },
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+              child: Center(
+                child: Text(
+                  'Per poterti fornire informazioni rilevanti\nabbiamo bisogno di accedere alla tua posizione.',
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.subtitle1,
+                ),
               ),
             ),
-            Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'Vediamo dove ti trovi',
-                      style: Theme.of(context).textTheme.headline6,
-                    ),
-                  ],
-                ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Expanded(
-                        child: Text(
-                          'Per poterti fornire informazioni rilevanti\nabbiamo bisogno di accedere alla tua posizione.',
-                          textAlign: TextAlign.center,
-                          style: Theme.of(context).textTheme.subtitle1,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
+            const SizedBox(
+              height: Dimension.paddingL,
             ),
+            SvgPicture.asset(ImageSrc.userPositionArt,
+                semanticsLabel: 'Art Background'),
+            const Spacer(),
+            MainButton(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: Dimension.padding),
+              onPressed: () {
+                _tryGetUserLocation().then((value) {
+                  //print("acquired position: $value");
+                });
+              },
+              text: 'Ok, grazie!',
+            ),
+            const SizedBox(height: Dimension.padding),
+            MainButton(
+              padding: const EdgeInsets.symmetric(
+                horizontal: Dimension.padding,
+              ),
+              onPressed: () {
+                Navigator.of(context).pushReplacementNamed(Routes.confirmPhone);
+              },
+              text: 'Inserisci indirizzo',
+            ),
+            const SizedBox(height: Dimension.paddingL)
           ],
         ),
       ),

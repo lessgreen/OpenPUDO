@@ -8,6 +8,20 @@ class MyAppTheme {
 
   static ThemeData themeData(BuildContext context) {
     return ThemeData(
+      textButtonTheme: TextButtonThemeData(
+          style: ButtonStyle(
+              padding: MaterialStateProperty.all(const EdgeInsets.all(18)),
+              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(34.0),
+                  side: const BorderSide(color: AppColors.primaryColorDark),
+                ),
+              ),
+              foregroundColor: MaterialStateProperty.all(Colors.white),
+              textStyle: MaterialStateProperty.all(
+                  Theme.of(context).textTheme.bodyText2),
+              backgroundColor:
+                  MaterialStateProperty.all(AppColors.primaryColorDark))),
       textTheme: TextTheme(
         headline1: Theme.of(context)
             .textTheme

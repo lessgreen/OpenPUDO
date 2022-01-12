@@ -39,43 +39,43 @@ class ScrollableSuggestions extends StatelessWidget {
                 physics: const AlwaysScrollableScrollPhysics(),
                 children: [
                   ListTile(
-                    title: Text('Via Pola 15'),
+                    title: const Text('Via Pola 15'),
                     onTap: () {},
                   ),
-                  ListTile(
+                  const ListTile(
                     title: Text('Via Pola 15'),
                   ),
-                  ListTile(
+                  const ListTile(
                     title: Text('Via Pola 15'),
                   ),
-                  ListTile(
+                  const ListTile(
                     title: Text('Via Pola 15'),
                   ),
-                  ListTile(
+                  const ListTile(
                     title: Text('Via Pola 15'),
                   ),
-                  ListTile(
+                  const ListTile(
                     title: Text('Via Pola 15'),
                   ),
-                  ListTile(
+                  const ListTile(
                     title: Text('Via Pola 15'),
                   ),
-                  ListTile(
+                  const ListTile(
                     title: Text('Via Pola 15'),
                   ),
-                  ListTile(
+                  const ListTile(
                     title: Text('Via Pola 15'),
                   ),
-                  ListTile(
+                  const ListTile(
                     title: Text('Via Pola 15'),
                   ),
-                  ListTile(
+                  const ListTile(
                     title: Text('Via Pola 15'),
                   ),
-                  ListTile(
+                  const ListTile(
                     title: Text('Via Pola 15'),
                   ),
-                  ListTile(
+                  const ListTile(
                     title: Text('Via Pola 15'),
                   ),
                 ],
