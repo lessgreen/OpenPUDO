@@ -37,4 +37,22 @@ public class JanitorCronService extends BaseCronService {
         }
     }
 
+    @Scheduled(cron = "0 0 * * * ?", concurrentExecution = Scheduled.ConcurrentExecution.SKIP)
+    void removeFailedDeviceTokens() {
+        final UUID executionId = UUID.randomUUID();
+        if (!acquireLock(executionId, JANITOR_DEVICE_TOKEN_LOCK)) {
+            return;
+        }
+        try {
+            int cnt = janitorService.removeFailedDeviceTokens();
+            if (cnt > 0) {
+                log.info("[{}] Removed {} failed device tokens", executionId, cnt);
+            }
+        } catch (Exception ex) {
+            log.error("[{}] {}", executionId, ExceptionUtils.getRelevantStackTrace(ex));
+        } finally {
+            releaseLock(executionId, JANITOR_DEVICE_TOKEN_LOCK);
+        }
+    }
+
 }

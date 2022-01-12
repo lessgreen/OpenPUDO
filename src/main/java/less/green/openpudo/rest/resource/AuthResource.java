@@ -44,7 +44,6 @@ public class AuthResource {
     @Inject
     AuthService authService;
 
-
     @POST
     @Path("/login/send")
     @PublicAPI

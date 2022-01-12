@@ -1,9 +1,11 @@
 package less.green.openpudo.rest.dto;
 
+import less.green.openpudo.business.model.TbUserProfile;
 import less.green.openpudo.common.GPSUtils;
 import less.green.openpudo.common.dto.geojson.Feature;
 import less.green.openpudo.common.dto.geojson.Point;
 import less.green.openpudo.rest.dto.map.AddressMarker;
+import less.green.openpudo.rest.dto.user.UserProfile;
 import org.mapstruct.Mapper;
 
 import java.math.BigDecimal;
@@ -11,6 +13,8 @@ import java.util.Map;
 
 @Mapper(componentModel = "cdi")
 public interface DtoMapper {
+
+    UserProfile mapUserProfileEntityToDto(TbUserProfile ent, String phoneNumber, Integer packageCount);
 
     default AddressMarker mapFeatureToAddressMarker(Feature feat, BigDecimal lat, BigDecimal lon) {
         if (feat == null) {
