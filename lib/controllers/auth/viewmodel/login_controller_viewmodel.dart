@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:qui_green/resources/routes_enum.dart';
 import 'package:qui_green/singletons/network/network.dart';
 
 class LoginControllerViewModel extends ChangeNotifier {
-  final NetworkManager _networkManager;
+  //Example: to use NetworkManager, use the getInstance: NetworkManager.instance...
 
-  LoginControllerViewModel(this._networkManager);
-  //TODO: all the logic part goes here
+  // ************ Navigation *****
+  onAccessClick(BuildContext context) {
+    Navigator.of(context).pushReplacementNamed(Routes.insertPhone);
+  }
 }

@@ -9,12 +9,12 @@ import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
 import 'package:qui_green/app.dart';
-import 'package:qui_green/controllers/about_you_controller.dart';
-import 'package:qui_green/controllers/confirm_phone_controller.dart';
-import 'package:qui_green/controllers/home_controller.dart';
-import 'package:qui_green/controllers/insert_phone_controller.dart';
+import 'package:qui_green/controllers/auth/pages/about_you_controller.dart';
+import 'package:qui_green/controllers/auth/pages/confirm_phone_controller.dart';
+import 'package:qui_green/controllers/home/pages/home_controller.dart';
+import 'package:qui_green/controllers/auth/pages/insert_phone_controller.dart';
 import 'package:qui_green/controllers/auth/pages/login_controller.dart';
-import 'package:qui_green/controllers/user_position_controller.dart';
+import 'package:qui_green/controllers/user_position/pages/user_position_controller.dart';
 import 'package:qui_green/resources/routes_enum.dart';
 
 dynamic routeWithSetting(RouteSettings settings) {

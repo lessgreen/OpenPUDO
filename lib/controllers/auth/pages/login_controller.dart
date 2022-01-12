@@ -9,10 +9,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
+import 'package:qui_green/controllers/auth/di/login_controller_providers.dart';
 import 'package:qui_green/controllers/auth/viewmodel/login_controller_viewmodel.dart';
 import 'package:qui_green/resources/res.dart';
-import 'package:qui_green/resources/routes_enum.dart';
-import 'package:qui_green/singletons/network/network.dart';
 
 class LoginController extends StatefulWidget {
   const LoginController({Key? key}) : super(key: key);
@@ -25,15 +24,7 @@ class _LoginControllerState extends State<LoginController> {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-      providers: [
-        Provider<LoginControllerViewModel>(
-          create: (context) =>
-              LoginControllerViewModel(Provider.of<NetworkManager>(
-            context,
-            listen: false,
-          )),
-        ),
-      ],
+      providers: loginControllerProviders,
       child: Consumer<LoginControllerViewModel>(
         builder: (_, viewModel, __) {
           return WillPopScope(
@@ -84,10 +75,7 @@ class _LoginControllerState extends State<LoginController> {
                     bottom: 50,
                     child: TextButton(
                       child: const Text('Accedi con il tuo numero di telefono'),
-                      onPressed: () {
-                        Navigator.of(context)
-                            .pushReplacementNamed(Routes.insertPhone);
-                      },
+                      onPressed: () => viewModel.onAccessClick(context),
                     ),
                   ),
                 ],
