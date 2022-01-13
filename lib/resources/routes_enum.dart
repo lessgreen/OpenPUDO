@@ -4,4 +4,6 @@ class Routes {
   static const confirmPhone = "/confirmPhone";
   static const aboutYou = "/aboutYou";
   static const userPosition = "/userPosition";
+  static const insertAddress = "/insertAddress";
+  static const maps = "/maps";
 }
