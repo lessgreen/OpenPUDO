@@ -9,15 +9,13 @@ class TextFieldButton extends StatelessWidget {
   const TextFieldButton(
       {Key? key,
       required this.text,
-      this.padding = const EdgeInsets.only(
-          bottom: Dimension.paddingL,
-          left: Dimension.padding,
-          right: Dimension.padding),
+      this.padding = EdgeInsets.zero,
       required this.onPressed})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) => TextButton(
+        
         child: Text(
           text,
           style: Theme.of(context)
@@ -26,6 +24,7 @@ class TextFieldButton extends StatelessWidget {
               ?.copyWith(color: AppColors.primaryColorDark),
         ),
         style: Theme.of(context).textButtonTheme.style?.copyWith(
+            padding: MaterialStateProperty.all(padding),
             backgroundColor: MaterialStateProperty.all(Colors.transparent),
             shape: MaterialStateProperty.all(
                 const RoundedRectangleBorder(side: BorderSide.none))),

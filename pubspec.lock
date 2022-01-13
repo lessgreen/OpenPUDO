@@ -332,7 +332,7 @@ packages:
     source: hosted
     version: "4.4.0"
   latlong2:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: latlong2
       url: "https://pub.dartlang.org"

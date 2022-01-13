@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
+import 'package:qui_green/commons/utilities/keyboard_visibility.dart';
 import 'package:qui_green/commons/widgets/main_button.dart';
 import 'package:qui_green/controllers/insert_address/di/insert_address_controller_providers.dart';
 import 'package:qui_green/controllers/insert_address/viewmodel/insert_address_controller_viewmodel.dart';
@@ -34,60 +35,66 @@ class _InsertAddressControllerState extends State<InsertAddressController> {
         providers: insertAddressControllerProviders,
         child: Consumer<InsertAddressControllerViewModel?>(
             builder: (_, viewModel, __) {
-          return WillPopScope(
-            onWillPop: () async => false,
-            child: Scaffold(
-              resizeToAvoidBottomInset: true,
-              appBar: AppBar(
-                backgroundColor: Colors.transparent,
-                systemOverlayStyle: SystemUiOverlayStyle.dark,
-                leading: const SizedBox(),
+          return KeyboardVisibilityBuilder(
+              builder: (context, child, isKeyboardVisible) {
+            return WillPopScope(
+              onWillPop: () async => false,
+              child: Scaffold(
+                resizeToAvoidBottomInset: false,
+                appBar: AppBar(
+                  backgroundColor: Colors.transparent,
+                  systemOverlayStyle: SystemUiOverlayStyle.dark,
+                  leading: const SizedBox(),
+                ),
+                body: Column(
+                  children: [
+                    Center(
+                      child: Text(
+                        'Inserisci il tuo indirizzo',
+                        style: Theme.of(context).textTheme.headline6,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+                      child: CupertinoTextField(
+                        decoration: BoxDecoration(
+                            border: Border(
+                                bottom: BorderSide(
+                                    color: Theme.of(context).primaryColor))),
+                        autofocus: false,
+                        focusNode: _address,
+                        textInputAction: TextInputAction.done,
+                        onChanged: (newValue) {
+                          _addressValue = newValue;
+                        },
+                        onTap: () {
+                          setState(() {});
+                        },
+                      ),
+                    ),
+                    const SizedBox(
+                      height: Dimension.paddingL,
+                    ),
+                    SvgPicture.asset(ImageSrc.userPositionArt,
+                        semanticsLabel: 'Art Background'),
+                    const Spacer(),
+                    const SizedBox(height: Dimension.padding),
+                    AnimatedCrossFade(
+                      crossFadeState: isKeyboardVisible
+                          ? CrossFadeState.showSecond
+                          : CrossFadeState.showFirst,
+                      secondChild: const SizedBox(),
+                      firstChild: MainButton(
+                        onPressed: () => viewModel!.onSendClick(context),
+                        text: 'Invia',
+                      ),
+                      duration: const Duration(milliseconds: 150),
+                    ),
+                  ],
+                ),
               ),
-              body: Column(
-                children: [
-                  Center(
-                    child: Text(
-                      'Inserisci il tuo indirizzo',
-                      style: Theme.of(context).textTheme.headline6,
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-                    child: CupertinoTextField(
-                      decoration: BoxDecoration(
-                          border: Border(
-                              bottom: BorderSide(
-                                  color: Theme.of(context).primaryColor))),
-                      autofocus: false,
-                      focusNode: _address,
-                      textInputAction: TextInputAction.done,
-                      onChanged: (newValue) {
-                        _addressValue = newValue;
-                      },
-                      onTap: () {
-                        setState(() {});
-                      },
-                    ),
-                  ),
-                  const SizedBox(
-                    height: Dimension.paddingL,
-                  ),
-                  SvgPicture.asset(ImageSrc.userPositionArt,
-                      semanticsLabel: 'Art Background'),
-                  const Spacer(),
-                  const SizedBox(height: Dimension.padding),
-                  MainButton(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: Dimension.padding,
-                    ),
-                    onPressed: () => viewModel!.onSendClick(context),
-                    text: 'Invia',
-                  ),
-                  const SizedBox(height: Dimension.paddingL)
-                ],
-              ),
-            ),
-          );
+            );
+          });
         }));
   }
 }
