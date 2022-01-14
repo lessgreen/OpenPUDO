@@ -6,4 +6,8 @@ class Routes {
   static const userPosition = "/userPosition";
   static const insertAddress = "/insertAddress";
   static const maps = "/maps";
+  static const puedoDetail = "/puedoDetail";
+  static const personalData = '/personalData';
+  static const registrationComplete = '/registrationComplete';
+  static const instruction = '/instruction';
 }

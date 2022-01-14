@@ -6,7 +6,7 @@ class MapsControllerViewModel extends ChangeNotifier {
   //Example: to use NetworkManager, use the getInstance: NetworkManager.instance...
 
   // ************ Navigation ***********
-  onAddAddressClick(BuildContext context) {
-    Navigator.of(context).pushReplacementNamed(Routes.maps);
+  onPuedoClick(BuildContext context) {
+    Navigator.of(context).pushReplacementNamed(Routes.puedoDetail);
   }
 }
