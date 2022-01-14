@@ -6,8 +6,12 @@ class RegistrationCompleteControllerViewModel extends ChangeNotifier {
   //Example: to use NetworkManager, use the getInstance: NetworkManager.instance...
 
   // ************ Navigation *****
-  onSendClick(BuildContext context) {
-    Navigator.of(context).pushReplacementNamed(Routes.maps);
+  onOkClick(BuildContext context) {
+    Navigator.pop(context);
+  }
+
+  onInstructionsClick(BuildContext context) {
+    Navigator.of(context).pushReplacementNamed(Routes.instruction);
   }
 
   // ************ Location *******

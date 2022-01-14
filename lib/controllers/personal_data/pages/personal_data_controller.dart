@@ -9,12 +9,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:qui_green/commons/utilities/keyboard_visibility.dart';
 import 'package:qui_green/commons/widgets/main_button.dart';
-import 'package:qui_green/controllers/insert_address/di/insert_address_controller_providers.dart';
-import 'package:qui_green/controllers/insert_address/viewmodel/insert_address_controller_viewmodel.dart';
 import 'package:qui_green/controllers/personal_data/di/personal_data_controller_providers.dart';
 import 'package:qui_green/controllers/personal_data/viewmodel/personal_data_controller_viewmodel.dart';
 import 'package:qui_green/resources/res.dart';
@@ -27,9 +24,6 @@ class PersonalDataController extends StatefulWidget {
 }
 
 class _PersonalDataControllerState extends State<PersonalDataController> {
-  final FocusNode _address = FocusNode();
-  String _addressValue = "";
-
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -55,50 +49,47 @@ class _PersonalDataControllerState extends State<PersonalDataController> {
                         style: Theme.of(context).textTheme.headline6,
                       ),
                     ),
-                    SizedBox(
-                      height: 10,
+                    const SizedBox(
+                      height: Dimension.paddingM,
                     ),
                     Container(
-                        padding: EdgeInsets.only(
+                        padding: const EdgeInsets.only(
                             left: Dimension.padding, right: Dimension.padding),
-                        child: Text(
+                        child: const Text(
                           'Per poterti identificare quando il tuo pacco arriverà, abbiamo bisogno di qualche altro dato.',
                           textAlign: TextAlign.center,
                           style: TextStyle(fontSize: 18),
                         )),
-                    SizedBox(height: 10),
+                    const SizedBox(
+                      height: Dimension.paddingM,
+                    ),
                     Container(
+                      width: MediaQuery.of(context).size.width / 3,
+                      height: MediaQuery.of(context).size.width / 3,
                       decoration: BoxDecoration(
-                          color: Colors.grey.shade200,
+                          color: Colors.grey.shade100,
                           border: Border.all(color: Colors.grey.shade300),
-                          borderRadius: BorderRadius.all(
-                              Radius.circular(Dimension.borderRadiusS))),
+                          borderRadius: const BorderRadius.all(
+                              Radius.circular(Dimension.borderRadius))),
                       child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          Padding(
-                            padding: const EdgeInsets.all(Dimension.paddingS),
-                            child: Icon(
-                              Icons.account_circle_sharp,
-                              color: Colors.grey.shade400,
-                              size: 100,
-                            ),
+                          Icon(
+                            Icons.account_circle_rounded,
+                            color: Colors.grey.shade400,
+                            size: MediaQuery.of(context).size.width / 6,
                           ),
-                          Padding(
-                            padding: const EdgeInsets.only(
-                                left: Dimension.padding,
-                                right: Dimension.padding,
-                                bottom: Dimension.padding),
-                            child: Text(
-                              'Aggiungi una foto',
-                              style: TextStyle(
-                                  color: Colors.grey.shade500, fontSize: 12),
-                            ),
+                          Text(
+                            'Aggiungi una \ntua foto',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                color: Colors.grey.shade500, fontSize: 12),
                           ),
                         ],
                       ),
                     ),
-                    SizedBox(height: 10),
-                    Center(
+                    const SizedBox(height: Dimension.padding),
+                    const Center(
                       child: Text(
                         'oppure',
                         style: TextStyle(fontStyle: FontStyle.italic),
@@ -113,11 +104,8 @@ class _PersonalDataControllerState extends State<PersonalDataController> {
                                 bottom: BorderSide(
                                     color: Theme.of(context).primaryColor))),
                         autofocus: false,
-                        focusNode: _address,
                         textInputAction: TextInputAction.done,
-                        onChanged: (newValue) {
-                          _addressValue = newValue;
-                        },
+                        onChanged: (newValue) {},
                         onTap: () {
                           setState(() {});
                         },
@@ -132,26 +120,23 @@ class _PersonalDataControllerState extends State<PersonalDataController> {
                                 bottom: BorderSide(
                                     color: Theme.of(context).primaryColor))),
                         autofocus: false,
-                        focusNode: _address,
                         textInputAction: TextInputAction.done,
-                        onChanged: (newValue) {
-                          _addressValue = newValue;
-                        },
+                        onChanged: (newValue) {},
                         onTap: () {
                           setState(() {});
                         },
                       ),
                     ),
-                    SizedBox(height: 10),
-                    Padding(
-                      padding: const EdgeInsets.only(
+                    const SizedBox(height: 10),
+                    const Padding(
+                      padding: EdgeInsets.only(
                           left: Dimension.padding, right: Dimension.padding),
                       child: Text(
                         'Se usi il nome e cognome come sistema di identificazione, dovrai esibire un documento valido per il ritiro.',
                         style: TextStyle(fontSize: 12),
                       ),
                     ),
-                    Spacer(),
+                    const Spacer(),
                     AnimatedCrossFade(
                       crossFadeState: isKeyboardVisible
                           ? CrossFadeState.showSecond

@@ -14,6 +14,7 @@ import 'package:provider/provider.dart';
 import 'package:qui_green/commons/widgets/text_field_button.dart';
 import 'package:qui_green/controllers/maps/di/maps_controller_providers.dart';
 import 'package:qui_green/controllers/maps/viewmodel/maps_controller_viewmodel.dart';
+import 'package:qui_green/controllers/maps/widgets/pudo_map_card.dart';
 import 'package:qui_green/resources/res.dart';
 
 class MapsController extends StatefulWidget {
@@ -89,89 +90,20 @@ class _MapsControllerState extends State<MapsController> {
                             ],
                           ),
                         ),
-                        Spacer(),
+                        const Spacer(),
                         Padding(
-                          padding: const EdgeInsets.only(
-                              left: Dimension.padding,
-                              right: Dimension.padding,
-                              bottom: Dimension.paddingM),
-                          child: GestureDetector(
-                            onTap: () => viewModel?.onPuedoClick(context),
-                            child: Container(
-                              height: 100,
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.all(
-                                    Radius.circular(Dimension.borderRadiusS)),
-                              ),
-                              child: Row(
-                                children: [
-                                  ClipRRect(
-                                    borderRadius: BorderRadius.only(
-                                        topLeft: Radius.circular(
-                                            Dimension.borderRadiusS),
-                                        bottomLeft: Radius.circular(
-                                            Dimension.borderRadiusS)),
-                                    child: Image.network(
-                                      'https://cdn.skuola.net/news_foto/2017/descrizione-bar.jpg',
-                                      width: 110,
-                                      height: 100,
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),
-                                  Column(
-                                    children: [
-                                      Spacer(),
-                                      Container(
-                                        alignment: Alignment.centerLeft,
-                                        padding: EdgeInsets.only(
-                                            left: Dimension.padding),
-                                        child: Text(
-                                          'Bar - La pinta',
-                                          style: TextStyle(fontSize: 16),
-                                        ),
-                                      ),
-                                      Container(
-                                        padding: EdgeInsets.only(
-                                            left: Dimension.padding),
-                                        child: Text(
-                                          'Via ippolito, 8',
-                                          style: TextStyle(fontSize: 12),
-                                        ),
-                                      ),
-                                      Container(
-                                        padding: EdgeInsets.only(
-                                            left: Dimension.padding),
-                                        child: Row(
-                                          children: [
-                                            Icon(
-                                              Icons.star_rounded,
-                                              color: Colors.yellow.shade700,
-                                            ),
-                                            Icon(
-                                              Icons.star_rounded,
-                                              color: Colors.yellow.shade700,
-                                            ),
-                                            Icon(
-                                              Icons.star_rounded,
-                                              color: Colors.yellow.shade700,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      Spacer(),
-                                    ],
-                                  ),
-                                  Padding(
-                                    padding:
-                                        const EdgeInsets.all(Dimension.padding),
-                                    child: Image.asset('assets/hand.png'),
-                                  )
-                                ],
-                              ),
-                            ),
-                          ),
-                        )
+                            padding: const EdgeInsets.only(
+                                left: Dimension.padding,
+                                right: Dimension.padding,
+                                bottom: Dimension.paddingM),
+                            child: PudoMapCard(
+                              name: "Bar - La pinta",
+                              address: "Via ippolito, 8",
+                              stars: 3,
+                              onTap: () => viewModel?.onPudoClick(context),
+                              image:
+                                  'https://cdn.skuola.net/news_foto/2017/descrizione-bar.jpg',
+                            ))
                       ],
                     ),
                   )

@@ -18,7 +18,7 @@ import 'package:qui_green/controllers/insert_address/pages/insert_address_contro
 import 'package:qui_green/controllers/instruction/pages/instruction_controller.dart';
 import 'package:qui_green/controllers/maps/pages/maps_controller.dart';
 import 'package:qui_green/controllers/personal_data/pages/personal_data_controller.dart';
-import 'package:qui_green/controllers/puedo_detail/pages/puedo_detail_controller.dart';
+import 'package:qui_green/controllers/pudo_detail/pages/pudo_detail_controller.dart';
 import 'package:qui_green/controllers/registration_complete/pages/registration_complete_controller.dart';
 import 'package:qui_green/controllers/user_position/pages/user_position_controller.dart';
 import 'package:qui_green/resources/routes_enum.dart';
@@ -65,9 +65,9 @@ dynamic routeWithSetting(RouteSettings settings) {
       return CupertinoPageRoute(
         builder: (context) => const MapsController(),
       );
-    case Routes.puedoDetail:
+    case Routes.pudoDetail:
       return CupertinoPageRoute(
-        builder: (context) => const PuedoDetailController(),
+        builder: (context) => const PudoDetailController(),
       );
     case Routes.personalData:
       return CupertinoPageRoute(

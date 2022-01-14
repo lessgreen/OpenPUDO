@@ -9,14 +9,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:qui_green/commons/utilities/keyboard_visibility.dart';
 import 'package:qui_green/commons/widgets/main_button.dart';
+import 'package:qui_green/controllers/maps/widgets/pudo_map_card.dart';
 import 'package:qui_green/controllers/registration_complete/di/registration_complete_controller_providers.dart';
 import 'package:qui_green/controllers/registration_complete/viewmodel/registration_complete_controller_viewmodel.dart';
 import 'package:qui_green/resources/res.dart';
-import 'package:qui_green/resources/routes_enum.dart';
 
 class RegistrationCompleteController extends StatefulWidget {
   const RegistrationCompleteController({Key? key}) : super(key: key);
@@ -28,9 +27,6 @@ class RegistrationCompleteController extends StatefulWidget {
 
 class _RegistrationCompleteControllerState
     extends State<RegistrationCompleteController> {
-  final FocusNode _address = FocusNode();
-  String _addressValue = "";
-
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -56,128 +52,76 @@ class _RegistrationCompleteControllerState
                         style: Theme.of(context).textTheme.headline6,
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 10,
                     ),
-                    Container(
-                        padding: EdgeInsets.only(
-                            left: Dimension.padding, right: Dimension.padding),
+                    SizedBox(
+                        width: MediaQuery.of(context).size.width/3*2,
                         child: Text(
                           'Adesso potrai usare questo indirizzo per farti inviare i tuoi pacchi in totale comodità!',
                           textAlign: TextAlign.center,
-                          style: TextStyle(fontSize: 18),
+                          style: Theme.of(context).textTheme.subtitle1?.copyWith(fontWeight: FontWeight.w400),
                         )),
-                    SizedBox(height: 40),
+                    const SizedBox(height: Dimension.paddingL),
                     Padding(
                       padding: const EdgeInsets.only(
                           left: Dimension.padding, right: Dimension.padding),
-                      child: Container(
-                        height: 100,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.all(
-                              Radius.circular(Dimension.borderRadiusS)),
-                        ),
-                        child: Row(
+                      child: PudoMapCard(
+                        showOnly: true,
+                        name: "Bar - La pinta",
+                        address: "Via ippolito, 8",
+                        stars: 3,
+                        onTap: (){},
+                        image:
+                        'https://cdn.skuola.net/news_foto/2017/descrizione-bar.jpg',
+                      )
+                    ),
+                    const SizedBox(height: Dimension.paddingL),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: Dimension.padding),
+                      child: RichText(
+                        text: TextSpan(
+                          text: '',
+                          style: Theme.of(context).textTheme.bodyText1,
                           children: [
-                            ClipRRect(
-                              borderRadius: BorderRadius.only(
-                                  topLeft:
-                                      Radius.circular(Dimension.borderRadiusS),
-                                  bottomLeft:
-                                      Radius.circular(Dimension.borderRadiusS)),
-                              child: Image.network(
-                                'https://cdn.skuola.net/news_foto/2017/descrizione-bar.jpg',
-                                width: 110,
-                                height: 100,
-                                fit: BoxFit.cover,
+                            WidgetSpan(
+                              alignment: PlaceholderAlignment.middle,
+                              child: CupertinoSwitch(
+                                  trackColor: Colors.grey.shade200,
+                                  activeColor: AppColors.primaryColorDark,
+                                  value: true,
+                                  onChanged: (bool newValue) => {}),
+                            ),
+                            const WidgetSpan(
+                              child: SizedBox(
+                                width: Dimension.padding,
                               ),
                             ),
-                            Column(
-                              children: [
-                                Spacer(),
-                                Container(
-                                  alignment: Alignment.centerLeft,
-                                  padding:
-                                      EdgeInsets.only(left: Dimension.padding),
-                                  child: Text(
-                                    'Bar - La pinta',
-                                    style: TextStyle(fontSize: 16),
-                                  ),
-                                ),
-                                Container(
-                                  padding:
-                                      EdgeInsets.only(left: Dimension.padding),
-                                  child: Text(
-                                    'Via ippolito, 8',
-                                    style: TextStyle(fontSize: 12),
-                                  ),
-                                ),
-                                Container(
-                                  padding:
-                                      EdgeInsets.only(left: Dimension.padding),
-                                  child: Row(
-                                    children: [
-                                      Icon(
-                                        Icons.star_rounded,
-                                        color: Colors.yellow.shade700,
-                                      ),
-                                      Icon(
-                                        Icons.star_rounded,
-                                        color: Colors.yellow.shade700,
-                                      ),
-                                      Icon(
-                                        Icons.star_rounded,
-                                        color: Colors.yellow.shade700,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Spacer(),
-                              ],
+                            TextSpan(
+                              text:
+                              'Permetti al pudo di contattarm nal mio numero telefonico in caso di comunicazioni inerenti i miei pacchi.',
+                              style: Theme.of(context).textTheme.subtitle1?.copyWith(fontStyle: FontStyle.italic,height: 1.5,letterSpacing: 0),
                             ),
-                            Padding(
-                              padding: const EdgeInsets.all(Dimension.padding),
-                              child: Image.asset('assets/hand.png'),
-                            )
                           ],
                         ),
                       ),
                     ),
-                    SizedBox(height: 20),
-                    Padding(
-                      padding: const EdgeInsets.only(
-                          left: Dimension.padding, right: Dimension.padding),
-                      child: Row(
-                        children: [
-                          Switch(value: true, onChanged: (bool newValue) => {}),
-                          Text(
-                            'Permetti al pudo di contattarmi\nal mio numero telefonico in caso\ndi comunicazioni inerenti\ni miei pacchi.',
-                            style: TextStyle(
-                                fontSize: 14, fontStyle: FontStyle.italic),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Spacer(),
+                    const Spacer(),
                     MainButton(
                       padding: const EdgeInsets.symmetric(
                         horizontal: Dimension.padding,
                       ),
-                      onPressed: () {
-                        Navigator.of(context)
-                            .pushReplacementNamed(Routes.instruction);
-                      },
+                      onPressed: ()=> viewModel!.onInstructionsClick(context),
                       text: 'Vedi le istruzioni',
                     ),
-                    SizedBox(height: 10),
+                    const SizedBox(height: Dimension.padding),
                     AnimatedCrossFade(
                       crossFadeState: isKeyboardVisible
                           ? CrossFadeState.showSecond
                           : CrossFadeState.showFirst,
                       secondChild: const SizedBox(),
                       firstChild: MainButton(
-                        onPressed: () => viewModel!.onSendClick(context),
+                        onPressed: () => viewModel!.onOkClick(context),
                         text: 'Vai alla home',
                       ),
                       duration: const Duration(milliseconds: 150),

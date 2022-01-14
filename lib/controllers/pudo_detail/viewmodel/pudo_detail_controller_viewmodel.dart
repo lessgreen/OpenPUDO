@@ -2,10 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:location/location.dart';
 import 'package:qui_green/resources/routes_enum.dart';
 
-class PuedoDetailControllerViewModel extends ChangeNotifier {
+class PudoDetailControllerViewModel extends ChangeNotifier {
   //Example: to use NetworkManager, use the getInstance: NetworkManager.instance...
 
   // ************ Navigation *****
+  goBack(BuildContext context) {
+    Navigator.of(context).pushReplacementNamed(Routes.maps);
+  }
+
   onSelectPress(BuildContext context) {
     Navigator.of(context).pushReplacementNamed(Routes.personalData);
   }

@@ -15,7 +15,6 @@ class TextFieldButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => TextButton(
-        
         child: Text(
           text,
           style: Theme.of(context)
