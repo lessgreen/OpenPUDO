@@ -2,9 +2,12 @@ package less.green.openpudo.business.service;
 
 import less.green.openpudo.business.dao.*;
 import less.green.openpudo.business.model.*;
+import less.green.openpudo.business.model.usertype.AccountType;
 import less.green.openpudo.cdi.ExecutionContext;
 import less.green.openpudo.cdi.service.LocalizationService;
 import less.green.openpudo.cdi.service.StorageService;
+import less.green.openpudo.common.ApiReturnCodes;
+import less.green.openpudo.rest.config.exception.ApiException;
 import less.green.openpudo.rest.dto.DtoMapper;
 import less.green.openpudo.rest.dto.user.DeviceToken;
 import less.green.openpudo.rest.dto.user.UserPreferences;
@@ -47,7 +50,26 @@ public class UserService {
     @Inject
     DtoMapper dtoMapper;
 
+    public UserProfile updateCurrentUserProfile(UserProfile req) {
+        TbUser user = userDao.get(context.getUserId());
+        if (user.getAccountType() != AccountType.CUSTOMER) {
+            throw new ApiException(ApiReturnCodes.FORBIDDEN, localizationService.getMessage(context.getLanguage(), "error.forbidden.wrong_account_type"));
+        }
+        TbUserProfile userProfile = userProfileDao.get(context.getUserId());
+        userProfile.setUpdateTms(new Date());
+        userProfile.setFirstName(sanitizeString(req.getFirstName()));
+        userProfile.setLastName(sanitizeString(req.getLastName()));
+        userProfileDao.flush();
+        log.info("[{}] Updated profile for user: {}", context.getExecutionId(), context.getUserId());
+        // TODO: since the caller is the user itself, fill all optional fields
+        return dtoMapper.mapUserProfileEntityToDto(userProfile, user.getPhoneNumber(), 0);
+    }
+
     public UserProfile updateCurrentUserProfilePic(String mimeType, byte[] bytes) {
+        TbUser user = userDao.get(context.getUserId());
+        if (user.getAccountType() != AccountType.CUSTOMER) {
+            throw new ApiException(ApiReturnCodes.FORBIDDEN, localizationService.getMessage(context.getLanguage(), "error.forbidden.wrong_account_type"));
+        }
         Date now = new Date();
         TbUserProfile userProfile = userProfileDao.get(context.getUserId());
         UUID oldId = userProfile.getProfilePicId();
@@ -73,20 +95,21 @@ public class UserService {
         // remove old row
         externalFileDao.delete(oldId);
         externalFileDao.flush();
-        // since the caller is the user itself, fill all optional fields
-        TbUser user = userDao.get(context.getUserId());
-        // TODO: get package count
-        log.info("[{}] Updated user profile for user: {}", context.getExecutionId(), context.getUserId());
+        // TODO: since the caller is the user itself, fill all optional fields
+        log.info("[{}] Updated profile picture for user: {}", context.getExecutionId(), context.getUserId());
         return dtoMapper.mapUserProfileEntityToDto(userProfile, user.getPhoneNumber(), 0);
     }
 
     public UserPreferences updateCurrentUserPreferences(UserPreferences req) {
+        TbUser user = userDao.get(context.getUserId());
+        if (user.getAccountType() != AccountType.CUSTOMER) {
+            throw new ApiException(ApiReturnCodes.FORBIDDEN, localizationService.getMessage(context.getLanguage(), "error.forbidden.wrong_account_type"));
+        }
         TbUserPreferences userPreferences = userPreferencesDao.get(context.getUserId());
         userPreferences.setUpdateTms(new Date());
         userPreferences.setShowPhoneNumber(req.getShowPhoneNumber());
-        log.info("[{}] Updated user preferences for user: {}", context.getExecutionId(), context.getUserId());
         userPreferencesDao.flush();
-
+        log.info("[{}] Updated preferences for user: {}", context.getExecutionId(), context.getUserId());
         return dtoMapper.mapUserPreferencesEntityToDto(userPreferences);
     }
 
@@ -128,5 +151,6 @@ public class UserService {
         }
         deviceTokenDao.flush();
     }
+
 
 }

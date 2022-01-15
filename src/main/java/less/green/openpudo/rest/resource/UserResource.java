@@ -41,6 +41,20 @@ public class UserResource {
     UserService userService;
 
     @PUT
+    @Path("/me/profile")
+    @SecurityRequirement(name = "JWT")
+    @Operation(summary = "Update preferences for current user")
+    public UserProfileResponse updateCurrentUserProfile(UserProfile req) {
+        // sanitize input
+        if (req == null) {
+            throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.empty_request"));
+        }
+
+        UserProfile ret = userService.updateCurrentUserProfile(req);
+        return new UserProfileResponse(context.getExecutionId(), ApiReturnCodes.OK, ret);
+    }
+
+    @PUT
     @Path("/me/profile-pic")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @BinaryAPI
