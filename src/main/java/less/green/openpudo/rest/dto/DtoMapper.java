@@ -1,10 +1,12 @@
 package less.green.openpudo.rest.dto;
 
+import less.green.openpudo.business.model.TbUserPreferences;
 import less.green.openpudo.business.model.TbUserProfile;
 import less.green.openpudo.common.GPSUtils;
 import less.green.openpudo.common.dto.geojson.Feature;
 import less.green.openpudo.common.dto.geojson.Point;
 import less.green.openpudo.rest.dto.map.AddressMarker;
+import less.green.openpudo.rest.dto.user.UserPreferences;
 import less.green.openpudo.rest.dto.user.UserProfile;
 import org.mapstruct.Mapper;
 
@@ -15,6 +17,8 @@ import java.util.Map;
 public interface DtoMapper {
 
     UserProfile mapUserProfileEntityToDto(TbUserProfile ent, String phoneNumber, Integer packageCount);
+
+    UserPreferences mapUserPreferencesEntityToDto(TbUserPreferences ent);
 
     default AddressMarker mapFeatureToAddressMarker(Feature feat, BigDecimal lat, BigDecimal lon) {
         if (feat == null) {

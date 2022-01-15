@@ -3,9 +3,11 @@ package less.green.openpudo.business.service;
 import io.quarkus.runtime.configuration.ProfileManager;
 import less.green.openpudo.business.dao.OtpRequestDao;
 import less.green.openpudo.business.dao.UserDao;
+import less.green.openpudo.business.dao.UserPreferencesDao;
 import less.green.openpudo.business.dao.UserProfileDao;
 import less.green.openpudo.business.model.TbOtpRequest;
 import less.green.openpudo.business.model.TbUser;
+import less.green.openpudo.business.model.TbUserPreferences;
 import less.green.openpudo.business.model.TbUserProfile;
 import less.green.openpudo.business.model.usertype.AccountType;
 import less.green.openpudo.business.model.usertype.OtpRequestType;
@@ -54,13 +56,15 @@ public class AuthService {
     @Inject
     UserDao userDao;
     @Inject
+    UserPreferencesDao userPreferencesDao;
+    @Inject
     UserProfileDao userProfileDao;
 
     public void loginSend(String phoneNumber) {
         // searching for user
         TbUser user = userDao.getUserByPhoneNumber(phoneNumber);
-        // if backdoor access for test user, simply pretend
-        if (user != null && user.getTestAccountFlag()) {
+        // if backdoor access for test user, simply pretend sending
+        if ("dev".equals(ProfileManager.getActiveProfile()) || (user != null && user.getTestAccountFlag())) {
             return;
         }
         // searching for existing otp request
@@ -106,9 +110,16 @@ public class AuthService {
     public AccessTokenData loginConfirm(String phoneNumber, String otp) {
         // searching for user
         TbUser user = userDao.getUserByPhoneNumber(phoneNumber);
-        // if backdoor access for test user, check against a static otp
-        if (user != null && user.getTestAccountFlag() && otp.equals("000000")) {
-            return jwtService.generateUserTokenData(user.getUserId(), mapAccountTypeToAccessProfile(user.getAccountType()));
+        // if backdoor access for test user, accept any otp
+        if ("dev".equals(ProfileManager.getActiveProfile()) || (user != null && user.getTestAccountFlag())) {
+            if (user == null) {
+                // if user is a guest, we generate a short-lived token with phone number in private claims
+                return jwtService.generateGuestTokenData(new JwtPrivateClaims(phoneNumber));
+            } else {
+                // is user is registered, we generate full access token
+                user.setLastLoginTms(new Date());
+                return jwtService.generateUserTokenData(user.getUserId(), mapAccountTypeToAccessProfile(user.getAccountType()));
+            }
         }
         // searching for existing otp request
         TbOtpRequest otpRequest;
@@ -135,8 +146,8 @@ public class AuthService {
             ret = jwtService.generateGuestTokenData(new JwtPrivateClaims(phoneNumber));
         } else {
             // is user is registered, we generate full access token
-            ret = jwtService.generateUserTokenData(user.getUserId(), mapAccountTypeToAccessProfile(user.getAccountType()));
             user.setLastLoginTms(new Date());
+            ret = jwtService.generateUserTokenData(user.getUserId(), mapAccountTypeToAccessProfile(user.getAccountType()));
         }
         otpRequestDao.remove(otpRequest);
         otpRequestDao.flush();
@@ -169,7 +180,13 @@ public class AuthService {
         userProfile.setLastName(sanitizeString(req.getUserProfile().getLastName()));
         userProfile.setProfilePicId(null);
         userProfileDao.persist(userProfile);
-        userProfileDao.flush();
+        TbUserPreferences userPreferences = new TbUserPreferences();
+        userPreferences.setUserId(user.getUserId());
+        userPreferences.setCreateTms(now);
+        userPreferences.setUpdateTms(now);
+        userPreferences.setShowPhoneNumber(true);
+        userPreferencesDao.persist(userPreferences);
+        userPreferencesDao.flush();
         log.info("[{}] Registered user {} as {}", context.getExecutionId(), user.getUserId(), user.getAccountType());
         return jwtService.generateUserTokenData(user.getUserId(), mapAccountTypeToAccessProfile(user.getAccountType()));
     }
@@ -188,11 +205,7 @@ public class AuthService {
     private void sendOtpMessage(String phoneNumber, String otp, String language) {
         String text = localizationService.getMessage(language, "message.otp", otp);
         try {
-            if ("dev".equals(ProfileManager.getActiveProfile())) {
-                log.debug(text);
-            } else {
-                smsService.sendSms(phoneNumber, text);
-            }
+            smsService.sendSms(phoneNumber, text);
         } catch (RuntimeException ex) {
             log.error("[{}] {}", context.getExecutionId(), ExceptionUtils.getRelevantStackTrace(ex));
             throw new ApiException(ApiReturnCodes.SERVICE_UNAVAILABLE, localizationService.getMessage(language, "error.service_unavailable"));

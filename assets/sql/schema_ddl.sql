@@ -124,6 +124,15 @@ CREATE TABLE IF NOT EXISTS tb_user_profile (
 );
 
 
+DROP TABLE IF EXISTS tb_user_preferences CASCADE;
+CREATE TABLE IF NOT EXISTS tb_user_preferences (
+	user_id BIGINT PRIMARY KEY REFERENCES tb_user(user_id),
+	create_tms TIMESTAMP(3) NOT NULL,
+	update_tms TIMESTAMP(3) NOT NULL,
+	show_phone_number BOOLEAN NOT NULL
+);
+
+
 DROP TABLE IF EXISTS tb_pudo CASCADE;
 CREATE TABLE IF NOT EXISTS tb_pudo (
 	pudo_id BIGSERIAL PRIMARY KEY,
@@ -158,12 +167,16 @@ CREATE INDEX tb_address_lat_lon_idx ON tb_address(lat, lon);
 
 DROP TABLE IF EXISTS tb_user_pudo_relation CASCADE;
 CREATE TABLE IF NOT EXISTS tb_user_pudo_relation (
+    tb_user_pudo_relation_id BIGSERIAL PRIMARY KEY,
 	user_id BIGINT NOT NULL REFERENCES tb_user(user_id),
 	pudo_id BIGINT NOT NULL REFERENCES tb_pudo(pudo_id),
 	create_tms TIMESTAMP(3) NOT NULL,
+	delete_tms TIMESTAMP(3),
 	relation_type TEXT NOT NULL REFERENCES tb_anag_relation_type(relation_type),
-	PRIMARY KEY(user_id, pudo_id)
+	custom_address_suffix TEXT NOT NULL
 );
+CREATE INDEX tb_user_pudo_relation_user_id_pudo_id_idx ON tb_user_pudo_relation(user_id, pudo_id);
+CREATE UNIQUE INDEX tb_user_pudo_relation_user_id_pudo_id_delete_tms_idx ON tb_user_pudo_relation(user_id, pudo_id) WHERE delete_tms IS NULL;
 
 
 DROP TABLE IF EXISTS tb_package CASCADE;

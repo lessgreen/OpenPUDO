@@ -9,9 +9,7 @@ import less.green.openpudo.common.dto.tuple.Pair;
 import less.green.openpudo.rest.config.annotation.BinaryAPI;
 import less.green.openpudo.rest.config.exception.ApiException;
 import less.green.openpudo.rest.dto.BaseResponse;
-import less.green.openpudo.rest.dto.user.DeviceToken;
-import less.green.openpudo.rest.dto.user.UserProfile;
-import less.green.openpudo.rest.dto.user.UserProfileResponse;
+import less.green.openpudo.rest.dto.user.*;
 import lombok.extern.log4j.Log4j2;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.security.SecurityRequirement;
@@ -72,6 +70,22 @@ public class UserResource {
 
         UserProfile ret = userService.updateCurrentUserProfilePic(uploadedFile.getValue0(), uploadedFile.getValue1());
         return new UserProfileResponse(context.getExecutionId(), ApiReturnCodes.OK, ret);
+    }
+
+    @PUT
+    @Path("/me/preferences")
+    @SecurityRequirement(name = "JWT")
+    @Operation(summary = "Update preferences for current user")
+    public UserPreferencesResponse updateCurrentUserPreferences(UserPreferences req) {
+        // sanitize input
+        if (req == null) {
+            throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.empty_request"));
+        } else if (req.getShowPhoneNumber() == null) {
+            throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.empty_mandatory_field", "showPhoneNumber"));
+        }
+
+        UserPreferences ret = userService.updateCurrentUserPreferences(req);
+        return new UserPreferencesResponse(context.getExecutionId(), ApiReturnCodes.OK, ret);
     }
 
     @POST

@@ -1,18 +1,13 @@
 package less.green.openpudo.business.service;
 
-import less.green.openpudo.business.dao.DeviceTokenDao;
-import less.green.openpudo.business.dao.ExternalFileDao;
-import less.green.openpudo.business.dao.UserDao;
-import less.green.openpudo.business.dao.UserProfileDao;
-import less.green.openpudo.business.model.TbDeviceToken;
-import less.green.openpudo.business.model.TbExternalFile;
-import less.green.openpudo.business.model.TbUser;
-import less.green.openpudo.business.model.TbUserProfile;
+import less.green.openpudo.business.dao.*;
+import less.green.openpudo.business.model.*;
 import less.green.openpudo.cdi.ExecutionContext;
 import less.green.openpudo.cdi.service.LocalizationService;
 import less.green.openpudo.cdi.service.StorageService;
 import less.green.openpudo.rest.dto.DtoMapper;
 import less.green.openpudo.rest.dto.user.DeviceToken;
+import less.green.openpudo.rest.dto.user.UserPreferences;
 import less.green.openpudo.rest.dto.user.UserProfile;
 import lombok.extern.log4j.Log4j2;
 
@@ -44,6 +39,8 @@ public class UserService {
     ExternalFileDao externalFileDao;
     @Inject
     UserDao userDao;
+    @Inject
+    UserPreferencesDao userPreferencesDao;
     @Inject
     UserProfileDao userProfileDao;
 
@@ -79,7 +76,18 @@ public class UserService {
         // since the caller is the user itself, fill all optional fields
         TbUser user = userDao.get(context.getUserId());
         // TODO: get package count
+        log.info("[{}] Updated user profile for user: {}", context.getExecutionId(), context.getUserId());
         return dtoMapper.mapUserProfileEntityToDto(userProfile, user.getPhoneNumber(), 0);
+    }
+
+    public UserPreferences updateCurrentUserPreferences(UserPreferences req) {
+        TbUserPreferences userPreferences = userPreferencesDao.get(context.getUserId());
+        userPreferences.setUpdateTms(new Date());
+        userPreferences.setShowPhoneNumber(req.getShowPhoneNumber());
+        log.info("[{}] Updated user preferences for user: {}", context.getExecutionId(), context.getUserId());
+        userPreferencesDao.flush();
+
+        return dtoMapper.mapUserPreferencesEntityToDto(userPreferences);
     }
 
     public void upsertDeviceToken(DeviceToken req) {
