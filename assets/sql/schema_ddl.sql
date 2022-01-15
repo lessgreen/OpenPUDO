@@ -139,12 +139,10 @@ CREATE TABLE IF NOT EXISTS tb_pudo (
 	create_tms TIMESTAMP(3) NOT NULL,
 	update_tms TIMESTAMP(3) NOT NULL,
 	business_name TEXT NOT NULL,
-	phone_number TEXT,
-	notes TEXT,
+	public_phone_number TEXT,
 	profile_pic_id UUID REFERENCES tb_external_file(external_file_id),
 	business_name_search tsvector GENERATED ALWAYS AS (to_tsvector('simple', business_name)) STORED
 );
-CREATE INDEX tb_pudo_business_name_search_idx ON tb_pudo USING GIN (business_name_search);
 
 
 DROP TABLE IF EXISTS tb_address CASCADE;
@@ -184,6 +182,7 @@ CREATE TABLE IF NOT EXISTS tb_package (
 	package_id BIGSERIAL PRIMARY KEY,
 	create_tms TIMESTAMP(3) NOT NULL,
 	update_tms TIMESTAMP(3) NOT NULL,
+	package_name TEXT NOT NULL,
 	pudo_id BIGINT NOT NULL REFERENCES tb_pudo(pudo_id),
 	user_id BIGINT NOT NULL REFERENCES tb_user(user_id),
 	package_pic_id UUID REFERENCES tb_external_file(external_file_id)

@@ -32,6 +32,6 @@ public class UserProfile {
     private UUID profilePicId;
 
     @Schema(readOnly = true)
-    private Integer packageCount;
+    private Long packageCount;
 
 }

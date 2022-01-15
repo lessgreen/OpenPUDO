@@ -41,6 +41,8 @@ public class UserService {
     @Inject
     ExternalFileDao externalFileDao;
     @Inject
+    PackageDao packageDao;
+    @Inject
     UserDao userDao;
     @Inject
     UserPreferencesDao userPreferencesDao;
@@ -60,9 +62,9 @@ public class UserService {
         userProfile.setFirstName(sanitizeString(req.getFirstName()));
         userProfile.setLastName(sanitizeString(req.getLastName()));
         userProfileDao.flush();
+        long packageCount = packageDao.getPackageCountForCustomer(context.getUserId());
         log.info("[{}] Updated profile for user: {}", context.getExecutionId(), context.getUserId());
-        // TODO: since the caller is the user itself, fill all optional fields
-        return dtoMapper.mapUserProfileEntityToDto(userProfile, user.getPhoneNumber(), 0);
+        return dtoMapper.mapUserProfileEntityToDto(userProfile, user.getPhoneNumber(), packageCount);
     }
 
     public UserProfile updateCurrentUserProfilePic(String mimeType, byte[] bytes) {
@@ -95,9 +97,9 @@ public class UserService {
         // remove old row
         externalFileDao.delete(oldId);
         externalFileDao.flush();
-        // TODO: since the caller is the user itself, fill all optional fields
+        long packageCount = packageDao.getPackageCountForCustomer(context.getUserId());
         log.info("[{}] Updated profile picture for user: {}", context.getExecutionId(), context.getUserId());
-        return dtoMapper.mapUserProfileEntityToDto(userProfile, user.getPhoneNumber(), 0);
+        return dtoMapper.mapUserProfileEntityToDto(userProfile, user.getPhoneNumber(), packageCount);
     }
 
     public UserPreferences updateCurrentUserPreferences(UserPreferences req) {

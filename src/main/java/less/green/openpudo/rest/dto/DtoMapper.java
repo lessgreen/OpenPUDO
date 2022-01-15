@@ -16,7 +16,7 @@ import java.util.Map;
 @Mapper(componentModel = "cdi")
 public interface DtoMapper {
 
-    UserProfile mapUserProfileEntityToDto(TbUserProfile ent, String phoneNumber, Integer packageCount);
+    UserProfile mapUserProfileEntityToDto(TbUserProfile ent, String phoneNumber, Long packageCount);
 
     UserPreferences mapUserPreferencesEntityToDto(TbUserPreferences ent);
 
