@@ -64,10 +64,10 @@ public class UserService {
         userProfileDao.flush();
         long packageCount = packageDao.getPackageCountForCustomer(context.getUserId());
         log.info("[{}] Updated profile for user: {}", context.getExecutionId(), context.getUserId());
-        return dtoMapper.mapUserProfileEntityToDto(userProfile, user.getPhoneNumber(), packageCount);
+        return dtoMapper.mapUserProfileEntityToDto(userProfile, user.getPhoneNumber(), null, packageCount);
     }
 
-    public UserProfile updateCurrentUserProfilePic(String mimeType, byte[] bytes) {
+    public UUID updateCurrentUserProfilePic(String mimeType, byte[] bytes) {
         TbUser user = userDao.get(context.getUserId());
         if (user.getAccountType() != AccountType.CUSTOMER) {
             throw new ApiException(ApiReturnCodes.FORBIDDEN, localizationService.getMessage(context.getLanguage(), "error.forbidden.wrong_account_type"));
@@ -99,7 +99,7 @@ public class UserService {
         externalFileDao.flush();
         long packageCount = packageDao.getPackageCountForCustomer(context.getUserId());
         log.info("[{}] Updated profile picture for user: {}", context.getExecutionId(), context.getUserId());
-        return dtoMapper.mapUserProfileEntityToDto(userProfile, user.getPhoneNumber(), packageCount);
+        return newId;
     }
 
     public UserPreferences updateCurrentUserPreferences(UserPreferences req) {

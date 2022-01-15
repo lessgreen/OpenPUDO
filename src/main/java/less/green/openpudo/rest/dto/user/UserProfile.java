@@ -26,10 +26,13 @@ public class UserProfile {
     private String lastName;
 
     @Schema(readOnly = true)
+    private UUID profilePicId;
+
+    @Schema(readOnly = true)
     private String phoneNumber;
 
     @Schema(readOnly = true)
-    private UUID profilePicId;
+    private String customerSuffix;
 
     @Schema(readOnly = true)
     private Long packageCount;

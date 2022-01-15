@@ -9,6 +9,7 @@ import less.green.openpudo.common.dto.tuple.Pair;
 import less.green.openpudo.rest.config.annotation.BinaryAPI;
 import less.green.openpudo.rest.config.exception.ApiException;
 import less.green.openpudo.rest.dto.BaseResponse;
+import less.green.openpudo.rest.dto.scalar.UUIDResponse;
 import less.green.openpudo.rest.dto.user.*;
 import lombok.extern.log4j.Log4j2;
 import org.eclipse.microprofile.openapi.annotations.Operation;
@@ -20,6 +21,7 @@ import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.io.IOException;
+import java.util.UUID;
 
 import static less.green.openpudo.common.MultipartUtils.ALLOWED_IMAGE_MIME_TYPES;
 import static less.green.openpudo.common.StringUtils.isEmpty;
@@ -60,7 +62,7 @@ public class UserResource {
     @BinaryAPI
     @SecurityRequirement(name = "JWT")
     @Operation(summary = "Update public profile picture for current user")
-    public UserProfileResponse updateCurrentUserProfilePic(MultipartFormDataInput req) {
+    public UUIDResponse updateCurrentUserProfilePic(MultipartFormDataInput req) {
         // sanitize input
         if (req == null) {
             throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.empty_request"));
@@ -82,8 +84,8 @@ public class UserResource {
             throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.invalid_field", "mimeType"));
         }
 
-        UserProfile ret = userService.updateCurrentUserProfilePic(uploadedFile.getValue0(), uploadedFile.getValue1());
-        return new UserProfileResponse(context.getExecutionId(), ApiReturnCodes.OK, ret);
+        UUID ret = userService.updateCurrentUserProfilePic(uploadedFile.getValue0(), uploadedFile.getValue1());
+        return new UUIDResponse(context.getExecutionId(), ApiReturnCodes.OK, ret);
     }
 
     @PUT

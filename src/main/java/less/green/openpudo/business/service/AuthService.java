@@ -1,16 +1,11 @@
 package less.green.openpudo.business.service;
 
 import io.quarkus.runtime.configuration.ProfileManager;
-import less.green.openpudo.business.dao.OtpRequestDao;
-import less.green.openpudo.business.dao.UserDao;
-import less.green.openpudo.business.dao.UserPreferencesDao;
-import less.green.openpudo.business.dao.UserProfileDao;
-import less.green.openpudo.business.model.TbOtpRequest;
-import less.green.openpudo.business.model.TbUser;
-import less.green.openpudo.business.model.TbUserPreferences;
-import less.green.openpudo.business.model.TbUserProfile;
+import less.green.openpudo.business.dao.*;
+import less.green.openpudo.business.model.*;
 import less.green.openpudo.business.model.usertype.AccountType;
 import less.green.openpudo.business.model.usertype.OtpRequestType;
+import less.green.openpudo.business.model.usertype.RelationType;
 import less.green.openpudo.cdi.ExecutionContext;
 import less.green.openpudo.cdi.service.JwtService;
 import less.green.openpudo.cdi.service.LocalizationService;
@@ -21,7 +16,9 @@ import less.green.openpudo.common.dto.jwt.AccessProfile;
 import less.green.openpudo.common.dto.jwt.AccessTokenData;
 import less.green.openpudo.common.dto.jwt.JwtPrivateClaims;
 import less.green.openpudo.rest.config.exception.ApiException;
+import less.green.openpudo.rest.dto.DtoMapper;
 import less.green.openpudo.rest.dto.auth.RegisterCustomerRequest;
+import less.green.openpudo.rest.dto.auth.RegisterPudoRequest;
 import lombok.extern.log4j.Log4j2;
 
 import javax.enterprise.context.RequestScoped;
@@ -44,21 +41,30 @@ public class AuthService {
     ExecutionContext context;
 
     @Inject
-    JwtService jwtService;
-    @Inject
     LocalizationService localizationService;
 
+    @Inject
+    JwtService jwtService;
     @Inject
     SmsService smsService;
 
     @Inject
+    AddressDao addressDao;
+    @Inject
     OtpRequestDao otpRequestDao;
+    @Inject
+    PudoDao pudoDao;
     @Inject
     UserDao userDao;
     @Inject
     UserPreferencesDao userPreferencesDao;
     @Inject
     UserProfileDao userProfileDao;
+    @Inject
+    UserPudoRelationDao userPudoRelationDao;
+
+    @Inject
+    DtoMapper dtoMapper;
 
     public void loginSend(String phoneNumber) {
         // searching for user
@@ -187,6 +193,49 @@ public class AuthService {
         userPreferences.setShowPhoneNumber(true);
         userPreferencesDao.persist(userPreferences);
         userPreferencesDao.flush();
+        log.info("[{}] Registered user {} as {}", context.getExecutionId(), user.getUserId(), user.getAccountType());
+        return jwtService.generateUserTokenData(user.getUserId(), mapAccountTypeToAccessProfile(user.getAccountType()));
+    }
+
+    public AccessTokenData registerPudo(RegisterPudoRequest req) {
+        // searching for user
+        TbUser user = userDao.getUserByPhoneNumber(context.getPrivateClaims().getPhoneNumber());
+        if (user != null) {
+            log.error("[{}] Register request for already registered user: {}", context.getExecutionId(), user.getUserId());
+            throw new ApiException(ApiReturnCodes.FORBIDDEN, localizationService.getMessage(context.getLanguage(), "error.auth.already_registered"));
+        }
+        Date now = new Date();
+        user = new TbUser();
+        user.setCreateTms(now);
+        user.setLastLoginTms(now);
+        user.setAccountType(AccountType.PUDO);
+        user.setTestAccountFlag(false);
+        // we trust the phone number contained in the signed private claims
+        user.setPhoneNumber(context.getPrivateClaims().getPhoneNumber());
+        userDao.persist(user);
+        userDao.flush();
+        TbPudo pudo = new TbPudo();
+        pudo.setCreateTms(now);
+        pudo.setUpdateTms(now);
+        pudo.setBusinessName(sanitizeString(req.getPudo().getBusinessName()));
+        pudo.setPublicPhoneNumber(sanitizeString(req.getPudo().getPublicPhoneNumber()));
+        pudo.setProfilePicId(null);
+        pudoDao.persist(pudo);
+        pudoDao.flush();
+        TbAddress address = dtoMapper.mapAddressMarkerToAddressEntity(req.getSignedAddressMarker().getAddress());
+        address.setPudoId(pudo.getPudoId());
+        address.setCreateTms(now);
+        address.setUpdateTms(now);
+        addressDao.persist(address);
+        TbUserPudoRelation userPudoRelation = new TbUserPudoRelation();
+        userPudoRelation.setUserId(user.getUserId());
+        userPudoRelation.setPudoId(pudo.getPudoId());
+        userPudoRelation.setCreateTms(now);
+        userPudoRelation.setDeleteTms(null);
+        userPudoRelation.setRelationType(RelationType.OWNER);
+        userPudoRelation.setCustomerSuffix(null);
+        userPudoRelationDao.persist(userPudoRelation);
+        userPudoRelationDao.flush();
         log.info("[{}] Registered user {} as {}", context.getExecutionId(), user.getUserId(), user.getAccountType());
         return jwtService.generateUserTokenData(user.getUserId(), mapAccountTypeToAccessProfile(user.getAccountType()));
     }

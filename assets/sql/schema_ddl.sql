@@ -165,13 +165,13 @@ CREATE INDEX tb_address_lat_lon_idx ON tb_address(lat, lon);
 
 DROP TABLE IF EXISTS tb_user_pudo_relation CASCADE;
 CREATE TABLE IF NOT EXISTS tb_user_pudo_relation (
-    tb_user_pudo_relation_id BIGSERIAL PRIMARY KEY,
+    user_pudo_relation_id BIGSERIAL PRIMARY KEY,
 	user_id BIGINT NOT NULL REFERENCES tb_user(user_id),
 	pudo_id BIGINT NOT NULL REFERENCES tb_pudo(pudo_id),
 	create_tms TIMESTAMP(3) NOT NULL,
 	delete_tms TIMESTAMP(3),
 	relation_type TEXT NOT NULL REFERENCES tb_anag_relation_type(relation_type),
-	custom_address_suffix TEXT NOT NULL
+	customer_suffix TEXT
 );
 CREATE INDEX tb_user_pudo_relation_user_id_pudo_id_idx ON tb_user_pudo_relation(user_id, pudo_id);
 CREATE UNIQUE INDEX tb_user_pudo_relation_user_id_pudo_id_delete_tms_idx ON tb_user_pudo_relation(user_id, pudo_id) WHERE delete_tms IS NULL;

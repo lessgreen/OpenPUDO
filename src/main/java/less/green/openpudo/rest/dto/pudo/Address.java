@@ -1,11 +1,11 @@
-package less.green.openpudo.rest.dto.map;
+package less.green.openpudo.rest.dto.pudo;
 
 import lombok.Data;
 
 import java.math.BigDecimal;
 
 @Data
-public class AddressMarker {
+public class Address {
 
     private String label;
 
@@ -26,6 +26,5 @@ public class AddressMarker {
     private BigDecimal lon;
 
     private BigDecimal distanceFromOrigin;
-
 
 }
