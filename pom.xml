@@ -16,7 +16,7 @@
         <lombok.version>1.18.22</lombok.version>
         <mapstruct.version>1.4.2.Final</mapstruct.version>
         <pmd.version>3.14.0</pmd.version>
-        <libphonenumber.version>8.12.40</libphonenumber.version>
+        <libphonenumber.version>8.12.41</libphonenumber.version>
         <unirest.version>3.13.4</unirest.version>
         <firebase.version>8.1.0</firebase.version>
     </properties>
