@@ -93,11 +93,10 @@ public class UserService {
         // switch foreign key
         userProfile.setUpdateTms(now);
         userProfile.setProfilePicId(newId);
-        userDao.flush();
+        userProfileDao.flush();
         // remove old row
         externalFileDao.delete(oldId);
         externalFileDao.flush();
-        long packageCount = packageDao.getPackageCountForCustomer(context.getUserId());
         log.info("[{}] Updated profile picture for user: {}", context.getExecutionId(), context.getUserId());
         return newId;
     }
@@ -153,6 +152,5 @@ public class UserService {
         }
         deviceTokenDao.flush();
     }
-
 
 }
