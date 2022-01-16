@@ -40,7 +40,7 @@ public interface DtoMapper {
         ret.setLat(geometry.getCoordinates().get(1));
         ret.setLon(geometry.getCoordinates().get(0));
         if (lat != null && lon != null) {
-            ret.setDistanceFromOrigin(BigDecimal.valueOf(GPSUtils.haversineDistance(lat.doubleValue(), lon.doubleValue(), ret.getLat().doubleValue(), ret.getLon().doubleValue())));
+            ret.setDistanceFromOrigin(GPSUtils.calculateDistanceFromOrigin(lat, lon, ret.getLat(), ret.getLon()));
         }
         return ret;
     }
