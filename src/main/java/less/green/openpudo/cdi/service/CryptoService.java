@@ -45,4 +45,9 @@ public class CryptoService {
         return Encoders.BASE64_URL_ENCODER.encodeToString(signature);
     }
 
+    public boolean isValidSignature(Object obj, String candidateSignature) {
+        String signature = signObject(obj);
+        return signature.equals(candidateSignature);
+    }
+
 }

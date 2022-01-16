@@ -60,7 +60,7 @@ public class JwtService {
         return HEADER_INSTANCE_JSON_BASE64 + "." + payloadJsonBase64 + "." + signatureBase64;
     }
 
-    public boolean verifyAccessTokenSignature(String candidateToken) {
+    public boolean isValidSignature(String candidateToken) {
         String[] split = candidateToken.split("\\.", -1);
         if (split.length != 3) {
             return false;

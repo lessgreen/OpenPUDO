@@ -75,7 +75,7 @@ public class AccessTokenFilter implements ContainerRequestFilter {
 
         // checking signature
         String accessToken = m.group("token");
-        if (!jwtService.verifyAccessTokenSignature(accessToken)) {
+        if (!jwtService.isValidSignature(accessToken)) {
             log.debug("[{}] Authorization failed: invalid token signature", context.getExecutionId());
             throw new ApiException(ApiReturnCodes.INVALID_JWT_TOKEN, localizationService.getMessage(context.getLanguage(), "error.auth.invalid_access_token"));
         }

@@ -135,6 +135,8 @@ public class AuthResource {
             throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.empty_mandatory_field", "address"));
         } else if (isEmpty(req.getSignedAddressMarker().getSignature())) {
             throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.empty_mandatory_field", "signature"));
+        } else if (!cryptoService.isValidSignature(req.getSignedAddressMarker().getAddress(), req.getSignedAddressMarker().getSignature())) {
+            throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.invalid_field", "signature"));
         } else if (context.getPrivateClaims() == null || context.getPrivateClaims().getPhoneNumber() == null) {
             throw new ApiException(ApiReturnCodes.INVALID_JWT_TOKEN, localizationService.getMessage(context.getLanguage(), "error.auth.invalid_access_token"));
         }
@@ -145,11 +147,6 @@ public class AuthResource {
                 throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.invalid_field", "publicPhoneNumber"));
             }
             req.getPudo().setPublicPhoneNumber(pns.getNormalizedPhoneNumber());
-        }
-        // verify address integrity
-        String signature = cryptoService.signObject(req.getSignedAddressMarker().getAddress());
-        if (!signature.equals(req.getSignedAddressMarker().getSignature())) {
-            throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.invalid_field", "signature"));
         }
 
         AccessTokenData ret = authService.registerPudo(req);
