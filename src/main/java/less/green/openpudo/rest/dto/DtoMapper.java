@@ -35,8 +35,6 @@ public interface DtoMapper {
     @Mapping(source = "values.value3", target = "distanceFromOrigin")
     PudoMarker mapProjectionToPudoMarker(Quartet<Long, BigDecimal, BigDecimal, BigDecimal> values);
 
-    List<PudoMarker> mapProjectionListToPudoMarkerList(List<Quartet<Long, BigDecimal, BigDecimal, BigDecimal>> values);
-
     @Mapping(source = "values.value0", target = "pudoId")
     @Mapping(source = "values.value1", target = "businessName")
     @Mapping(source = "values.value2", target = "pudoPicId")
