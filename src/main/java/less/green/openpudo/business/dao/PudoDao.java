@@ -20,7 +20,7 @@ public class PudoDao extends BaseEntityDao<TbPudo, Long> {
         super(TbPudo.class, "pudoId");
     }
 
-    public List<PudoMarker> searchPudosByCoordinates(BigDecimal latMin, BigDecimal latMax, BigDecimal lonMin, BigDecimal lonMax) {
+    public List<PudoMarker> getPudosOnMap(BigDecimal latMin, BigDecimal latMax, BigDecimal lonMin, BigDecimal lonMax) {
         String qs = "SELECT new less.green.openpudo.rest.dto.map.PudoMarker(t1.pudoId, t1.businessName, t2.lat, t2.lon) "
                 + "FROM TbPudo t1, TbAddress t2 "
                 + "WHERE t1.pudoId = t2.pudoId "

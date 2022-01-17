@@ -140,7 +140,7 @@ CREATE TABLE IF NOT EXISTS tb_pudo (
 	update_tms TIMESTAMP(3) NOT NULL,
 	business_name TEXT NOT NULL,
 	public_phone_number TEXT,
-	profile_pic_id UUID REFERENCES tb_external_file(external_file_id),
+	pudo_pic_id UUID REFERENCES tb_external_file(external_file_id),
 	business_name_search tsvector GENERATED ALWAYS AS (to_tsvector('simple', business_name)) STORED
 );
 

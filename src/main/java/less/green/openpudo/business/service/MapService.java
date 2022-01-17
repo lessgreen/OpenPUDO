@@ -122,7 +122,7 @@ public class MapService {
         BigDecimal lonMin = lon.subtract(correctedDeltaDegree);
         BigDecimal lonMax = lon.add(correctedDeltaDegree);
 
-        List<PudoMarker> rs = pudoDao.searchPudosByCoordinates(latMin, latMax, lonMin, lonMax);
+        List<PudoMarker> rs = pudoDao.getPudosOnMap(latMin, latMax, lonMin, lonMax);
         if (!rs.isEmpty()) {
             for (PudoMarker pudo : rs) {
                 pudo.setDistanceFromOrigin(GPSUtils.calculateDistanceFromOrigin(pudo.getLat(), pudo.getLon(), lat, lon));
