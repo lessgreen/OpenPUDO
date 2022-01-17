@@ -9,9 +9,12 @@ import java.math.BigDecimal;
 public class Rating {
 
     @Schema(readOnly = true)
-    private BigDecimal averageScore;
+    private Long pudoId;
 
     @Schema(readOnly = true)
     private Long reviewCount;
+
+    @Schema(readOnly = true)
+    private BigDecimal averageScore;
 
 }
