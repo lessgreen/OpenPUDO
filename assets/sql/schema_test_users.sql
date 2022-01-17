@@ -30,12 +30,11 @@ INSERT INTO openpudo.tb_user_pudo_relation (user_pudo_relation_id, user_id, pudo
 INSERT INTO openpudo.tb_user_pudo_relation (user_pudo_relation_id, user_id, pudo_id, create_tms, delete_tms, relation_type, customer_suffix) VALUES (2, 3, 2, '2022-01-17 12:13:21.443', NULL, 'owner', NULL);
 INSERT INTO openpudo.tb_user_pudo_relation (user_pudo_relation_id, user_id, pudo_id, create_tms, delete_tms, relation_type, customer_suffix) VALUES (3, 4, 3, '2022-01-17 12:13:21.579', NULL, 'owner', NULL);
 INSERT INTO openpudo.tb_user_pudo_relation (user_pudo_relation_id, user_id, pudo_id, create_tms, delete_tms, relation_type, customer_suffix) VALUES (4, 5, 4, '2022-01-17 12:13:21.728', NULL, 'owner', NULL);
-
-SELECT pg_catalog.setval('openpudo.tb_pudo_pudo_id_seq', 4, true);
-
-SELECT pg_catalog.setval('openpudo.tb_user_pudo_relation_user_pudo_relation_id_seq', 4, true);
+INSERT INTO openpudo.tb_user_pudo_relation (user_pudo_relation_id, user_id, pudo_id, create_tms, delete_tms, relation_type, customer_suffix) VALUES (5, 1, 1, '2022-01-17 12:13:21.914', NULL, 'customer', 'TU825');
 
 SELECT pg_catalog.setval('openpudo.tb_user_user_id_seq', 5, true);
+SELECT pg_catalog.setval('openpudo.tb_pudo_pudo_id_seq', 4, true);
+SELECT pg_catalog.setval('openpudo.tb_user_pudo_relation_user_pudo_relation_id_seq', 5, true);
 
 
 -- maintenance

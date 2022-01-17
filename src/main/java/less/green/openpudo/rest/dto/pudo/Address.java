@@ -48,7 +48,4 @@ public class Address {
     @Schema(readOnly = true)
     private BigDecimal lon;
 
-    @Schema(readOnly = true)
-    private BigDecimal distanceFromOrigin;
-
 }

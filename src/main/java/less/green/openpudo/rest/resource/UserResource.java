@@ -42,10 +42,19 @@ public class UserResource {
     @Inject
     UserService userService;
 
+    @GET
+    @Path("/me/profile")
+    @SecurityRequirement(name = "JWT")
+    @Operation(summary = "Get profile for current user")
+    public UserProfileResponse getCurrentUserProfile() {
+        UserProfile ret = userService.getCurrentUserProfile();
+        return new UserProfileResponse(context.getExecutionId(), ApiReturnCodes.OK, ret);
+    }
+
     @PUT
     @Path("/me/profile")
     @SecurityRequirement(name = "JWT")
-    @Operation(summary = "Update preferences for current user")
+    @Operation(summary = "Update profile for current user")
     public UserProfileResponse updateCurrentUserProfile(UserProfile req) {
         // sanitize input
         if (req == null) {
@@ -56,12 +65,21 @@ public class UserResource {
         return new UserProfileResponse(context.getExecutionId(), ApiReturnCodes.OK, ret);
     }
 
+    @GET
+    @Path("/{userId}/profile")
+    @SecurityRequirement(name = "JWT")
+    @Operation(summary = "Get profile for current user")
+    public UserProfileResponse getUserProfileByUserId(@PathParam(value = "userId") Long userId) {
+        UserProfile ret = userService.getUserProfileByUserId(userId);
+        return new UserProfileResponse(context.getExecutionId(), ApiReturnCodes.OK, ret);
+    }
+
     @PUT
     @Path("/me/profile-pic")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @BinaryAPI
     @SecurityRequirement(name = "JWT")
-    @Operation(summary = "Update public profile picture for current user")
+    @Operation(summary = "Update profile picture for current user")
     public UUIDResponse updateCurrentUserProfilePic(MultipartFormDataInput req) {
         // sanitize input
         if (req == null) {
@@ -86,6 +104,15 @@ public class UserResource {
 
         UUID ret = userService.updateCurrentUserProfilePic(uploadedFile.getValue0(), uploadedFile.getValue1());
         return new UUIDResponse(context.getExecutionId(), ApiReturnCodes.OK, ret);
+    }
+
+    @GET
+    @Path("/me/preferences")
+    @SecurityRequirement(name = "JWT")
+    @Operation(summary = "Get preferences for current user")
+    public UserPreferencesResponse getCurrentUserPreferences() {
+        UserPreferences ret = userService.getCurrentUserPreferences();
+        return new UserPreferencesResponse(context.getExecutionId(), ApiReturnCodes.OK, ret);
     }
 
     @PUT

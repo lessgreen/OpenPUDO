@@ -48,9 +48,21 @@ public class UserService {
     UserPreferencesDao userPreferencesDao;
     @Inject
     UserProfileDao userProfileDao;
+    @Inject
+    UserPudoRelationDao userPudoRelationDao;
 
     @Inject
     DtoMapper dtoMapper;
+
+    public UserProfile getCurrentUserProfile() {
+        TbUser user = userDao.get(context.getUserId());
+        if (user.getAccountType() != AccountType.CUSTOMER) {
+            throw new ApiException(ApiReturnCodes.FORBIDDEN, localizationService.getMessage(context.getLanguage(), "error.forbidden.wrong_account_type"));
+        }
+        TbUserProfile userProfile = userProfileDao.get(context.getUserId());
+        long packageCount = packageDao.getPackageCountForCustomer(context.getUserId());
+        return dtoMapper.mapUserProfileEntityToDto(userProfile, user.getPhoneNumber(), null, packageCount);
+    }
 
     public UserProfile updateCurrentUserProfile(UserProfile req) {
         TbUser user = userDao.get(context.getUserId());
@@ -65,6 +77,32 @@ public class UserService {
         long packageCount = packageDao.getPackageCountForCustomer(context.getUserId());
         log.info("[{}] Updated profile for user: {}", context.getExecutionId(), context.getUserId());
         return dtoMapper.mapUserProfileEntityToDto(userProfile, user.getPhoneNumber(), null, packageCount);
+    }
+
+    public UserProfile getUserProfileByUserId(Long userId) {
+        TbUser caller = userDao.get(context.getUserId());
+        if (caller.getAccountType() == AccountType.CUSTOMER) {
+            if (context.getUserId().equals(userId)) {
+                return getCurrentUserProfile();
+            } else {
+                throw new ApiException(ApiReturnCodes.FORBIDDEN, localizationService.getMessage(context.getLanguage(), "error.forbidden"));
+            }
+        } else if (caller.getAccountType() == AccountType.PUDO) {
+            Long pudoId = userPudoRelationDao.getPudoIdByOwnerUserId(context.getUserId());
+            // check if pudo is granted to see user's profile
+            TbUserPudoRelation userPudoRelation = userPudoRelationDao.getUserPudoActiveCustomerRelation(pudoId, userId);
+            if (userPudoRelation == null) {
+                throw new ApiException(ApiReturnCodes.FORBIDDEN, localizationService.getMessage(context.getLanguage(), "error.forbidden"));
+            }
+            TbUserProfile userProfile = userProfileDao.get(userId);
+            // check if pudo is granted to see user's phone number
+            TbUserPreferences userPreferences = userPreferencesDao.get(userId);
+            String phoneNumber = userPreferences.getShowPhoneNumber() == true ? userDao.get(userId).getPhoneNumber() : null;
+            long packageCount = packageDao.getPackageCountForCustomer(context.getUserId());
+            return dtoMapper.mapUserProfileEntityToDto(userProfile, phoneNumber, userPudoRelation.getCustomerSuffix(), packageCount);
+        } else {
+            throw new AssertionError("Unsupported AccountType: " + caller.getAccountType());
+        }
     }
 
     public UUID updateCurrentUserProfilePic(String mimeType, byte[] bytes) {
@@ -99,6 +137,15 @@ public class UserService {
         externalFileDao.flush();
         log.info("[{}] Updated profile picture for user: {}", context.getExecutionId(), context.getUserId());
         return newId;
+    }
+
+    public UserPreferences getCurrentUserPreferences() {
+        TbUser user = userDao.get(context.getUserId());
+        if (user.getAccountType() != AccountType.CUSTOMER) {
+            throw new ApiException(ApiReturnCodes.FORBIDDEN, localizationService.getMessage(context.getLanguage(), "error.forbidden.wrong_account_type"));
+        }
+        TbUserPreferences userPreferences = userPreferencesDao.get(context.getUserId());
+        return dtoMapper.mapUserPreferencesEntityToDto(userPreferences);
     }
 
     public UserPreferences updateCurrentUserPreferences(UserPreferences req) {
