@@ -21,6 +21,12 @@ public class TbPackage implements Serializable {
     @Column(name = "package_id", insertable = false, updatable = false)
     private Long packageId;
 
+    @Column(name = "pudo_id")
+    private Long pudoId;
+
+    @Column(name = "user_id")
+    private Long userId;
+
     @Column(name = "create_tms")
     @Temporal(TemporalType.TIMESTAMP)
     private Date createTms;
@@ -31,12 +37,6 @@ public class TbPackage implements Serializable {
 
     @Column(name = "package_name")
     private String packageName;
-
-    @Column(name = "pudo_id")
-    private Long pudoId;
-
-    @Column(name = "user_id")
-    private Long userId;
 
     @Column(name = "package_pic_id")
     private UUID packagePicId;

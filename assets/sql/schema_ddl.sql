@@ -180,11 +180,11 @@ CREATE UNIQUE INDEX tb_user_pudo_relation_user_id_pudo_id_delete_tms_idx ON tb_u
 DROP TABLE IF EXISTS tb_package CASCADE;
 CREATE TABLE IF NOT EXISTS tb_package (
 	package_id BIGSERIAL PRIMARY KEY,
+	pudo_id BIGINT NOT NULL REFERENCES tb_pudo(pudo_id),
+	user_id BIGINT NOT NULL REFERENCES tb_user(user_id),
 	create_tms TIMESTAMP(3) NOT NULL,
 	update_tms TIMESTAMP(3) NOT NULL,
 	package_name TEXT NOT NULL,
-	pudo_id BIGINT NOT NULL REFERENCES tb_pudo(pudo_id),
-	user_id BIGINT NOT NULL REFERENCES tb_user(user_id),
 	package_pic_id UUID REFERENCES tb_external_file(external_file_id)
 );
 CREATE INDEX tb_package_pudo_id_idx ON tb_package(pudo_id);
@@ -194,8 +194,8 @@ CREATE INDEX tb_package_user_id_idx ON tb_package(user_id);
 DROP TABLE IF EXISTS tb_package_event CASCADE;
 CREATE TABLE IF NOT EXISTS tb_package_event (
 	package_event_id BIGSERIAL PRIMARY KEY,
-	create_tms TIMESTAMP(3) NOT NULL,
 	package_id BIGINT NOT NULL REFERENCES tb_package(package_id),
+	create_tms TIMESTAMP(3) NOT NULL,
 	package_status TEXT NOT NULL REFERENCES tb_anag_package_status(package_status),
 	auto_flag BOOLEAN NOT NULL,
 	notes TEXT
@@ -219,11 +219,6 @@ CREATE INDEX tb_notification_user_id_idx ON tb_notification(user_id);
 
 
 -- views
-CREATE OR REPLACE VIEW vw_package_status AS
-SELECT t1.*, t2.package_event_id, t2.create_tms event_create_tms, t2.package_status, t2.notes
-FROM tb_package t1, tb_package_event t2
-WHERE t1.package_id = t2.package_id
-AND t2.create_tms = (SELECT MAX(t3.create_tms) FROM tb_package_event t3 WHERE t3.package_id = t2.package_id);
 
 
 -- maintenance

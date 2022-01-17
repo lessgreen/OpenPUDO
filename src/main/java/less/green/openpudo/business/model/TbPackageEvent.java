@@ -22,16 +22,19 @@ public class TbPackageEvent implements Serializable {
     @Column(name = "package_event_id", insertable = false, updatable = false)
     private Long packageEventId;
 
+    @Column(name = "package_id")
+    private Long packageId;
+
     @Column(name = "create_tms")
     @Temporal(TemporalType.TIMESTAMP)
     private Date createTms;
 
-    @Column(name = "package_id")
-    private Long packageId;
-
     @Column(name = "package_status")
     @Convert(converter = PackageStatusConverter.class)
     private PackageStatus packageStatus;
+
+    @Column(name = "auto_flag")
+    private Boolean autoFlag;
 
     @Column(name = "notes")
     private String notes;
