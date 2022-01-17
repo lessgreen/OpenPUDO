@@ -7,8 +7,10 @@ import less.green.openpudo.cdi.ExecutionContext;
 import less.green.openpudo.cdi.service.LocalizationService;
 import less.green.openpudo.cdi.service.StorageService;
 import less.green.openpudo.common.ApiReturnCodes;
+import less.green.openpudo.common.dto.tuple.Quartet;
 import less.green.openpudo.rest.config.exception.ApiException;
 import less.green.openpudo.rest.dto.DtoMapper;
+import less.green.openpudo.rest.dto.pudo.PudoSummary;
 import less.green.openpudo.rest.dto.user.DeviceToken;
 import less.green.openpudo.rest.dto.user.UserPreferences;
 import less.green.openpudo.rest.dto.user.UserProfile;
@@ -18,6 +20,7 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 import static less.green.openpudo.common.StringUtils.sanitizeString;
@@ -40,6 +43,8 @@ public class UserService {
     DeviceTokenDao deviceTokenDao;
     @Inject
     ExternalFileDao externalFileDao;
+    @Inject
+    PudoDao pudoDao;
     @Inject
     PackageDao packageDao;
     @Inject
@@ -200,4 +205,12 @@ public class UserService {
         deviceTokenDao.flush();
     }
 
+    public List<PudoSummary> getCurrentUserPudos() {
+        TbUser user = userDao.get(context.getUserId());
+        if (user.getAccountType() != AccountType.CUSTOMER) {
+            throw new ApiException(ApiReturnCodes.FORBIDDEN, localizationService.getMessage(context.getLanguage(), "error.forbidden.wrong_account_type"));
+        }
+        List<Quartet<Long, String, UUID, String>> rs = pudoDao.getCurrentUserPudos(context.getUserId());
+        return dtoMapper.mapProjectionListToPudoSummaryList(rs);
+    }
 }

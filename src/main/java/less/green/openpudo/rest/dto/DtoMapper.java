@@ -6,13 +6,19 @@ import less.green.openpudo.business.model.TbUserProfile;
 import less.green.openpudo.common.GPSUtils;
 import less.green.openpudo.common.dto.geojson.Feature;
 import less.green.openpudo.common.dto.geojson.Point;
+import less.green.openpudo.common.dto.tuple.Quartet;
 import less.green.openpudo.rest.dto.map.AddressMarker;
+import less.green.openpudo.rest.dto.map.PudoMarker;
+import less.green.openpudo.rest.dto.pudo.PudoSummary;
 import less.green.openpudo.rest.dto.user.UserPreferences;
 import less.green.openpudo.rest.dto.user.UserProfile;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 @Mapper(componentModel = "cdi")
 public interface DtoMapper {
@@ -22,6 +28,22 @@ public interface DtoMapper {
     UserPreferences mapUserPreferencesEntityToDto(TbUserPreferences ent);
 
     TbAddress mapAddressMarkerToAddressEntity(AddressMarker dto);
+
+    @Mapping(source = "values.value0", target = "pudoId")
+    @Mapping(source = "values.value1", target = "lat")
+    @Mapping(source = "values.value2", target = "lon")
+    @Mapping(source = "values.value3", target = "distanceFromOrigin")
+    PudoMarker mapProjectionToPudoMarker(Quartet<Long, BigDecimal, BigDecimal, BigDecimal> values);
+
+    List<PudoMarker> mapProjectionListToPudoMarkerList(List<Quartet<Long, BigDecimal, BigDecimal, BigDecimal>> values);
+
+    @Mapping(source = "values.value0", target = "pudoId")
+    @Mapping(source = "values.value1", target = "businessName")
+    @Mapping(source = "values.value2", target = "pudoPicId")
+    @Mapping(source = "values.value3", target = "label")
+    PudoSummary mapProjectionToPudoSummary(Quartet<Long, String, UUID, String> values);
+
+    List<PudoSummary> mapProjectionListToPudoSummaryList(List<Quartet<Long, String, UUID, String>> values);
 
     default AddressMarker mapFeatureToAddressMarker(Feature feat, BigDecimal lat, BigDecimal lon) {
         if (feat == null) {

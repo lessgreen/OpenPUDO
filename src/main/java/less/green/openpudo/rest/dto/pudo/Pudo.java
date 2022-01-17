@@ -33,12 +33,15 @@ public class Pudo {
     private Address address;
 
     @Schema(readOnly = true)
+    private String rewardMessage;
+
+    @Schema(readOnly = true)
     private Rating rating;
 
     @Schema(readOnly = true)
     private Long customerCount;
 
     @Schema(readOnly = true)
-    private String rewardMessage;
+    private Long packageCount;
 
 }

@@ -10,6 +10,8 @@ import less.green.openpudo.common.ExceptionUtils;
 import less.green.openpudo.common.GPSUtils;
 import less.green.openpudo.common.dto.geojson.Feature;
 import less.green.openpudo.common.dto.geojson.FeatureCollection;
+import less.green.openpudo.common.dto.tuple.Quartet;
+import less.green.openpudo.common.dto.tuple.Triplet;
 import less.green.openpudo.rest.config.exception.ApiException;
 import less.green.openpudo.rest.dto.DtoMapper;
 import less.green.openpudo.rest.dto.map.AddressMarker;
@@ -61,7 +63,7 @@ public class MapService {
                 rs = rs.subList(0, MAX_SEARCH_RESULTS);
             }
             List<SignedAddressMarker> ret = new ArrayList<>(rs.size());
-            for (Feature feat : rs) {
+            for (var feat : rs) {
                 AddressMarker address = dtoMapper.mapFeatureToAddressMarker(feat, lat, lon);
                 String signature = cryptoService.signObject(address);
                 ret.add(new SignedAddressMarker(address, signature));
@@ -122,20 +124,20 @@ public class MapService {
         BigDecimal lonMin = lon.subtract(correctedDeltaDegree);
         BigDecimal lonMax = lon.add(correctedDeltaDegree);
 
-        List<PudoMarker> rs = pudoDao.getPudosOnMap(latMin, latMax, lonMin, lonMax);
-        if (!rs.isEmpty()) {
-            for (PudoMarker pudo : rs) {
-                pudo.setDistanceFromOrigin(GPSUtils.calculateDistanceFromOrigin(pudo.getLat(), pudo.getLon(), lat, lon));
-            }
-            // ordering by distance
-            if (rs.size() > 1) {
-                rs.sort(Comparator.comparingDouble(i -> i.getDistanceFromOrigin().doubleValue()));
-            }
-            // restricting results if necessary (unlikely)
-            if (rs.size() > MAX_PUDO_MARKER_COUNT_ON_MAP) {
-                rs = rs.subList(0, MAX_PUDO_MARKER_COUNT_ON_MAP);
-            }
+        List<Triplet<Long, BigDecimal, BigDecimal>> rs = pudoDao.getPudosOnMap(latMin, latMax, lonMin, lonMax);
+        List<PudoMarker> ret = new ArrayList<>(rs.size());
+        for (var row : rs) {
+            Quartet<Long, BigDecimal, BigDecimal, BigDecimal> values = new Quartet<>(row.getValue0(), row.getValue1(), row.getValue2(), GPSUtils.calculateDistanceFromOrigin(row.getValue1(), row.getValue2(), lat, lon));
+            ret.add(dtoMapper.mapProjectionToPudoMarker(values));
         }
-        return rs;
+        // ordering by distance
+        if (ret.size() > 1) {
+            ret.sort(Comparator.comparingDouble(i -> i.getDistanceFromOrigin().doubleValue()));
+        }
+        // restricting results if necessary (unlikely)
+        if (ret.size() > MAX_PUDO_MARKER_COUNT_ON_MAP) {
+            ret = ret.subList(0, MAX_PUDO_MARKER_COUNT_ON_MAP);
+        }
+        return ret;
     }
 }

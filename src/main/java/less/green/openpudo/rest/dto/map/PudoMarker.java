@@ -14,9 +14,6 @@ public class PudoMarker {
     private Long pudoId;
 
     @Schema(readOnly = true)
-    private String businessName;
-
-    @Schema(readOnly = true)
     private BigDecimal lat;
 
     @Schema(readOnly = true)
@@ -25,9 +22,8 @@ public class PudoMarker {
     @Schema(readOnly = true)
     private BigDecimal distanceFromOrigin;
 
-    public PudoMarker(Long pudoId, String businessName, BigDecimal lat, BigDecimal lon) {
+    public PudoMarker(Long pudoId, BigDecimal lat, BigDecimal lon) {
         this.pudoId = pudoId;
-        this.businessName = businessName;
         this.lat = lat;
         this.lon = lon;
     }

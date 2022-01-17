@@ -9,6 +9,8 @@ import less.green.openpudo.common.dto.tuple.Pair;
 import less.green.openpudo.rest.config.annotation.BinaryAPI;
 import less.green.openpudo.rest.config.exception.ApiException;
 import less.green.openpudo.rest.dto.BaseResponse;
+import less.green.openpudo.rest.dto.pudo.PudoSummary;
+import less.green.openpudo.rest.dto.pudo.PudoSummaryListResponse;
 import less.green.openpudo.rest.dto.scalar.UUIDResponse;
 import less.green.openpudo.rest.dto.user.*;
 import lombok.extern.log4j.Log4j2;
@@ -21,6 +23,7 @@ import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.io.IOException;
+import java.util.List;
 import java.util.UUID;
 
 import static less.green.openpudo.common.MultipartUtils.ALLOWED_IMAGE_MIME_TYPES;
@@ -145,6 +148,15 @@ public class UserResource {
 
         userService.upsertDeviceToken(req);
         return new BaseResponse(context.getExecutionId(), ApiReturnCodes.OK);
+    }
+
+    @GET
+    @Path("/me/pudos")
+    @SecurityRequirement(name = "JWT")
+    @Operation(summary = "Get favourite PUDOs for current user")
+    public PudoSummaryListResponse getCurrentUserPudos() {
+        List<PudoSummary> ret = userService.getCurrentUserPudos();
+        return new PudoSummaryListResponse(context.getExecutionId(), ApiReturnCodes.OK, ret);
     }
 
 }
