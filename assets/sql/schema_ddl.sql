@@ -220,28 +220,28 @@ CREATE INDEX tb_notification_user_id_idx ON tb_notification(user_id);
 
 DROP TABLE IF EXISTS tb_review CASCADE;
 CREATE TABLE IF NOT EXISTS tb_review (
-    review_id BIGSERIAL PRIMARY KEY,
-    user_id BIGINT NOT NULL REFERENCES tb_user(user_id),
-    pudo_id BIGINT NOT NULL REFERENCES tb_pudo(pudo_id),
-    package_id BIGINT NOT NULL REFERENCES tb_package(package_id),
-    create_tms TIMESTAMP(3) NOT NULL,
-    update_tms TIMESTAMP(3),
-    title TEXT NOT NULL,
-    message TEXT NOT NULL,
-    score SMALLINT NOT NULL,
-    review_pic_id UUID REFERENCES tb_external_file(external_file_id)
+	review_id BIGSERIAL PRIMARY KEY,
+	user_id BIGINT NOT NULL REFERENCES tb_user(user_id),
+	pudo_id BIGINT NOT NULL REFERENCES tb_pudo(pudo_id),
+	package_id BIGINT NOT NULL REFERENCES tb_package(package_id),
+	create_tms TIMESTAMP(3) NOT NULL,
+	update_tms TIMESTAMP(3),
+	title TEXT NOT NULL,
+	message TEXT NOT NULL,
+	score SMALLINT NOT NULL,
+	review_pic_id UUID REFERENCES tb_external_file(external_file_id)
 );
 CREATE INDEX tb_review_user_id ON tb_review(user_id);
 CREATE INDEX tb_review_pudo_id ON tb_review(pudo_id);
 CREATE UNIQUE INDEX tb_review_package_id ON tb_review(package_id);
 
 
--- views
-CREATE OR REPLACE VIEW vw_pudo_rating AS
-SELECT pudo_id, COUNT(*) review_count, AVG(score) average_score
-FROM tb_review
-GROUP BY pudo_id;
-
+DROP TABLE IF EXISTS tb_rating CASCADE;
+CREATE TABLE IF NOT EXISTS tb_rating (
+	pudo_id BIGINT PRIMARY KEY REFERENCES tb_pudo(pudo_id),
+	review_count BIGINT NOT NULL,
+	average_score DECIMAL(3,2)
+);
 
 -- maintenance
 VACUUM FULL ANALYZE;

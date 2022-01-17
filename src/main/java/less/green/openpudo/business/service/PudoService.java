@@ -56,7 +56,7 @@ public class PudoService {
         Date now = new Date();
         Long pudoId = userPudoRelationDao.getPudoIdByOwnerUserId(context.getUserId());
         TbPudo pudo = pudoDao.get(pudoId);
-        UUID oldId = pudo.getProfilePicId();
+        UUID oldId = pudo.getPudoPicId();
         UUID newId = UUID.randomUUID();
         // save new file first
         storageService.saveFileBinary(newId, bytes);
@@ -74,7 +74,7 @@ public class PudoService {
         externalFileDao.flush();
         // switch foreign key
         pudo.setUpdateTms(now);
-        pudo.setProfilePicId(newId);
+        pudo.setPudoPicId(newId);
         pudoDao.flush();
         // remove old row
         externalFileDao.delete(oldId);

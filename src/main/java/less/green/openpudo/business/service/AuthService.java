@@ -55,6 +55,8 @@ public class AuthService {
     @Inject
     PudoDao pudoDao;
     @Inject
+    RatingDao ratingDao;
+    @Inject
     UserDao userDao;
     @Inject
     UserPreferencesDao userPreferencesDao;
@@ -219,7 +221,7 @@ public class AuthService {
         pudo.setUpdateTms(now);
         pudo.setBusinessName(sanitizeString(req.getPudo().getBusinessName()));
         pudo.setPublicPhoneNumber(sanitizeString(req.getPudo().getPublicPhoneNumber()));
-        pudo.setProfilePicId(null);
+        pudo.setPudoPicId(null);
         pudoDao.persist(pudo);
         pudoDao.flush();
         TbAddress address = dtoMapper.mapAddressMarkerToAddressEntity(req.getSignedAddressMarker().getAddress());
@@ -235,7 +237,12 @@ public class AuthService {
         userPudoRelation.setRelationType(RelationType.OWNER);
         userPudoRelation.setCustomerSuffix(null);
         userPudoRelationDao.persist(userPudoRelation);
-        userPudoRelationDao.flush();
+        TbRating rating = new TbRating();
+        rating.setPudoId(pudo.getPudoId());
+        rating.setReviewCount(0L);
+        rating.setAverageScore(null);
+        ratingDao.persist(rating);
+        pudoDao.flush();
         log.info("[{}] Registered user {} as {}", context.getExecutionId(), user.getUserId(), user.getAccountType());
         return jwtService.generateUserTokenData(user.getUserId(), mapAccountTypeToAccessProfile(user.getAccountType()));
     }
