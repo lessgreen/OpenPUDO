@@ -114,7 +114,7 @@ public class UserService {
         return dtoMapper.mapUserProfileEntityToDto(userProfile, user.getPhoneNumber(), packageCount, null);
     }
 
-    public UUID updateCurrentUserProfilePic(String mimeType, byte[] bytes) {
+    public UUID updateCurrentUserProfilePicture(String mimeType, byte[] bytes) {
         TbUser user = userDao.get(context.getUserId());
         if (user.getAccountType() != AccountType.CUSTOMER) {
             throw new ApiException(ApiReturnCodes.FORBIDDEN, localizationService.getMessage(context.getLanguage(), "error.forbidden.wrong_account_type"));

@@ -78,12 +78,12 @@ public class UserResource {
     }
 
     @PUT
-    @Path("/me/profile-pic")
+    @Path("/me/profile/picture")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @BinaryAPI
     @SecurityRequirement(name = "JWT")
     @Operation(summary = "Update profile picture for current user")
-    public UUIDResponse updateCurrentUserProfilePic(MultipartFormDataInput req) {
+    public UUIDResponse updateCurrentUserProfilePicture(MultipartFormDataInput req) {
         // sanitize input
         if (req == null) {
             throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.empty_request"));
@@ -105,7 +105,7 @@ public class UserResource {
             throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.invalid_field", "mimeType"));
         }
 
-        UUID ret = userService.updateCurrentUserProfilePic(uploadedFile.getValue0(), uploadedFile.getValue1());
+        UUID ret = userService.updateCurrentUserProfilePicture(uploadedFile.getValue0(), uploadedFile.getValue1());
         return new UUIDResponse(context.getExecutionId(), ApiReturnCodes.OK, ret);
     }
 

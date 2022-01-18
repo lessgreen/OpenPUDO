@@ -105,7 +105,7 @@ public class PudoService {
         return sb.toString();
     }
 
-    public UUID updateCurrentPudoProfilePic(String mimeType, byte[] bytes) {
+    public UUID updateCurrentPudoPicture(String mimeType, byte[] bytes) {
         TbUser user = userDao.get(context.getUserId());
         if (user.getAccountType() != AccountType.PUDO) {
             throw new ApiException(ApiReturnCodes.FORBIDDEN, localizationService.getMessage(context.getLanguage(), "error.forbidden.wrong_account_type"));

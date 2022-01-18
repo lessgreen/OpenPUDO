@@ -62,12 +62,12 @@ public class PudoResource {
     }
 
     @PUT
-    @Path("/me/profile-pic")
+    @Path("/me/picture")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @BinaryAPI
     @SecurityRequirement(name = "JWT")
     @Operation(summary = "Update public profile picture for current PUDO")
-    public UUIDResponse updateCurrentPudoProfilePic(MultipartFormDataInput req) {
+    public UUIDResponse updateCurrentPudoPicture(MultipartFormDataInput req) {
         // sanitize input
         if (req == null) {
             throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.empty_request"));
@@ -89,7 +89,7 @@ public class PudoResource {
             throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.invalid_field", "mimeType"));
         }
 
-        UUID ret = pudoService.updateCurrentPudoProfilePic(uploadedFile.getValue0(), uploadedFile.getValue1());
+        UUID ret = pudoService.updateCurrentPudoPicture(uploadedFile.getValue0(), uploadedFile.getValue1());
         return new UUIDResponse(context.getExecutionId(), ApiReturnCodes.OK, ret);
     }
 
