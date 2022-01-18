@@ -8,6 +8,10 @@ import javax.enterprise.context.RequestScoped;
 import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @RequestScoped
 @Transactional(Transactional.TxType.MANDATORY)
@@ -41,6 +45,28 @@ public class UserPudoRelationDao extends BaseEntityDao<TbUserPudoRelation, Long>
         } catch (NoResultException ex) {
             return null;
         }
+    }
+
+    public String getPastCustomerSuffix(Long pudoId, Long userId) {
+        String qs = "SELECT DISTINCT(t.customerSuffix) FROM TbUserPudoRelation t WHERE t.userId = :userId AND t.pudoId = :pudoId AND t.relationType = :relationType AND t.deleteTms IS NOT NULL";
+        try {
+            TypedQuery<String> q = em.createQuery(qs, String.class);
+            q.setParameter("userId", userId);
+            q.setParameter("pudoId", pudoId);
+            q.setParameter("relationType", RelationType.CUSTOMER);
+            return q.getSingleResult();
+        } catch (NoResultException ex) {
+            return null;
+        }
+    }
+
+    public Set<String> getCustomerSuffixSetByPudoId(Long pudoId) {
+        String qs = "SELECT DISTINCT(t.customerSuffix) FROM TbUserPudoRelation t WHERE t.pudoId = :pudoId AND t.relationType = :relationType";
+        TypedQuery<String> q = em.createQuery(qs, String.class);
+        q.setParameter("pudoId", pudoId);
+        q.setParameter("relationType", RelationType.CUSTOMER);
+        List<String> rs = q.getResultList();
+        return rs.isEmpty() ? Collections.emptySet() : new HashSet<>(rs);
     }
 
 }

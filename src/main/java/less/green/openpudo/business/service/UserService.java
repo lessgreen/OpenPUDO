@@ -3,6 +3,7 @@ package less.green.openpudo.business.service;
 import less.green.openpudo.business.dao.*;
 import less.green.openpudo.business.model.*;
 import less.green.openpudo.business.model.usertype.AccountType;
+import less.green.openpudo.business.model.usertype.RelationType;
 import less.green.openpudo.cdi.ExecutionContext;
 import less.green.openpudo.cdi.service.LocalizationService;
 import less.green.openpudo.cdi.service.StorageService;
@@ -21,8 +22,11 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
 
+import static less.green.openpudo.common.StringUtils.isEmpty;
 import static less.green.openpudo.common.StringUtils.sanitizeString;
 
 @RequestScoped
@@ -102,7 +106,7 @@ public class UserService {
             TbUserProfile userProfile = userProfileDao.get(userId);
             // check if pudo is granted to see user's phone number
             TbUserPreferences userPreferences = userPreferencesDao.get(userId);
-            String phoneNumber = userPreferences.getShowPhoneNumber() == true ? userDao.get(userId).getPhoneNumber() : null;
+            String phoneNumber = userPreferences.getShowPhoneNumber() ? userDao.get(userId).getPhoneNumber() : null;
             long packageCount = packageDao.getPackageCountForCustomer(context.getUserId());
             return dtoMapper.mapUserProfileEntityToDto(userProfile, phoneNumber, userPudoRelation.getCustomerSuffix(), packageCount);
         } else {
@@ -213,4 +217,98 @@ public class UserService {
         List<Quartet<Long, String, UUID, String>> rs = pudoDao.getCurrentUserPudos(context.getUserId());
         return dtoMapper.mapProjectionListToPudoSummaryList(rs);
     }
+
+    public List<PudoSummary> addPudoToFavourites(Long pudoId) {
+        TbUser user = userDao.get(context.getUserId());
+        if (user.getAccountType() != AccountType.CUSTOMER) {
+            throw new ApiException(ApiReturnCodes.FORBIDDEN, localizationService.getMessage(context.getLanguage(), "error.forbidden.wrong_account_type"));
+        }
+        TbUserProfile userProfile = userProfileDao.get(context.getUserId());
+        if (!isUserProfileComplete(userProfile)) {
+            throw new ApiException(ApiReturnCodes.FORBIDDEN, localizationService.getMessage(context.getLanguage(), "error.forbidden.user_profile_incomplete"));
+        }
+        TbPudo pudo = pudoDao.get(pudoId);
+        if (pudo == null) {
+            throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.resource_not_exists"));
+        }
+        if (!isPudoProfileComplete(pudo)) {
+            throw new ApiException(ApiReturnCodes.FORBIDDEN, localizationService.getMessage(context.getLanguage(), "error.forbidden.pudo_profile_incomplete"));
+        }
+        // check if there is a relation already
+        TbUserPudoRelation userPudoRelation = userPudoRelationDao.getUserPudoActiveCustomerRelation(pudo.getPudoId(), context.getUserId());
+        if (userPudoRelation != null) {
+            throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.forbidden.pudo_already_favourite"));
+        }
+        // if not, check if there was in the past
+        String customerSuffix = userPudoRelationDao.getPastCustomerSuffix(pudoId, context.getUserId());
+        // if is the first relation between pudo and customer, generate a random unique suffix
+        if (customerSuffix == null) {
+            Set<String> suffixes = userPudoRelationDao.getCustomerSuffixSetByPudoId(pudoId);
+            // we keep randomizing until we get a suffix never used before for that specific pudo
+            do {
+                customerSuffix = generateCustomerSuffix(userProfile.getFirstName(), userProfile.getLastName());
+            } while (suffixes.contains(customerSuffix));
+        }
+        userPudoRelation = new TbUserPudoRelation();
+        userPudoRelation.setUserId(context.getUserId());
+        userPudoRelation.setPudoId(pudoId);
+        userPudoRelation.setCreateTms(new Date());
+        userPudoRelation.setDeleteTms(null);
+        userPudoRelation.setRelationType(RelationType.CUSTOMER);
+        userPudoRelation.setCustomerSuffix(customerSuffix);
+        userPudoRelationDao.persist(userPudoRelation);
+        userPudoRelationDao.flush();
+        log.info("[{}] Added PUDO: {} to user: {} favourites", context.getExecutionId(), pudoId, context.getUserId());
+        return getCurrentUserPudos();
+    }
+
+    public List<PudoSummary> removePudoFromFavourites(Long pudoId) {
+        TbUser user = userDao.get(context.getUserId());
+        if (user.getAccountType() != AccountType.CUSTOMER) {
+            throw new ApiException(ApiReturnCodes.FORBIDDEN, localizationService.getMessage(context.getLanguage(), "error.forbidden.wrong_account_type"));
+        }
+        TbPudo pudo = pudoDao.get(pudoId);
+        if (pudo == null) {
+            throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.resource_not_exists"));
+        }
+        TbUserPudoRelation userPudoRelation = userPudoRelationDao.getUserPudoActiveCustomerRelation(pudo.getPudoId(), context.getUserId());
+        if (userPudoRelation == null) {
+            throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.forbidden.pudo_not_favourite"));
+        }
+        // TODO: prevent removal when there are packages in transit
+        userPudoRelation.setDeleteTms(new Date());
+        userPudoRelationDao.flush();
+        log.info("[{}] Removed PUDO: {} from user: {} favourites", context.getExecutionId(), pudoId, context.getUserId());
+        return getCurrentUserPudos();
+    }
+
+    private boolean isUserProfileComplete(TbUserProfile userProfile) {
+        return (!isEmpty(userProfile.getFirstName()) && !isEmpty(userProfile.getLastName()) || userProfile.getProfilePicId() != null);
+    }
+
+    private boolean isPudoProfileComplete(TbPudo pudo) {
+        return pudo.getPudoPicId() != null;
+    }
+
+    private String generateCustomerSuffix(String firstName, String lastName) {
+        // we remove B/I/O and 0/1/8 which can confuse future OCR implementation
+        final String alphabet = "ACDEFGHJKLMNPQRSTUVWXYZ";
+        final String numbers = "2345679";
+        // we don't need cryptographically secure RNG
+        ThreadLocalRandom rand = ThreadLocalRandom.current();
+        StringBuilder sb = new StringBuilder(5);
+        // customer suffix if a 5 letter string: 2 letters (with customer initials if available) and 3 numbers
+        if (!isEmpty(firstName) && !isEmpty(lastName)) {
+            sb.append(firstName.substring(0, 1).toUpperCase());
+            sb.append(lastName.substring(0, 1).toUpperCase());
+        } else {
+            sb.append(alphabet.charAt(rand.nextInt(alphabet.length())));
+            sb.append(alphabet.charAt(rand.nextInt(alphabet.length())));
+        }
+        sb.append(numbers.charAt(rand.nextInt(numbers.length())));
+        sb.append(numbers.charAt(rand.nextInt(numbers.length())));
+        sb.append(numbers.charAt(rand.nextInt(numbers.length())));
+        return sb.toString();
+    }
+
 }

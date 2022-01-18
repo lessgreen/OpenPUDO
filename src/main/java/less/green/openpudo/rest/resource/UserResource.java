@@ -159,4 +159,22 @@ public class UserResource {
         return new PudoSummaryListResponse(context.getExecutionId(), ApiReturnCodes.OK, ret);
     }
 
+    @POST
+    @Path("/me/pudos/{pudoId}")
+    @SecurityRequirement(name = "JWT")
+    @Operation(summary = "Add PUDO to current user's favourite PUDOs")
+    public PudoSummaryListResponse addPudoToFavourites(@PathParam(value = "pudoId") Long pudoId) {
+        List<PudoSummary> ret = userService.addPudoToFavourites(pudoId);
+        return new PudoSummaryListResponse(context.getExecutionId(), ApiReturnCodes.OK, ret);
+    }
+
+    @DELETE
+    @Path("/me/pudos/{pudoId}")
+    @SecurityRequirement(name = "JWT")
+    @Operation(summary = "Remove PUDO from current user's favourite PUDOs")
+    public PudoSummaryListResponse removePudoFromFavourites(@PathParam(value = "pudoId") Long pudoId) {
+        List<PudoSummary> ret = userService.removePudoFromFavourites(pudoId);
+        return new PudoSummaryListResponse(context.getExecutionId(), ApiReturnCodes.OK, ret);
+    }
+
 }
