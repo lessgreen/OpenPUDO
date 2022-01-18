@@ -66,7 +66,7 @@ public class PudoResource {
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @BinaryAPI
     @SecurityRequirement(name = "JWT")
-    @Operation(summary = "Update public profile picture for current PUDO")
+    @Operation(summary = "Update public picture for current PUDO")
     public UUIDResponse updateCurrentPudoPicture(MultipartFormDataInput req) {
         // sanitize input
         if (req == null) {
