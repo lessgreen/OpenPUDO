@@ -32,9 +32,9 @@ public class UserProfile {
     private String phoneNumber;
 
     @Schema(readOnly = true)
-    private String customerSuffix;
+    private Long packageCount;
 
     @Schema(readOnly = true)
-    private Long packageCount;
+    private String customerSuffix;
 
 }

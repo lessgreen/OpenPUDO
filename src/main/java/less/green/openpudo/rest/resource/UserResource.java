@@ -46,6 +46,15 @@ public class UserResource {
     UserService userService;
 
     @GET
+    @Path("/{userId}/profile")
+    @SecurityRequirement(name = "JWT")
+    @Operation(summary = "Get profile for specific user")
+    public UserProfileResponse getUserProfileByUserId(@PathParam(value = "userId") Long userId) {
+        UserProfile ret = userService.getUserProfileByUserId(userId);
+        return new UserProfileResponse(context.getExecutionId(), ApiReturnCodes.OK, ret);
+    }
+
+    @GET
     @Path("/me/profile")
     @SecurityRequirement(name = "JWT")
     @Operation(summary = "Get profile for current user")
@@ -65,15 +74,6 @@ public class UserResource {
         }
 
         UserProfile ret = userService.updateCurrentUserProfile(req);
-        return new UserProfileResponse(context.getExecutionId(), ApiReturnCodes.OK, ret);
-    }
-
-    @GET
-    @Path("/{userId}/profile")
-    @SecurityRequirement(name = "JWT")
-    @Operation(summary = "Get profile for current user")
-    public UserProfileResponse getUserProfileByUserId(@PathParam(value = "userId") Long userId) {
-        UserProfile ret = userService.getUserProfileByUserId(userId);
         return new UserProfileResponse(context.getExecutionId(), ApiReturnCodes.OK, ret);
     }
 

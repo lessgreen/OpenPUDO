@@ -63,31 +63,6 @@ public class UserService {
     @Inject
     DtoMapper dtoMapper;
 
-    public UserProfile getCurrentUserProfile() {
-        TbUser user = userDao.get(context.getUserId());
-        if (user.getAccountType() != AccountType.CUSTOMER) {
-            throw new ApiException(ApiReturnCodes.FORBIDDEN, localizationService.getMessage(context.getLanguage(), "error.forbidden.wrong_account_type"));
-        }
-        TbUserProfile userProfile = userProfileDao.get(context.getUserId());
-        long packageCount = packageDao.getPackageCountForCustomer(context.getUserId());
-        return dtoMapper.mapUserProfileEntityToDto(userProfile, user.getPhoneNumber(), null, packageCount);
-    }
-
-    public UserProfile updateCurrentUserProfile(UserProfile req) {
-        TbUser user = userDao.get(context.getUserId());
-        if (user.getAccountType() != AccountType.CUSTOMER) {
-            throw new ApiException(ApiReturnCodes.FORBIDDEN, localizationService.getMessage(context.getLanguage(), "error.forbidden.wrong_account_type"));
-        }
-        TbUserProfile userProfile = userProfileDao.get(context.getUserId());
-        userProfile.setUpdateTms(new Date());
-        userProfile.setFirstName(sanitizeString(req.getFirstName()));
-        userProfile.setLastName(sanitizeString(req.getLastName()));
-        userProfileDao.flush();
-        long packageCount = packageDao.getPackageCountForCustomer(context.getUserId());
-        log.info("[{}] Updated profile for user: {}", context.getExecutionId(), context.getUserId());
-        return dtoMapper.mapUserProfileEntityToDto(userProfile, user.getPhoneNumber(), null, packageCount);
-    }
-
     public UserProfile getUserProfileByUserId(Long userId) {
         TbUser caller = userDao.get(context.getUserId());
         if (caller.getAccountType() == AccountType.CUSTOMER) {
@@ -108,10 +83,35 @@ public class UserService {
             TbUserPreferences userPreferences = userPreferencesDao.get(userId);
             String phoneNumber = userPreferences.getShowPhoneNumber() ? userDao.get(userId).getPhoneNumber() : null;
             long packageCount = packageDao.getPackageCountForCustomer(context.getUserId());
-            return dtoMapper.mapUserProfileEntityToDto(userProfile, phoneNumber, userPudoRelation.getCustomerSuffix(), packageCount);
+            return dtoMapper.mapUserProfileEntityToDto(userProfile, phoneNumber, packageCount, userPudoRelation.getCustomerSuffix());
         } else {
             throw new AssertionError("Unsupported AccountType: " + caller.getAccountType());
         }
+    }
+
+    public UserProfile getCurrentUserProfile() {
+        TbUser user = userDao.get(context.getUserId());
+        if (user.getAccountType() != AccountType.CUSTOMER) {
+            throw new ApiException(ApiReturnCodes.FORBIDDEN, localizationService.getMessage(context.getLanguage(), "error.forbidden.wrong_account_type"));
+        }
+        TbUserProfile userProfile = userProfileDao.get(context.getUserId());
+        long packageCount = packageDao.getPackageCountForCustomer(context.getUserId());
+        return dtoMapper.mapUserProfileEntityToDto(userProfile, user.getPhoneNumber(), packageCount, null);
+    }
+
+    public UserProfile updateCurrentUserProfile(UserProfile req) {
+        TbUser user = userDao.get(context.getUserId());
+        if (user.getAccountType() != AccountType.CUSTOMER) {
+            throw new ApiException(ApiReturnCodes.FORBIDDEN, localizationService.getMessage(context.getLanguage(), "error.forbidden.wrong_account_type"));
+        }
+        TbUserProfile userProfile = userProfileDao.get(context.getUserId());
+        userProfile.setUpdateTms(new Date());
+        userProfile.setFirstName(sanitizeString(req.getFirstName()));
+        userProfile.setLastName(sanitizeString(req.getLastName()));
+        userProfileDao.flush();
+        long packageCount = packageDao.getPackageCountForCustomer(context.getUserId());
+        log.info("[{}] Updated profile for user: {}", context.getExecutionId(), context.getUserId());
+        return dtoMapper.mapUserProfileEntityToDto(userProfile, user.getPhoneNumber(), packageCount, null);
     }
 
     public UUID updateCurrentUserProfilePic(String mimeType, byte[] bytes) {

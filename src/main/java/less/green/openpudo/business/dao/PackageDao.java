@@ -21,4 +21,11 @@ public class PackageDao extends BaseEntityDao<TbPackage, Long> {
         return q.getSingleResult();
     }
 
+    public long getPackageCountForPudo(Long pudoId) {
+        String qs = "SELECT COUNT(*) FROM TbPackage t WHERE t.pudoId = :pudoId ";
+        TypedQuery<Long> q = em.createQuery(qs, Long.class);
+        q.setParameter("pudoId", pudoId);
+        return q.getSingleResult();
+    }
+
 }

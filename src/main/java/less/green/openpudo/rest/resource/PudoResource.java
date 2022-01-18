@@ -7,7 +7,10 @@ import less.green.openpudo.common.ApiReturnCodes;
 import less.green.openpudo.common.MultipartUtils;
 import less.green.openpudo.common.dto.tuple.Pair;
 import less.green.openpudo.rest.config.annotation.BinaryAPI;
+import less.green.openpudo.rest.config.annotation.ProtectedAPI;
 import less.green.openpudo.rest.config.exception.ApiException;
+import less.green.openpudo.rest.dto.pudo.Pudo;
+import less.green.openpudo.rest.dto.pudo.PudoResponse;
 import less.green.openpudo.rest.dto.scalar.UUIDResponse;
 import lombok.extern.log4j.Log4j2;
 import org.eclipse.microprofile.openapi.annotations.Operation;
@@ -16,10 +19,7 @@ import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.io.IOException;
 import java.util.UUID;
@@ -41,6 +41,25 @@ public class PudoResource {
 
     @Inject
     PudoService pudoService;
+
+    @GET
+    @Path("/{pudoId}")
+    @ProtectedAPI
+    @SecurityRequirement(name = "JWT")
+    @Operation(summary = "Get profile for specific PUDO")
+    public PudoResponse getPudoByPudoId(@PathParam(value = "pudoId") Long pudoId) {
+        Pudo ret = pudoService.getPudoByPudoId(pudoId);
+        return new PudoResponse(context.getExecutionId(), ApiReturnCodes.OK, ret);
+    }
+
+    @GET
+    @Path("/me")
+    @SecurityRequirement(name = "JWT")
+    @Operation(summary = "Get profile for specific PUDO")
+    public PudoResponse getCurrentPudo() {
+        Pudo ret = pudoService.getCurrentPudo();
+        return new PudoResponse(context.getExecutionId(), ApiReturnCodes.OK, ret);
+    }
 
     @PUT
     @Path("/me/profile-pic")

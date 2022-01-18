@@ -1,15 +1,17 @@
 package less.green.openpudo.rest.dto;
 
-import less.green.openpudo.business.model.TbAddress;
-import less.green.openpudo.business.model.TbUserPreferences;
-import less.green.openpudo.business.model.TbUserProfile;
+import less.green.openpudo.business.model.*;
 import less.green.openpudo.common.GPSUtils;
 import less.green.openpudo.common.dto.geojson.Feature;
 import less.green.openpudo.common.dto.geojson.Point;
 import less.green.openpudo.common.dto.tuple.Quartet;
+import less.green.openpudo.common.dto.tuple.Triplet;
 import less.green.openpudo.rest.dto.map.AddressMarker;
 import less.green.openpudo.rest.dto.map.PudoMarker;
+import less.green.openpudo.rest.dto.pudo.Address;
+import less.green.openpudo.rest.dto.pudo.Pudo;
 import less.green.openpudo.rest.dto.pudo.PudoSummary;
+import less.green.openpudo.rest.dto.pudo.Rating;
 import less.green.openpudo.rest.dto.user.UserPreferences;
 import less.green.openpudo.rest.dto.user.UserProfile;
 import org.mapstruct.Mapper;
@@ -23,9 +25,18 @@ import java.util.UUID;
 @Mapper(componentModel = "cdi")
 public interface DtoMapper {
 
-    UserProfile mapUserProfileEntityToDto(TbUserProfile ent, String phoneNumber, String customerSuffix, Long packageCount);
+    UserProfile mapUserProfileEntityToDto(TbUserProfile ent, String phoneNumber, Long packageCount, String customerSuffix);
 
     UserPreferences mapUserPreferencesEntityToDto(TbUserPreferences ent);
+
+    @Mapping(source = "ent.value0", target = ".")
+    @Mapping(source = "ent.value1", target = "address")
+    @Mapping(source = "ent.value2", target = "rating")
+    Pudo mapPudoEntityToDto(Triplet<TbPudo, TbAddress, TbRating> ent);
+
+    Address mapAddressEntityToDto(TbAddress ent);
+
+    Rating mapRatingEntityToDto(TbRating ent);
 
     TbAddress mapAddressMarkerToAddressEntity(AddressMarker dto);
 

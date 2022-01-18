@@ -69,4 +69,12 @@ public class UserPudoRelationDao extends BaseEntityDao<TbUserPudoRelation, Long>
         return rs.isEmpty() ? Collections.emptySet() : new HashSet<>(rs);
     }
 
+    public long getActiveCustomerCountForPudo(Long pudoId) {
+        String qs = "SELECT COUNT(*) FROM TbUserPudoRelation t WHERE t.pudoId = :pudoId AND t.relationType = :relationType AND t.deleteTms IS NULL";
+        TypedQuery<Long> q = em.createQuery(qs, Long.class);
+        q.setParameter("pudoId", pudoId);
+        q.setParameter("relationType", RelationType.CUSTOMER);
+        return q.getSingleResult();
+    }
+
 }

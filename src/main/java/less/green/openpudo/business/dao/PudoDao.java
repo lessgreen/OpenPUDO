@@ -1,12 +1,15 @@
 package less.green.openpudo.business.dao;
 
+import less.green.openpudo.business.model.TbAddress;
 import less.green.openpudo.business.model.TbPudo;
+import less.green.openpudo.business.model.TbRating;
 import less.green.openpudo.business.model.usertype.RelationType;
 import less.green.openpudo.common.dto.tuple.Quartet;
 import less.green.openpudo.common.dto.tuple.Triplet;
 import lombok.extern.log4j.Log4j2;
 
 import javax.enterprise.context.RequestScoped;
+import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
@@ -22,6 +25,20 @@ public class PudoDao extends BaseEntityDao<TbPudo, Long> {
 
     public PudoDao() {
         super(TbPudo.class, "pudoId");
+    }
+
+    public Triplet<TbPudo, TbAddress, TbRating> getPudoDeepByPudoId(Long pudoId) {
+        String qs = "SELECT t1, t2, t3 "
+                + "FROM TbPudo t1, TbAddress t2, TbRating t3 "
+                + "WHERE t1.pudoId = :pudoId AND t1.pudoId = t2.pudoId AND t1.pudoId = t3.pudoId";
+        try {
+            TypedQuery<Object[]> q = em.createQuery(qs, Object[].class);
+            q.setParameter("pudoId", pudoId);
+            Object[] rs = q.getSingleResult();
+            return new Triplet<>((TbPudo) rs[0], (TbAddress) rs[1], (TbRating) rs[2]);
+        } catch (NoResultException ex) {
+            return null;
+        }
     }
 
     public List<Triplet<Long, BigDecimal, BigDecimal>> getPudosOnMap(BigDecimal latMin, BigDecimal latMax, BigDecimal lonMin, BigDecimal lonMax) {
