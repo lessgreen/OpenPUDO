@@ -78,7 +78,7 @@ public class UserResource {
     }
 
     @PUT
-    @Path("/me/profile/picture")
+    @Path("/me/picture")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @BinaryAPI
     @SecurityRequirement(name = "JWT")
