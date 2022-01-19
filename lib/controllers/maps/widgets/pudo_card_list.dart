@@ -22,7 +22,7 @@ class PudoCardList extends StatelessWidget {
                 name: "Bar - La pinta",
                 address: "Via ippolito, 8",
                 stars: 3,
-                onTap: () => onTap,
+                onTap: onTap,
                 image:
                 'https://cdn.skuola.net/news_foto/2017/descrizione-bar.jpg',
               )),
