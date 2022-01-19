@@ -29,6 +29,8 @@ class _RegistrationCompleteControllerState
     extends State<RegistrationCompleteController> {
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(
+        SystemUiOverlayStyle.dark.copyWith(statusBarColor: Colors.transparent));
     return MultiProvider(
         providers: registrationCompleteControllerProviders,
         child: Consumer<RegistrationCompleteControllerViewModel?>(
@@ -56,29 +58,32 @@ class _RegistrationCompleteControllerState
                       height: 10,
                     ),
                     SizedBox(
-                        width: MediaQuery.of(context).size.width/3*2,
+                        width: MediaQuery.of(context).size.width / 3 * 2,
                         child: Text(
                           'Adesso potrai usare questo indirizzo per farti inviare i tuoi pacchi in totale comodità!',
                           textAlign: TextAlign.center,
-                          style: Theme.of(context).textTheme.subtitle1?.copyWith(fontWeight: FontWeight.w400),
+                          style: Theme.of(context)
+                              .textTheme
+                              .subtitle1
+                              ?.copyWith(fontWeight: FontWeight.w400),
                         )),
                     const SizedBox(height: Dimension.paddingL),
                     Padding(
-                      padding: const EdgeInsets.only(
-                          left: Dimension.padding, right: Dimension.padding),
-                      child: PudoMapCard(
-                        showOnly: true,
-                        name: "Bar - La pinta",
-                        address: "Via ippolito, 8",
-                        stars: 3,
-                        onTap: (){},
-                        image:
-                        'https://cdn.skuola.net/news_foto/2017/descrizione-bar.jpg',
-                      )
-                    ),
+                        padding: const EdgeInsets.only(
+                            left: Dimension.padding, right: Dimension.padding),
+                        child: PudoMapCard(
+                          showOnly: true,
+                          name: "Bar - La pinta",
+                          address: "Via ippolito, 8",
+                          stars: 3,
+                          onTap: () {},
+                          image:
+                              'https://cdn.skuola.net/news_foto/2017/descrizione-bar.jpg',
+                        )),
                     const SizedBox(height: Dimension.paddingL),
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: Dimension.padding),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: Dimension.padding),
                       child: RichText(
                         text: TextSpan(
                           text: '',
@@ -99,8 +104,14 @@ class _RegistrationCompleteControllerState
                             ),
                             TextSpan(
                               text:
-                              'Permetti al pudo di contattarm nal mio numero telefonico in caso di comunicazioni inerenti i miei pacchi.',
-                              style: Theme.of(context).textTheme.subtitle1?.copyWith(fontStyle: FontStyle.italic,height: 1.5,letterSpacing: 0),
+                                  'Permetti al pudo di contattarm nal mio numero telefonico in caso di comunicazioni inerenti i miei pacchi.',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .subtitle1
+                                  ?.copyWith(
+                                      fontStyle: FontStyle.italic,
+                                      height: 1.5,
+                                      letterSpacing: 0),
                             ),
                           ],
                         ),
@@ -111,7 +122,7 @@ class _RegistrationCompleteControllerState
                       padding: const EdgeInsets.symmetric(
                         horizontal: Dimension.padding,
                       ),
-                      onPressed: ()=> viewModel!.onInstructionsClick(context),
+                      onPressed: () => viewModel!.onInstructionsClick(context),
                       text: 'Vedi le istruzioni',
                     ),
                     const SizedBox(height: Dimension.padding),

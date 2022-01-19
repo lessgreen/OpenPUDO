@@ -16,7 +16,7 @@ class PudoMapCard extends StatelessWidget {
       required this.name,
       required this.address,
       required this.stars,
-      this.showOnly=false})
+      this.showOnly = false})
       : super(key: key);
 
   @override
@@ -43,7 +43,7 @@ class PudoMapCard extends StatelessWidget {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.only(left:Dimension.padding),
+                padding: const EdgeInsets.only(left: Dimension.padding),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -70,20 +70,20 @@ class PudoMapCard extends StatelessWidget {
                 ),
               ),
               const Spacer(),
-              if(!showOnly)
-              Align(
-                alignment: Alignment.bottomCenter,
-                child: Padding(
-                  padding: const EdgeInsets.only(
-                    right: Dimension.padding * 2.5,
-                    bottom: Dimension.padding,
+              if (!showOnly)
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                      right: Dimension.padding * 2.5,
+                      bottom: Dimension.padding,
+                    ),
+                    child: Image.asset(
+                      'assets/hand.png',
+                      height: Dimension.chipIcon * 2,
+                    ),
                   ),
-                  child: Image.asset(
-                    'assets/hand.png',
-                    height: Dimension.chipIcon * 2,
-                  ),
-                ),
-              )
+                )
             ],
           ),
         ),

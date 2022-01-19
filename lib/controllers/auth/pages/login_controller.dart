@@ -23,6 +23,8 @@ class LoginController extends StatefulWidget {
 class _LoginControllerState extends State<LoginController> {
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(
+        SystemUiOverlayStyle.dark.copyWith(statusBarColor: Colors.transparent));
     return MultiProvider(
       providers: loginControllerProviders,
       child: Consumer<LoginControllerViewModel>(

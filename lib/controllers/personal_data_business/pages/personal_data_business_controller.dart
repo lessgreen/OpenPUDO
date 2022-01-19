@@ -12,25 +12,29 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:qui_green/commons/utilities/keyboard_visibility.dart';
 import 'package:qui_green/commons/widgets/main_button.dart';
-import 'package:qui_green/controllers/personal_data/di/personal_data_controller_providers.dart';
-import 'package:qui_green/controllers/personal_data/viewmodel/personal_data_controller_viewmodel.dart';
+import 'package:qui_green/controllers/personal_data_business/di/personal_data_business_controller_providers.dart';
+import 'package:qui_green/controllers/personal_data_business/viewmodel/personal_data_business_controller_viewmodel.dart';
 import 'package:qui_green/resources/res.dart';
 
-class PersonalDataController extends StatefulWidget {
-  const PersonalDataController({Key? key}) : super(key: key);
+class PersonalDataBusinessController extends StatefulWidget {
+  const PersonalDataBusinessController({Key? key}) : super(key: key);
 
   @override
-  _PersonalDataControllerState createState() => _PersonalDataControllerState();
+  _PersonalDataBusinessControllerState createState() =>
+      _PersonalDataBusinessControllerState();
 }
 
-class _PersonalDataControllerState extends State<PersonalDataController> {
+class _PersonalDataBusinessControllerState
+    extends State<PersonalDataBusinessController> {
+  TextEditingController controller =
+      TextEditingController(text: "+39-333-1234-567");
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(
         SystemUiOverlayStyle.dark.copyWith(statusBarColor: Colors.transparent));
     return MultiProvider(
-        providers: personalDataControllerProviders,
-        child: Consumer<PersonalDataControllerViewModel?>(
+        providers: personalDataBusinessControllerProviders,
+        child: Consumer<PersonalDataBusinessControllerViewModel?>(
             builder: (_, viewModel, __) {
           return KeyboardVisibilityBuilder(
               builder: (context, child, isKeyboardVisible) {
@@ -47,7 +51,8 @@ class _PersonalDataControllerState extends State<PersonalDataController> {
                   children: [
                     Center(
                       child: Text(
-                        'Ancora qualche informazione',
+                        'Qualche informazione sulla tua attività',
+                        textAlign: TextAlign.center,
                         style: Theme.of(context).textTheme.headline6,
                       ),
                     ),
@@ -58,7 +63,7 @@ class _PersonalDataControllerState extends State<PersonalDataController> {
                         padding: const EdgeInsets.only(
                             left: Dimension.padding, right: Dimension.padding),
                         child: const Text(
-                          'Per poterti identificare quando il tuo pacco arriverà, abbiamo bisogno di qualche altro dato.',
+                          'Per farti trovare dagli utenti dovresti dirci qualcosa in più della tua attività.',
                           textAlign: TextAlign.center,
                           style: TextStyle(fontSize: 18),
                         )),
@@ -77,7 +82,7 @@ class _PersonalDataControllerState extends State<PersonalDataController> {
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           Icon(
-                            Icons.account_circle_rounded,
+                            Icons.apartment,
                             color: Colors.grey.shade400,
                             size: MediaQuery.of(context).size.width / 6,
                           ),
@@ -91,16 +96,10 @@ class _PersonalDataControllerState extends State<PersonalDataController> {
                       ),
                     ),
                     const SizedBox(height: Dimension.padding),
-                    const Center(
-                      child: Text(
-                        'oppure',
-                        style: TextStyle(fontStyle: FontStyle.italic),
-                      ),
-                    ),
                     Padding(
                       padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
                       child: CupertinoTextField(
-                        placeholder: 'Nome',
+                        placeholder: 'Nome attività',
                         decoration: BoxDecoration(
                             border: Border(
                                 bottom: BorderSide(
@@ -116,7 +115,25 @@ class _PersonalDataControllerState extends State<PersonalDataController> {
                     Padding(
                       padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
                       child: CupertinoTextField(
-                        placeholder: 'Cognome',
+                        placeholder: 'Inserisci il tuo indirizzo',
+                        decoration: BoxDecoration(
+                            border: Border(
+                                bottom: BorderSide(
+                                    color: Theme.of(context).primaryColor))),
+                        autofocus: false,
+                        textInputAction: TextInputAction.done,
+                        onChanged: (newValue) {},
+                        onTap: () {
+                          setState(() {});
+                        },
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+                      child: CupertinoTextField(
+                        placeholder: 'Telefono',
+                        controller: controller,
+                        keyboardType: TextInputType.number,
                         decoration: BoxDecoration(
                             border: Border(
                                 bottom: BorderSide(
@@ -134,7 +151,7 @@ class _PersonalDataControllerState extends State<PersonalDataController> {
                       padding: EdgeInsets.only(
                           left: Dimension.padding, right: Dimension.padding),
                       child: Text(
-                        'Se usi il nome e cognome come sistema di identificazione, dovrai esibire un documento valido per il ritiro.',
+                        'Questo è il numero mostrato al pubblico. Se preferisci, puoi modificarlo.',
                         style: TextStyle(fontSize: 12),
                       ),
                     ),
@@ -145,8 +162,8 @@ class _PersonalDataControllerState extends State<PersonalDataController> {
                           : CrossFadeState.showFirst,
                       secondChild: const SizedBox(),
                       firstChild: MainButton(
-                        onPressed: () => viewModel!.onSendClick(context),
-                        text: 'Invia',
+                        onPressed: () => viewModel!.onNextClick(context),
+                        text: 'Avanti',
                       ),
                       duration: const Duration(milliseconds: 150),
                     ),

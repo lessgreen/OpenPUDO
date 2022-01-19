@@ -23,6 +23,8 @@ class _AboutYouControllerState extends State<AboutYouController> {
   @override
   Widget build(BuildContext context) {
     //TODO implement provider
+    SystemChrome.setSystemUIOverlayStyle(
+        SystemUiOverlayStyle.dark.copyWith(statusBarColor: Colors.transparent));
     return WillPopScope(
       onWillPop: () async => false,
       child: Scaffold(

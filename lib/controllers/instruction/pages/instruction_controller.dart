@@ -27,7 +27,6 @@ class _InstructionControllerState extends State<InstructionController> {
   final PageController _pageController = PageController(initialPage: 0);
   int _currentPage = 0;
 
-
   //TODO Once api in place structure this widget
   Widget _buildFirstPageWidget() => Column(
         children: [
@@ -93,6 +92,8 @@ class _InstructionControllerState extends State<InstructionController> {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(
+        SystemUiOverlayStyle.dark.copyWith(statusBarColor: Colors.transparent));
     return MultiProvider(
         providers: instructionControllerProviders,
         child: Consumer<InstructionControllerViewModel?>(
@@ -137,9 +138,13 @@ class _InstructionControllerState extends State<InstructionController> {
                     ),
                   ),
                   MainButton(
-                    onPressed: () => Navigator.of(context).pop(),
-                    text: 'Vai alla home',
+                    onPressed: () => viewModel!.onEndClick(context),
+                    text: 'Fine',
                   ),
+                  // MainButton(
+                  //   onPressed: () => Navigator.of(context).pop(),
+                  //   text: 'Vai alla home',
+                  // ),
                 ],
               ),
             ),

@@ -6,37 +6,32 @@
 //   Copyright © 2022 Sofapps.it - All rights reserved.
 //
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:qui_green/commons/utilities/keyboard_visibility.dart';
 import 'package:qui_green/commons/widgets/main_button.dart';
-import 'package:qui_green/controllers/insert_address/di/insert_address_controller_providers.dart';
-import 'package:qui_green/controllers/insert_address/viewmodel/insert_address_controller_viewmodel.dart';
+import 'package:qui_green/controllers/thanks/di/thanks_providers.dart';
+import 'package:qui_green/controllers/thanks/viewmodel/thanks_viewmodel.dart';
 import 'package:qui_green/resources/res.dart';
 
-class InsertAddressController extends StatefulWidget {
-  const InsertAddressController({Key? key}) : super(key: key);
+class ThanksController extends StatefulWidget {
+  const ThanksController({Key? key}) : super(key: key);
 
   @override
-  _InsertAddressControllerState createState() =>
-      _InsertAddressControllerState();
+  _ThanksControllerState createState() => _ThanksControllerState();
 }
 
-class _InsertAddressControllerState extends State<InsertAddressController> {
-  final FocusNode _address = FocusNode();
-  String _addressValue = "";
-
+class _ThanksControllerState extends State<ThanksController> {
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(
         SystemUiOverlayStyle.dark.copyWith(statusBarColor: Colors.transparent));
     return MultiProvider(
-        providers: insertAddressControllerProviders,
-        child: Consumer<InsertAddressControllerViewModel?>(
-            builder: (_, viewModel, __) {
+        providers: thanksControllerProviders,
+        child:
+            Consumer<ThanksControllerViewModel?>(builder: (_, viewModel, __) {
           return KeyboardVisibilityBuilder(
               builder: (context, child, isKeyboardVisible) {
             return WillPopScope(
@@ -52,34 +47,35 @@ class _InsertAddressControllerState extends State<InsertAddressController> {
                   children: [
                     Center(
                       child: Text(
-                        'Inserisci il tuo indirizzo',
+                        'Grazie per averci scelto!',
                         style: Theme.of(context).textTheme.headline6,
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-                      child: CupertinoTextField(
-                        decoration: BoxDecoration(
-                            border: Border(
-                                bottom: BorderSide(
-                                    color: Theme.of(context).primaryColor))),
-                        autofocus: false,
-                        focusNode: _address,
-                        textInputAction: TextInputAction.done,
-                        onChanged: (newValue) {
-                          _addressValue = newValue;
-                        },
-                        onTap: () {
-                          setState(() {});
-                        },
-                      ),
-                    ),
                     const SizedBox(
-                      height: Dimension.paddingL,
+                      height: 10,
                     ),
-                    SvgPicture.asset(ImageSrc.userPositionArt,
+                    SizedBox(
+                        width: MediaQuery.of(context).size.width / 3 * 2,
+                        child: Text(
+                          'Divendando un PUDO QuiGreen potrai fornire un servizio a tutti gli utenti che vorranno ricevere un pacco, ricevendolo tu per loro.',
+                          textAlign: TextAlign.center,
+                          style: Theme.of(context)
+                              .textTheme
+                              .subtitle1
+                              ?.copyWith(fontWeight: FontWeight.w400),
+                        )),
+                    const SizedBox(height: Dimension.paddingL),
+                    SvgPicture.asset(ImageSrc.aboutYouArt,
                         semanticsLabel: 'Art Background'),
                     const Spacer(),
+                    MainButton(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: Dimension.padding,
+                      ),
+                      onPressed: () =>
+                          viewModel!.onPersonalDataBusinessClick(context),
+                      text: 'Avanti',
+                    ),
                     const SizedBox(height: Dimension.padding),
                     AnimatedCrossFade(
                       crossFadeState: isKeyboardVisible
@@ -87,8 +83,8 @@ class _InsertAddressControllerState extends State<InsertAddressController> {
                           : CrossFadeState.showFirst,
                       secondChild: const SizedBox(),
                       firstChild: MainButton(
-                        onPressed: () => viewModel!.onSendClick(context),
-                        text: 'Invia',
+                        onPressed: () => Navigator.of(context).pop(),
+                        text: 'Indietro',
                       ),
                       duration: const Duration(milliseconds: 150),
                     ),
