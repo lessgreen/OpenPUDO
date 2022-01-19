@@ -97,7 +97,8 @@ class _MapsControllerState extends State<MapsController> {
                         const Spacer(),
                         PudoCardList(
                           onTap: () => viewModel?.onPudoClick(context),
-                          onPageChange: (int val) => viewModel?.onPudoListChange(val),
+                          onPageChange: (int val) =>
+                              viewModel?.onPudoListChange(val),
                         ),
                         const SizedBox(height: Dimension.paddingM),
                         /*Padding(

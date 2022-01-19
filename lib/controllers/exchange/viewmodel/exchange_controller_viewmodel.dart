@@ -11,7 +11,7 @@ class ExchangeControllerViewModel extends ChangeNotifier {
 
   // ************ Navigation *****
   onSendClick(BuildContext context) {
-    //Navigator.of(context).pushReplacementNamed(Routes.pudoTutorial);
+    Navigator.of(context).pushReplacementNamed(Routes.pudoTutorial);
   }
 
   //TODO implementation of network fetched options
@@ -31,7 +31,8 @@ class ExchangeControllerViewModel extends ChangeNotifier {
         icon: Icons.emoji_emotions),
     ExchangeOptionModel(
         hasField: true,
-        hintText: "Se vuoi specifica che tipo di tessera o abbonamento sono necessari.",
+        hintText:
+            "Se vuoi specifica che tipo di tessera o abbonamento sono necessari.",
         acceptMultiple: true,
         name:
             "Gratis per associati, abbonati o possessori di tessera di fedeltà.",
