@@ -6,6 +6,8 @@
 //   Copyright © 2022 Sofapps.it - All rights reserved.
 //
 
+// ignore_for_file: unnecessary_import
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -14,6 +16,8 @@ import 'package:qui_green/commons/utilities/keyboard_visibility.dart';
 import 'package:qui_green/commons/widgets/main_button.dart';
 import 'package:qui_green/controllers/exchange/di/exchange_controller_providers.dart';
 import 'package:qui_green/controllers/exchange/viewmodel/exchange_controller_viewmodel.dart';
+import 'package:qui_green/controllers/exchange/widgets/exchange_option_tile.dart';
+import 'package:qui_green/models/exhange_option_model.dart';
 import 'package:qui_green/resources/res.dart';
 
 class ExchangeController extends StatefulWidget {
@@ -45,7 +49,7 @@ class _ExchangeControllerState extends State<ExchangeController> {
                   systemOverlayStyle: SystemUiOverlayStyle.dark,
                   leading: const SizedBox(),
                 ),
-                body: ListView(
+                body: Column(
                   children: [
                     Center(
                       child: Text(
@@ -70,125 +74,25 @@ class _ExchangeControllerState extends State<ExchangeController> {
                         )),
                     const SizedBox(height: Dimension.padding),
                     const Divider(color: Colors.grey),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Padding(
-                          padding:
-                              const EdgeInsets.only(left: Dimension.paddingS),
-                          child: Icon(
-                            Icons.emoji_emotions,
-                            color: AppColors.cardColor,
-                          ),
-                        ),
-                        Text(
-                            "Gratis per tutti, basta un sorriso.\nLo facciamo insieme per l’ambiente!"),
-                        Checkbox(
-                          value: false,
-                          shape: CircleBorder(),
-                          onChanged: (bool? value) {},
-                        ),
-                      ],
-                    ),
-                    const Divider(color: Colors.grey),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Padding(
-                          padding:
-                              const EdgeInsets.only(left: Dimension.paddingS),
-                          child: Icon(
-                            Icons.emoji_emotions,
-                            color: AppColors.cardColor,
-                          ),
-                        ),
-                        Text("Gratis per i clienti abituali."),
-                        Checkbox(
-                          value: true,
-                          shape: CircleBorder(),
-                          onChanged: (bool? value) {},
-                        ),
-                      ],
-                    ),
-                    const Divider(color: Colors.grey),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Padding(
-                          padding:
-                              const EdgeInsets.only(left: Dimension.paddingS),
-                          child: Icon(
-                            Icons.credit_card,
-                            color: AppColors.cardColor,
-                          ),
-                        ),
-                        Text(
-                            "Gratis per associati, abbonati o\npossessori di tessera fedeltà."),
-                        Checkbox(
-                          value: checkAssociati,
-                          shape: CircleBorder(),
-                          onChanged: (newValue) {
-                            setState(() {
-                              checkAssociati = newValue!;
-                            });
-                          },
-                        ),
-                      ],
-                    ),
-                    if (checkAssociati)
-                      Padding(
-                        padding: const EdgeInsets.all(Dimension.paddingS),
-                        child: TextFormField(
-                          maxLines: 5,
-                          decoration: InputDecoration(
-                              fillColor: Colors.grey,
-                              labelText:
-                                  'Se vuoi specifica che tipo di tessera o\nabbonamento sono necessari.'),
-                        ),
+                    Expanded(
+                        child: ListView.builder(
+                      itemCount: viewModel?.options.length,
+                      itemBuilder: (context, index) => ExchangeOptionTile(
+                        isNonMultipleActive:
+                            viewModel?.isANonMultipleActive(index) ?? false,
+                        value: viewModel?.optionValues[index].value ?? false,
+                        onSelect: (newVal) =>
+                            viewModel?.onValueChange(index, newVal),
+                        model: viewModel?.options[index] ??
+                            ExchangeOptionModel(
+                                hintText: "",
+                                hasField: false,
+                                acceptMultiple: true,
+                                name: "",
+                                icon: Icons.crop),
+                        onTextChange: (newVal) => viewModel?.onTextChange(index, newVal),
                       ),
-                    const Divider(color: Colors.grey),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Padding(
-                          padding:
-                              const EdgeInsets.only(left: Dimension.paddingS),
-                          child: Icon(
-                            Icons.shopping_basket_rounded,
-                            color: AppColors.cardColor,
-                          ),
-                        ),
-                        Text(
-                            "Acquisto di qualcosa o\nconsumazione al momento del ritiro."),
-                        Checkbox(
-                          value: false,
-                          shape: CircleBorder(),
-                          onChanged: (bool? value) {},
-                        ),
-                      ],
-                    ),
-                    const Divider(color: Colors.grey),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Padding(
-                          padding:
-                              const EdgeInsets.only(left: Dimension.paddingS),
-                          child: Icon(
-                            Icons.attach_money,
-                            color: AppColors.cardColor,
-                          ),
-                        ),
-                        Text("Pagamento del servizio per pacco\nritirato."),
-                        Checkbox(
-                          value: false,
-                          shape: CircleBorder(),
-                          onChanged: (bool? value) {},
-                        ),
-                      ],
-                    ),
-                    const Divider(color: Colors.grey),
-                    Spacer(),
+                    )),
                     AnimatedCrossFade(
                       crossFadeState: isKeyboardVisible
                           ? CrossFadeState.showSecond

@@ -67,9 +67,11 @@ class _InsertAddressControllerState extends State<InsertAddressController> {
                         focusNode: _address,
                         textInputAction: TextInputAction.done,
                         onChanged: (newValue) {
+                          viewModel?.fetchSuggestions(newValue);
                           _addressValue = newValue;
                         },
                         onTap: () {
+
                           setState(() {});
                         },
                       ),

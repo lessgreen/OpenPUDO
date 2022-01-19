@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:location/location.dart';
+import 'package:qui_green/models/address_marker.dart';
 import 'package:qui_green/resources/routes_enum.dart';
+import 'package:qui_green/singletons/network/network.dart';
 
 class InsertAddressControllerViewModel extends ChangeNotifier {
   //Example: to use NetworkManager, use the getInstance: NetworkManager.instance...
@@ -37,5 +39,14 @@ class InsertAddressControllerViewModel extends ChangeNotifier {
 
     _locationData = await location.getLocation();
     return _locationData;
+  }
+
+  Future<List<AddressMarker>> fetchSuggestions(String val) async {
+    var res = NetworkManager.instance.getAddresses(text: val);
+    if (res is List<AddressMarker>) {
+      (res as List<AddressMarker>).map((e) => print(e.label));
+      return res as List<AddressMarker>;
+    }
+    return [];
   }
 }

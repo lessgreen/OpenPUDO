@@ -14,6 +14,7 @@ import 'package:provider/provider.dart';
 import 'package:qui_green/commons/widgets/text_field_button.dart';
 import 'package:qui_green/controllers/maps/di/maps_controller_providers.dart';
 import 'package:qui_green/controllers/maps/viewmodel/maps_controller_viewmodel.dart';
+import 'package:qui_green/controllers/maps/widgets/pudo_card_list.dart';
 import 'package:qui_green/controllers/maps/widgets/pudo_map_card.dart';
 import 'package:qui_green/resources/res.dart';
 
@@ -47,6 +48,7 @@ class _MapsControllerState extends State<MapsController> {
               body: Stack(
                 children: [
                   FlutterMap(
+                    mapController: viewModel?.mapController,
                     options: MapOptions(
                       center: LatLng(46, 12),
                       zoom: 13.0,
@@ -93,7 +95,12 @@ class _MapsControllerState extends State<MapsController> {
                           ),
                         ),
                         const Spacer(),
-                        Padding(
+                        PudoCardList(
+                          onTap: () => viewModel?.onPudoClick(context),
+                          onPageChange: (int val) => viewModel?.onPudoListChange(val),
+                        ),
+                        const SizedBox(height: Dimension.paddingM),
+                        /*Padding(
                             padding: const EdgeInsets.only(
                                 left: Dimension.padding,
                                 right: Dimension.padding,
@@ -105,7 +112,7 @@ class _MapsControllerState extends State<MapsController> {
                               onTap: () => viewModel?.onPudoClick(context),
                               image:
                                   'https://cdn.skuola.net/news_foto/2017/descrizione-bar.jpg',
-                            ))
+                            ))*/
                       ],
                     ),
                   )

@@ -21,7 +21,6 @@ import 'package:qui_green/controllers/maps/pages/maps_controller.dart';
 import 'package:qui_green/controllers/personal_data/pages/personal_data_controller.dart';
 import 'package:qui_green/controllers/personal_data_business/pages/personal_data_business_controller.dart';
 import 'package:qui_green/controllers/pudo_detail/pages/pudo_detail_controller.dart';
-import 'package:qui_green/controllers/pudo_tutorial/pages/pudo_tutorial_controller.dart';
 import 'package:qui_green/controllers/registration_complete/pages/registration_complete_controller.dart';
 import 'package:qui_green/controllers/thanks/pages/thanks_controller.dart';
 import 'package:qui_green/controllers/user_position/pages/user_position_controller.dart';
@@ -35,6 +34,9 @@ dynamic routeWithSetting(RouteSettings settings) {
   // if (settings.arguments != null) {
   //   var arguments = settings.arguments;
   // }
+  return CupertinoPageRoute(
+    builder: (context) => const MapsController(),
+  );
   switch (settings.name) {
     // case '/notificationDetails':
     //   return MaterialPageRoute(
