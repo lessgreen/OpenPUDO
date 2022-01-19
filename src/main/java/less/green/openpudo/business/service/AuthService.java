@@ -184,8 +184,8 @@ public class AuthService {
         userProfile.setUserId(user.getUserId());
         userProfile.setCreateTms(now);
         userProfile.setUpdateTms(now);
-        userProfile.setFirstName(sanitizeString(req.getUserProfile().getFirstName()));
-        userProfile.setLastName(sanitizeString(req.getUserProfile().getLastName()));
+        userProfile.setFirstName(sanitizeString(req.getUser().getFirstName()));
+        userProfile.setLastName(sanitizeString(req.getUser().getLastName()));
         userProfile.setProfilePicId(null);
         userProfileDao.persist(userProfile);
         TbUserPreferences userPreferences = new TbUserPreferences();

@@ -8,7 +8,7 @@ import java.util.Date;
 import java.util.UUID;
 
 @Data
-public class UserProfile {
+public class User {
 
     @Schema(readOnly = true)
     private Long userId;

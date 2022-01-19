@@ -106,7 +106,7 @@ public class AuthResource {
         // sanitize input
         if (req == null) {
             throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.empty_request"));
-        } else if (req.getUserProfile() == null) {
+        } else if (req.getUser() == null) {
             throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.empty_mandatory_field", "userProfile"));
         } else if (context.getPrivateClaims() == null || context.getPrivateClaims().getPhoneNumber() == null) {
             throw new ApiException(ApiReturnCodes.INVALID_JWT_TOKEN, localizationService.getMessage(context.getLanguage(), "error.auth.invalid_access_token"));

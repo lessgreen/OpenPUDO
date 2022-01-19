@@ -46,35 +46,35 @@ public class UserResource {
     UserService userService;
 
     @GET
-    @Path("/{userId}/profile")
+    @Path("/{userId}")
     @SecurityRequirement(name = "JWT")
     @Operation(summary = "Get profile for specific user")
-    public UserProfileResponse getUserProfileByUserId(@PathParam(value = "userId") Long userId) {
-        UserProfile ret = userService.getUserProfileByUserId(userId);
-        return new UserProfileResponse(context.getExecutionId(), ApiReturnCodes.OK, ret);
+    public UserResponse getUserProfileByUserId(@PathParam(value = "userId") Long userId) {
+        User ret = userService.getUserProfileByUserId(userId);
+        return new UserResponse(context.getExecutionId(), ApiReturnCodes.OK, ret);
     }
 
     @GET
-    @Path("/me/profile")
+    @Path("/me")
     @SecurityRequirement(name = "JWT")
     @Operation(summary = "Get profile for current user")
-    public UserProfileResponse getCurrentUserProfile() {
-        UserProfile ret = userService.getCurrentUserProfile();
-        return new UserProfileResponse(context.getExecutionId(), ApiReturnCodes.OK, ret);
+    public UserResponse getCurrentUserProfile() {
+        User ret = userService.getCurrentUserProfile();
+        return new UserResponse(context.getExecutionId(), ApiReturnCodes.OK, ret);
     }
 
     @PUT
-    @Path("/me/profile")
+    @Path("/me")
     @SecurityRequirement(name = "JWT")
     @Operation(summary = "Update profile for current user")
-    public UserProfileResponse updateCurrentUserProfile(UserProfile req) {
+    public UserResponse updateCurrentUserProfile(User req) {
         // sanitize input
         if (req == null) {
             throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.empty_request"));
         }
 
-        UserProfile ret = userService.updateCurrentUserProfile(req);
-        return new UserProfileResponse(context.getExecutionId(), ApiReturnCodes.OK, ret);
+        User ret = userService.updateCurrentUserProfile(req);
+        return new UserResponse(context.getExecutionId(), ApiReturnCodes.OK, ret);
     }
 
     @PUT
@@ -82,7 +82,7 @@ public class UserResource {
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @BinaryAPI
     @SecurityRequirement(name = "JWT")
-    @Operation(summary = "Update profile picture for current user")
+    @Operation(summary = "Update picture for current user")
     public UUIDResponse updateCurrentUserProfilePicture(MultipartFormDataInput req) {
         // sanitize input
         if (req == null) {

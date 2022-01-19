@@ -13,7 +13,7 @@ import less.green.openpudo.rest.dto.pudo.Pudo;
 import less.green.openpudo.rest.dto.pudo.PudoSummary;
 import less.green.openpudo.rest.dto.pudo.Rating;
 import less.green.openpudo.rest.dto.user.UserPreferences;
-import less.green.openpudo.rest.dto.user.UserProfile;
+import less.green.openpudo.rest.dto.user.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -25,7 +25,7 @@ import java.util.UUID;
 @Mapper(componentModel = "cdi")
 public interface DtoMapper {
 
-    UserProfile mapUserProfileEntityToDto(TbUserProfile ent, String phoneNumber, Long packageCount, String customerSuffix);
+    User mapUserProfileEntityToDto(TbUserProfile ent, String phoneNumber, Long packageCount, String customerSuffix);
 
     UserPreferences mapUserPreferencesEntityToDto(TbUserPreferences ent);
 

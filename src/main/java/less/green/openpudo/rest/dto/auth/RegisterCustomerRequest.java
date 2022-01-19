@@ -1,6 +1,6 @@
 package less.green.openpudo.rest.dto.auth;
 
-import less.green.openpudo.rest.dto.user.UserProfile;
+import less.green.openpudo.rest.dto.user.User;
 import lombok.Data;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
@@ -8,6 +8,6 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 public class RegisterCustomerRequest {
 
     @Schema(required = true)
-    private UserProfile userProfile;
+    private User user;
 
 }

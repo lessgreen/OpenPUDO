@@ -4,9 +4,9 @@ import less.green.openpudo.rest.dto.TypedResponse;
 
 import java.util.UUID;
 
-public class UserProfileResponse extends TypedResponse<UserProfile> {
+public class UserResponse extends TypedResponse<User> {
 
-    public UserProfileResponse(UUID executionId, int returnCode, UserProfile payload) {
+    public UserResponse(UUID executionId, int returnCode, User payload) {
         super(executionId, returnCode, payload);
     }
 

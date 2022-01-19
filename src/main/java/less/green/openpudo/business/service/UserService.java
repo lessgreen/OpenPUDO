@@ -14,7 +14,7 @@ import less.green.openpudo.rest.dto.DtoMapper;
 import less.green.openpudo.rest.dto.pudo.PudoSummary;
 import less.green.openpudo.rest.dto.user.DeviceToken;
 import less.green.openpudo.rest.dto.user.UserPreferences;
-import less.green.openpudo.rest.dto.user.UserProfile;
+import less.green.openpudo.rest.dto.user.User;
 import lombok.extern.log4j.Log4j2;
 
 import javax.enterprise.context.RequestScoped;
@@ -63,7 +63,7 @@ public class UserService {
     @Inject
     DtoMapper dtoMapper;
 
-    public UserProfile getUserProfileByUserId(Long userId) {
+    public User getUserProfileByUserId(Long userId) {
         TbUser caller = userDao.get(context.getUserId());
         if (caller.getAccountType() == AccountType.CUSTOMER) {
             if (context.getUserId().equals(userId)) {
@@ -89,7 +89,7 @@ public class UserService {
         }
     }
 
-    public UserProfile getCurrentUserProfile() {
+    public User getCurrentUserProfile() {
         TbUser user = userDao.get(context.getUserId());
         if (user.getAccountType() != AccountType.CUSTOMER) {
             throw new ApiException(ApiReturnCodes.FORBIDDEN, localizationService.getMessage(context.getLanguage(), "error.forbidden.wrong_account_type"));
@@ -99,7 +99,7 @@ public class UserService {
         return dtoMapper.mapUserProfileEntityToDto(userProfile, user.getPhoneNumber(), packageCount, null);
     }
 
-    public UserProfile updateCurrentUserProfile(UserProfile req) {
+    public User updateCurrentUserProfile(User req) {
         TbUser user = userDao.get(context.getUserId());
         if (user.getAccountType() != AccountType.CUSTOMER) {
             throw new ApiException(ApiReturnCodes.FORBIDDEN, localizationService.getMessage(context.getLanguage(), "error.forbidden.wrong_account_type"));

@@ -55,7 +55,7 @@ public class PudoResource {
     @GET
     @Path("/me")
     @SecurityRequirement(name = "JWT")
-    @Operation(summary = "Get profile for specific PUDO")
+    @Operation(summary = "Get profile for current PUDO")
     public PudoResponse getCurrentPudo() {
         Pudo ret = pudoService.getCurrentPudo();
         return new PudoResponse(context.getExecutionId(), ApiReturnCodes.OK, ret);
