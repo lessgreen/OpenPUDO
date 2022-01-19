@@ -27,7 +27,7 @@ public class PudoDao extends BaseEntityDao<TbPudo, Long> {
         super(TbPudo.class, "pudoId");
     }
 
-    public Triplet<TbPudo, TbAddress, TbRating> getPudoDeepByPudoId(Long pudoId) {
+    public Triplet<TbPudo, TbAddress, TbRating> getPudoDeep(Long pudoId) {
         String qs = "SELECT t1, t2, t3 "
                 + "FROM TbPudo t1, TbAddress t2, TbRating t3 "
                 + "WHERE t1.pudoId = :pudoId AND t1.pudoId = t2.pudoId AND t1.pudoId = t3.pudoId";

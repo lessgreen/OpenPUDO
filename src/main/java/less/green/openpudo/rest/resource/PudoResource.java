@@ -47,8 +47,8 @@ public class PudoResource {
     @ProtectedAPI
     @SecurityRequirement(name = "JWT")
     @Operation(summary = "Get profile for specific PUDO")
-    public PudoResponse getPudoByPudoId(@PathParam(value = "pudoId") Long pudoId) {
-        Pudo ret = pudoService.getPudoByPudoId(pudoId);
+    public PudoResponse getPudo(@PathParam(value = "pudoId") Long pudoId) {
+        Pudo ret = pudoService.getPudo(pudoId);
         return new PudoResponse(context.getExecutionId(), ApiReturnCodes.OK, ret);
     }
 

@@ -63,7 +63,7 @@ public class UserService {
     @Inject
     DtoMapper dtoMapper;
 
-    public User getUserProfileByUserId(Long userId) {
+    public User getUserProfile(Long userId) {
         TbUser caller = userDao.get(context.getUserId());
         if (caller.getAccountType() == AccountType.CUSTOMER) {
             if (context.getUserId().equals(userId)) {
@@ -82,7 +82,7 @@ public class UserService {
             // check if pudo is granted to see user's phone number
             TbUserPreferences userPreferences = userPreferencesDao.get(userId);
             String phoneNumber = userPreferences.getShowPhoneNumber() ? userDao.get(userId).getPhoneNumber() : null;
-            long packageCount = packageDao.getPackageCountForCustomer(context.getUserId());
+            long packageCount = packageDao.getPackageCountByUserId(context.getUserId());
             return dtoMapper.mapUserProfileEntityToDto(userProfile, phoneNumber, packageCount, userPudoRelation.getCustomerSuffix());
         } else {
             throw new AssertionError("Unsupported AccountType: " + caller.getAccountType());
@@ -95,7 +95,7 @@ public class UserService {
             throw new ApiException(ApiReturnCodes.FORBIDDEN, localizationService.getMessage(context.getLanguage(), "error.forbidden.wrong_account_type"));
         }
         TbUserProfile userProfile = userProfileDao.get(context.getUserId());
-        long packageCount = packageDao.getPackageCountForCustomer(context.getUserId());
+        long packageCount = packageDao.getPackageCountByUserId(context.getUserId());
         return dtoMapper.mapUserProfileEntityToDto(userProfile, user.getPhoneNumber(), packageCount, null);
     }
 
@@ -109,7 +109,7 @@ public class UserService {
         userProfile.setFirstName(sanitizeString(req.getFirstName()));
         userProfile.setLastName(sanitizeString(req.getLastName()));
         userProfileDao.flush();
-        long packageCount = packageDao.getPackageCountForCustomer(context.getUserId());
+        long packageCount = packageDao.getPackageCountByUserId(context.getUserId());
         log.info("[{}] Updated profile for user: {}", context.getExecutionId(), context.getUserId());
         return dtoMapper.mapUserProfileEntityToDto(userProfile, user.getPhoneNumber(), packageCount, null);
     }
@@ -243,7 +243,7 @@ public class UserService {
         String customerSuffix = userPudoRelationDao.getPastCustomerSuffix(pudoId, context.getUserId());
         // if is the first relation between pudo and customer, generate a random unique suffix
         if (customerSuffix == null) {
-            Set<String> suffixes = userPudoRelationDao.getCustomerSuffixSetByPudoId(pudoId);
+            Set<String> suffixes = userPudoRelationDao.getCustomerSuffixesByPudoId(pudoId);
             // we keep randomizing until we get a suffix never used before for that specific pudo
             do {
                 customerSuffix = generateCustomerSuffix(userProfile.getFirstName(), userProfile.getLastName());

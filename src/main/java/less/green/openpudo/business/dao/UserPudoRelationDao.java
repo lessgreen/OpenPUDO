@@ -60,7 +60,7 @@ public class UserPudoRelationDao extends BaseEntityDao<TbUserPudoRelation, Long>
         }
     }
 
-    public Set<String> getCustomerSuffixSetByPudoId(Long pudoId) {
+    public Set<String> getCustomerSuffixesByPudoId(Long pudoId) {
         String qs = "SELECT DISTINCT(t.customerSuffix) FROM TbUserPudoRelation t WHERE t.pudoId = :pudoId AND t.relationType = :relationType";
         TypedQuery<String> q = em.createQuery(qs, String.class);
         q.setParameter("pudoId", pudoId);
@@ -69,7 +69,7 @@ public class UserPudoRelationDao extends BaseEntityDao<TbUserPudoRelation, Long>
         return rs.isEmpty() ? Collections.emptySet() : new HashSet<>(rs);
     }
 
-    public long getActiveCustomerCountForPudo(Long pudoId) {
+    public long getActiveCustomerCountByPudoId(Long pudoId) {
         String qs = "SELECT COUNT(*) FROM TbUserPudoRelation t WHERE t.pudoId = :pudoId AND t.relationType = :relationType AND t.deleteTms IS NULL";
         TypedQuery<Long> q = em.createQuery(qs, Long.class);
         q.setParameter("pudoId", pudoId);

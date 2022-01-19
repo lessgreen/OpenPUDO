@@ -49,8 +49,8 @@ public class UserResource {
     @Path("/{userId}")
     @SecurityRequirement(name = "JWT")
     @Operation(summary = "Get profile for specific user")
-    public UserResponse getUserProfileByUserId(@PathParam(value = "userId") Long userId) {
-        User ret = userService.getUserProfileByUserId(userId);
+    public UserResponse getUserProfile(@PathParam(value = "userId") Long userId) {
+        User ret = userService.getUserProfile(userId);
         return new UserResponse(context.getExecutionId(), ApiReturnCodes.OK, ret);
     }
 

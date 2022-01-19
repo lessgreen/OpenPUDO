@@ -14,14 +14,14 @@ public class PackageDao extends BaseEntityDao<TbPackage, Long> {
         super(TbPackage.class, "packageId");
     }
 
-    public long getPackageCountForCustomer(Long userId) {
+    public long getPackageCountByUserId(Long userId) {
         String qs = "SELECT COUNT(*) FROM TbPackage t WHERE t.userId = :userId ";
         TypedQuery<Long> q = em.createQuery(qs, Long.class);
         q.setParameter("userId", userId);
         return q.getSingleResult();
     }
 
-    public long getPackageCountForPudo(Long pudoId) {
+    public long getPackageCountByPudoId(Long pudoId) {
         String qs = "SELECT COUNT(*) FROM TbPackage t WHERE t.pudoId = :pudoId ";
         TypedQuery<Long> q = em.createQuery(qs, Long.class);
         q.setParameter("pudoId", pudoId);

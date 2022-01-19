@@ -49,16 +49,16 @@ public class PudoService {
     @Inject
     DtoMapper dtoMapper;
 
-    public Pudo getPudoByPudoId(Long pudoId) {
-        Triplet<TbPudo, TbAddress, TbRating> rs = pudoDao.getPudoDeepByPudoId(pudoId);
+    public Pudo getPudo(Long pudoId) {
+        Triplet<TbPudo, TbAddress, TbRating> rs = pudoDao.getPudoDeep(pudoId);
         if (rs == null) {
             return null;
         }
         Pudo ret = dtoMapper.mapPudoEntityToDto(rs);
         // TODO: reward message
-        long customerCount = userPudoRelationDao.getActiveCustomerCountForPudo(pudoId);
+        long customerCount = userPudoRelationDao.getActiveCustomerCountByPudoId(pudoId);
         ret.setCustomerCount(customerCount);
-        long packageCount = packageDao.getPackageCountForPudo(pudoId);
+        long packageCount = packageDao.getPackageCountByPudoId(pudoId);
         ret.setPackageCount(packageCount);
         // customized address must be populated only if the caller is pudo customer
         if (context.getUserId() != null) {
@@ -76,7 +76,7 @@ public class PudoService {
             throw new ApiException(ApiReturnCodes.FORBIDDEN, localizationService.getMessage(context.getLanguage(), "error.forbidden.wrong_account_type"));
         }
         Long pudoId = userPudoRelationDao.getPudoIdByOwnerUserId(context.getUserId());
-        return getPudoByPudoId(pudoId);
+        return getPudo(pudoId);
     }
 
     private String createCustomizedAddress(TbPudo pudo, TbAddress address, TbUserPudoRelation userPudoRelation) {
