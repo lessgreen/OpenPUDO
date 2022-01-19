@@ -200,7 +200,7 @@ CREATE TABLE IF NOT EXISTS tb_package_event (
 	auto_flag BOOLEAN NOT NULL,
 	notes TEXT
 );
-CREATE INDEX tb_package_event_package_id_idx ON tb_package_event(package_id, create_tms);
+CREATE UNIQUE INDEX tb_package_event_package_id_idx ON tb_package_event(package_id, create_tms);
 
 
 DROP TABLE IF EXISTS tb_notification CASCADE;
@@ -231,9 +231,9 @@ CREATE TABLE IF NOT EXISTS tb_review (
 	score SMALLINT NOT NULL,
 	review_pic_id UUID REFERENCES tb_external_file(external_file_id)
 );
-CREATE INDEX tb_review_user_id ON tb_review(user_id);
-CREATE INDEX tb_review_pudo_id ON tb_review(pudo_id);
-CREATE UNIQUE INDEX tb_review_package_id ON tb_review(package_id);
+CREATE INDEX tb_review_user_id_idx ON tb_review(user_id);
+CREATE INDEX tb_review_pudo_id_idx ON tb_review(pudo_id);
+CREATE UNIQUE INDEX tb_review_package_id_idx ON tb_review(package_id);
 
 
 DROP TABLE IF EXISTS tb_rating CASCADE;
