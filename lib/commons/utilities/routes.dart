@@ -34,9 +34,7 @@ dynamic routeWithSetting(RouteSettings settings) {
   // if (settings.arguments != null) {
   //   var arguments = settings.arguments;
   // }
-  return CupertinoPageRoute(
-    builder: (context) => const MapsController(),
-  );
+
   switch (settings.name) {
     // case '/notificationDetails':
     //   return MaterialPageRoute(
