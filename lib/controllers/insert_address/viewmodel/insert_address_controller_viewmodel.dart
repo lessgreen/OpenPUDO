@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:location/location.dart';
 import 'package:qui_green/models/address_marker.dart';
+import 'package:qui_green/models/address_model.dart';
 import 'package:qui_green/resources/routes_enum.dart';
-import 'package:qui_green/singletons/network/network.dart';
+import 'package:qui_green/singletons/network/network_manager.dart';
 
 class InsertAddressControllerViewModel extends ChangeNotifier {
   //Example: to use NetworkManager, use the getInstance: NetworkManager.instance...
@@ -11,6 +14,8 @@ class InsertAddressControllerViewModel extends ChangeNotifier {
   onSendClick(BuildContext context) {
     Navigator.of(context).pushReplacementNamed(Routes.maps);
   }
+
+  TextEditingController addressController = TextEditingController();
 
   // ************ Location *******
 
@@ -41,12 +46,56 @@ class InsertAddressControllerViewModel extends ChangeNotifier {
     return _locationData;
   }
 
-  Future<List<AddressMarker>> fetchSuggestions(String val) async {
-    var res = NetworkManager.instance.getAddresses(text: val);
-    if (res is List<AddressMarker>) {
-      (res as List<AddressMarker>).map((e) => print(e.label));
-      return res as List<AddressMarker>;
+  Timer debounce = Timer(const Duration(days: 1), () {});
+
+  void onSearchChanged(String query,Function() onAfter) {
+    if (debounce.isActive) debounce.cancel();
+    debounce = Timer(const Duration(milliseconds: 500), () {
+      fetchSuggestions(query,onAfter);
+    });
+  }
+
+  bool _mountedOverlay = false;
+
+  bool get mountedOverlay => _mountedOverlay;
+
+  set mountedOverlay(bool newVal) {
+    _mountedOverlay = newVal;
+    notifyListeners();
+  }
+
+  bool _isSelectingFromOverlay = false;
+
+  bool get isSelectingFromOverlay => _isSelectingFromOverlay;
+
+  set isSelectingFromOverlay(bool newVal) {
+    _isSelectingFromOverlay = newVal;
+    notifyListeners();
+  }
+
+  List<AddressModel> _addresses = [];
+
+  List<AddressModel> get addresses => _addresses;
+
+  set addresses(List<AddressModel> newVal) {
+    _addresses = newVal;
+    notifyListeners();
+  }
+
+  Future<void> fetchSuggestions(String val,Function() onAfter) async {
+    if(val.trim().isNotEmpty) {
+      var res = await NetworkManager.instance.getAddresses(text: val);
+      if (res is List<AddressModel>) {
+        if(res.isNotEmpty) {
+          addresses = res;
+          onAfter();
+        }else{
+          addresses = [];
+        }
+        return;
+      }
+    }else{
+      addresses = [];
     }
-    return [];
   }
 }

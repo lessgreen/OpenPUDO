@@ -72,7 +72,6 @@ class _RegistrationCompleteControllerState
                         padding: const EdgeInsets.only(
                             left: Dimension.padding, right: Dimension.padding),
                         child: PudoMapCard(
-                          showOnly: true,
                           name: "Bar - La pinta",
                           address: "Via ippolito, 8",
                           stars: 3,

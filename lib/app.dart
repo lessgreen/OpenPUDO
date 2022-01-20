@@ -6,7 +6,6 @@
 //  Copyright © 2022 Sofapps. All rights reserved.
 //
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -17,7 +16,7 @@ import 'package:qui_green/commons/utilities/localization.dart';
 import 'package:qui_green/commons/utilities/routes.dart';
 import 'package:qui_green/resources/app_config.dart';
 import 'package:qui_green/resources/routes_enum.dart';
-import 'package:qui_green/singletons/network/network.dart';
+import 'package:qui_green/singletons/network/network_manager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 ValueNotifier currentRouteName = ValueNotifier('/');
@@ -38,6 +37,8 @@ void mainCommon({required String host, required bool isProd}) async {
           host: host,
           appInfo: info,
           sharedPreferencesInstance: sharedPreferences));
+
+  NetworkManager.instance.login(login: "+39328000001", password: "6732");
 }
 
 class App extends StatelessWidget {

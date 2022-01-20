@@ -15,7 +15,6 @@ import 'package:qui_green/commons/widgets/text_field_button.dart';
 import 'package:qui_green/controllers/maps/di/maps_controller_providers.dart';
 import 'package:qui_green/controllers/maps/viewmodel/maps_controller_viewmodel.dart';
 import 'package:qui_green/controllers/maps/widgets/pudo_card_list.dart';
-import 'package:qui_green/controllers/maps/widgets/pudo_map_card.dart';
 import 'package:qui_green/resources/res.dart';
 
 class MapsController extends StatefulWidget {

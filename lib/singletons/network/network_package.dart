@@ -1,5 +1,5 @@
-part of 'network.dart';
-mixin NetworkManagerPackages on NetworkManager{
+part of 'network_shared.dart';
+mixin NetworkManagerPackages on NetworkGeneral{
   //TODO: implement API calls (package related)
   Future<dynamic> getPackageDetails({required int packageId}) async {
     if (_accessToken != null) {

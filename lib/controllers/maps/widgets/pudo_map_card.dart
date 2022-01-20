@@ -7,7 +7,6 @@ class PudoMapCard extends StatelessWidget {
   final String name;
   final String address;
   final int stars;
-  final bool showOnly;
 
   const PudoMapCard(
       {Key? key,
@@ -15,14 +14,14 @@ class PudoMapCard extends StatelessWidget {
       required this.image,
       required this.name,
       required this.address,
-      required this.stars,
-      this.showOnly = false})
+      required this.stars})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) => GestureDetector(
         onTap: onTap,
         child: Container(
+          margin: const EdgeInsets.symmetric(horizontal: Dimension.padding),
           height: 100,
           decoration: const BoxDecoration(
             color: Colors.white,
@@ -70,20 +69,6 @@ class PudoMapCard extends StatelessWidget {
                 ),
               ),
               const Spacer(),
-              if (!showOnly)
-                Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Padding(
-                    padding: const EdgeInsets.only(
-                      right: Dimension.padding * 2.5,
-                      bottom: Dimension.padding,
-                    ),
-                    child: Image.asset(
-                      'assets/hand.png',
-                      height: Dimension.chipIcon * 2,
-                    ),
-                  ),
-                )
             ],
           ),
         ),

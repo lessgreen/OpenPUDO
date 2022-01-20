@@ -10,6 +10,7 @@ import 'package:http/http.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:qui_green/models/access_token_data.dart';
 import 'package:qui_green/models/address_marker.dart';
+import 'package:qui_green/models/address_model.dart';
 import 'package:qui_green/models/base_response.dart';
 import 'package:qui_green/models/change_package_status_request.dart';
 import 'package:qui_green/models/delivery_package_request.dart';
@@ -38,9 +39,8 @@ part 'network_notification.dart';
 
 part 'network_pudo.dart';
 
-class NetworkManager {
-  AppConfig config;
-
+mixin NetworkGeneral {
+  late AppConfig config;
   ConnectivityResult networkStatus = ConnectivityResult.mobile;
   String? _accessToken;
   final int _timeout = 30;
@@ -49,48 +49,20 @@ class NetworkManager {
   late ValueNotifier _networkActivity;
   late SharedPreferences _sharedPreferences;
 
+  set sharedPreferences(SharedPreferences newVal) {
+    _sharedPreferences = newVal;
+  }
+
+  set accessToken(String newVal) {
+    _accessToken = newVal;
+  }
+
   String _baseURL = "https://api-dev.quigreen.it";
 
   late Map<String, String> _headers;
 
-  static final NetworkManager _inst = NetworkManager._internal(
-    AppConfig(
-        host: "https://api-dev.quigreen.it",
-        isProd: false,
-        appInfo: PackageInfo(
-            appName: "",
-            version: "1",
-            packageName: "",
-            buildNumber: "",
-            buildSignature: "")),
-  );
-
-  static NetworkManager get instance {
-    return NetworkManager._inst;
-  }
-
-  NetworkManager._internal(this.config);
-
-  factory NetworkManager({required AppConfig config}) {
-    _inst._networkActivity = ValueNotifier(false);
-    _inst.config = config;
-    _inst._baseURL = config.host;
-    _inst._headers = {
-      'Content-type': 'application/json',
-      'Accept': 'application/json',
-      'Application-Language': 'it',
-      'User-Agent':
-          'OpenPudo/${config.appInfo.version}#${config.appInfo.buildNumber}',
-    };
-    //SharedPreferences shared = await SharedPreferences.getInstance();
-    _inst._sharedPreferences = config.sharedPreferencesInstance!;
-    _inst._accessToken = _inst._sharedPreferences.getString('accessToken');
-    Connectivity().onConnectivityChanged.listen(
-      (result) {
-        _inst.networkStatus = result;
-      },
-    );
-    return _inst;
+  set headers(Map<String, String> newVal) {
+    _headers = newVal;
   }
 
   void _print(String text) {
@@ -103,8 +75,16 @@ class NetworkManager {
     return _networkActivity;
   }
 
+  set networkActivity(newVal) {
+    _networkActivity = newVal;
+  }
+
   get baseURL {
     return _baseURL;
+  }
+
+  set baseURL(newVal) {
+    _baseURL = newVal;
   }
 
   //
@@ -246,7 +226,7 @@ class NetworkManager {
       _headers['Authorization'] = 'Bearer $_accessToken';
     }
 
-    var url = _baseURL + '/api/v1/map/search/addresses$queryString';
+    var url = _baseURL + '/api/v2/map/search/address$queryString';
 
     try {
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
@@ -261,8 +241,7 @@ class NetworkManager {
       var decodedUTF8 = const Utf8Decoder().convert(codeUnits);
       var json = jsonDecode(decodedUTF8);
       var baseResponse = OPBaseResponse.fromJson(json);
-      List<AddressMarker> pudos = <AddressMarker>[];
-
+      List<AddressModel> pudos = <AddressModel>[];
       var needHandleTokenRefresh = _handleTokenRefresh(
         baseResponse,
         () {
@@ -275,7 +254,7 @@ class NetworkManager {
             baseResponse.payload != null &&
             baseResponse.payload is List) {
           for (dynamic aRow in baseResponse.payload) {
-            pudos.add(AddressMarker.fromJson(aRow));
+            pudos.add(AddressModel.fromJson(aRow['address']));
           }
           return pudos;
         } else {

@@ -11,10 +11,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
+import 'package:qui_green/commons/utilities/custom_shadow.dart';
 import 'package:qui_green/commons/utilities/keyboard_visibility.dart';
 import 'package:qui_green/commons/widgets/main_button.dart';
 import 'package:qui_green/controllers/insert_address/di/insert_address_controller_providers.dart';
 import 'package:qui_green/controllers/insert_address/viewmodel/insert_address_controller_viewmodel.dart';
+import 'package:qui_green/controllers/insert_address/widgets/address_field.dart';
 import 'package:qui_green/resources/res.dart';
 
 class InsertAddressController extends StatefulWidget {
@@ -27,7 +29,6 @@ class InsertAddressController extends StatefulWidget {
 
 class _InsertAddressControllerState extends State<InsertAddressController> {
   final FocusNode _address = FocusNode();
-  String _addressValue = "";
 
   @override
   Widget build(BuildContext context) {
@@ -57,25 +58,11 @@ class _InsertAddressControllerState extends State<InsertAddressController> {
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-                      child: CupertinoTextField(
-                        decoration: BoxDecoration(
-                            border: Border(
-                                bottom: BorderSide(
-                                    color: Theme.of(context).primaryColor))),
-                        autofocus: false,
-                        focusNode: _address,
-                        textInputAction: TextInputAction.done,
-                        onChanged: (newValue) {
-                          viewModel?.fetchSuggestions(newValue);
-                          _addressValue = newValue;
-                        },
-                        onTap: () {
-
-                          setState(() {});
-                        },
-                      ),
-                    ),
+                        padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+                        child: AddressField(
+                          viewModel: viewModel!,
+                          node: _address,
+                        )),
                     const SizedBox(
                       height: Dimension.paddingL,
                     ),
@@ -89,7 +76,7 @@ class _InsertAddressControllerState extends State<InsertAddressController> {
                           : CrossFadeState.showFirst,
                       secondChild: const SizedBox(),
                       firstChild: MainButton(
-                        onPressed: () => viewModel!.onSendClick(context),
+                        onPressed: () => viewModel.onSendClick(context),
                         text: 'Invia',
                       ),
                       duration: const Duration(milliseconds: 150),

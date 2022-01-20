@@ -1,15 +1,15 @@
-part of 'network.dart';
+part of 'network_shared.dart';
 
-mixin NetworkManagerUser on NetworkManager {
+mixin NetworkManagerUser on NetworkGeneral {
   //TODO: implement API calls (user related)
   Future<dynamic> login(
       {required String login, required String password}) async {
     LoginRequest aRequest = LoginRequest(
-      login: login,
-      password: password,
+      phoneNumber: login,
+      otp: password,
     );
 
-    var url = _baseURL + '/api/v1/auth/login';
+    var url = _baseURL + '/api/v2/auth/login/confirm';
     var body = jsonEncode(aRequest.toJson());
 
     try {

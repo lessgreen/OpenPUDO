@@ -1,6 +1,6 @@
-part of 'network.dart';
+part of 'network_shared.dart';
 
-mixin NetworkManagerUserPudo on NetworkManager {
+mixin NetworkManagerUserPudo on NetworkGeneral {
   Future<dynamic> registerPudo({
     required String password,
     required String firstName,

@@ -1,6 +1,6 @@
-part of 'network.dart';
+part of 'network_shared.dart';
 
-mixin NetworkManagerNotification on NetworkManager {
+mixin NetworkManagerNotification on NetworkGeneral {
   Future<dynamic> getNotificationsCount() async {
     if (_accessToken != null) {
       _headers['Authorization'] = 'Bearer $_accessToken';

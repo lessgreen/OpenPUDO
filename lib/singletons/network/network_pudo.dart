@@ -1,6 +1,6 @@
-part of 'network.dart';
+part of 'network_shared.dart';
 
-mixin NetworkManagerPudo on NetworkManager {
+mixin NetworkManagerPudo on NetworkGeneral {
   //TODO: implement API calls (pudo related)
   Future<dynamic> getSuggestedZoom(
       {required double lat, required double lon}) async {
