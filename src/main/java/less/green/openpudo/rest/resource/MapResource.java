@@ -21,6 +21,7 @@ import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.List;
 
 import static less.green.openpudo.common.StringUtils.isEmpty;
@@ -46,7 +47,8 @@ public class MapResource {
     @ProtectedAPI
     @SecurityRequirement(name = "JWT")
     @Operation(summary = "Address search feature based on user input autocompletion",
-            description = "Coordinates parameters are optional, but the client should provide them to speed up queries and obtain more pertinent results.\n\n"
+            description = "Text length must be greater than 3 characters, to provide meaningful results.\n\n"
+                    + "Coordinates parameters are optional, but the client should provide them to speed up queries and obtain more pertinent results.\n\n"
                     + "This API should be throttled to prevent excessive load.")
     public SignedAddressMarkerListResponse searchAddress(
             @Parameter(description = "Query text", required = true) @QueryParam("text") String text,
@@ -66,7 +68,12 @@ public class MapResource {
             }
         }
 
-        List<SignedAddressMarker> ret = mapService.searchAddress(text, lat, lon);
+        // prevent returning meaningless results with too few characters
+        if (text.trim().length() <= 3) {
+            return new SignedAddressMarkerListResponse(context.getExecutionId(), ApiReturnCodes.OK, Collections.emptyList());
+        }
+
+        List<SignedAddressMarker> ret = mapService.searchAddress(text.trim(), lat, lon);
         return new SignedAddressMarkerListResponse(context.getExecutionId(), ApiReturnCodes.OK, ret);
     }
 
