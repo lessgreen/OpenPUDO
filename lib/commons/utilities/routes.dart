@@ -15,11 +15,14 @@ import 'package:qui_green/controllers/exchange/pages/exchange_controller.dart';
 import 'package:qui_green/controllers/home/pages/home_controller.dart';
 import 'package:qui_green/controllers/auth/pages/insert_phone_controller.dart';
 import 'package:qui_green/controllers/auth/pages/login_controller.dart';
+import 'package:qui_green/controllers/home_pudo/pages/home_pudo_controller.dart';
 import 'package:qui_green/controllers/insert_address/pages/insert_address_controller.dart';
 import 'package:qui_green/controllers/instruction/pages/instruction_controller.dart';
+import 'package:qui_green/controllers/list_pudos/pages/pudo_list_controller.dart';
 import 'package:qui_green/controllers/maps/pages/maps_controller.dart';
 import 'package:qui_green/controllers/personal_data/pages/personal_data_controller.dart';
 import 'package:qui_green/controllers/personal_data_business/pages/personal_data_business_controller.dart';
+import 'package:qui_green/controllers/profile/pages/profile_controller.dart';
 import 'package:qui_green/controllers/pudo_detail/pages/pudo_detail_controller.dart';
 import 'package:qui_green/controllers/pudo_tutorial/pages/pudo_tutorial_controller.dart';
 import 'package:qui_green/controllers/registration_complete/pages/registration_complete_controller.dart';
@@ -100,6 +103,18 @@ dynamic routeWithSetting(RouteSettings settings) {
     case Routes.pudoTutorial:
       return CupertinoPageRoute(
         builder: (context) => const PudoTutorialController(),
+      );
+    case Routes.homePudo:
+      return CupertinoPageRoute(
+        builder: (context) => const HomePudoController(),
+      );
+    case Routes.profile:
+      return CupertinoPageRoute(
+        builder: (context) => const ProfileController(),
+      );
+    case Routes.pudoList:
+      return CupertinoPageRoute(
+        builder: (context) => const PudoListController(),
       );
     default:
       return CupertinoPageRoute(

@@ -76,7 +76,7 @@ class _AboutYouControllerState extends State<AboutYouController> {
                 horizontal: Dimension.padding,
               ),
               onPressed: () {
-                Navigator.of(context).pop();
+                Navigator.of(context).pushReplacementNamed(Routes.home);
               },
               text: 'Voglio fornire un servizio',
             ),

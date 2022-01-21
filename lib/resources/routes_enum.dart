@@ -14,4 +14,8 @@ class Routes {
   static const personalDataBusiness = '/personalDataBusiness';
   static const exchange = '/exchange';
   static const pudoTutorial = '/pudoTutorial';
+  static const home = '/home';
+  static const homePudo = '/homePudo';
+  static const profile = '/profile';
+  static const pudoList = '/pudoList';
 }
