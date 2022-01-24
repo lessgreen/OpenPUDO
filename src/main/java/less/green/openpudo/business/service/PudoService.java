@@ -60,7 +60,7 @@ public class PudoService {
         ret.setCustomerCount(customerCount);
         long packageCount = packageDao.getPackageCountByPudoId(pudoId);
         ret.setPackageCount(packageCount);
-        // customized address must be populated only if the caller is pudo customer
+        // customized address must be populated only if the caller is a pudo customer
         if (context.getUserId() != null) {
             TbUserPudoRelation userPudoRelation = userPudoRelationDao.getUserPudoActiveCustomerRelation(pudoId, context.getUserId());
             if (userPudoRelation != null) {

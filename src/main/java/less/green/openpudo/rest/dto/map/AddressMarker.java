@@ -27,5 +27,4 @@ public class AddressMarker {
 
     private BigDecimal distanceFromOrigin;
 
-
 }
