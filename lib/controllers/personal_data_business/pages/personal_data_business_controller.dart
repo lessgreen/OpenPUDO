@@ -29,8 +29,6 @@ class _PersonalDataBusinessControllerState
       TextEditingController(text: "+39-333-1234-567");
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(
-        SystemUiOverlayStyle.dark.copyWith(statusBarColor: Colors.transparent));
     return MultiProvider(
         providers: [ChangeNotifierProxyProvider0<PersonalDataBusinessControllerViewModel?>(
             create: (context) => PersonalDataBusinessControllerViewModel(),

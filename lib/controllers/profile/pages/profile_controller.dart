@@ -10,6 +10,7 @@ import 'package:provider/provider.dart';
 import 'package:qui_green/commons/widgets/base_page.dart';
 import 'package:qui_green/controllers/profile/viewmodel/profile_controller_viewmodel.dart';
 import 'package:qui_green/resources/res.dart';
+import 'package:qui_green/resources/routes_enum.dart';
 
 class ProfileController extends StatefulWidget {
   const ProfileController({Key? key}) : super(key: key);
@@ -29,7 +30,7 @@ class _ProfileControllerState extends State<ProfileController> {
         return BasePage(
           title: 'Il tuo profilo',
           showBackIcon: true,
-          onPressedBack: () => Navigator.of(context).pop(),
+          onPressedBack: () => Navigator.of(context).pushReplacementNamed(Routes.home),
           headerVisible: true,
           icon: const Icon(Icons.edit),
           onPressedIcon: () => null,

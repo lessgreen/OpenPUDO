@@ -26,17 +26,17 @@ class MapsController extends StatefulWidget {
 class _MapsControllerState extends State<MapsController> {
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(
-        SystemUiOverlayStyle.dark.copyWith(statusBarColor: Colors.transparent));
     return MultiProvider(
-        providers: [ChangeNotifierProxyProvider0<MapsControllerViewModel?>(
-            create: (context) => MapsControllerViewModel(),
-            update: (context, viewModel) => viewModel),],
+        providers: [
+          ChangeNotifierProxyProvider0<MapsControllerViewModel?>(
+              create: (context) => MapsControllerViewModel(),
+              update: (context, viewModel) => viewModel),
+        ],
         child: Consumer<MapsControllerViewModel?>(builder: (_, viewModel, __) {
           return WillPopScope(
             onWillPop: () async => false,
             child: Scaffold(
-              resizeToAvoidBottomInset: true,
+              resizeToAvoidBottomInset: false,
               extendBodyBehindAppBar: true,
               appBar: AppBar(
                 backgroundColor: Colors.white.withOpacity(0.8),
@@ -58,9 +58,6 @@ class _MapsControllerState extends State<MapsController> {
                         urlTemplate:
                             "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
                         subdomains: ['a', 'b', 'c'],
-                        attributionBuilder: (_) {
-                          return const Text("© OpenStreetMap");
-                        },
                       ),
                     ],
                   ),

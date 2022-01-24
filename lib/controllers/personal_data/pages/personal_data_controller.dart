@@ -25,8 +25,6 @@ class PersonalDataController extends StatefulWidget {
 class _PersonalDataControllerState extends State<PersonalDataController> {
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(
-        SystemUiOverlayStyle.dark.copyWith(statusBarColor: Colors.transparent));
     return MultiProvider(
         providers: [ChangeNotifierProxyProvider0<PersonalDataControllerViewModel?>(
             create: (context) => PersonalDataControllerViewModel(),

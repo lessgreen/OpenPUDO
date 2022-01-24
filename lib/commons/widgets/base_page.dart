@@ -38,8 +38,7 @@ class BasePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: headerVisible
-          ? AppBar(
+      appBar: AppBar(
               backgroundColor: AppColors.primaryColorDark,
               leading: showBackIcon
                   ? Padding(
@@ -60,8 +59,7 @@ class BasePage extends StatelessWidget {
                 ),
               ],
               title: Text(title),
-            )
-          : null,
+            ),
       body: body,
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: index,

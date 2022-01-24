@@ -39,8 +39,6 @@ class _ExchangeControllerState extends State<ExchangeController> {
         ],
         child:
             Consumer<ExchangeControllerViewModel?>(builder: (_, viewModel, __) {
-          SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark
-              .copyWith(statusBarColor: Colors.transparent));
           return KeyboardVisibilityBuilder(
               builder: (context, child, isKeyboardVisible) {
             return WillPopScope(

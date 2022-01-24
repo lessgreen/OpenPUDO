@@ -21,6 +21,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 ValueNotifier currentRouteName = ValueNotifier('/');
 SharedPreferences? sharedPreferences;
+
 void mainCommon({required String host, required bool isProd}) async {
   WidgetsFlutterBinding.ensureInitialized();
   sharedPreferences = await SharedPreferences.getInstance();
@@ -30,6 +31,16 @@ void mainCommon({required String host, required bool isProd}) async {
       App(isProd: isProd, host: host),
     ),
   );
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge,
+      overlays: [SystemUiOverlay.bottom]).then((value) {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      systemNavigationBarColor: ThemeData.light().scaffoldBackgroundColor,
+      systemNavigationBarDividerColor: Colors.transparent,
+      systemNavigationBarIconBrightness: Brightness.dark,
+    ));
+  });
+
   PackageInfo info = await PackageInfo.fromPlatform();
   NetworkManager(
       config: AppConfig(
@@ -56,7 +67,13 @@ class App extends StatelessWidget {
         return MaterialApp(
           debugShowCheckedModeBanner: false,
           title: 'Qui Green',
-          supportedLocales: const [Locale('en'), Locale('it'), Locale('de'), Locale('es'), Locale('fr')],
+          supportedLocales: const [
+            Locale('en'),
+            Locale('it'),
+            Locale('de'),
+            Locale('es'),
+            Locale('fr')
+          ],
           localizationsDelegates: [
             LocalizationManagerDelegate(sharedPreferences!),
             GlobalMaterialLocalizations.delegate,

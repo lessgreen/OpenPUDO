@@ -24,8 +24,6 @@ class UserPositionController extends StatefulWidget {
 class _UserPositionControllerState extends State<UserPositionController> {
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(
-        SystemUiOverlayStyle.dark.copyWith(statusBarColor: Colors.transparent));
     return MultiProvider(
         providers: [ChangeNotifierProxyProvider0<UserPositionControllerViewModel?>(
             create: (context) => UserPositionControllerViewModel(),

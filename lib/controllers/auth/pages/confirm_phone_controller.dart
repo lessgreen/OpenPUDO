@@ -30,8 +30,6 @@ class _ConfirmPhoneControllerState extends State<ConfirmPhoneController> {
   @override
   Widget build(BuildContext context) {
     //TODO implement provider
-    SystemChrome.setSystemUIOverlayStyle(
-        SystemUiOverlayStyle.dark.copyWith(statusBarColor: Colors.transparent));
     return KeyboardVisibilityBuilder(
         builder: (context, child, isKeyboardVisible) {
       return WillPopScope(

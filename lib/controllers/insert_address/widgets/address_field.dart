@@ -19,6 +19,12 @@ class _AddressFieldState extends State<AddressField> {
   late OverlayEntry overlayEntry;
   bool overlayCreated = false;
 
+  @override
+  void dispose(){
+    overlayEntry.remove();
+    super.dispose();
+  }
+
   void removeOverlay() {
     overlayCreated = false;
     overlayEntry.remove();
@@ -32,7 +38,6 @@ class _AddressFieldState extends State<AddressField> {
       required double width}) async {
     if (!overlayCreated) {
       OverlayState? overlayState = Overlay.of(context);
-
       overlayEntry = OverlayEntry(builder: (context) {
         return AddressOverlay(
           viewModel: viewModel,
