@@ -30,6 +30,7 @@ import java.util.Comparator;
 import java.util.List;
 
 @RequestScoped
+@Transactional(Transactional.TxType.REQUIRED)
 @Log4j2
 public class MapService {
 
@@ -54,6 +55,7 @@ public class MapService {
     @Inject
     DtoMapper dtoMapper;
 
+    @Transactional(Transactional.TxType.NOT_SUPPORTED)
     public List<SignedAddressMarker> searchAddress(String text, BigDecimal lat, BigDecimal lon) {
         try {
             FeatureCollection fc = geocodeService.autocomplete(context.getLanguage(), text, lat, lon);
@@ -75,7 +77,6 @@ public class MapService {
         }
     }
 
-    @Transactional(Transactional.TxType.REQUIRED)
     public Integer getSuggestedZoom(BigDecimal lat, BigDecimal lon) {
         // try zoom level from 16 (narrower) to 9 (wider) until we get enough pudos on the map
         for (int zoom = 16; zoom > 8; zoom--) {
@@ -88,7 +89,6 @@ public class MapService {
         return 8;
     }
 
-    @Transactional(Transactional.TxType.REQUIRED)
     public List<PudoMarker> getPudosOnMap(BigDecimal lat, BigDecimal lon, Integer zoom) {
         // calculate map boundaries based on zoom levels, between 8 and 16, according to https://wiki.openstreetmap.org/wiki/Zoom_levels
         BigDecimal deltaDegree;
