@@ -12,8 +12,8 @@ import less.green.openpudo.rest.dto.pudo.Address;
 import less.green.openpudo.rest.dto.pudo.Pudo;
 import less.green.openpudo.rest.dto.pudo.PudoSummary;
 import less.green.openpudo.rest.dto.pudo.Rating;
-import less.green.openpudo.rest.dto.user.UserPreferences;
 import less.green.openpudo.rest.dto.user.User;
+import less.green.openpudo.rest.dto.user.UserPreferences;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

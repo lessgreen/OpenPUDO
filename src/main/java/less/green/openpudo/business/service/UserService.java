@@ -13,8 +13,8 @@ import less.green.openpudo.rest.config.exception.ApiException;
 import less.green.openpudo.rest.dto.DtoMapper;
 import less.green.openpudo.rest.dto.pudo.PudoSummary;
 import less.green.openpudo.rest.dto.user.DeviceToken;
-import less.green.openpudo.rest.dto.user.UserPreferences;
 import less.green.openpudo.rest.dto.user.User;
+import less.green.openpudo.rest.dto.user.UserPreferences;
 import lombok.extern.log4j.Log4j2;
 
 import javax.enterprise.context.RequestScoped;

@@ -107,7 +107,7 @@ public class AuthResource {
         if (req == null) {
             throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.empty_request"));
         } else if (req.getUser() == null) {
-            throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.empty_mandatory_field", "userProfile"));
+            throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.empty_mandatory_field", "user"));
         } else if (context.getPrivateClaims() == null || context.getPrivateClaims().getPhoneNumber() == null) {
             throw new ApiException(ApiReturnCodes.INVALID_JWT_TOKEN, localizationService.getMessage(context.getLanguage(), "error.auth.invalid_access_token"));
         }
@@ -137,6 +137,8 @@ public class AuthResource {
             throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.empty_mandatory_field", "signature"));
         } else if (!cryptoService.isValidSignature(req.getSignedAddressMarker().getAddress(), req.getSignedAddressMarker().getSignature())) {
             throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.invalid_field", "signature"));
+        } else if (req.getRewardPolicy() == null || req.getRewardPolicy().isEmpty()) {
+            throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.empty_mandatory_field", "rewardPolicy"));
         } else if (context.getPrivateClaims() == null || context.getPrivateClaims().getPhoneNumber() == null) {
             throw new ApiException(ApiReturnCodes.INVALID_JWT_TOKEN, localizationService.getMessage(context.getLanguage(), "error.auth.invalid_access_token"));
         }

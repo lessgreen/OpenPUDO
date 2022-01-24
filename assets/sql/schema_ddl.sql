@@ -163,6 +163,27 @@ CREATE TABLE IF NOT EXISTS tb_address (
 CREATE INDEX tb_address_lat_lon_idx ON tb_address(lat, lon);
 
 
+DROP TABLE IF EXISTS tb_reward_policy CASCADE;
+CREATE TABLE IF NOT EXISTS tb_reward_policy (
+	reward_policy_id BIGSERIAL PRIMARY KEY,
+	pudo_id BIGINT NOT NULL REFERENCES tb_pudo(pudo_id),
+	create_tms TIMESTAMP(3) NOT NULL,
+	delete_tms TIMESTAMP(3),
+	free_checked BOOLEAN NOT NULL,
+	customer_checked BOOLEAN NOT NULL,
+	customer_selectitem TEXT,
+	customer_selectitem_text TEXT,
+	members_checked BOOLEAN NOT NULL,
+	members_text TEXT,
+	buy_checked BOOLEAN NOT NULL,
+	buy_text TEXT,
+	fee_checked BOOLEAN NOT NULL,
+	fee_price DECIMAL(3,2)
+);
+CREATE INDEX tb_reward_policy_pudo_id_idx ON tb_reward_policy(pudo_id);
+CREATE UNIQUE INDEX tb_reward_policy_pudo_id_delete_tms_idx ON tb_reward_policy(pudo_id) WHERE delete_tms IS NULL;
+
+
 DROP TABLE IF EXISTS tb_user_pudo_relation CASCADE;
 CREATE TABLE IF NOT EXISTS tb_user_pudo_relation (
     user_pudo_relation_id BIGSERIAL PRIMARY KEY,

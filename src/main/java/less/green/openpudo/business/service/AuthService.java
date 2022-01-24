@@ -49,6 +49,9 @@ public class AuthService {
     SmsService smsService;
 
     @Inject
+    PudoService pudoService;
+
+    @Inject
     AddressDao addressDao;
     @Inject
     OtpRequestDao otpRequestDao;
@@ -56,6 +59,8 @@ public class AuthService {
     PudoDao pudoDao;
     @Inject
     RatingDao ratingDao;
+    @Inject
+    RewardPolicyDao rewardPolicyDao;
     @Inject
     UserDao userDao;
     @Inject
@@ -206,6 +211,9 @@ public class AuthService {
             log.error("[{}] Register request for already registered user: {}", context.getExecutionId(), user.getUserId());
             throw new ApiException(ApiReturnCodes.FORBIDDEN, localizationService.getMessage(context.getLanguage(), "error.auth.already_registered"));
         }
+        // deep validation of reward policy before persisting data
+        TbRewardPolicy tbRewardPolicy = pudoService.mapRewardPolicyDtoToEntity(req.getRewardPolicy());
+
         Date now = new Date();
         user = new TbUser();
         user.setCreateTms(now);
@@ -242,6 +250,10 @@ public class AuthService {
         rating.setReviewCount(0L);
         rating.setAverageScore(null);
         ratingDao.persist(rating);
+        tbRewardPolicy.setPudoId(pudo.getPudoId());
+        tbRewardPolicy.setCreateTms(now);
+        tbRewardPolicy.setDeleteTms(null);
+        rewardPolicyDao.persist(tbRewardPolicy);
         pudoDao.flush();
         log.info("[{}] Registered user {} as {}", context.getExecutionId(), user.getUserId(), user.getAccountType());
         return jwtService.generateUserTokenData(user.getUserId(), mapAccountTypeToAccessProfile(user.getAccountType()));

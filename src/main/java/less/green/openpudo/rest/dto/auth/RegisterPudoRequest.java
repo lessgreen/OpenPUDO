@@ -2,8 +2,11 @@ package less.green.openpudo.rest.dto.auth;
 
 import less.green.openpudo.rest.dto.map.SignedAddressMarker;
 import less.green.openpudo.rest.dto.pudo.Pudo;
+import less.green.openpudo.rest.dto.pudo.reward.RewardOption;
 import lombok.Data;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
+
+import java.util.List;
 
 @Data
 public class RegisterPudoRequest {
@@ -13,5 +16,8 @@ public class RegisterPudoRequest {
 
     @Schema(required = true)
     private SignedAddressMarker signedAddressMarker;
+
+    @Schema(required = true)
+    private List<RewardOption> rewardPolicy;
 
 }

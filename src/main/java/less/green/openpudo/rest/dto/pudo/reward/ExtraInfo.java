@@ -24,4 +24,7 @@ public abstract class ExtraInfo {
     @Schema(required = true)
     private ExtraInfoType type;
 
+    @Schema(readOnly = true)
+    private Boolean mandatoryValue;
+
 }
