@@ -11,7 +11,6 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:qui_green/commons/widgets/main_button.dart';
 import 'package:qui_green/controllers/instruction/widgets/instruction_card.dart';
-import 'package:qui_green/controllers/pudo_tutorial/di/pudo_tutorial_providers.dart';
 import 'package:qui_green/controllers/pudo_tutorial/viewmodel/pudo_tutorial_viewmodel.dart';
 import 'package:qui_green/resources/res.dart';
 
@@ -81,10 +80,10 @@ class _PudoTutorialControllerState extends State<PudoTutorialController> {
   //TODO Once api in place structure this widget
   Widget _buildSecondPageWidget() => Column(
         children: [
-          Divider(color: Colors.grey),
+          const Divider(color: Colors.grey),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
+            children: const [
               Icon(
                 Icons.inbox,
                 color: AppColors.cardColor,
@@ -96,13 +95,13 @@ class _PudoTutorialControllerState extends State<PudoTutorialController> {
               ),
             ],
           ),
-          Divider(color: Colors.grey),
-          SizedBox(height: 20),
-          Text(
+          const Divider(color: Colors.grey),
+          const SizedBox(height: 20),
+          const Text(
             'dal menù principale dell\'app',
             style: TextStyle(fontSize: 18),
           ),
-          Text('QuiGreen',
+          const Text('QuiGreen',
               style: TextStyle(
                   color: AppColors.cardColor,
                   fontWeight: FontWeight.bold,
@@ -112,10 +111,10 @@ class _PudoTutorialControllerState extends State<PudoTutorialController> {
 
   Widget _buildThirdPageWidget() => Column(
         children: [
-          Divider(color: Colors.grey),
+          const Divider(color: Colors.grey),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
+            children: const [
               Icon(
                 Icons.people,
                 color: AppColors.cardColor,
@@ -127,14 +126,14 @@ class _PudoTutorialControllerState extends State<PudoTutorialController> {
               ),
             ],
           ),
-          Divider(color: Colors.grey),
-          SizedBox(height: 20),
-          Text(
+          const Divider(color: Colors.grey),
+          const SizedBox(height: 20),
+          const Text(
             'tra quelli che hanno scelto la tua\nattività per la consegna ',
             textAlign: TextAlign.center,
             style: TextStyle(fontSize: 18),
           ),
-          Text('QuiGreen',
+          const Text('QuiGreen',
               style: TextStyle(
                   color: AppColors.cardColor,
                   fontWeight: FontWeight.bold,
@@ -144,7 +143,7 @@ class _PudoTutorialControllerState extends State<PudoTutorialController> {
 
   Widget _buildFourPageWidget() => Column(
         children: [
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           Container(
             width: MediaQuery.of(context).size.width / 3,
             height: MediaQuery.of(context).size.width / 3,
@@ -169,10 +168,10 @@ class _PudoTutorialControllerState extends State<PudoTutorialController> {
               ],
             ),
           ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: [
+            children: const [
               Text('et voilà!',
                   style: TextStyle(
                       color: AppColors.cardColor,
@@ -193,7 +192,11 @@ class _PudoTutorialControllerState extends State<PudoTutorialController> {
     SystemChrome.setSystemUIOverlayStyle(
         SystemUiOverlayStyle.dark.copyWith(statusBarColor: Colors.transparent));
     return MultiProvider(
-        providers: pudoTutorialProviders,
+        providers: [
+          ChangeNotifierProxyProvider0<PudoTutorialViewModel?>(
+              create: (context) => PudoTutorialViewModel(),
+              update: (context, viewModel) => viewModel),
+        ],
         child: Consumer<PudoTutorialViewModel?>(builder: (_, viewModel, __) {
           return WillPopScope(
             onWillPop: () async => false,

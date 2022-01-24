@@ -12,7 +12,6 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:qui_green/commons/utilities/keyboard_visibility.dart';
 import 'package:qui_green/commons/widgets/main_button.dart';
-import 'package:qui_green/controllers/personal_data_business/di/personal_data_business_controller_providers.dart';
 import 'package:qui_green/controllers/personal_data_business/viewmodel/personal_data_business_controller_viewmodel.dart';
 import 'package:qui_green/resources/res.dart';
 
@@ -33,7 +32,9 @@ class _PersonalDataBusinessControllerState
     SystemChrome.setSystemUIOverlayStyle(
         SystemUiOverlayStyle.dark.copyWith(statusBarColor: Colors.transparent));
     return MultiProvider(
-        providers: personalDataBusinessControllerProviders,
+        providers: [ChangeNotifierProxyProvider0<PersonalDataBusinessControllerViewModel?>(
+            create: (context) => PersonalDataBusinessControllerViewModel(),
+            update: (context, viewModel) => viewModel),],
         child: Consumer<PersonalDataBusinessControllerViewModel?>(
             builder: (_, viewModel, __) {
           return KeyboardVisibilityBuilder(

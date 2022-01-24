@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:qui_green/models/page_type.dart';
 import 'package:qui_green/resources/res.dart';
 import 'package:qui_green/resources/routes_enum.dart';
 
@@ -50,7 +49,7 @@ class BasePage extends StatelessWidget {
                         child: const Icon(Icons.arrow_back_ios),
                       ),
                     )
-                  : SizedBox(),
+                  : const SizedBox(),
               actions: [
                 Padding(
                   padding: const EdgeInsets.only(right: Dimension.padding),

@@ -14,7 +14,6 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:qui_green/commons/utilities/keyboard_visibility.dart';
 import 'package:qui_green/commons/widgets/main_button.dart';
-import 'package:qui_green/controllers/exchange/di/exchange_controller_providers.dart';
 import 'package:qui_green/controllers/exchange/viewmodel/exchange_controller_viewmodel.dart';
 import 'package:qui_green/controllers/exchange/widgets/exchange_option_tile.dart';
 import 'package:qui_green/models/exhange_option_model.dart';
@@ -33,7 +32,11 @@ class _ExchangeControllerState extends State<ExchangeController> {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-        providers: exchangeControllerProviders,
+        providers: [
+          ChangeNotifierProxyProvider0<ExchangeControllerViewModel?>(
+              create: (context) => ExchangeControllerViewModel(),
+              update: (context, viewModel) => viewModel),
+        ],
         child:
             Consumer<ExchangeControllerViewModel?>(builder: (_, viewModel, __) {
           SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark
@@ -90,7 +93,8 @@ class _ExchangeControllerState extends State<ExchangeController> {
                                 acceptMultiple: true,
                                 name: "",
                                 icon: Icons.crop),
-                        onTextChange: (newVal) => viewModel?.onTextChange(index, newVal),
+                        onTextChange: (newVal) =>
+                            viewModel?.onTextChange(index, newVal),
                       ),
                     )),
                     AnimatedCrossFade(

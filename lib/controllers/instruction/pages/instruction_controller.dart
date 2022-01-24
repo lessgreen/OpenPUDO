@@ -11,7 +11,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:qui_green/commons/widgets/main_button.dart';
-import 'package:qui_green/controllers/instruction/di/instruction_controller_providers.dart';
 import 'package:qui_green/controllers/instruction/viewmodel/instruction_controller_viewmodel.dart';
 import 'package:qui_green/controllers/instruction/widgets/instruction_card.dart';
 import 'package:qui_green/resources/res.dart';
@@ -95,7 +94,9 @@ class _InstructionControllerState extends State<InstructionController> {
     SystemChrome.setSystemUIOverlayStyle(
         SystemUiOverlayStyle.dark.copyWith(statusBarColor: Colors.transparent));
     return MultiProvider(
-        providers: instructionControllerProviders,
+        providers: [ChangeNotifierProxyProvider0<InstructionControllerViewModel?>(
+            create: (context) => InstructionControllerViewModel(),
+            update: (context, viewModel) => viewModel)],
         child: Consumer<InstructionControllerViewModel?>(
             builder: (_, viewModel, __) {
           return WillPopScope(

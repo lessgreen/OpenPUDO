@@ -6,15 +6,15 @@
 //   Copyright © 2022 Sofapps.it - All rights reserved.
 //
 
+// ignore_for_file: unnecessary_import
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
-import 'package:qui_green/commons/utilities/custom_shadow.dart';
 import 'package:qui_green/commons/utilities/keyboard_visibility.dart';
 import 'package:qui_green/commons/widgets/main_button.dart';
-import 'package:qui_green/controllers/insert_address/di/insert_address_controller_providers.dart';
 import 'package:qui_green/controllers/insert_address/viewmodel/insert_address_controller_viewmodel.dart';
 import 'package:qui_green/controllers/insert_address/widgets/address_field.dart';
 import 'package:qui_green/resources/res.dart';
@@ -35,7 +35,11 @@ class _InsertAddressControllerState extends State<InsertAddressController> {
     SystemChrome.setSystemUIOverlayStyle(
         SystemUiOverlayStyle.dark.copyWith(statusBarColor: Colors.transparent));
     return MultiProvider(
-        providers: insertAddressControllerProviders,
+        providers: [
+          ChangeNotifierProxyProvider0<InsertAddressControllerViewModel?>(
+              create: (context) => InsertAddressControllerViewModel(),
+              update: (context, viewModel) => viewModel),
+        ],
         child: Consumer<InsertAddressControllerViewModel?>(
             builder: (_, viewModel, __) {
           return KeyboardVisibilityBuilder(

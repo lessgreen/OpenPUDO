@@ -12,7 +12,6 @@ import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:qui_green/commons/utilities/keyboard_visibility.dart';
 import 'package:qui_green/commons/widgets/main_button.dart';
-import 'package:qui_green/controllers/thanks/di/thanks_providers.dart';
 import 'package:qui_green/controllers/thanks/viewmodel/thanks_viewmodel.dart';
 import 'package:qui_green/resources/res.dart';
 
@@ -29,7 +28,9 @@ class _ThanksControllerState extends State<ThanksController> {
     SystemChrome.setSystemUIOverlayStyle(
         SystemUiOverlayStyle.dark.copyWith(statusBarColor: Colors.transparent));
     return MultiProvider(
-        providers: thanksControllerProviders,
+        providers: [ChangeNotifierProxyProvider0<ThanksControllerViewModel?>(
+            create: (context) => ThanksControllerViewModel(),
+            update: (context, viewModel) => viewModel),],
         child:
             Consumer<ThanksControllerViewModel?>(builder: (_, viewModel, __) {
           return KeyboardVisibilityBuilder(

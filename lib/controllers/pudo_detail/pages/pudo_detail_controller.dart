@@ -10,7 +10,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:qui_green/commons/widgets/text_field_button.dart';
-import 'package:qui_green/controllers/pudo_detail/di/pudo_detail_controller_providers.dart';
 import 'package:qui_green/controllers/pudo_detail/viewmodel/pudo_detail_controller_viewmodel.dart';
 import 'package:qui_green/resources/res.dart';
 
@@ -134,7 +133,9 @@ class _PudoDetailControllerState extends State<PudoDetailController> {
     SystemChrome.setSystemUIOverlayStyle(
         SystemUiOverlayStyle.dark.copyWith(statusBarColor: Colors.transparent));
     return MultiProvider(
-        providers: pudoDetailControllerProviders,
+        providers: [ChangeNotifierProxyProvider0<PudoDetailControllerViewModel?>(
+            create: (context) => PudoDetailControllerViewModel(),
+            update: (context, viewModel) => viewModel),],
         child: Consumer<PudoDetailControllerViewModel?>(
             builder: (_, viewModel, __) {
           return WillPopScope(

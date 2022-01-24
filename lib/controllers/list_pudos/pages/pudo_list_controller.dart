@@ -8,10 +8,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:qui_green/commons/widgets/base_page.dart';
-import 'package:qui_green/controllers/list_pudos/di/pudo_list_controller_providers.dart';
 import 'package:qui_green/controllers/list_pudos/viewmodel/pudo_list_controller_viewmodel.dart';
 import 'package:qui_green/controllers/maps/widgets/pudo_map_card.dart';
-import 'package:qui_green/models/page_type.dart';
 import 'package:qui_green/resources/res.dart';
 import 'package:qui_green/resources/routes_enum.dart';
 
@@ -26,7 +24,9 @@ class _PudoListControllerState extends State<PudoListController> {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-      providers: pudoListControllerProviders,
+      providers: [ChangeNotifierProxyProvider0<PudoListControllerViewModel?>(
+          create: (context) => PudoListControllerViewModel(),
+          update: (context, viewModel) => viewModel),],
       child: Consumer<PudoListControllerViewModel>(builder: (_, viewModel, __) {
         return BasePage(
           headerVisible: true,
@@ -52,7 +52,7 @@ class _PudoListControllerState extends State<PudoListController> {
                   ),
                 ),
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               Padding(
                   padding: const EdgeInsets.only(
                       left: Dimension.padding, right: Dimension.padding),

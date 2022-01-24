@@ -7,7 +7,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart';
-import 'package:package_info_plus/package_info_plus.dart';
 import 'package:qui_green/models/access_token_data.dart';
 import 'package:qui_green/models/address_marker.dart';
 import 'package:qui_green/models/address_model.dart';

@@ -5,10 +5,11 @@
 //  Created by Costantino Pistagna on 04/01/2022.
 //  Copyright © 2022 Sofapps. All rights reserved.
 
+// ignore_for_file: unused_import
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:qui_green/commons/widgets/base_page.dart';
-import 'package:qui_green/controllers/home/di/home_controller_providers.dart';
 import 'package:qui_green/controllers/home/viewmodel/home_controller_viewmodel.dart';
 import 'package:qui_green/models/page_type.dart';
 import 'package:qui_green/resources/routes_enum.dart';
@@ -24,7 +25,9 @@ class _HomeControllerState extends State<HomeController> {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-      providers: homeControllerProviders,
+      providers: [ChangeNotifierProxyProvider0<HomeControllerViewModel?>(
+          create: (context) => HomeControllerViewModel(),
+          update: (context, viewModel) => viewModel),],
       child: Consumer<HomeControllerViewModel>(builder: (_, viewModel, __) {
         return BasePage(
           title: 'QuiGreen',

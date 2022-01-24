@@ -11,7 +11,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:qui_green/commons/widgets/main_button.dart';
-import 'package:qui_green/controllers/user_position/di/user_position_controller_providers.dart';
 import 'package:qui_green/controllers/user_position/viewmodel/user_position_controller_viewmodel.dart';
 import 'package:qui_green/resources/res.dart';
 
@@ -28,7 +27,9 @@ class _UserPositionControllerState extends State<UserPositionController> {
     SystemChrome.setSystemUIOverlayStyle(
         SystemUiOverlayStyle.dark.copyWith(statusBarColor: Colors.transparent));
     return MultiProvider(
-        providers: userPositionControllerProviders,
+        providers: [ChangeNotifierProxyProvider0<UserPositionControllerViewModel?>(
+            create: (context) => UserPositionControllerViewModel(),
+            update: (context, viewModel) => viewModel),],
         child: Consumer<UserPositionControllerViewModel?>(
             builder: (_, viewModel, __) {
           return WillPopScope(

@@ -54,7 +54,7 @@ class _AddressFieldState extends State<AddressField> {
     }
   }
 
-  GlobalKey _key = GlobalKey();
+  final GlobalKey _key = GlobalKey();
 
   void onAfter() {
     _key.currentContext?.size?.width;

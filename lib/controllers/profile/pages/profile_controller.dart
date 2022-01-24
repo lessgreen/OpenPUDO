@@ -8,9 +8,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:qui_green/commons/widgets/base_page.dart';
-import 'package:qui_green/controllers/profile/di/profile_controller_providers.dart';
 import 'package:qui_green/controllers/profile/viewmodel/profile_controller_viewmodel.dart';
-import 'package:qui_green/models/page_type.dart';
 import 'package:qui_green/resources/res.dart';
 
 class ProfileController extends StatefulWidget {
@@ -24,7 +22,9 @@ class _ProfileControllerState extends State<ProfileController> {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-      providers: profileControllerProviders,
+      providers: [ChangeNotifierProxyProvider0<ProfileControllerViewModel?>(
+          create: (context) => ProfileControllerViewModel(),
+          update: (context, viewModel) => viewModel),],
       child: Consumer<ProfileControllerViewModel>(builder: (_, viewModel, __) {
         return BasePage(
           title: 'Il tuo profilo',
@@ -36,18 +36,18 @@ class _ProfileControllerState extends State<ProfileController> {
           index: 0,
           body: Column(
             children: [
-              SizedBox(height: 20),
-              Center(
+              const SizedBox(height: 20),
+              const Center(
                 child: CircleAvatar(
                   radius: 80,
                   backgroundImage: NetworkImage(
                       'https://i1.sndcdn.com/avatars-TlbXx1BArSO2iBM1-r5ax8A-t500x500.jpg'),
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
-              Text(
+              const Text(
                 'Jennifer Seed',
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
               ),
@@ -55,7 +55,7 @@ class _ProfileControllerState extends State<ProfileController> {
                 'Utente dal 21/11/2021',
                 style: TextStyle(fontSize: 12, color: Colors.grey.shade500),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
               RichText(
@@ -81,14 +81,14 @@ class _ProfileControllerState extends State<ProfileController> {
                   ],
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
-              Divider(color: Colors.grey),
+              const Divider(color: Colors.grey),
               GestureDetector(
                 onTap: () => viewModel.goToPudos(context),
                 child: Row(
-                  children: [
+                  children: const [
                     SizedBox(width: 10),
                     Icon(
                       Icons.person_pin_circle,
@@ -104,9 +104,9 @@ class _ProfileControllerState extends State<ProfileController> {
                   ],
                 ),
               ),
-              Divider(color: Colors.grey),
+              const Divider(color: Colors.grey),
               Row(
-                children: [
+                children: const [
                   SizedBox(width: 10),
                   Icon(
                     Icons.new_label,
@@ -121,7 +121,7 @@ class _ProfileControllerState extends State<ProfileController> {
                   ),
                 ],
               ),
-              Divider(color: Colors.grey),
+              const Divider(color: Colors.grey),
             ],
           ),
         );

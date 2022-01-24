@@ -12,7 +12,6 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
 import 'package:qui_green/commons/widgets/text_field_button.dart';
-import 'package:qui_green/controllers/maps/di/maps_controller_providers.dart';
 import 'package:qui_green/controllers/maps/viewmodel/maps_controller_viewmodel.dart';
 import 'package:qui_green/controllers/maps/widgets/pudo_card_list.dart';
 import 'package:qui_green/resources/res.dart';
@@ -30,7 +29,9 @@ class _MapsControllerState extends State<MapsController> {
     SystemChrome.setSystemUIOverlayStyle(
         SystemUiOverlayStyle.dark.copyWith(statusBarColor: Colors.transparent));
     return MultiProvider(
-        providers: mapsControllerProviders,
+        providers: [ChangeNotifierProxyProvider0<MapsControllerViewModel?>(
+            create: (context) => MapsControllerViewModel(),
+            update: (context, viewModel) => viewModel),],
         child: Consumer<MapsControllerViewModel?>(builder: (_, viewModel, __) {
           return WillPopScope(
             onWillPop: () async => false,

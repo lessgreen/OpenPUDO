@@ -9,7 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
-import 'package:qui_green/controllers/auth/di/login_controller_providers.dart';
 import 'package:qui_green/controllers/auth/viewmodel/login_controller_viewmodel.dart';
 import 'package:qui_green/resources/res.dart';
 
@@ -26,7 +25,11 @@ class _LoginControllerState extends State<LoginController> {
     SystemChrome.setSystemUIOverlayStyle(
         SystemUiOverlayStyle.dark.copyWith(statusBarColor: Colors.transparent));
     return MultiProvider(
-      providers: loginControllerProviders,
+      providers: [
+        ChangeNotifierProxyProvider0<LoginControllerViewModel?>(
+            create: (context) => LoginControllerViewModel(),
+            update: (context, viewModel) => viewModel)
+      ],
       child: Consumer<LoginControllerViewModel>(
         builder: (_, viewModel, __) {
           return WillPopScope(

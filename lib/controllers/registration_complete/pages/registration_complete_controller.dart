@@ -13,7 +13,6 @@ import 'package:provider/provider.dart';
 import 'package:qui_green/commons/utilities/keyboard_visibility.dart';
 import 'package:qui_green/commons/widgets/main_button.dart';
 import 'package:qui_green/controllers/maps/widgets/pudo_map_card.dart';
-import 'package:qui_green/controllers/registration_complete/di/registration_complete_controller_providers.dart';
 import 'package:qui_green/controllers/registration_complete/viewmodel/registration_complete_controller_viewmodel.dart';
 import 'package:qui_green/resources/res.dart';
 
@@ -32,7 +31,9 @@ class _RegistrationCompleteControllerState
     SystemChrome.setSystemUIOverlayStyle(
         SystemUiOverlayStyle.dark.copyWith(statusBarColor: Colors.transparent));
     return MultiProvider(
-        providers: registrationCompleteControllerProviders,
+        providers: [ChangeNotifierProxyProvider0<RegistrationCompleteControllerViewModel?>(
+            create: (context) => RegistrationCompleteControllerViewModel(),
+            update: (context, viewModel) => viewModel),],
         child: Consumer<RegistrationCompleteControllerViewModel?>(
             builder: (_, viewModel, __) {
           return KeyboardVisibilityBuilder(
