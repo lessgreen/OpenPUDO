@@ -6,6 +6,7 @@
 //  Copyright © 2022 Sofapps. All rights reserved.
 //
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -28,14 +29,9 @@ void mainCommon({required String host, required bool isProd}) async {
   sharedPreferences.setString('languagePref', 'it');
   PackageInfo info = await PackageInfo.fromPlatform();
 
-  AppConfig appConfig = AppConfig(
-      isProd: isProd,
-      host: host,
-      appInfo: info,
-      sharedPreferencesInstance: sharedPreferences);
+  AppConfig appConfig = AppConfig(isProd: isProd, host: host, appInfo: info, sharedPreferencesInstance: sharedPreferences);
   NetworkManager(config: appConfig);
-  await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge,
-      overlays: [SystemUiOverlay.bottom]);
+  await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge, overlays: [SystemUiOverlay.bottom]);
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
     statusBarColor: Colors.transparent,
     systemNavigationBarColor: ThemeData.light().scaffoldBackgroundColor,
@@ -75,8 +71,7 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(
-            create: (_) => CurrentUser(config.sharedPreferencesInstance)),
+        ChangeNotifierProvider(create: (_) => CurrentUser(config.sharedPreferencesInstance)),
       ],
       child: Consumer<CurrentUser>(
         builder: (context, currentUser, _) {
@@ -85,13 +80,7 @@ class App extends StatelessWidget {
             navigatorKey: navigatorKey,
             debugShowCheckedModeBanner: false,
             title: 'Qui Green',
-            supportedLocales: const [
-              Locale('en'),
-              Locale('it'),
-              Locale('de'),
-              Locale('es'),
-              Locale('fr')
-            ],
+            supportedLocales: const [Locale('en'), Locale('it'), Locale('de'), Locale('es'), Locale('fr')],
             localizationsDelegates: [
               LocalizationManagerDelegate(config.sharedPreferencesInstance!),
               GlobalMaterialLocalizations.delegate,
