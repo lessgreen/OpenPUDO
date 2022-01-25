@@ -99,6 +99,7 @@ public class PudoResource {
     @GET
     @Path("/reward-schema")
     @ProtectedAPI
+    @SecurityRequirement(name = "JWT")
     @Operation(summary = "Get PUDO rewards definition schema")
     public RewardOptionListResponse getRewardSchema() {
         List<RewardOption> ret = pudoService.getRewardSchema();
