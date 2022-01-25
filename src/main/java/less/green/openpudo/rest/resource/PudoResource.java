@@ -8,7 +8,6 @@ import less.green.openpudo.common.MultipartUtils;
 import less.green.openpudo.common.dto.tuple.Pair;
 import less.green.openpudo.rest.config.annotation.BinaryAPI;
 import less.green.openpudo.rest.config.annotation.ProtectedAPI;
-import less.green.openpudo.rest.config.annotation.PublicAPI;
 import less.green.openpudo.rest.config.exception.ApiException;
 import less.green.openpudo.rest.dto.pudo.Pudo;
 import less.green.openpudo.rest.dto.pudo.PudoResponse;
@@ -99,7 +98,7 @@ public class PudoResource {
 
     @GET
     @Path("/reward-schema")
-    @PublicAPI
+    @ProtectedAPI
     @Operation(summary = "Get PUDO rewards definition schema")
     public RewardOptionListResponse getRewardSchema() {
         List<RewardOption> ret = pudoService.getRewardSchema();
