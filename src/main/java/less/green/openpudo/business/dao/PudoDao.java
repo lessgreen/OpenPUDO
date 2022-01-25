@@ -28,9 +28,9 @@ public class PudoDao extends BaseEntityDao<TbPudo, Long> {
     }
 
     public Triplet<TbPudo, TbAddress, TbRating> getPudoDeep(Long pudoId) {
-        String qs = "SELECT t1, t2, t3 "
-                + "FROM TbPudo t1, TbAddress t2, TbRating t3 "
-                + "WHERE t1.pudoId = :pudoId AND t1.pudoId = t2.pudoId AND t1.pudoId = t3.pudoId";
+        String qs = "SELECT t1, t2, t3 " +
+                "FROM TbPudo t1, TbAddress t2, TbRating t3 " +
+                "WHERE t1.pudoId = :pudoId AND t1.pudoId = t2.pudoId AND t1.pudoId = t3.pudoId";
         try {
             TypedQuery<Object[]> q = em.createQuery(qs, Object[].class);
             q.setParameter("pudoId", pudoId);
@@ -42,12 +42,12 @@ public class PudoDao extends BaseEntityDao<TbPudo, Long> {
     }
 
     public List<Triplet<Long, BigDecimal, BigDecimal>> getPudosOnMap(BigDecimal latMin, BigDecimal latMax, BigDecimal lonMin, BigDecimal lonMax) {
-        String qs = "SELECT t1.pudoId, t2.lat, t2.lon "
-                + "FROM TbPudo t1, TbAddress t2 "
-                + "WHERE t1.pudoId = t2.pudoId "
-                + "AND t1.pudoPicId IS NOT NULL "
-                + "AND t2.lat >= :latMin AND t2.lat <= :latMax "
-                + "AND t2.lon >= :lonMin AND t2.lon <= :lonMax";
+        String qs = "SELECT t1.pudoId, t2.lat, t2.lon " +
+                "FROM TbPudo t1, TbAddress t2 " +
+                "WHERE t1.pudoId = t2.pudoId " +
+                "AND t1.pudoPicId IS NOT NULL " +
+                "AND t2.lat >= :latMin AND t2.lat <= :latMax " +
+                "AND t2.lon >= :lonMin AND t2.lon <= :lonMax";
         TypedQuery<Object[]> q = em.createQuery(qs, Object[].class);
         q.setParameter("latMin", latMin);
         q.setParameter("latMax", latMax);
@@ -58,11 +58,11 @@ public class PudoDao extends BaseEntityDao<TbPudo, Long> {
     }
 
     public List<Quartet<Long, String, UUID, String>> getCurrentUserPudos(Long userId) {
-        String qs = "SELECT t1.pudoId, t1.businessName, t1.pudoPicId, t2.label "
-                + "FROM TbPudo t1, TbAddress t2, TbUserPudoRelation t3 "
-                + "WHERE t1.pudoId = t2.pudoId AND t1.pudoId = t3.pudoId "
-                + "AND t3.userId = :userId AND t3.relationType = :relationType AND t3.deleteTms IS NULL "
-                + "ORDER BY t1.pudoId";
+        String qs = "SELECT t1.pudoId, t1.businessName, t1.pudoPicId, t2.label " +
+                "FROM TbPudo t1, TbAddress t2, TbUserPudoRelation t3 " +
+                "WHERE t1.pudoId = t2.pudoId AND t1.pudoId = t3.pudoId " +
+                "AND t3.userId = :userId AND t3.relationType = :relationType AND t3.deleteTms IS NULL " +
+                "ORDER BY t1.pudoId";
         TypedQuery<Object[]> q = em.createQuery(qs, Object[].class);
         q.setParameter("userId", userId);
         q.setParameter("relationType", RelationType.CUSTOMER);
