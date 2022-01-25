@@ -10,8 +10,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:qui_green/commons/alert_dialog.dart';
+import 'package:qui_green/commons/formfields_validators.dart';
 import 'package:qui_green/commons/utilities/keyboard_visibility.dart';
 import 'package:qui_green/commons/widgets/main_button.dart';
+import 'package:qui_green/commons/widgets/sascaffold.dart';
 import 'package:qui_green/commons/widgets/text_field_button.dart';
 import 'package:qui_green/models/base_response.dart';
 import 'package:qui_green/resources/res.dart';
@@ -29,33 +32,26 @@ class _InsertPhoneControllerState extends State<InsertPhoneController> {
   final FocusNode _phoneNumber = FocusNode();
   String _phoneNumberValue = "";
 
-  bool get validatePhoneNumber {
-    //RegExp regExp = RegExp(r'(^(?:[+0]9)?[0-9]{10,12}$)');
-    if (_phoneNumberValue.isEmpty) {
-      return false;
-    }
-    /* else if (!regExp.hasMatch(_phoneNumberValue)) {
-      return false;
-    }*/
-    return true;
-  }
-
   Future<void> sendRequest() async {
-    OPBaseResponse response = await NetworkManager.instance
-        .registerUser(phoneNumber: _phoneNumberValue);
-    if(response.returnCode==0) {
-      Navigator.of(context).pushReplacementNamed(Routes.confirmPhone);
-    }
+    NetworkManager.instance.registerUser(phoneNumber: _phoneNumberValue).then((response) {
+      if (response is OPBaseResponse && response.returnCode == 0) {
+        Navigator.of(context).pushReplacementNamed(Routes.confirmPhone);
+      } else {
+        throw response;
+      }
+    }).catchError((onError) {
+      SAAlertDialog.displayAlertWithClose(context, "Error", onError);
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    //TODO implement provider
     return KeyboardVisibilityBuilder(
       builder: (context, child, isKeyboardVisible) {
         return WillPopScope(
           onWillPop: () async => false,
-          child: Scaffold(
+          child: SAScaffold(
+            isLoading: NetworkManager.instance.networkActivity,
             resizeToAvoidBottomInset: false,
             appBar: AppBar(
               backgroundColor: Colors.transparent,
@@ -83,10 +79,7 @@ class _InsertPhoneControllerState extends State<InsertPhoneController> {
                 Padding(
                   padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
                   child: CupertinoTextField(
-                    decoration: BoxDecoration(
-                        border: Border(
-                            bottom: BorderSide(
-                                color: Theme.of(context).primaryColor))),
+                    decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Theme.of(context).primaryColor))),
                     autofocus: false,
                     focusNode: _phoneNumber,
                     suffix: TextFieldButton(
@@ -104,34 +97,18 @@ class _InsertPhoneControllerState extends State<InsertPhoneController> {
                         _phoneNumberValue = newValue;
                       });
                     },
-                    onTap: () {
-                      setState(() {});
-                    },
                   ),
                 ),
                 const SizedBox(
                   height: Dimension.paddingL,
                 ),
-                SvgPicture.asset(ImageSrc.smsArt,
-                    semanticsLabel: 'Art Background'),
+                SvgPicture.asset(ImageSrc.smsArt, semanticsLabel: 'Art Background'),
                 const Spacer(),
-                AnimatedCrossFade(
-                  crossFadeState: isKeyboardVisible
-                      ? CrossFadeState.showSecond
-                      : validatePhoneNumber
-                          ? CrossFadeState.showFirst
-                          : CrossFadeState.showSecond,
-                  secondChild: const SizedBox(),
-                  firstChild: MainButton(
-                    onPressed: sendRequest,
-                    text: 'Invia',
-                  ),
-                  duration: const Duration(milliseconds: 150),
+                MainButton(
+                  enabled: _phoneNumberValue.isValidPhoneNumber(),
+                  onPressed: sendRequest,
+                  text: 'Invia',
                 ),
-                // ScrollableSuggestions(
-                //   keyboardVisible: isKeyboardVisible,
-                //   dismissOnDrag: false,
-                // ),
               ],
             ),
           ),
