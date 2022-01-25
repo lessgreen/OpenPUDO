@@ -13,11 +13,12 @@ import 'package:provider/provider.dart';
 import 'package:qui_green/commons/widgets/main_button.dart';
 import 'package:qui_green/controllers/instruction/viewmodel/instruction_controller_viewmodel.dart';
 import 'package:qui_green/controllers/instruction/widgets/instruction_card.dart';
+import 'package:qui_green/models/pudo_profile.dart';
 import 'package:qui_green/resources/res.dart';
 
 class InstructionController extends StatefulWidget {
-  const InstructionController({Key? key}) : super(key: key);
-
+  const InstructionController({Key? key, this.pudoDataModel}) : super(key: key);
+  final PudoProfile? pudoDataModel;
   @override
   _InstructionControllerState createState() => _InstructionControllerState();
 }
@@ -42,21 +43,21 @@ class _InstructionControllerState extends State<InstructionController> {
                 const SizedBox(height: 10),
                 Container(
                     alignment: Alignment.centerLeft,
-                    child: const Text(
-                      'Bar - La pinta AC12',
-                      style: TextStyle(fontSize: 16),
+                    child: Text(
+                      '${widget.pudoDataModel?.businessName} AC12',
+                      style: const TextStyle(fontSize: 16),
                     )),
                 Container(
                     alignment: Alignment.centerLeft,
-                    child: const Text(
-                      'Via ippolito, 8',
-                      style: TextStyle(fontSize: 16),
+                    child: Text(
+                      "${widget.pudoDataModel?.address?.street??" "} ${widget.pudoDataModel?.address?.streetNum??" "}",
+                      style: const TextStyle(fontSize: 16),
                     )),
                 Container(
                     alignment: Alignment.centerLeft,
-                    child: const Text(
-                      '21100 - Milano',
-                      style: TextStyle(fontSize: 16),
+                    child: Text(
+                      "${widget.pudoDataModel?.address?.zipCode??" "} ${widget.pudoDataModel?.address?.city??" "}",
+                      style: const TextStyle(fontSize: 16),
                     )),
                 const SizedBox(height: 30)
               ],

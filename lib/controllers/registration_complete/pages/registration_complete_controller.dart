@@ -14,10 +14,13 @@ import 'package:qui_green/commons/utilities/keyboard_visibility.dart';
 import 'package:qui_green/commons/widgets/main_button.dart';
 import 'package:qui_green/controllers/maps/widgets/pudo_map_card.dart';
 import 'package:qui_green/controllers/registration_complete/viewmodel/registration_complete_controller_viewmodel.dart';
+import 'package:qui_green/models/pudo_profile.dart';
 import 'package:qui_green/resources/res.dart';
 
 class RegistrationCompleteController extends StatefulWidget {
-  const RegistrationCompleteController({Key? key}) : super(key: key);
+  const RegistrationCompleteController({Key? key, this.pudoDataModel})
+      : super(key: key);
+  final PudoProfile? pudoDataModel;
 
   @override
   _RegistrationCompleteControllerState createState() =>
@@ -29,9 +32,12 @@ class _RegistrationCompleteControllerState
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-        providers: [ChangeNotifierProxyProvider0<RegistrationCompleteControllerViewModel?>(
-            create: (context) => RegistrationCompleteControllerViewModel(),
-            update: (context, viewModel) => viewModel),],
+        providers: [
+          ChangeNotifierProxyProvider0<
+                  RegistrationCompleteControllerViewModel?>(
+              create: (context) => RegistrationCompleteControllerViewModel(),
+              update: (context, viewModel) => viewModel),
+        ],
         child: Consumer<RegistrationCompleteControllerViewModel?>(
             builder: (_, viewModel, __) {
           return KeyboardVisibilityBuilder(
@@ -66,18 +72,23 @@ class _RegistrationCompleteControllerState
                               .subtitle1
                               ?.copyWith(fontWeight: FontWeight.w400),
                         )),
-                    const SizedBox(height: Dimension.paddingL),
-                    Padding(
-                        padding: const EdgeInsets.only(
-                            left: Dimension.padding, right: Dimension.padding),
-                        child: PudoMapCard(
-                          name: "Bar - La pinta",
-                          address: "Via ippolito, 8",
-                          stars: 3,
-                          onTap: () {},
-                          image:
-                              'https://cdn.skuola.net/news_foto/2017/descrizione-bar.jpg',
-                        )),
+                    if (widget.pudoDataModel != null)
+                      const SizedBox(height: Dimension.paddingL),
+                    if (widget.pudoDataModel != null)
+                      Padding(
+                          padding: const EdgeInsets.only(
+                              left: Dimension.padding,
+                              right: Dimension.padding),
+                          child: PudoMapCard(
+                              name: widget.pudoDataModel?.businessName ?? "",
+                              address:
+                                  widget.pudoDataModel?.address?.label ?? "",
+                              stars: widget.pudoDataModel?.ratingModel
+                                      ?.averageScore ??
+                                  0,
+                              onTap: () {},
+                              image: widget.pudoDataModel?.pudoPicId ??
+                                  'https://cdn.skuola.net/news_foto/2017/descrizione-bar.jpg')),
                     const SizedBox(height: Dimension.paddingL),
                     Padding(
                       padding: const EdgeInsets.symmetric(
@@ -92,8 +103,8 @@ class _RegistrationCompleteControllerState
                               child: CupertinoSwitch(
                                   trackColor: Colors.grey.shade200,
                                   activeColor: AppColors.primaryColorDark,
-                                  value: true,
-                                  onChanged: (bool newValue) => {}),
+                                  value: viewModel!.showNumber,
+                                  onChanged: (bool newValue) => viewModel.showNumber=newValue),
                             ),
                             const WidgetSpan(
                               child: SizedBox(
@@ -102,7 +113,7 @@ class _RegistrationCompleteControllerState
                             ),
                             TextSpan(
                               text:
-                                  'Permetti al pudo di contattarm nal mio numero telefonico in caso di comunicazioni inerenti i miei pacchi.',
+                                  'Permetti ai pudo di contattarmi al mio numero telefonico in caso di comunicazioni inerenti i miei pacchi.',
                               style: Theme.of(context)
                                   .textTheme
                                   .subtitle1
@@ -116,13 +127,15 @@ class _RegistrationCompleteControllerState
                       ),
                     ),
                     const Spacer(),
-                    MainButton(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: Dimension.padding,
+                    if (widget.pudoDataModel != null)
+                      MainButton(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: Dimension.padding,
+                        ),
+                        onPressed: () =>
+                            viewModel.onInstructionsClick(context,widget.pudoDataModel),
+                        text: 'Vedi le istruzioni',
                       ),
-                      onPressed: () => viewModel!.onInstructionsClick(context),
-                      text: 'Vedi le istruzioni',
-                    ),
                     const SizedBox(height: Dimension.padding),
                     AnimatedCrossFade(
                       crossFadeState: isKeyboardVisible
@@ -130,7 +143,7 @@ class _RegistrationCompleteControllerState
                           : CrossFadeState.showFirst,
                       secondChild: const SizedBox(),
                       firstChild: MainButton(
-                        onPressed: () => viewModel!.onOkClick(context),
+                        onPressed: () => viewModel.onOkClick(context),
                         text: 'Vai alla home',
                       ),
                       duration: const Duration(milliseconds: 150),

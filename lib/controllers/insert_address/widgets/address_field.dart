@@ -1,14 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:qui_green/controllers/insert_address/viewmodel/insert_address_controller_viewmodel.dart';
 import 'package:qui_green/controllers/insert_address/widgets/address_overlay.dart';
 import 'package:qui_green/resources/res.dart';
 
 class AddressField extends StatefulWidget {
-  InsertAddressControllerViewModel viewModel;
+  final InsertAddressControllerViewModel viewModel;
   final FocusNode node;
 
-  AddressField({Key? key, required this.viewModel, required this.node})
+  const AddressField({Key? key, required this.viewModel, required this.node})
       : super(key: key);
 
   @override
@@ -20,8 +21,10 @@ class _AddressFieldState extends State<AddressField> {
   bool overlayCreated = false;
 
   @override
-  void dispose(){
-    overlayEntry.remove();
+  void dispose() {
+    if (overlayCreated) {
+      overlayEntry.remove();
+    }
     super.dispose();
   }
 
@@ -46,7 +49,9 @@ class _AddressFieldState extends State<AddressField> {
           width: width,
           onSelect: (val) {
             viewModel.isSelectingFromOverlay = true;
-            viewModel.addressController.text = val!;
+            viewModel.hasSelected = true;
+            viewModel.addressController.text = val.label!;
+            viewModel.position = LatLng(val.lat!, val.lon!);
             Future.delayed(const Duration(milliseconds: 100),
                 () => viewModel.isSelectingFromOverlay = false);
             removeOverlay();
@@ -88,6 +93,7 @@ class _AddressFieldState extends State<AddressField> {
       textInputAction: TextInputAction.done,
       onChanged: (newValue) {
         if (!widget.viewModel.isSelectingFromOverlay) {
+          widget.viewModel.hasSelected = false;
           widget.viewModel.onSearchChanged(newValue, onAfter);
         }
       },

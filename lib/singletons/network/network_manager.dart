@@ -16,6 +16,7 @@ class NetworkManager
 
   static final NetworkManager _inst = NetworkManager._internal(
     AppConfig(
+
         host: "https://api-dev.quigreen.it",
         isProd: false,
         appInfo: PackageInfo(
@@ -45,7 +46,7 @@ class NetworkManager
     };
     _inst.sharedPreferences = config.sharedPreferencesInstance!;
     _inst.accessToken =
-        config.sharedPreferencesInstance!.getString('accessToken')!;
+        config.sharedPreferencesInstance!.getString('accessToken')??"";
     Connectivity().onConnectivityChanged.listen(
       (result) {
         _inst.networkStatus = result;
@@ -53,4 +54,5 @@ class NetworkManager
     );
     return _inst;
   }
+
 }

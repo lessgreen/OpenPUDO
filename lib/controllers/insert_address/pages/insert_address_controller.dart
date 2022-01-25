@@ -75,7 +75,7 @@ class _InsertAddressControllerState extends State<InsertAddressController> {
                     AnimatedCrossFade(
                       crossFadeState: isKeyboardVisible
                           ? CrossFadeState.showSecond
-                          : CrossFadeState.showFirst,
+                          : viewModel.hasSelected?CrossFadeState.showFirst:CrossFadeState.showSecond,
                       secondChild: const SizedBox(),
                       firstChild: MainButton(
                         onPressed: () => viewModel.onSendClick(context),

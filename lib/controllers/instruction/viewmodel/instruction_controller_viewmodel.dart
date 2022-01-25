@@ -1,14 +1,20 @@
+// ignore_for_file: unused_import
+
 import 'package:flutter/material.dart';
 import 'package:location/location.dart';
+import 'package:provider/provider.dart';
 import 'package:qui_green/resources/routes_enum.dart';
+import 'package:qui_green/singletons/current_user.dart';
 
 class InstructionControllerViewModel extends ChangeNotifier {
   //Example: to use NetworkManager, use the getInstance: NetworkManager.instance...
 
   // ************ Navigation *****
   onEndClick(BuildContext context) {
-    Navigator.of(context).pushReplacementNamed(Routes.thanks);
+    //Fetch user
+    Provider.of<CurrentUser>(context, listen: false).refresh();
   }
+
   // ************ Location *******
 
   Future<LocationData?> tryGetUserLocation() async {

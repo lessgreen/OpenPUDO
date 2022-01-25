@@ -6,12 +6,12 @@ part of 'suggested_zoom_request.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-SuggestedZoomRequest _$SuggestedZoomRequestFromJson(Map<String, dynamic> json) {
-  return SuggestedZoomRequest(
-    lat: (json['lat'] as num).toDouble(),
-    lon: (json['lon'] as num).toDouble(),
-  );
-}
+SuggestedZoomRequest _$SuggestedZoomRequestFromJson(
+        Map<String, dynamic> json) =>
+    SuggestedZoomRequest(
+      lat: (json['lat'] as num).toDouble(),
+      lon: (json['lon'] as num).toDouble(),
+    );
 
 Map<String, dynamic> _$SuggestedZoomRequestToJson(
         SuggestedZoomRequest instance) =>

@@ -13,7 +13,7 @@ mixin NetworkManagerUserPudo on NetworkGeneral {
     String? contactNotes,
     String? businessPhone,
   }) async {
-    PudoProfile pudoProfile = PudoProfile(
+    /*PudoProfile pudoProfile = PudoProfile(
       businessName: businessName,
       contactNotes: contactNotes,
       vat: vat,
@@ -24,12 +24,7 @@ mixin NetworkManagerUserPudo on NetworkGeneral {
       lastName: lastName,
     );
     RegistrationRequest aRequest = RegistrationRequest(
-      password: password,
-      user: userProfile,
-      pudo: pudoProfile,
-      email: email,
       phoneNumber: phoneNumber,
-      username: username,
     );
 
     var url = _baseURL + '/api/v1/auth/register';
@@ -54,7 +49,7 @@ mixin NetworkManagerUserPudo on NetworkGeneral {
       _print('ERROR - registerPudo: $e');
       _refreshTokenRetryCounter = 0;
       return e;
-    }
+    }*/
   }
 
   Future<dynamic> getMyPudoUsers() async {

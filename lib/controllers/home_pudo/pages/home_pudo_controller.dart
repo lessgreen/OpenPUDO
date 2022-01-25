@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:qui_green/commons/widgets/base_page.dart';
 import 'package:qui_green/controllers/home_pudo/viewmodel/home_pudo_controller_viewmodel.dart';
+import 'package:qui_green/controllers/maps/widgets/pudo_map_card.dart';
 import 'package:qui_green/models/page_type.dart';
 import 'package:qui_green/resources/routes_enum.dart';
 
@@ -31,21 +32,12 @@ class _HomePudoControllerState extends State<HomePudoController> {
             update: (context, viewModel) => viewModel),
       ],
       child: Consumer<HomePudoControllerViewModel>(builder: (_, viewModel, __) {
-        return BasePage(
-            index: 1,
-            title: 'QuiGreen',
-            showBackIcon: false,
-            onPressedBack: () => null,
-            icon: const Icon(Icons.account_circle),
-            headerVisible: true,
-            onPressedIcon: () =>
-                Navigator.of(context).pushReplacementNamed(Routes.profile),
-            body: Center(
-                child: Text(
-              'Non hai ancora aggiunto un pudo per le tue consegne!',
-              textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.grey.shade600),
-            )));
+        return Center(
+            child: Text(
+          'Non hai ancora aggiunto un pudo per le tue consegne!',
+          textAlign: TextAlign.center,
+          style: TextStyle(color: Colors.grey.shade600),
+        ));
       }),
     );
   }

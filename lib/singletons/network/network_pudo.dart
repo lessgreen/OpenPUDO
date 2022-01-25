@@ -56,7 +56,7 @@ mixin NetworkManagerPudo on NetworkGeneral {
       _headers['Authorization'] = 'Bearer $_accessToken';
     }
 
-    var url = _baseURL + '/api/v1/pudos/$pudoId';
+    var url = _baseURL + '/api/v2/pudo/$pudoId';
 
     try {
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
@@ -74,7 +74,7 @@ mixin NetworkManagerPudo on NetworkGeneral {
 
       var needHandleTokenRefresh = _handleTokenRefresh(
         baseResponse,
-            () {
+        () {
           getPudoDetails(pudoId: pudoId).catchError((onError) => throw onError);
         },
       );
@@ -107,7 +107,7 @@ mixin NetworkManagerPudo on NetworkGeneral {
       _headers['Authorization'] = 'Bearer $_accessToken';
     }
 
-    var url = _baseURL + '/api/v1/map/pudos$queryString';
+    var url = _baseURL + '/api/v2/map/pudos$queryString';
 
     try {
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
@@ -126,7 +126,7 @@ mixin NetworkManagerPudo on NetworkGeneral {
 
       var needHandleTokenRefresh = _handleTokenRefresh(
         baseResponse,
-            () {
+        () {
           getPudos(lat: lat, lon: lon, zoom: zoom)
               .catchError((onError) => throw onError);
         },
@@ -150,4 +150,5 @@ mixin NetworkManagerPudo on NetworkGeneral {
       return e;
     }
   }
+
 }

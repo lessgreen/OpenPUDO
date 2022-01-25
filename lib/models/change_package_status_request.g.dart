@@ -7,11 +7,10 @@ part of 'change_package_status_request.dart';
 // **************************************************************************
 
 ChangePackageStatusRequest _$ChangePackageStatusRequestFromJson(
-    Map<String, dynamic> json) {
-  return ChangePackageStatusRequest(
-    notes: json['notes'] as String?,
-  );
-}
+        Map<String, dynamic> json) =>
+    ChangePackageStatusRequest(
+      notes: json['notes'] as String?,
+    );
 
 Map<String, dynamic> _$ChangePackageStatusRequestToJson(
         ChangePackageStatusRequest instance) =>

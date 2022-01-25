@@ -7,13 +7,12 @@ part of 'map_search_addresses_request.dart';
 // **************************************************************************
 
 MapSearchAddressesRequest _$MapSearchAddressesRequestFromJson(
-    Map<String, dynamic> json) {
-  return MapSearchAddressesRequest(
-    text: json['text'] as String,
-    lat: (json['lat'] as num?)?.toDouble(),
-    lon: (json['lon'] as num?)?.toDouble(),
-  );
-}
+        Map<String, dynamic> json) =>
+    MapSearchAddressesRequest(
+      text: json['text'] as String,
+      lat: (json['lat'] as num?)?.toDouble(),
+      lon: (json['lon'] as num?)?.toDouble(),
+    );
 
 Map<String, dynamic> _$MapSearchAddressesRequestToJson(
         MapSearchAddressesRequest instance) =>

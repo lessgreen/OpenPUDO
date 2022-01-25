@@ -16,14 +16,13 @@ part 'pudo_marker.g.dart';
 
 @JsonSerializable()
 class PudoMarker {
-  final String businessName;
   final int pudoId;
   final String? label;
   final double? lat;
   final double? lon;
 
   PudoMarker(
-      {required this.businessName,
+      {
       required this.pudoId,
       this.label,
       this.lat,

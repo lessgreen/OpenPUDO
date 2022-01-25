@@ -13,8 +13,10 @@ import 'package:flutter_svg/svg.dart';
 import 'package:qui_green/commons/utilities/keyboard_visibility.dart';
 import 'package:qui_green/commons/widgets/main_button.dart';
 import 'package:qui_green/commons/widgets/text_field_button.dart';
+import 'package:qui_green/models/base_response.dart';
 import 'package:qui_green/resources/res.dart';
 import 'package:qui_green/resources/routes_enum.dart';
+import 'package:qui_green/singletons/network/network_manager.dart';
 
 class ConfirmPhoneController extends StatefulWidget {
   const ConfirmPhoneController({Key? key}) : super(key: key);
@@ -26,6 +28,20 @@ class ConfirmPhoneController extends StatefulWidget {
 class _ConfirmPhoneControllerState extends State<ConfirmPhoneController> {
   final FocusNode _confirmValueFocus = FocusNode();
   String _confirmValue = "";
+
+  bool get validateOtp{
+    if(_confirmValue.isEmpty) {
+      return false;
+    }
+    return true;
+  }
+
+  Future<void> sendOtp()async {
+    OPBaseResponse response = await NetworkManager.instance.login(login: NetworkManager.instance.phoneNumber, password: _confirmValue);
+    if(response.returnCode==0) {
+      Navigator.of(context).pushReplacementNamed(Routes.aboutYou);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -79,7 +95,9 @@ class _ConfirmPhoneControllerState extends State<ConfirmPhoneController> {
                   keyboardType: TextInputType.phone,
                   textInputAction: TextInputAction.done,
                   onChanged: (newValue) {
-                    _confirmValue = newValue;
+                    setState(() {
+                      _confirmValue = newValue;
+                    });
                   },
                   onTap: () {
                     setState(() {});
@@ -95,12 +113,10 @@ class _ConfirmPhoneControllerState extends State<ConfirmPhoneController> {
               AnimatedCrossFade(
                 crossFadeState: isKeyboardVisible
                     ? CrossFadeState.showSecond
-                    : CrossFadeState.showFirst,
+                    : !validateOtp?CrossFadeState.showSecond:CrossFadeState.showFirst,
                 secondChild: const SizedBox(),
                 firstChild: MainButton(
-                  onPressed: () {
-                    Navigator.of(context).pushReplacementNamed(Routes.aboutYou);
-                  },
+                  onPressed: sendOtp,
                   text: 'Invia',
                 ),
                 duration: const Duration(milliseconds: 150),

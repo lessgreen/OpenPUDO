@@ -6,6 +6,8 @@
 //   Copyright © 2022 Sofapps.it - All rights reserved.
 //
 
+// ignore_for_file: unused_import
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
@@ -13,6 +15,7 @@ import 'package:provider/provider.dart';
 import 'package:qui_green/commons/widgets/main_button.dart';
 import 'package:qui_green/controllers/user_position/viewmodel/user_position_controller_viewmodel.dart';
 import 'package:qui_green/resources/res.dart';
+import 'package:qui_green/resources/routes_enum.dart';
 
 class UserPositionController extends StatefulWidget {
   const UserPositionController({Key? key}) : super(key: key);
@@ -25,9 +28,11 @@ class _UserPositionControllerState extends State<UserPositionController> {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-        providers: [ChangeNotifierProxyProvider0<UserPositionControllerViewModel?>(
-            create: (context) => UserPositionControllerViewModel(),
-            update: (context, viewModel) => viewModel),],
+        providers: [
+          ChangeNotifierProxyProvider0<UserPositionControllerViewModel?>(
+              create: (context) => UserPositionControllerViewModel(),
+              update: (context, viewModel) => viewModel),
+        ],
         child: Consumer<UserPositionControllerViewModel?>(
             builder: (_, viewModel, __) {
           return WillPopScope(
@@ -67,8 +72,10 @@ class _UserPositionControllerState extends State<UserPositionController> {
                     padding: const EdgeInsets.symmetric(
                         horizontal: Dimension.padding),
                     onPressed: () async {
-                      await viewModel?.tryGetUserLocation().then((value) {
-                        //print("acquired position: $value");
+                      viewModel?.tryGetUserLocation().then((value) {
+                        if (value != null) {
+                          viewModel.onMapClick(context);
+                        }
                       });
                     },
                     text: 'Ok, grazie!',

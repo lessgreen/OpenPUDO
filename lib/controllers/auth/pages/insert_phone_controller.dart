@@ -13,8 +13,10 @@ import 'package:flutter_svg/svg.dart';
 import 'package:qui_green/commons/utilities/keyboard_visibility.dart';
 import 'package:qui_green/commons/widgets/main_button.dart';
 import 'package:qui_green/commons/widgets/text_field_button.dart';
+import 'package:qui_green/models/base_response.dart';
 import 'package:qui_green/resources/res.dart';
 import 'package:qui_green/resources/routes_enum.dart';
+import 'package:qui_green/singletons/network/network_manager.dart';
 
 class InsertPhoneController extends StatefulWidget {
   const InsertPhoneController({Key? key}) : super(key: key);
@@ -26,6 +28,25 @@ class InsertPhoneController extends StatefulWidget {
 class _InsertPhoneControllerState extends State<InsertPhoneController> {
   final FocusNode _phoneNumber = FocusNode();
   String _phoneNumberValue = "";
+
+  bool get validatePhoneNumber {
+    //RegExp regExp = RegExp(r'(^(?:[+0]9)?[0-9]{10,12}$)');
+    if (_phoneNumberValue.isEmpty) {
+      return false;
+    }
+    /* else if (!regExp.hasMatch(_phoneNumberValue)) {
+      return false;
+    }*/
+    return true;
+  }
+
+  Future<void> sendRequest() async {
+    OPBaseResponse response = await NetworkManager.instance
+        .registerUser(phoneNumber: _phoneNumberValue);
+    if(response.returnCode==0) {
+      Navigator.of(context).pushReplacementNamed(Routes.confirmPhone);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -79,7 +100,9 @@ class _InsertPhoneControllerState extends State<InsertPhoneController> {
                     keyboardType: TextInputType.phone,
                     textInputAction: TextInputAction.done,
                     onChanged: (newValue) {
-                      _phoneNumberValue = newValue;
+                      setState(() {
+                        _phoneNumberValue = newValue;
+                      });
                     },
                     onTap: () {
                       setState(() {});
@@ -95,13 +118,12 @@ class _InsertPhoneControllerState extends State<InsertPhoneController> {
                 AnimatedCrossFade(
                   crossFadeState: isKeyboardVisible
                       ? CrossFadeState.showSecond
-                      : CrossFadeState.showFirst,
+                      : validatePhoneNumber
+                          ? CrossFadeState.showFirst
+                          : CrossFadeState.showSecond,
                   secondChild: const SizedBox(),
                   firstChild: MainButton(
-                    onPressed: () {
-                      Navigator.of(context)
-                          .pushReplacementNamed(Routes.confirmPhone);
-                    },
+                    onPressed: sendRequest,
                     text: 'Invia',
                   ),
                   duration: const Duration(milliseconds: 150),

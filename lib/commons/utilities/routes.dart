@@ -8,6 +8,8 @@
 import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:qui_green/app.dart';
 import 'package:qui_green/controllers/auth/pages/about_you_controller.dart';
 import 'package:qui_green/controllers/auth/pages/confirm_phone_controller.dart';
@@ -23,11 +25,13 @@ import 'package:qui_green/controllers/maps/pages/maps_controller.dart';
 import 'package:qui_green/controllers/personal_data/pages/personal_data_controller.dart';
 import 'package:qui_green/controllers/personal_data_business/pages/personal_data_business_controller.dart';
 import 'package:qui_green/controllers/profile/pages/profile_controller.dart';
+import 'package:qui_green/controllers/pudo_detail/models/pudo_detail_controller_data_model.dart';
 import 'package:qui_green/controllers/pudo_detail/pages/pudo_detail_controller.dart';
 import 'package:qui_green/controllers/pudo_tutorial/pages/pudo_tutorial_controller.dart';
 import 'package:qui_green/controllers/registration_complete/pages/registration_complete_controller.dart';
 import 'package:qui_green/controllers/thanks/pages/thanks_controller.dart';
 import 'package:qui_green/controllers/user_position/pages/user_position_controller.dart';
+import 'package:qui_green/models/pudo_profile.dart';
 import 'package:qui_green/resources/routes_enum.dart';
 
 dynamic routeWithSetting(RouteSettings settings) {
@@ -70,23 +74,34 @@ dynamic routeWithSetting(RouteSettings settings) {
       );
     case Routes.maps:
       return CupertinoPageRoute(
-        builder: (context) => const MapsController(),
+        builder: (context) =>
+            MapsController(initialPosition: settings.arguments as LatLng),
       );
     case Routes.pudoDetail:
       return CupertinoPageRoute(
-        builder: (context) => const PudoDetailController(),
+        builder: (context) => PudoDetailController(
+            dataModel: settings.arguments as PudoDetailControllerDataModel),
       );
     case Routes.personalData:
       return CupertinoPageRoute(
-        builder: (context) => const PersonalDataController(),
+        builder: (context) => PersonalDataController(
+            pudoDataModel: settings.arguments == null
+                ? null
+                : settings.arguments as PudoProfile),
       );
     case Routes.registrationComplete:
       return CupertinoPageRoute(
-        builder: (context) => const RegistrationCompleteController(),
+        builder: (context) => RegistrationCompleteController(
+            pudoDataModel: settings.arguments == null
+                ? null
+                : settings.arguments as PudoProfile),
       );
     case Routes.instruction:
       return CupertinoPageRoute(
-        builder: (context) => const InstructionController(),
+        builder: (context) => InstructionController(
+            pudoDataModel: settings.arguments == null
+                ? null
+                : settings.arguments as PudoProfile),
       );
     case Routes.thanks:
       return CupertinoPageRoute(
@@ -116,9 +131,15 @@ dynamic routeWithSetting(RouteSettings settings) {
       return CupertinoPageRoute(
         builder: (context) => const PudoListController(),
       );
-    default:
+    case Routes.home:
       return CupertinoPageRoute(
         builder: (context) => const HomeController(),
+      );
+    default:
+      return CupertinoPageRoute(
+        builder: (context) => const Scaffold(
+          body: Center(child: CircularProgressIndicator()),
+        ),
       );
   }
 }

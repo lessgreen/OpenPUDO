@@ -8,6 +8,7 @@
 
 import 'package:json_annotation/json_annotation.dart';
 import 'package:qui_green/models/address_model.dart';
+import 'package:qui_green/models/rating_model.dart';
 
 part 'pudo_profile.g.dart';
 
@@ -16,24 +17,37 @@ class PudoProfile {
   String businessName;
   String? contactNotes;
   String? createTms;
-  String? phoneNumber;
-  String? profilePicId;
+  String? publicPhoneNumber;
+  String? pudoPicId;
   int? pudoId;
   String? updateTms;
   String? vat;
   AddressModel? address;
+  RatingModel? ratingModel;
+  int? customerCount;
+  int? packageCount;
+  String? rewardMessage;
+  String? customizedAddress;
+  String? imageUrl;
 
   PudoProfile({
     required this.businessName,
     this.contactNotes,
     this.createTms,
-    this.phoneNumber,
+    this.publicPhoneNumber,
     this.pudoId,
     this.updateTms,
     this.vat,
     this.address,
+    this.customerCount,
+    this.pudoPicId,
+    this.rewardMessage,
+    this.customizedAddress,
   });
-  factory PudoProfile.fromJson(Map<String, dynamic> json) => _$PudoProfileFromJson(json);
+
+  factory PudoProfile.fromJson(Map<String, dynamic> json) =>
+      _$PudoProfileFromJson(json);
+
   Map<String, dynamic> toJson() => _$PudoProfileToJson(this);
 }
 

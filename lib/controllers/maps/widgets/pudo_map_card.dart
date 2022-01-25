@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:qui_green/commons/ui/custom_network_image.dart';
 import 'package:qui_green/resources/res.dart';
 
 class PudoMapCard extends StatelessWidget {
@@ -34,19 +35,19 @@ class PudoMapCard extends StatelessWidget {
                 borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(Dimension.borderRadiusS),
                     bottomLeft: Radius.circular(Dimension.borderRadiusS)),
-                child: Image.network(
-                  image,
+                child: CustomNetworkImage(
+                  url: image,
                   width: 110,
                   height: 100,
                   fit: BoxFit.cover,
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.only(left: Dimension.padding),
+              const SizedBox(width: Dimension.padding,),
+              Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Spacer(),
                     Text(
                       name,
                       style: const TextStyle(fontSize: 16),
@@ -64,11 +65,9 @@ class PudoMapCard extends StatelessWidget {
                                 color: Colors.yellow.shade700,
                               )),
                     ),
-                    const Spacer(),
                   ],
                 ),
               ),
-              const Spacer(),
             ],
           ),
         ),

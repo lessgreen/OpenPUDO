@@ -8,8 +8,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:qui_green/commons/ui/custom_network_image.dart';
 import 'package:qui_green/controllers/profile/viewmodel/profile_controller_viewmodel.dart';
 import 'package:qui_green/resources/res.dart';
+import 'package:qui_green/singletons/current_user.dart';
+import 'package:qui_green/singletons/network/network_manager.dart';
+
 class ProfileController extends StatefulWidget {
   const ProfileController({Key? key}) : super(key: key);
 
@@ -26,7 +30,8 @@ class _ProfileControllerState extends State<ProfileController> {
             create: (context) => ProfileControllerViewModel(),
             update: (context, viewModel) => viewModel),
       ],
-      child: Consumer<ProfileControllerViewModel>(builder: (_, viewModel, __) {
+      child: Consumer2<ProfileControllerViewModel, CurrentUser>(
+          builder: (_, viewModel, currentUser, __) {
         return Material(
           child: CupertinoPageScaffold(
               navigationBar: CupertinoNavigationBar(
@@ -46,22 +51,25 @@ class _ProfileControllerState extends State<ProfileController> {
               child: Column(
                 children: [
                   const SizedBox(height: 20),
-                  const Center(
-                    child: CircleAvatar(
-                      radius: 80,
-                      backgroundImage: NetworkImage(
-                          'https://i1.sndcdn.com/avatars-TlbXx1BArSO2iBM1-r5ax8A-t500x500.jpg'),
+                  Center(
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(100),
+                      child: CustomNetworkImage(
+                          height: 100,
+                          width: 100,
+                          fit: BoxFit.cover,
+                          url: currentUser.user?.profilePicId),
                     ),
                   ),
                   const SizedBox(
                     height: 10,
                   ),
-                  const Text(
-                    'Jennifer Seed',
+                  Text(
+                    "${currentUser.user?.firstName ?? " "} ${currentUser.user?.lastName ?? " "}",
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
                   ),
                   Text(
-                    'Utente dal 21/11/2021',
+                    'Utente dal ${currentUser.user?.createTms ?? " "}',
                     style: TextStyle(fontSize: 12, color: Colors.grey.shade500),
                   ),
                   const SizedBox(
@@ -129,6 +137,32 @@ class _ProfileControllerState extends State<ProfileController> {
                         color: AppColors.cardColor,
                       ),
                     ],
+                  ),
+                  const Divider(color: Colors.grey),
+                  Material(
+                    child: InkWell(
+                      onTap: () {
+                        Navigator.pop(context);
+                        NetworkManager.instance.setAccessToken(null);
+                        currentUser.refresh();
+                      },
+                      child: Row(
+                        children: const [
+                          SizedBox(width: 10),
+                          Icon(
+                            Icons.logout,
+                            color: AppColors.cardColor,
+                          ),
+                          SizedBox(width: 10),
+                          Text("Logout"),
+                          Spacer(),
+                          Icon(
+                            Icons.keyboard_arrow_right,
+                            color: AppColors.cardColor,
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                   const Divider(color: Colors.grey),
                 ],

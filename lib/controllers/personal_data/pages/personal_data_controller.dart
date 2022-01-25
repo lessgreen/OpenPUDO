@@ -13,11 +13,13 @@ import 'package:provider/provider.dart';
 import 'package:qui_green/commons/utilities/keyboard_visibility.dart';
 import 'package:qui_green/commons/widgets/main_button.dart';
 import 'package:qui_green/controllers/personal_data/viewmodel/personal_data_controller_viewmodel.dart';
+import 'package:qui_green/controllers/personal_data/widgets/profile_pic_box.dart';
+import 'package:qui_green/models/pudo_profile.dart';
 import 'package:qui_green/resources/res.dart';
 
 class PersonalDataController extends StatefulWidget {
-  const PersonalDataController({Key? key}) : super(key: key);
-
+  const PersonalDataController({Key? key,this.pudoDataModel}) : super(key: key);
+  final PudoProfile? pudoDataModel;
   @override
   _PersonalDataControllerState createState() => _PersonalDataControllerState();
 }
@@ -26,9 +28,11 @@ class _PersonalDataControllerState extends State<PersonalDataController> {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-        providers: [ChangeNotifierProxyProvider0<PersonalDataControllerViewModel?>(
-            create: (context) => PersonalDataControllerViewModel(),
-            update: (context, viewModel) => viewModel),],
+        providers: [
+          ChangeNotifierProxyProvider0<PersonalDataControllerViewModel?>(
+              create: (context) => PersonalDataControllerViewModel(),
+              update: (context, viewModel) => viewModel),
+        ],
         child: Consumer<PersonalDataControllerViewModel?>(
             builder: (_, viewModel, __) {
           return KeyboardVisibilityBuilder(
@@ -64,31 +68,7 @@ class _PersonalDataControllerState extends State<PersonalDataController> {
                     const SizedBox(
                       height: Dimension.paddingM,
                     ),
-                    Container(
-                      width: MediaQuery.of(context).size.width / 3,
-                      height: MediaQuery.of(context).size.width / 3,
-                      decoration: BoxDecoration(
-                          color: Colors.grey.shade100,
-                          border: Border.all(color: Colors.grey.shade300),
-                          borderRadius: const BorderRadius.all(
-                              Radius.circular(Dimension.borderRadius))),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Icon(
-                            Icons.account_circle_rounded,
-                            color: Colors.grey.shade400,
-                            size: MediaQuery.of(context).size.width / 6,
-                          ),
-                          Text(
-                            'Aggiungi una \ntua foto',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                color: Colors.grey.shade500, fontSize: 12),
-                          ),
-                        ],
-                      ),
-                    ),
+                    ProfilePicBox(onTap: ()=>viewModel!.pickFile(),image: viewModel!.image,),
                     const SizedBox(height: Dimension.padding),
                     const Center(
                       child: Text(
@@ -106,9 +86,8 @@ class _PersonalDataControllerState extends State<PersonalDataController> {
                                     color: Theme.of(context).primaryColor))),
                         autofocus: false,
                         textInputAction: TextInputAction.done,
-                        onChanged: (newValue) {},
-                        onTap: () {
-                          setState(() {});
+                        onChanged: (newValue) {
+                          viewModel.name = newValue;
                         },
                       ),
                     ),
@@ -122,9 +101,8 @@ class _PersonalDataControllerState extends State<PersonalDataController> {
                                     color: Theme.of(context).primaryColor))),
                         autofocus: false,
                         textInputAction: TextInputAction.done,
-                        onChanged: (newValue) {},
-                        onTap: () {
-                          setState(() {});
+                        onChanged: (newValue) {
+                          viewModel.surname = newValue;
                         },
                       ),
                     ),
@@ -141,10 +119,12 @@ class _PersonalDataControllerState extends State<PersonalDataController> {
                     AnimatedCrossFade(
                       crossFadeState: isKeyboardVisible
                           ? CrossFadeState.showSecond
-                          : CrossFadeState.showFirst,
+                          : viewModel.isValid
+                              ? CrossFadeState.showFirst
+                              : CrossFadeState.showSecond,
                       secondChild: const SizedBox(),
                       firstChild: MainButton(
-                        onPressed: () => viewModel!.onSendClick(context),
+                        onPressed: () => viewModel.onSendClick(context,widget.pudoDataModel),
                         text: 'Invia',
                       ),
                       duration: const Duration(milliseconds: 150),

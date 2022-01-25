@@ -2,23 +2,25 @@ part of 'network_shared.dart';
 
 mixin NetworkManagerUser on NetworkGeneral {
   //TODO: implement API calls (user related)
+  String _phoneNumber = "";
+
+  get phoneNumber => _phoneNumber;
+
   Future<dynamic> login(
       {required String login, required String password}) async {
     LoginRequest aRequest = LoginRequest(
       phoneNumber: login,
       otp: password,
     );
-
     var url = _baseURL + '/api/v2/auth/login/confirm';
     var body = jsonEncode(aRequest.toJson());
-
     try {
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
       Response response =
-      await post(Uri.parse(url), body: body, headers: _headers)
-          .timeout(Duration(seconds: _timeout));
+          await post(Uri.parse(url), body: body, headers: _headers)
+              .timeout(Duration(seconds: _timeout));
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = false;
       });
@@ -38,28 +40,17 @@ mixin NetworkManagerUser on NetworkGeneral {
     }
   }
 
-  Future<dynamic> registerUser(
-      {required String password,
-      required String firstName,
-      required String lastName,
-      String? email,
-      String? phoneNumber,
-      String? username,
-      String? ssn}) async {
-    UserProfile userProfile = UserProfile(
+  Future<dynamic> registerUser({required String phoneNumber}) async {
+    /*UserProfile userProfile = UserProfile(
       firstName: firstName,
       lastName: lastName,
       ssn: ssn,
-    );
+    );*/
     RegistrationRequest aRequest = RegistrationRequest(
-      password: password,
-      user: userProfile,
-      email: email,
       phoneNumber: phoneNumber,
-      username: username,
     );
-
-    var url = _baseURL + '/api/v1/auth/register';
+    _phoneNumber = phoneNumber;
+    var url = _baseURL + '/api/v2/auth/login/send';
     var body = jsonEncode(aRequest.toJson());
 
     try {
@@ -89,7 +80,7 @@ mixin NetworkManagerUser on NetworkGeneral {
       _headers['Authorization'] = 'Bearer $_accessToken';
     }
 
-    var url = _baseURL + '/api/v1/users/me';
+    var url = _baseURL + '/api/v2/user/me';
 
     try {
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
@@ -107,7 +98,7 @@ mixin NetworkManagerUser on NetworkGeneral {
 
       var needHandleTokenRefresh = _handleTokenRefresh(
         baseResponse,
-            () {
+        () {
           getMyProfile().catchError((onError) => throw onError);
         },
       );
@@ -132,9 +123,9 @@ mixin NetworkManagerUser on NetworkGeneral {
     if (_accessToken != null) {
       _headers['Authorization'] = 'Bearer $_accessToken';
     }
-
-    var url = _baseURL + '/api/v1/users/me';
-    var body = jsonEncode(profile.toJson());
+    var url = _baseURL + '/api/v2/user/me';
+    var body = jsonEncode(
+        {"firstName": profile.firstName, "lastName": profile.lastName});
 
     try {
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
@@ -226,8 +217,7 @@ mixin NetworkManagerUser on NetworkGeneral {
     if (_accessToken != null) {
       _headers['Authorization'] = 'Bearer $_accessToken';
     }
-    var url = _baseURL + '/api/v1/file/$id';
-
+    var url = _baseURL + '/api/v2/file/$id';
     try {
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
@@ -248,7 +238,6 @@ mixin NetworkManagerUser on NetworkGeneral {
       return data.buffer.asUint8List();
     }
   }
-
 
   Future<dynamic> getPublicProfile(String userId) async {
     if (_accessToken != null) {
@@ -273,7 +262,7 @@ mixin NetworkManagerUser on NetworkGeneral {
 
       var needHandleTokenRefresh = _handleTokenRefresh(
         baseResponse,
-            () {
+        () {
           getPublicProfile(userId).catchError((onError) => throw onError);
         },
       );
@@ -289,6 +278,196 @@ mixin NetworkManagerUser on NetworkGeneral {
       }
     } on Error catch (e) {
       _print('ERROR - getPublicProfile: $e');
+      _refreshTokenRetryCounter = 0;
+      return e;
+    }
+  }
+
+  Future<dynamic> addPudoFavorite(String pudoId) async {
+    if (_accessToken != null) {
+      _headers['Authorization'] = 'Bearer $_accessToken';
+    }
+
+    var url = _baseURL + '/api/v2/user/me/pudos/$pudoId';
+
+    try {
+      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+        _networkActivity.value = true;
+      });
+      Response response = await post(Uri.parse(url), headers: _headers)
+          .timeout(Duration(seconds: _timeout));
+      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+        _networkActivity.value = false;
+      });
+      final codeUnits = response.body.codeUnits;
+      var decodedUTF8 = const Utf8Decoder().convert(codeUnits);
+      var json = jsonDecode(decodedUTF8);
+      var baseResponse = OPBaseResponse.fromJson(json);
+      List<PudoProfile> myPudos = <PudoProfile>[];
+
+      var needHandleTokenRefresh = _handleTokenRefresh(
+        baseResponse,
+        () {
+          addPudoFavorite(pudoId).catchError((onError) => throw onError);
+        },
+      );
+      if (needHandleTokenRefresh == false) {
+        if (baseResponse.returnCode == 0 &&
+            baseResponse.payload != null &&
+            baseResponse.payload is List) {
+          for (dynamic aRow in baseResponse.payload) {
+            myPudos.add(PudoProfile.fromJson(aRow));
+          }
+          return myPudos;
+        } else {
+          throw ErrorDescription(
+              'Error ${baseResponse.returnCode}: ${baseResponse.message}');
+        }
+      }
+    } on Error catch (e) {
+      _print('ERROR - addPudoFavorite: $e');
+      _refreshTokenRetryCounter = 0;
+      return e;
+    }
+  }
+
+  Future<dynamic> removePudoFavorite(String pudoId) async {
+    if (_accessToken != null) {
+      _headers['Authorization'] = 'Bearer $_accessToken';
+    }
+
+    var url = _baseURL + '/api/v1/users/me/pudos/$pudoId';
+
+    try {
+      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+        _networkActivity.value = true;
+      });
+      Response response = await delete(Uri.parse(url), headers: _headers)
+          .timeout(Duration(seconds: _timeout));
+      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+        _networkActivity.value = false;
+      });
+      final codeUnits = response.body.codeUnits;
+      var decodedUTF8 = const Utf8Decoder().convert(codeUnits);
+      var json = jsonDecode(decodedUTF8);
+      var baseResponse = OPBaseResponse.fromJson(json);
+      List<PudoProfile> myPudos = <PudoProfile>[];
+
+      var needHandleTokenRefresh = _handleTokenRefresh(
+        baseResponse,
+        () {
+          removePudoFavorite(pudoId).catchError((onError) => throw onError);
+        },
+      );
+      if (needHandleTokenRefresh == false) {
+        if (baseResponse.returnCode == 0 &&
+            baseResponse.payload != null &&
+            baseResponse.payload is List) {
+          for (dynamic aRow in baseResponse.payload) {
+            myPudos.add(PudoProfile.fromJson(aRow));
+          }
+          return myPudos;
+        } else {
+          throw ErrorDescription(
+              'Error ${baseResponse.returnCode}: ${baseResponse.message}');
+        }
+      }
+    } on Error catch (e) {
+      _print('ERROR - removePudoFavorite: $e');
+      _refreshTokenRetryCounter = 0;
+      return e;
+    }
+  }
+
+  Future<dynamic> getMyPudos() async {
+    if (_accessToken != null) {
+      _headers['Authorization'] = 'Bearer $_accessToken';
+    }
+
+    var url = _baseURL + '/api/v1/users/me/pudos';
+
+    try {
+      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+        _networkActivity.value = true;
+      });
+      Response response = await get(Uri.parse(url), headers: _headers)
+          .timeout(Duration(seconds: _timeout));
+      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+        _networkActivity.value = false;
+      });
+      final codeUnits = response.body.codeUnits;
+      var decodedUTF8 = const Utf8Decoder().convert(codeUnits);
+      var json = jsonDecode(decodedUTF8);
+      var baseResponse = OPBaseResponse.fromJson(json);
+      List<PudoProfile> myPudos = <PudoProfile>[];
+
+      var needHandleTokenRefresh = _handleTokenRefresh(
+        baseResponse,
+        () {
+          getMyPudos().catchError((onError) => throw onError);
+        },
+      );
+      if (needHandleTokenRefresh == false) {
+        if (baseResponse.returnCode == 0 &&
+            baseResponse.payload != null &&
+            baseResponse.payload is List) {
+          for (dynamic aRow in baseResponse.payload) {
+            myPudos.add(PudoProfile.fromJson(aRow));
+          }
+          return myPudos;
+        } else {
+          throw ErrorDescription(
+              'Error ${baseResponse.returnCode}: ${baseResponse.message}');
+        }
+      }
+    } on Error catch (e) {
+      _print('ERROR - getMyPudos: $e');
+      _refreshTokenRetryCounter = 0;
+      return e;
+    }
+  }
+
+  Future<dynamic> updateUserPreferences({required bool showNumber}) async {
+    if (_accessToken != null) {
+      _headers['Authorization'] = 'Bearer $_accessToken';
+    }
+    var url = _baseURL + '/api/v2/user/me/preferences';
+    var body = jsonEncode({"showPhoneNumber": showNumber});
+
+    try {
+      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+        _networkActivity.value = true;
+      });
+      Response response =
+          await put(Uri.parse(url), body: body, headers: _headers)
+              .timeout(Duration(seconds: _timeout));
+      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+        _networkActivity.value = false;
+      });
+      final codeUnits = response.body.codeUnits;
+      var decodedUTF8 = const Utf8Decoder().convert(codeUnits);
+      var json = jsonDecode(decodedUTF8);
+      var baseResponse = OPBaseResponse.fromJson(json);
+
+      var needHandleTokenRefresh = _handleTokenRefresh(
+        baseResponse,
+        () {
+          updateUserPreferences(showNumber: showNumber)
+              .catchError((onError) => throw onError);
+        },
+      );
+      if (needHandleTokenRefresh == false) {
+        if (baseResponse.returnCode == 0 &&
+            baseResponse.payload != null &&
+            baseResponse.payload is Map) {
+          return UserPreferences.fromJson(baseResponse.payload);
+        } else {
+          throw ErrorDescription(
+              'Error ${baseResponse.returnCode}: ${baseResponse.message}');
+        }
+      }
+    } on Error catch (e) {
+      _print('ERROR - updateUserPreferences: $e');
       _refreshTokenRetryCounter = 0;
       return e;
     }

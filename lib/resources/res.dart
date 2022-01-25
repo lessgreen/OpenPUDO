@@ -43,6 +43,7 @@ class ImageSrc {
   static const insertPhoneArt = "assets/insertPhoneArt.svg";
   static const aboutYouArt = "assets/aboutYouArt.svg";
   static const userPositionArt = "assets/userPositionArt.svg";
+  static const imagePlaceHolder = "assets/placeholderImage.jpg";
 }
 
 class IconSrc {}

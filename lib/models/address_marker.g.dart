@@ -6,15 +6,14 @@ part of 'address_marker.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-AddressMarker _$AddressMarkerFromJson(Map<String, dynamic> json) {
-  return AddressMarker(
-    label: json['label'] as String,
-    lat: (json['lat'] as num).toDouble(),
-    lon: (json['lon'] as num).toDouble(),
-    precision: json['precision'] as String,
-    resultId: json['resultId'] as String,
-  );
-}
+AddressMarker _$AddressMarkerFromJson(Map<String, dynamic> json) =>
+    AddressMarker(
+      label: json['label'] as String,
+      lat: (json['lat'] as num).toDouble(),
+      lon: (json['lon'] as num).toDouble(),
+      precision: json['precision'] as String,
+      resultId: json['resultId'] as String,
+    );
 
 Map<String, dynamic> _$AddressMarkerToJson(AddressMarker instance) =>
     <String, dynamic>{

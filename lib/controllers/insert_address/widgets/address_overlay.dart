@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:qui_green/controllers/insert_address/viewmodel/insert_address_controller_viewmodel.dart';
+import 'package:qui_green/models/address_model.dart';
 import 'package:qui_green/resources/res.dart';
 
 class AddressOverlay extends StatefulWidget {
@@ -7,7 +8,7 @@ class AddressOverlay extends StatefulWidget {
   final double positionTop;
   final double positionLeft;
   final double width;
-  final Function(String?) onSelect;
+  final Function(AddressModel) onSelect;
   final Function() removeOverlay;
 
   const AddressOverlay({Key? key,
@@ -53,7 +54,7 @@ class _AddressOverlayState extends State<AddressOverlay> {
                           Material(
                               color: Colors.transparent,
                               child: InkWell(
-                                  onTap: () => widget.onSelect(e.label),
+                                  onTap: () => widget.onSelect(e),
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment
                                         .start,

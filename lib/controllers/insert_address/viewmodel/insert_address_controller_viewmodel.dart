@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:location/location.dart';
 import 'package:qui_green/models/address_model.dart';
 import 'package:qui_green/resources/routes_enum.dart';
@@ -11,7 +12,7 @@ class InsertAddressControllerViewModel extends ChangeNotifier {
 
   // ************ Navigation *****
   onSendClick(BuildContext context) {
-    Navigator.of(context).pushReplacementNamed(Routes.maps);
+    Navigator.of(context).pushReplacementNamed(Routes.maps,arguments: position);
   }
 
   TextEditingController addressController = TextEditingController();
@@ -46,6 +47,8 @@ class InsertAddressControllerViewModel extends ChangeNotifier {
   }
 
   Timer debounce = Timer(const Duration(days: 1), () {});
+
+  LatLng position = LatLng(45.464664, 9.188540);
 
   void onSearchChanged(String query,Function() onAfter) {
     if (debounce.isActive) debounce.cancel();
@@ -96,5 +99,12 @@ class InsertAddressControllerViewModel extends ChangeNotifier {
     }else{
       addresses = [];
     }
+  }
+
+  bool _hasSelected = false;
+  bool get hasSelected => _hasSelected;
+  set hasSelected(bool newVal){
+    _hasSelected = newVal;
+    notifyListeners();
   }
 }

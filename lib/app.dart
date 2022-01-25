@@ -16,78 +16,97 @@ import 'package:qui_green/commons/utilities/localization.dart';
 import 'package:qui_green/commons/utilities/routes.dart';
 import 'package:qui_green/resources/app_config.dart';
 import 'package:qui_green/resources/routes_enum.dart';
+import 'package:qui_green/singletons/current_user.dart';
 import 'package:qui_green/singletons/network/network_manager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 ValueNotifier currentRouteName = ValueNotifier('/');
-SharedPreferences? sharedPreferences;
 
 void mainCommon({required String host, required bool isProd}) async {
   WidgetsFlutterBinding.ensureInitialized();
-  sharedPreferences = await SharedPreferences.getInstance();
-  sharedPreferences?.setString('languagePref', 'it');
-  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]).then(
-    (value) => runApp(
-      App(isProd: isProd, host: host),
-    ),
-  );
-  SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge,
-      overlays: [SystemUiOverlay.bottom]).then((value) {
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      statusBarColor: Colors.transparent,
-      systemNavigationBarColor: ThemeData.light().scaffoldBackgroundColor,
-      systemNavigationBarDividerColor: Colors.transparent,
-      systemNavigationBarIconBrightness: Brightness.dark,
-    ));
-  });
-
+  SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+  sharedPreferences.setString('languagePref', 'it');
   PackageInfo info = await PackageInfo.fromPlatform();
-  NetworkManager(
-      config: AppConfig(
-          isProd: isProd,
-          host: host,
-          appInfo: info,
-          sharedPreferencesInstance: sharedPreferences));
 
-  NetworkManager.instance.login(login: "+39328000001", password: "6732");
+  AppConfig appConfig = AppConfig(
+      isProd: isProd,
+      host: host,
+      appInfo: info,
+      sharedPreferencesInstance: sharedPreferences);
+  NetworkManager(config: appConfig);
+  await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge,
+      overlays: [SystemUiOverlay.bottom]);
+  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+    statusBarColor: Colors.transparent,
+    systemNavigationBarColor: ThemeData.light().scaffoldBackgroundColor,
+    systemNavigationBarDividerColor: Colors.transparent,
+    systemNavigationBarIconBrightness: Brightness.dark,
+  ));
+  await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+  runApp(App(
+    config: appConfig,
+  ));
+  //print(NetworkManager.instance.accessToken);
+  //NetworkManager.instance.login(login: "+39328000001", password: "6732");
 }
 
 class App extends StatelessWidget {
-  final String host;
-  final bool isProd;
+  final AppConfig config;
+  final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
-  const App({Key? key, required this.host, required this.isProd})
-      : super(key: key);
+  App({Key? key, required this.config}) : super(key: key);
 
-  // This widget is the root of your application.
+  // checkRedirect uses two booleans to intercept changes in the user status (logged or not)
+  // if the user is logged navigates the app to the home route
+  // if the user is not logged navigates the app to the login route
+  void checkRedirect(CurrentUser currentUser) {
+    if (currentUser.fetchOnOpenApp && !currentUser.firstNavigationDone) {
+      if (currentUser.user == null) {
+        navigatorKey.currentState?.pushReplacementNamed(Routes.login);
+        currentUser.firstNavigationDone = true;
+      } else {
+        navigatorKey.currentState?.pushReplacementNamed(Routes.home);
+        currentUser.firstNavigationDone = true;
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Consumer(
-      builder: (context, currentUser, _) {
-        return MaterialApp(
-          debugShowCheckedModeBanner: false,
-          title: 'Qui Green',
-          supportedLocales: const [
-            Locale('en'),
-            Locale('it'),
-            Locale('de'),
-            Locale('es'),
-            Locale('fr')
-          ],
-          localizationsDelegates: [
-            LocalizationManagerDelegate(sharedPreferences!),
-            GlobalMaterialLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate
-          ],
-          theme: MyAppTheme.themeData(context),
-          darkTheme: MyAppTheme.darkThemeData(context),
-          initialRoute: Routes.insertPhone,
-          onGenerateRoute: (settings) {
-            return routeWithSetting(settings);
-          },
-        );
-      },
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+            create: (_) => CurrentUser(config.sharedPreferencesInstance)),
+      ],
+      child: Consumer<CurrentUser>(
+        builder: (context, currentUser, _) {
+          currentUser.navigatorKey = navigatorKey;
+          return MaterialApp(
+            navigatorKey: navigatorKey,
+            debugShowCheckedModeBanner: false,
+            title: 'Qui Green',
+            supportedLocales: const [
+              Locale('en'),
+              Locale('it'),
+              Locale('de'),
+              Locale('es'),
+              Locale('fr')
+            ],
+            localizationsDelegates: [
+              LocalizationManagerDelegate(config.sharedPreferencesInstance!),
+              GlobalMaterialLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate
+            ],
+            theme: MyAppTheme.themeData(context),
+            darkTheme: MyAppTheme.darkThemeData(context),
+            initialRoute: "/",
+            onGenerateRoute: (settings) {
+              return routeWithSetting(settings);
+            },
+          );
+        },
+      ),
     );
   }
 }

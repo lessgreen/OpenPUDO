@@ -6,17 +6,16 @@ part of 'pudo_notification.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-PudoNotification _$PudoNotificationFromJson(Map<String, dynamic> json) {
-  return PudoNotification(
-    notificationId: json['notificationId'] as int,
-    createTms: json['createTms'] as String?,
-    message: json['message'] as String?,
-    readTms: json['readTms'] as String?,
-    title: json['title'] as String?,
-    optData: json['optData'],
-    userId: json['userId'] as int?,
-  );
-}
+PudoNotification _$PudoNotificationFromJson(Map<String, dynamic> json) =>
+    PudoNotification(
+      notificationId: json['notificationId'] as int,
+      createTms: json['createTms'] as String?,
+      message: json['message'] as String?,
+      readTms: json['readTms'] as String?,
+      title: json['title'] as String?,
+      optData: json['optData'],
+      userId: json['userId'] as int?,
+    );
 
 Map<String, dynamic> _$PudoNotificationToJson(PudoNotification instance) =>
     <String, dynamic>{

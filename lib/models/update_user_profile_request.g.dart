@@ -7,13 +7,12 @@ part of 'update_user_profile_request.dart';
 // **************************************************************************
 
 UpdateUserProfileRequest _$UpdateUserProfileRequestFromJson(
-    Map<String, dynamic> json) {
-  return UpdateUserProfileRequest(
-    firstName: json['firstName'] as String,
-    lastName: json['lastName'] as String,
-    ssn: json['ssn'] as String?,
-  );
-}
+        Map<String, dynamic> json) =>
+    UpdateUserProfileRequest(
+      firstName: json['firstName'] as String,
+      lastName: json['lastName'] as String,
+      ssn: json['ssn'] as String?,
+    );
 
 Map<String, dynamic> _$UpdateUserProfileRequestToJson(
         UpdateUserProfileRequest instance) =>

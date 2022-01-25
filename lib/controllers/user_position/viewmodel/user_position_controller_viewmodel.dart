@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:location/location.dart';
 import 'package:qui_green/resources/routes_enum.dart';
 
@@ -9,6 +10,12 @@ class UserPositionControllerViewModel extends ChangeNotifier {
   onAddAddressClick(BuildContext context) {
     Navigator.of(context).pushReplacementNamed(Routes.insertAddress);
   }
+
+  onMapClick(BuildContext context) {
+    Navigator.of(context).pushReplacementNamed(Routes.maps,arguments: pos);
+  }
+  
+  LatLng pos = LatLng(45.464664, 9.188540);
 
   // ************ Location *******
 
@@ -36,6 +43,7 @@ class UserPositionControllerViewModel extends ChangeNotifier {
     }
 
     _locationData = await location.getLocation();
+    pos = LatLng(_locationData.latitude??45.464664,_locationData.longitude??9.188540);
     return _locationData;
   }
 }

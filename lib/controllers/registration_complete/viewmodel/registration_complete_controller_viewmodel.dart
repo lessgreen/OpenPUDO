@@ -1,45 +1,30 @@
 import 'package:flutter/material.dart';
-import 'package:location/location.dart';
+import 'package:provider/provider.dart';
+import 'package:qui_green/models/pudo_profile.dart';
 import 'package:qui_green/resources/routes_enum.dart';
+import 'package:qui_green/singletons/current_user.dart';
+import 'package:qui_green/singletons/network/network_manager.dart';
 
 class RegistrationCompleteControllerViewModel extends ChangeNotifier {
   //Example: to use NetworkManager, use the getInstance: NetworkManager.instance...
 
   // ************ Navigation *****
-  onOkClick(BuildContext context) {
-    Navigator.pop(context);
+  onOkClick(BuildContext context) async {
+    await NetworkManager.instance.updateUserPreferences(showNumber: _showNumber);
+    Provider.of<CurrentUser>(context,listen: false).refresh();
   }
 
-  onInstructionsClick(BuildContext context) {
-    Navigator.of(context).pushReplacementNamed(Routes.instruction);
+  onInstructionsClick(BuildContext context, PudoProfile? pudoModel) {
+    Navigator.of(context)
+        .pushReplacementNamed(Routes.instruction, arguments: pudoModel);
   }
 
-  // ************ Location *******
+  bool _showNumber = true;
 
-  Future<LocationData?> tryGetUserLocation() async {
-    Location location = Location();
+  bool get showNumber => _showNumber;
 
-    bool _serviceEnabled;
-    PermissionStatus _permissionGranted;
-    LocationData _locationData;
-
-    _serviceEnabled = await location.serviceEnabled();
-    if (!_serviceEnabled) {
-      _serviceEnabled = await location.requestService();
-      if (!_serviceEnabled) {
-        return null;
-      }
-    }
-
-    _permissionGranted = await location.hasPermission();
-    if (_permissionGranted == PermissionStatus.denied) {
-      _permissionGranted = await location.requestPermission();
-      if (_permissionGranted != PermissionStatus.granted) {
-        return null;
-      }
-    }
-
-    _locationData = await location.getLocation();
-    return _locationData;
+  set showNumber(bool newVal) {
+    _showNumber = newVal;
+    notifyListeners();
   }
 }

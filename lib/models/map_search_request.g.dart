@@ -6,13 +6,12 @@ part of 'map_search_request.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-MapSearchRequest _$MapSearchRequestFromJson(Map<String, dynamic> json) {
-  return MapSearchRequest(
-    text: json['text'] as String,
-    lat: (json['lat'] as num?)?.toDouble(),
-    lon: (json['lon'] as num?)?.toDouble(),
-  );
-}
+MapSearchRequest _$MapSearchRequestFromJson(Map<String, dynamic> json) =>
+    MapSearchRequest(
+      text: json['text'] as String,
+      lat: (json['lat'] as num?)?.toDouble(),
+      lon: (json['lon'] as num?)?.toDouble(),
+    );
 
 Map<String, dynamic> _$MapSearchRequestToJson(MapSearchRequest instance) =>
     <String, dynamic>{

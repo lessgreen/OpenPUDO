@@ -7,12 +7,11 @@ part of 'update_pudo_address_request.dart';
 // **************************************************************************
 
 UpdatePudoAddressRequest _$UpdatePudoAddressRequestFromJson(
-    Map<String, dynamic> json) {
-  return UpdatePudoAddressRequest(
-    label: json['label'] as String,
-    resultId: json['resultId'] as String,
-  );
-}
+        Map<String, dynamic> json) =>
+    UpdatePudoAddressRequest(
+      label: json['label'] as String,
+      resultId: json['resultId'] as String,
+    );
 
 Map<String, dynamic> _$UpdatePudoAddressRequestToJson(
         UpdatePudoAddressRequest instance) =>

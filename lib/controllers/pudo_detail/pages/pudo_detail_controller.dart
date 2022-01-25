@@ -9,12 +9,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:qui_green/commons/ui/custom_network_image.dart';
 import 'package:qui_green/commons/widgets/text_field_button.dart';
+import 'package:qui_green/controllers/pudo_detail/models/pudo_detail_controller_data_model.dart';
 import 'package:qui_green/controllers/pudo_detail/viewmodel/pudo_detail_controller_viewmodel.dart';
 import 'package:qui_green/resources/res.dart';
 
 class PudoDetailController extends StatefulWidget {
-  const PudoDetailController({Key? key}) : super(key: key);
+  const PudoDetailController({Key? key, required this.dataModel})
+      : super(key: key);
+  final PudoDetailControllerDataModel dataModel;
 
   @override
   _PudoDetailControllerState createState() => _PudoDetailControllerState();
@@ -27,9 +31,9 @@ class _PudoDetailControllerState extends State<PudoDetailController> {
           const SizedBox(height: Dimension.padding),
           Row(
             children: [
-              const Text(
-                'Bar - La pinta',
-                style: TextStyle(fontSize: 18),
+              Text(
+                widget.dataModel.pudoProfile.businessName,
+                style: const TextStyle(fontSize: 18),
               ),
               const SizedBox(
                 width: Dimension.paddingS,
@@ -58,68 +62,75 @@ class _PudoDetailControllerState extends State<PudoDetailController> {
             text: TextSpan(
               text: '',
               style: Theme.of(context).textTheme.bodyText2,
-              children: const [
-                WidgetSpan(
+              children: [
+                const WidgetSpan(
                   alignment: PlaceholderAlignment.middle,
                   child: Icon(
                     Icons.location_on_rounded,
                     color: AppColors.primaryColorDark,
                   ),
                 ),
-                WidgetSpan(
+                const WidgetSpan(
                   child: SizedBox(
                     width: Dimension.paddingS,
                   ),
                 ),
-                TextSpan(text: "Via Ippolito 8 - 21100 Milano"),
+                TextSpan(
+                    text: widget.dataModel.pudoProfile.address!.label ?? ""),
               ],
             ),
           ),
+          if (widget.dataModel.pudoProfile.publicPhoneNumber != null)
+            const SizedBox(height: Dimension.paddingS),
+          if (widget.dataModel.pudoProfile.publicPhoneNumber != null)
+            RichText(
+              textAlign: TextAlign.start,
+              text: TextSpan(
+                text: '',
+                style: Theme.of(context).textTheme.bodyText2,
+                children: [
+                  const WidgetSpan(
+                    alignment: PlaceholderAlignment.middle,
+                    child: Icon(
+                      Icons.phone,
+                      color: AppColors.primaryColorDark,
+                    ),
+                  ),
+                  const WidgetSpan(
+                    child: SizedBox(
+                      width: Dimension.paddingS,
+                    ),
+                  ),
+                  TextSpan(
+                      text:
+                          widget.dataModel.pudoProfile.publicPhoneNumber ?? ""),
+                ],
+              ),
+            ),
           const SizedBox(height: Dimension.paddingS),
           RichText(
             textAlign: TextAlign.start,
             text: TextSpan(
               text: '',
               style: Theme.of(context).textTheme.bodyText2,
-              children: const [
-                WidgetSpan(
-                  alignment: PlaceholderAlignment.middle,
-                  child: Icon(
-                    Icons.phone,
-                    color: AppColors.primaryColorDark,
-                  ),
-                ),
-                WidgetSpan(
-                  child: SizedBox(
-                    width: Dimension.paddingS,
-                  ),
-                ),
-                TextSpan(text: "+39-02-123-4567"),
-              ],
-            ),
-          ),
-          const SizedBox(height: Dimension.paddingS),
-          RichText(
-            textAlign: TextAlign.start,
-            text: TextSpan(
-              text: '',
-              style: Theme.of(context).textTheme.bodyText2,
-              children: const [
-                WidgetSpan(
+              children: [
+                const WidgetSpan(
                   alignment: PlaceholderAlignment.middle,
                   child: Icon(
                     Icons.people,
                     color: AppColors.primaryColorDark,
                   ),
                 ),
-                WidgetSpan(
+                const WidgetSpan(
                   child: SizedBox(
                     width: Dimension.paddingS,
                   ),
                 ),
                 TextSpan(
-                    text: '123', style: TextStyle(fontWeight: FontWeight.bold)),
-                TextSpan(
+                    text: (widget.dataModel.pudoProfile.customerCount ?? 0)
+                        .toString(),
+                    style: const TextStyle(fontWeight: FontWeight.bold)),
+                const TextSpan(
                     text:
                         ' persone hanno già scelto quest’attività come punto di ritiro QuiGreen.'),
               ],
@@ -131,9 +142,11 @@ class _PudoDetailControllerState extends State<PudoDetailController> {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-        providers: [ChangeNotifierProxyProvider0<PudoDetailControllerViewModel?>(
-            create: (context) => PudoDetailControllerViewModel(),
-            update: (context, viewModel) => viewModel),],
+        providers: [
+          ChangeNotifierProxyProvider0<PudoDetailControllerViewModel?>(
+              create: (context) => PudoDetailControllerViewModel(),
+              update: (context, viewModel) => viewModel),
+        ],
         child: Consumer<PudoDetailControllerViewModel?>(
             builder: (_, viewModel, __) {
           return WillPopScope(
@@ -141,10 +154,10 @@ class _PudoDetailControllerState extends State<PudoDetailController> {
             child: Scaffold(
               resizeToAvoidBottomInset: true,
               appBar: AppBar(
-                backgroundColor: Colors.white,
+                backgroundColor: ThemeData.light().scaffoldBackgroundColor,
                 systemOverlayStyle: SystemUiOverlayStyle.dark,
                 title: Text(
-                  "Bar - La pinta",
+                  widget.dataModel.pudoProfile.businessName,
                   style: Theme.of(context).textTheme.headline6?.copyWith(
                       color: Colors.black,
                       fontSize: 16,
@@ -152,7 +165,8 @@ class _PudoDetailControllerState extends State<PudoDetailController> {
                 ),
                 centerTitle: true,
                 leading: GestureDetector(
-                  onTap: () => viewModel?.goBack(context),
+                  onTap: () => viewModel?.goBack(
+                      context, widget.dataModel.initialPosition),
                   child: const Icon(
                     Icons.arrow_back_ios_rounded,
                     color: AppColors.primaryColorDark,
@@ -161,7 +175,8 @@ class _PudoDetailControllerState extends State<PudoDetailController> {
                 actions: [
                   TextFieldButton(
                     text: "Scegli",
-                    onPressed: () => viewModel?.onSelectPress(context),
+                    onPressed: () => viewModel?.onSelectPress(context,
+                        widget.dataModel.pudoProfile),
                   )
                 ],
               ),
@@ -169,13 +184,11 @@ class _PudoDetailControllerState extends State<PudoDetailController> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Container(
-                    color: Colors.white.withOpacity(0.8),
                     padding: const EdgeInsets.only(bottom: Dimension.padding),
                     alignment: Alignment.center,
                     child: Column(
                       children: [
-                        Image.network(
-                            'https://cdn.skuola.net/news_foto/2017/descrizione-bar.jpg'),
+                        CustomNetworkImage(url: widget.dataModel.pudoProfile.pudoPicId),
                         _buildPudoDetail(),
                         const SizedBox(height: Dimension.padding),
                         Container(
@@ -209,7 +222,7 @@ class _PudoDetailControllerState extends State<PudoDetailController> {
                         SizedBox(
                           width: MediaQuery.of(context).size.width / 3 * 2,
                           child: Text(
-                            '“Vorrei essere pagato con una consumazione al tavolo.”',
+                            '“${widget.dataModel.pudoProfile.rewardMessage ?? ""}”',
                             style: Theme.of(context)
                                 .textTheme
                                 .subtitle1

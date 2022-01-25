@@ -6,7 +6,7 @@ class AppConfig {
       {required this.isProd,
       required this.host,
       required this.appInfo,
-      this.sharedPreferencesInstance});
+        this.sharedPreferencesInstance});
 
   final bool isProd;
   final PackageInfo appInfo;

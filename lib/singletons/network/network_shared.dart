@@ -22,6 +22,7 @@ import 'package:qui_green/models/pudo_package.dart';
 import 'package:qui_green/models/pudo_package_event.dart';
 import 'package:qui_green/models/pudo_profile.dart';
 import 'package:qui_green/models/registration_request.dart';
+import 'package:qui_green/models/user_preferences.dart';
 import 'package:qui_green/models/user_profile.dart';
 import 'package:path/path.dart';
 import 'package:http_parser/http_parser.dart';
@@ -55,6 +56,8 @@ mixin NetworkGeneral {
   set accessToken(String newVal) {
     _accessToken = newVal;
   }
+
+  String get accessToken => _accessToken ?? "";
 
   String _baseURL = "https://api-dev.quigreen.it";
 
@@ -93,7 +96,7 @@ mixin NetworkGeneral {
   Future<dynamic> renewToken({required String accessToken}) async {
     Map<String, String> aRequest = {'accessToken': accessToken};
 
-    var url = _baseURL + '/api/v1/auth/renew';
+    var url = _baseURL + '/api/v2/user/me/device-tokens';
     var body = jsonEncode(aRequest);
 
     try {
@@ -136,6 +139,10 @@ mixin NetworkGeneral {
     }
     _accessToken = accessToken;
     _headers.remove('Authorization');
+  }
+
+  void removeAccessToken() {
+    _sharedPreferences.remove('accessToken');
   }
 
   bool _handleTokenRefresh(
@@ -275,8 +282,8 @@ mixin NetworkGeneral {
 
     var url = _baseURL +
         ((isPudo != null && isPudo == true)
-            ? '/api/v1/pudos/me/profile-pic'
-            : '/api/v1/users/me/profile-pic');
+            ? '/api/v2/pudo/me/picture'
+            : '/api/v2/user/me/picture');
     var uri = Uri.parse(url);
 
     // create multipart request
@@ -311,16 +318,9 @@ mixin NetworkGeneral {
         photoUpload(anImage, isPudo: isPudo)
             .catchError((onError) => throw onError);
       });
-
       if (needHandleTokenRefresh == false) {
-        if (baseResponse.returnCode == 0 &&
-            baseResponse.payload != null &&
-            baseResponse.payload is Map) {
-          if (isPudo == true) {
-            return PudoProfile.fromJson(baseResponse.payload);
-          } else {
-            return UserProfile.fromJson(baseResponse.payload);
-          }
+        if (baseResponse.returnCode == 0 ) {
+          return null;
         } else {
           throw ErrorDescription(
               'Error ${baseResponse.returnCode}: ${baseResponse.message}');
