@@ -259,6 +259,12 @@ public class AuthService {
         return jwtService.generateUserTokenData(user.getUserId(), mapAccountTypeToAccessProfile(user.getAccountType()));
     }
 
+    public AccessTokenData renew() {
+        TbUser user = userDao.get(context.getUserId());
+        user.setLastLoginTms(new Date());
+        return jwtService.generateUserTokenData(user.getUserId(), mapAccountTypeToAccessProfile(user.getAccountType()));
+    }
+
     private AccessProfile mapAccountTypeToAccessProfile(AccountType accountType) {
         switch (accountType) {
             case PUDO:
@@ -287,5 +293,6 @@ public class AuthService {
             Thread.currentThread().interrupt();
         }
     }
+
 
 }

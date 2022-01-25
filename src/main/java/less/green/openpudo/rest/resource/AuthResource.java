@@ -156,4 +156,13 @@ public class AuthResource {
         return new LoginConfirmResponse(context.getExecutionId(), ApiReturnCodes.OK, ret);
     }
 
+    @POST
+    @Path("/renew")
+    @SecurityRequirement(name = "JWT")
+    @Operation(summary = "Renew access token before expiration")
+    public LoginConfirmResponse renew() {
+        AccessTokenData ret = authService.renew();
+        return new LoginConfirmResponse(context.getExecutionId(), ApiReturnCodes.OK, ret);
+    }
+
 }
