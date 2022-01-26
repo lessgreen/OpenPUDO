@@ -1,5 +1,26 @@
+/*
+ OpenPUDO - PUDO and Micro-delivery software for Last Mile Collaboration
+ Copyright (C) 2020-2022 LESS SRL - https://less.green
+
+ This file is part of OpenPUDO software.
+
+ OpenPUDO is free software: you can redistribute it and/or modify
+ it under the terms of the GNU Affero General Public License version 3
+ as published by the Copyright Owner.
+
+ OpenPUDO is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU Affero General Public License version 3 for more details.
+
+ You should have received a copy of the GNU Affero General Public License
+ version 3 published by the Copyright Owner along with OpenPUDO.  
+ If not, see <https://github.com/lessgreen/OpenPUDO>.
+*/
+
 part of 'network_shared.dart';
-mixin NetworkManagerPackages on NetworkGeneral{
+
+mixin NetworkManagerPackages on NetworkGeneral {
   //TODO: implement API calls (package related)
   Future<dynamic> getPackageDetails({required int packageId}) async {
     if (_accessToken != null) {
@@ -12,8 +33,7 @@ mixin NetworkManagerPackages on NetworkGeneral{
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
-      Response response = await get(Uri.parse(url), headers: _headers)
-          .timeout(Duration(seconds: _timeout));
+      Response response = await get(Uri.parse(url), headers: _headers).timeout(Duration(seconds: _timeout));
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = false;
       });
@@ -24,20 +44,17 @@ mixin NetworkManagerPackages on NetworkGeneral{
 
       var needHandleTokenRefresh = _handleTokenRefresh(
         baseResponse,
-            () {
+        () {
           getPackageDetails(
             packageId: packageId,
           ).catchError((onError) => throw onError);
         },
       );
       if (needHandleTokenRefresh == false) {
-        if (baseResponse.returnCode == 0 &&
-            baseResponse.payload != null &&
-            baseResponse.payload is Map) {
+        if (baseResponse.returnCode == 0 && baseResponse.payload != null && baseResponse.payload is Map) {
           return PudoPackage.fromJson(baseResponse.payload);
         } else {
-          throw ErrorDescription(
-              'Error ${baseResponse.returnCode}: ${baseResponse.message}');
+          throw ErrorDescription('Error ${baseResponse.returnCode}: ${baseResponse.message}');
         }
       }
     } on Error catch (e) {
@@ -47,10 +64,7 @@ mixin NetworkManagerPackages on NetworkGeneral{
     }
   }
 
-  Future<dynamic> changePackageStatus(
-      {required int packageId,
-        required PudoPackageStatus newStatus,
-        String? notes}) async {
+  Future<dynamic> changePackageStatus({required int packageId, required PudoPackageStatus newStatus, String? notes}) async {
     if (_accessToken != null) {
       _headers['Authorization'] = 'Bearer $_accessToken';
     }
@@ -79,9 +93,7 @@ mixin NetworkManagerPackages on NetworkGeneral{
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
-      Response response =
-      await post(Uri.parse(url), body: body, headers: _headers)
-          .timeout(Duration(seconds: _timeout));
+      Response response = await post(Uri.parse(url), body: body, headers: _headers).timeout(Duration(seconds: _timeout));
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = false;
       });
@@ -92,7 +104,7 @@ mixin NetworkManagerPackages on NetworkGeneral{
 
       var needHandleTokenRefresh = _handleTokenRefresh(
         baseResponse,
-            () {
+        () {
           changePackageStatus(
             packageId: packageId,
             newStatus: newStatus,
@@ -101,13 +113,10 @@ mixin NetworkManagerPackages on NetworkGeneral{
         },
       );
       if (needHandleTokenRefresh == false) {
-        if (baseResponse.returnCode == 0 &&
-            baseResponse.payload != null &&
-            baseResponse.payload is Map) {
+        if (baseResponse.returnCode == 0 && baseResponse.payload != null && baseResponse.payload is Map) {
           return PudoPackage.fromJson(baseResponse.payload);
         } else {
-          throw ErrorDescription(
-              'Error ${baseResponse.returnCode}: ${baseResponse.message}');
+          throw ErrorDescription('Error ${baseResponse.returnCode}: ${baseResponse.message}');
         }
       }
     } on Error catch (e) {
@@ -167,8 +176,7 @@ mixin NetworkManagerPackages on NetworkGeneral{
         if (baseResponse.returnCode == 0) {
           return baseResponse;
         } else {
-          throw ErrorDescription(
-              'Error ${baseResponse.returnCode}: ${baseResponse.message}');
+          throw ErrorDescription('Error ${baseResponse.returnCode}: ${baseResponse.message}');
         }
       }
     } on Error catch (e) {
@@ -186,8 +194,7 @@ mixin NetworkManagerPackages on NetworkGeneral{
   }) async {
     if (request != null) {
     } else if (userId != null) {
-      request = DeliveryPackageRequest(
-          userId: userId, notes: notes, packagePicId: packagePicId);
+      request = DeliveryPackageRequest(userId: userId, notes: notes, packagePicId: packagePicId);
     } else {
       return ErrorDescription('Error missing parameters.');
     }
@@ -199,9 +206,7 @@ mixin NetworkManagerPackages on NetworkGeneral{
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
-      Response response =
-      await post(Uri.parse(url), body: body, headers: _headers)
-          .timeout(Duration(seconds: _timeout));
+      Response response = await post(Uri.parse(url), body: body, headers: _headers).timeout(Duration(seconds: _timeout));
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = false;
       });
@@ -212,7 +217,7 @@ mixin NetworkManagerPackages on NetworkGeneral{
 
       var needHandleTokenRefresh = _handleTokenRefresh(
         baseResponse,
-            () {
+        () {
           setupDelivery(
             request: request,
             userId: userId,
@@ -222,13 +227,10 @@ mixin NetworkManagerPackages on NetworkGeneral{
         },
       );
       if (needHandleTokenRefresh == false) {
-        if (baseResponse.returnCode == 0 &&
-            baseResponse.payload != null &&
-            baseResponse.payload is Map) {
+        if (baseResponse.returnCode == 0 && baseResponse.payload != null && baseResponse.payload is Map) {
           return PudoPackage.fromJson(baseResponse.payload);
         } else {
-          throw ErrorDescription(
-              'Error ${baseResponse.returnCode}: ${baseResponse.message}');
+          throw ErrorDescription('Error ${baseResponse.returnCode}: ${baseResponse.message}');
         }
       }
     } on Error catch (e) {
@@ -238,8 +240,7 @@ mixin NetworkManagerPackages on NetworkGeneral{
     }
   }
 
-  Future<dynamic> getMyPackages(
-      {bool history = false, int limit = 20, int offset = 0}) async {
+  Future<dynamic> getMyPackages({bool history = false, int limit = 20, int offset = 0}) async {
     if (_accessToken != null) {
       _headers['Authorization'] = 'Bearer $_accessToken';
     }
@@ -252,8 +253,7 @@ mixin NetworkManagerPackages on NetworkGeneral{
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
-      Response response = await get(Uri.parse(url), headers: _headers)
-          .timeout(Duration(seconds: _timeout));
+      Response response = await get(Uri.parse(url), headers: _headers).timeout(Duration(seconds: _timeout));
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = false;
       });
@@ -265,7 +265,7 @@ mixin NetworkManagerPackages on NetworkGeneral{
 
       var needHandleTokenRefresh = _handleTokenRefresh(
         baseResponse,
-            () {
+        () {
           getMyPackages(
             history: history,
             limit: limit,
@@ -274,16 +274,13 @@ mixin NetworkManagerPackages on NetworkGeneral{
         },
       );
       if (needHandleTokenRefresh == false) {
-        if (baseResponse.returnCode == 0 &&
-            baseResponse.payload != null &&
-            baseResponse.payload is List) {
+        if (baseResponse.returnCode == 0 && baseResponse.payload != null && baseResponse.payload is List) {
           for (dynamic aRow in baseResponse.payload) {
             myPackages.add(PudoPackage.fromJson(aRow));
           }
           return myPackages;
         } else {
-          throw ErrorDescription(
-              'Error ${baseResponse.returnCode}: ${baseResponse.message}');
+          throw ErrorDescription('Error ${baseResponse.returnCode}: ${baseResponse.message}');
         }
       }
     } on Error catch (e) {
@@ -292,8 +289,4 @@ mixin NetworkManagerPackages on NetworkGeneral{
       return e;
     }
   }
-
-
-
-
 }

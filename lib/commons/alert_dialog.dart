@@ -1,9 +1,23 @@
-//
-//  AlertDialog.dart
-//  OpenPudo
-//
-//  Created by Costantino Pistagna on 28/02/2020.
-//  Copyright © 2020 Sofapps. All rights reserved.
+/*
+ OpenPUDO - PUDO and Micro-delivery software for Last Mile Collaboration
+ Copyright (C) 2020-2022 LESS SRL - https://less.green
+
+ This file is part of OpenPUDO software.
+
+ OpenPUDO is free software: you can redistribute it and/or modify
+ it under the terms of the GNU Affero General Public License version 3
+ as published by the Copyright Owner.
+
+ OpenPUDO is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU Affero General Public License version 3 for more details.
+
+ You should have received a copy of the GNU Affero General Public License
+ version 3 published by the Copyright Owner along with OpenPUDO.  
+ If not, see <https://github.com/lessgreen/OpenPUDO>.
+*/
+
 import 'package:flutter/material.dart';
 import 'package:html_unescape/html_unescape_small.dart';
 import 'package:qui_green/commons/utilities/localization.dart';
@@ -22,8 +36,7 @@ class SAAlertDialog extends StatelessWidget {
     required this.actions,
   }) : super(key: key);
 
-  static displayAlertWithButtons(BuildContext context, String title,
-      String description, List<MaterialButton> actions) {
+  static displayAlertWithButtons(BuildContext context, String title, String description, List<MaterialButton> actions) {
     if (isAlreadyShown) {
       return;
     }
@@ -51,10 +64,7 @@ class SAAlertDialog extends StatelessWidget {
                   })
                   .values
                   .toList();
-              return SAAlertDialog(
-                  title: title,
-                  description: HtmlUnescape().convert(description),
-                  actions: modifiedActions);
+              return SAAlertDialog(title: title, description: HtmlUnescape().convert(description), actions: modifiedActions);
             },
             context: context)
         .then((value) {
@@ -62,8 +72,7 @@ class SAAlertDialog extends StatelessWidget {
     });
   }
 
-  static displayAlertWithClose(
-      BuildContext context, String title, dynamic description) {
+  static displayAlertWithClose(BuildContext context, String title, dynamic description) {
     if (isAlreadyShown) {
       return;
     }
@@ -73,13 +82,11 @@ class SAAlertDialog extends StatelessWidget {
               return SAAlertDialog(
                   title: title,
                   description: (description is OPBaseResponse)
-                      ? HtmlUnescape()
-                          .convert(description.message ?? "General error")
+                      ? HtmlUnescape().convert(description.message ?? "General error")
                       : (description is Error)
                           ? HtmlUnescape().convert(description.toString())
                           : (description is ErrorDescription)
-                              ? HtmlUnescape()
-                                  .convert(description.value.first.toString())
+                              ? HtmlUnescape().convert(description.value.first.toString())
                               : HtmlUnescape().convert(description),
                   actions: <Widget>[
                     MaterialButton(

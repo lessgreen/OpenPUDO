@@ -1,10 +1,22 @@
-//
-//  main.dart
-//  OpenPudo
-//
-//  Created by Costantino Pistagna on 04/01/2022.
-//  Copyright © 2022 Sofapps. All rights reserved.
-//
+/*
+ OpenPUDO - PUDO and Micro-delivery software for Last Mile Collaboration
+ Copyright (C) 2020-2022 LESS SRL - https://less.green
+
+ This file is part of OpenPUDO software.
+
+ OpenPUDO is free software: you can redistribute it and/or modify
+ it under the terms of the GNU Affero General Public License version 3
+ as published by the Copyright Owner.
+
+ OpenPUDO is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU Affero General Public License version 3 for more details.
+
+ You should have received a copy of the GNU Affero General Public License
+ version 3 published by the Copyright Owner along with OpenPUDO.  
+ If not, see <https://github.com/lessgreen/OpenPUDO>.
+*/
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -53,15 +65,13 @@ class App extends StatelessWidget {
   // if the user is logged navigates the app to the home route
   // if the user is not logged navigates the app to the login route
 
-  void pushPage(String route)=>navigatorKey.currentState?.pushReplacementNamed(route);
-
+  void pushPage(String route) => navigatorKey.currentState?.pushReplacementNamed(route);
 
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(
-            create: (_) => CurrentUser(config.sharedPreferencesInstance,pushPage: pushPage)),
+        ChangeNotifierProvider(create: (_) => CurrentUser(config.sharedPreferencesInstance, pushPage: pushPage)),
       ],
       child: Consumer<CurrentUser>(
         builder: (context, currentUser, _) {
@@ -78,7 +88,7 @@ class App extends StatelessWidget {
             ],
             theme: MyAppTheme.themeData(context),
             darkTheme: MyAppTheme.darkThemeData(context),
-            initialRoute: NetworkManager.instance.accessToken.isEmpty?Routes.login:"/",
+            initialRoute: NetworkManager.instance.accessToken.isEmpty ? Routes.login : "/",
             onGenerateRoute: (settings) {
               return routeWithSetting(settings);
             },

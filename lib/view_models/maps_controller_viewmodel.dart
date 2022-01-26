@@ -1,7 +1,27 @@
+/*
+ OpenPUDO - PUDO and Micro-delivery software for Last Mile Collaboration
+ Copyright (C) 2020-2022 LESS SRL - https://less.green
+
+ This file is part of OpenPUDO software.
+
+ OpenPUDO is free software: you can redistribute it and/or modify
+ it under the terms of the GNU Affero General Public License version 3
+ as published by the Copyright Owner.
+
+ OpenPUDO is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU Affero General Public License version 3 for more details.
+
+ You should have received a copy of the GNU Affero General Public License
+ version 3 published by the Copyright Owner along with OpenPUDO.  
+ If not, see <https://github.com/lessgreen/OpenPUDO>.
+*/
+
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:qui_green/controllers/pudo_detail/models/pudo_detail_controller_data_model.dart';
+import 'package:qui_green/models/pudo_detail_controller_data_model.dart';
 import 'package:qui_green/models/pudo_marker.dart';
 import 'package:qui_green/models/pudo_profile.dart';
 import 'package:qui_green/resources/routes_enum.dart';
@@ -11,8 +31,7 @@ class MapsControllerViewModel extends ChangeNotifier {
   //Example: to use NetworkManager, use the getInstance: NetworkManager.instance...
 
   onPudoClick(BuildContext context, PudoProfile data, LatLng position) {
-    Navigator.of(context).pushReplacementNamed(Routes.pudoDetail,
-        arguments: PudoDetailControllerDataModel(position, data));
+    Navigator.of(context).pushReplacementNamed(Routes.pudoDetail, arguments: PudoDetailControllerDataModel(position, data));
   }
 
   MapController? mapController;
@@ -48,19 +67,14 @@ class MapsControllerViewModel extends ChangeNotifier {
   }
 
   loadPudos() {
-    NetworkManager.instance
-        .getPudos(
-            lat: currentLatitude, lon: currentLongitude, zoom: currentZoomLevel)
-        .then((response) {
+    NetworkManager.instance.getPudos(lat: currentLatitude, lon: currentLongitude, zoom: currentZoomLevel).then((response) {
       if (response is List<PudoMarker>) {
         if (_pudos.isNotEmpty && response.isEmpty) {
-          mapController?.move(LatLng(currentLatitude, currentLongitude),
-              currentZoomLevel.toDouble());
+          mapController?.move(LatLng(currentLatitude, currentLongitude), currentZoomLevel.toDouble());
           return;
         }
         pudos = response;
-        mapController?.move(LatLng(currentLatitude, currentLongitude),
-            currentZoomLevel.toDouble());
+        mapController?.move(LatLng(currentLatitude, currentLongitude), currentZoomLevel.toDouble());
       }
     }).catchError((onError) => showErrorDialog!(onError));
   }
