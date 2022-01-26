@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:qui_green/commons/alert_dialog.dart';
 import 'package:qui_green/controllers/pudo_detail/models/pudo_detail_controller_data_model.dart';
 import 'package:qui_green/models/pudo_marker.dart';
 import 'package:qui_green/models/pudo_profile.dart';

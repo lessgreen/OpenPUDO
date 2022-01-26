@@ -53,9 +53,7 @@ class _AboutYouControllerState extends State<AboutYouController> {
                 ),
               ),
             ),
-            const SizedBox(
-              height: Dimension.paddingL,
-            ),
+            const Spacer(),
             SvgPicture.asset(ImageSrc.aboutYouArt,
                 semanticsLabel: 'Art Background'),
             const Spacer(),

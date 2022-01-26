@@ -2,9 +2,6 @@ part of 'network_shared.dart';
 
 mixin NetworkManagerUser on NetworkGeneral {
   //TODO: implement API calls (user related)
-  String _phoneNumber = "";
-
-  get phoneNumber => _phoneNumber;
 
   Future<dynamic> login(
       {required String login, required String password}) async {
@@ -49,7 +46,6 @@ mixin NetworkManagerUser on NetworkGeneral {
     RegistrationRequest aRequest = RegistrationRequest(
       phoneNumber: phoneNumber,
     );
-    _phoneNumber = phoneNumber;
     var url = _baseURL + '/api/v2/auth/login/send';
     var body = jsonEncode(aRequest.toJson());
     try {

@@ -62,9 +62,7 @@ class _UserPositionControllerState extends State<UserPositionController> {
                       ),
                     ),
                   ),
-                  const SizedBox(
-                    height: Dimension.paddingL,
-                  ),
+                  const Spacer(),
                   SvgPicture.asset(ImageSrc.userPositionArt,
                       semanticsLabel: 'Art Background'),
                   const Spacer(),

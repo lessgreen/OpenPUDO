@@ -23,8 +23,8 @@ import 'package:qui_green/singletons/current_user.dart';
 import 'package:qui_green/singletons/network/network_manager.dart';
 
 class ConfirmPhoneController extends StatefulWidget {
-  const ConfirmPhoneController({Key? key}) : super(key: key);
-
+  const ConfirmPhoneController({Key? key,required this.phoneNumber}) : super(key: key);
+  final String phoneNumber;
   @override
   _ConfirmPhoneControllerState createState() => _ConfirmPhoneControllerState();
 }
@@ -42,7 +42,7 @@ class _ConfirmPhoneControllerState extends State<ConfirmPhoneController> {
 
   void retryOtp() {
     NetworkManager.instance
-        .sendPhoneAuth(phoneNumber: NetworkManager.instance.phoneNumber)
+        .sendPhoneAuth(phoneNumber: widget.phoneNumber)
         .catchError((onError) {
       SAAlertDialog.displayAlertWithClose(context, "Error", onError);
     });
@@ -51,7 +51,7 @@ class _ConfirmPhoneControllerState extends State<ConfirmPhoneController> {
   void sendOtp() {
     NetworkManager.instance
         .login(
-            login: NetworkManager.instance.phoneNumber, password: _confirmValue)
+            login: widget.phoneNumber, password: _confirmValue)
         .then((value) {
       NetworkManager.instance.getMyProfile().then((value) {
         if (value is UserProfile) {
@@ -158,9 +158,7 @@ class _ConfirmPhoneControllerState extends State<ConfirmPhoneController> {
                   ],
                 ),
               ),
-              const SizedBox(
-                height: Dimension.paddingL,
-              ),
+              const Spacer(),
               SvgPicture.asset(ImageSrc.smsArt,
                   semanticsLabel: 'Art Background'),
               const Spacer(),

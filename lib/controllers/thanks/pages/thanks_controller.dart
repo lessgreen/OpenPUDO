@@ -63,7 +63,7 @@ class _ThanksControllerState extends State<ThanksController> {
                               .subtitle1
                               ?.copyWith(fontWeight: FontWeight.w400),
                         )),
-                    const SizedBox(height: Dimension.paddingL),
+                    const Spacer(),
                     SvgPicture.asset(ImageSrc.aboutYouArt,
                         semanticsLabel: 'Art Background'),
                     const Spacer(),

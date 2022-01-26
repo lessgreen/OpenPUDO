@@ -65,9 +65,7 @@ class _InsertAddressControllerState extends State<InsertAddressController> {
                           viewModel: viewModel!,
                           node: _address,
                         )),
-                    const SizedBox(
-                      height: Dimension.paddingL,
-                    ),
+                    const Spacer(),
                     SvgPicture.asset(ImageSrc.userPositionArt,
                         semanticsLabel: 'Art Background'),
                     const Spacer(),
