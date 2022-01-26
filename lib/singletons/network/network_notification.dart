@@ -1,3 +1,23 @@
+/*
+ OpenPUDO - PUDO and Micro-delivery software for Last Mile Collaboration
+ Copyright (C) 2020-2022 LESS SRL - https://less.green
+
+ This file is part of OpenPUDO software.
+
+ OpenPUDO is free software: you can redistribute it and/or modify
+ it under the terms of the GNU Affero General Public License version 3
+ as published by the Copyright Owner.
+
+ OpenPUDO is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU Affero General Public License version 3 for more details.
+
+ You should have received a copy of the GNU Affero General Public License
+ version 3 published by the Copyright Owner along with OpenPUDO.  
+ If not, see <https://github.com/lessgreen/OpenPUDO>.
+*/
+
 part of 'network_shared.dart';
 
 mixin NetworkManagerNotification on NetworkGeneral {
@@ -12,8 +32,7 @@ mixin NetworkManagerNotification on NetworkGeneral {
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
-      Response response = await get(Uri.parse(url), headers: _headers)
-          .timeout(Duration(seconds: _timeout));
+      Response response = await get(Uri.parse(url), headers: _headers).timeout(Duration(seconds: _timeout));
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = false;
       });
@@ -32,12 +51,11 @@ mixin NetworkManagerNotification on NetworkGeneral {
         if (baseResponse.returnCode == 0 && baseResponse.payload != null) {
           return baseResponse;
         } else {
-          throw ErrorDescription(
-              'Error ${baseResponse.returnCode}: ${baseResponse.message}');
+          throw ErrorDescription('Error ${baseResponse.returnCode}: ${baseResponse.message}');
         }
       }
     } on Error catch (e) {
-      _print('ERROR - getNotificationsCount : $e');
+      safePrint('ERROR - getNotificationsCount : $e');
       _refreshTokenRetryCounter = 0;
       return e;
     }
@@ -54,8 +72,7 @@ mixin NetworkManagerNotification on NetworkGeneral {
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
-      Response response = await post(Uri.parse(url), headers: _headers)
-          .timeout(Duration(seconds: _timeout));
+      Response response = await post(Uri.parse(url), headers: _headers).timeout(Duration(seconds: _timeout));
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = false;
       });
@@ -67,15 +84,14 @@ mixin NetworkManagerNotification on NetworkGeneral {
       var needHandleTokenRefresh = _handleTokenRefresh(
         baseResponse,
         () {
-          markNotificationAsRead(notificationId: notificationId)
-              .catchError((onError) => throw onError);
+          markNotificationAsRead(notificationId: notificationId).catchError((onError) => throw onError);
         },
       );
       if (needHandleTokenRefresh == false) {
         return baseResponse;
       }
     } on Error catch (e) {
-      _print('ERROR - markNotificationAsRead: $e');
+      safePrint('ERROR - markNotificationAsRead: $e');
       _refreshTokenRetryCounter = 0;
       return e;
     }
@@ -92,8 +108,7 @@ mixin NetworkManagerNotification on NetworkGeneral {
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
-      Response response = await post(Uri.parse(url), headers: _headers)
-          .timeout(Duration(seconds: _timeout));
+      Response response = await post(Uri.parse(url), headers: _headers).timeout(Duration(seconds: _timeout));
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = false;
       });
@@ -104,7 +119,7 @@ mixin NetworkManagerNotification on NetworkGeneral {
 
       var needHandleTokenRefresh = _handleTokenRefresh(
         baseResponse,
-            () {
+        () {
           readAllMyNotifications().catchError((onError) => throw onError);
         },
       );
@@ -112,7 +127,7 @@ mixin NetworkManagerNotification on NetworkGeneral {
         return baseResponse;
       }
     } on Error catch (e) {
-      _print('ERROR - readAllMyNotifications: $e');
+      safePrint('ERROR - readAllMyNotifications: $e');
       _refreshTokenRetryCounter = 0;
       return e;
     }
@@ -131,8 +146,7 @@ mixin NetworkManagerNotification on NetworkGeneral {
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
-      Response response = await get(Uri.parse(url), headers: _headers)
-          .timeout(Duration(seconds: _timeout));
+      Response response = await get(Uri.parse(url), headers: _headers).timeout(Duration(seconds: _timeout));
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = false;
       });
@@ -145,25 +159,22 @@ mixin NetworkManagerNotification on NetworkGeneral {
 
       var needHandleTokenRefresh = _handleTokenRefresh(
         baseResponse,
-            () {
+        () {
           getMyNotifications().catchError((onError) => throw onError);
         },
       );
       if (needHandleTokenRefresh == false) {
-        if (baseResponse.returnCode == 0 &&
-            baseResponse.payload != null &&
-            baseResponse.payload is List) {
+        if (baseResponse.returnCode == 0 && baseResponse.payload != null && baseResponse.payload is List) {
           for (dynamic aRow in baseResponse.payload) {
             myNotifications.add(PudoNotification.fromJson(aRow));
           }
           return myNotifications;
         } else {
-          throw ErrorDescription(
-              'Error ${baseResponse.returnCode}: ${baseResponse.message}');
+          throw ErrorDescription('Error ${baseResponse.returnCode}: ${baseResponse.message}');
         }
       }
     } on Error catch (e) {
-      _print('ERROR - getMyNotifications: $e');
+      safePrint('ERROR - getMyNotifications: $e');
       _refreshTokenRetryCounter = 0;
       return e;
     }

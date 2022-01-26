@@ -1,9 +1,22 @@
-//
-//  routes.dart
-//  OpenPudo
-//
-//  Created by Costantino Pistagna on 04/01/2022.
-//  Copyright © 2022 Sofapps. All rights reserved.
+/*
+ OpenPUDO - PUDO and Micro-delivery software for Last Mile Collaboration
+ Copyright (C) 2020-2022 LESS SRL - https://less.green
+
+ This file is part of OpenPUDO software.
+
+ OpenPUDO is free software: you can redistribute it and/or modify
+ it under the terms of the GNU Affero General Public License version 3
+ as published by the Copyright Owner.
+
+ OpenPUDO is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU Affero General Public License version 3 for more details.
+
+ You should have received a copy of the GNU Affero General Public License
+ version 3 published by the Copyright Owner along with OpenPUDO.  
+ If not, see <https://github.com/lessgreen/OpenPUDO>.
+*/
 
 import 'dart:developer';
 
@@ -11,26 +24,26 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:qui_green/app.dart';
-import 'package:qui_green/controllers/auth/pages/about_you_controller.dart';
-import 'package:qui_green/controllers/auth/pages/confirm_phone_controller.dart';
-import 'package:qui_green/controllers/exchange/pages/exchange_controller.dart';
-import 'package:qui_green/controllers/home/pages/home_controller.dart';
-import 'package:qui_green/controllers/auth/pages/insert_phone_controller.dart';
-import 'package:qui_green/controllers/auth/pages/login_controller.dart';
-import 'package:qui_green/controllers/home_pudo/pages/home_pudo_controller.dart';
-import 'package:qui_green/controllers/insert_address/pages/insert_address_controller.dart';
-import 'package:qui_green/controllers/instruction/pages/instruction_controller.dart';
-import 'package:qui_green/controllers/list_pudos/pages/pudo_list_controller.dart';
-import 'package:qui_green/controllers/maps/pages/maps_controller.dart';
-import 'package:qui_green/controllers/personal_data/pages/personal_data_controller.dart';
-import 'package:qui_green/controllers/personal_data_business/pages/personal_data_business_controller.dart';
-import 'package:qui_green/controllers/profile/pages/profile_controller.dart';
-import 'package:qui_green/controllers/pudo_detail/models/pudo_detail_controller_data_model.dart';
-import 'package:qui_green/controllers/pudo_detail/pages/pudo_detail_controller.dart';
-import 'package:qui_green/controllers/pudo_tutorial/pages/pudo_tutorial_controller.dart';
-import 'package:qui_green/controllers/registration_complete/pages/registration_complete_controller.dart';
-import 'package:qui_green/controllers/thanks/pages/thanks_controller.dart';
-import 'package:qui_green/controllers/user_position/pages/user_position_controller.dart';
+import 'package:qui_green/controllers/about_you_controller.dart';
+import 'package:qui_green/controllers/onboarding/confirm_phone_controller.dart';
+import 'package:qui_green/controllers/onboarding/exchange_controller.dart';
+import 'package:qui_green/controllers/home_controller.dart';
+import 'package:qui_green/controllers/home_pudo_controller.dart';
+import 'package:qui_green/controllers/onboarding/insert_address_controller.dart';
+import 'package:qui_green/controllers/onboarding/insert_phone_controller.dart';
+import 'package:qui_green/controllers/instruction_controller.dart';
+import 'package:qui_green/controllers/pudo_list_controller.dart';
+import 'package:qui_green/controllers/onboarding/login_controller.dart';
+import 'package:qui_green/controllers/maps_controller.dart';
+import 'package:qui_green/controllers/onboarding/personal_data_controller.dart';
+import 'package:qui_green/controllers/onboarding/personal_data_business_controller.dart';
+import 'package:qui_green/controllers/profile_controller.dart';
+import 'package:qui_green/controllers/thanks_controller.dart';
+import 'package:qui_green/models/pudo_detail_controller_data_model.dart';
+import 'package:qui_green/controllers/pudo_detail_controller.dart';
+import 'package:qui_green/controllers/pudo_tutorial_controller.dart';
+import 'package:qui_green/controllers/registration_complete_controller.dart';
+import 'package:qui_green/controllers/user_position_controller.dart';
 import 'package:qui_green/models/pudo_profile.dart';
 import 'package:qui_green/resources/routes_enum.dart';
 
@@ -42,7 +55,6 @@ dynamic routeWithSetting(RouteSettings settings) {
   // if (settings.arguments != null) {
   //   var arguments = settings.arguments;
   // }
-
   switch (settings.name) {
     // case '/notificationDetails':
     //   return MaterialPageRoute(
@@ -59,7 +71,9 @@ dynamic routeWithSetting(RouteSettings settings) {
       );
     case Routes.confirmPhone:
       return CupertinoPageRoute(
-        builder: (context) => ConfirmPhoneController(phoneNumber: settings.arguments as String,),
+        builder: (context) => ConfirmPhoneController(
+          phoneNumber: settings.arguments as String,
+        ),
       );
     case Routes.aboutYou:
       return CupertinoPageRoute(
@@ -75,34 +89,23 @@ dynamic routeWithSetting(RouteSettings settings) {
       );
     case Routes.maps:
       return CupertinoPageRoute(
-        builder: (context) =>
-            MapsController(initialPosition: settings.arguments as LatLng),
+        builder: (context) => MapsController(initialPosition: settings.arguments as LatLng),
       );
     case Routes.pudoDetail:
       return CupertinoPageRoute(
-        builder: (context) => PudoDetailController(
-            dataModel: settings.arguments as PudoDetailControllerDataModel),
+        builder: (context) => PudoDetailController(dataModel: settings.arguments as PudoDetailControllerDataModel),
       );
     case Routes.personalData:
       return CupertinoPageRoute(
-        builder: (context) => PersonalDataController(
-            pudoDataModel: settings.arguments == null
-                ? null
-                : settings.arguments as PudoProfile),
+        builder: (context) => PersonalDataController(pudoDataModel: settings.arguments == null ? null : settings.arguments as PudoProfile),
       );
     case Routes.registrationComplete:
       return CupertinoPageRoute(
-        builder: (context) => RegistrationCompleteController(
-            pudoDataModel: settings.arguments == null
-                ? null
-                : settings.arguments as PudoProfile),
+        builder: (context) => RegistrationCompleteController(pudoDataModel: settings.arguments == null ? null : settings.arguments as PudoProfile),
       );
     case Routes.instruction:
       return CupertinoPageRoute(
-        builder: (context) => InstructionController(
-            pudoDataModel: settings.arguments == null
-                ? null
-                : settings.arguments as PudoProfile),
+        builder: (context) => InstructionController(pudoDataModel: settings.arguments == null ? PudoProfile(businessName: "Nome Pudo") : settings.arguments as PudoProfile),
       );
     case Routes.thanks:
       return CupertinoPageRoute(
