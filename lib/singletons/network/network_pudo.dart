@@ -45,7 +45,7 @@ mixin NetworkManagerPudo on NetworkGeneral {
         }
       }
     } on Error catch (e) {
-      _print('ERROR - getSuggestedZoom: $e');
+      safePrint('ERROR - getSuggestedZoom: $e');
       _refreshTokenRetryCounter = 0;
       return e;
     }
@@ -89,7 +89,7 @@ mixin NetworkManagerPudo on NetworkGeneral {
         }
       }
     } on Error catch (e) {
-      _print('ERROR - getPudoDetails: $e');
+      safePrint('ERROR - getPudoDetails: $e');
       _refreshTokenRetryCounter = 0;
       return e;
     }
@@ -145,7 +145,7 @@ mixin NetworkManagerPudo on NetworkGeneral {
         }
       }
     } on Error catch (e) {
-      _print('ERROR - getPudos: $e');
+      safePrint('ERROR - getPudos: $e');
       _refreshTokenRetryCounter = 0;
       return e;
     }

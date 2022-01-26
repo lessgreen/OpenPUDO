@@ -31,7 +31,7 @@ mixin NetworkManagerUser on NetworkGeneral {
       }
       return baseResponse;
     } on Error catch (e) {
-      _print('ERROR - login: $e');
+      safePrint('ERROR - login: $e');
       _refreshTokenRetryCounter = 0;
       return e;
     }
@@ -65,7 +65,7 @@ mixin NetworkManagerUser on NetworkGeneral {
       var baseResponse = OPBaseResponse.fromJson(json);
       return baseResponse;
     } on Error catch (e) {
-      _print('ERROR - registerUser: $e');
+      safePrint('ERROR - registerUser: $e');
       _refreshTokenRetryCounter = 0;
       return e;
     }
@@ -97,7 +97,7 @@ mixin NetworkManagerUser on NetworkGeneral {
       }
       return baseResponse;
     } on Error catch (e) {
-      _print('ERROR - registerUser: $e');
+      safePrint('ERROR - registerUser: $e');
       _refreshTokenRetryCounter = 0;
       return e;
     }
@@ -139,7 +139,7 @@ mixin NetworkManagerUser on NetworkGeneral {
         }
       }
     } catch (e) {
-      _print('ERROR - getMyProfile: $e');
+      safePrint('ERROR - getMyProfile: $e');
       _refreshTokenRetryCounter = 0;
       rethrow;
     }
@@ -185,7 +185,7 @@ mixin NetworkManagerUser on NetworkGeneral {
         }
       }
     } on Error catch (e) {
-      _print('ERROR - setMyProfile: $e');
+      safePrint('ERROR - setMyProfile: $e');
       _refreshTokenRetryCounter = 0;
       return e;
     }
@@ -233,7 +233,7 @@ mixin NetworkManagerUser on NetworkGeneral {
         }
       }
     } on Error catch (e) {
-      _print('ERROR - deleteProfilePic: $e');
+      safePrint('ERROR - deleteProfilePic: $e');
       _refreshTokenRetryCounter = 0;
       return e;
     }
@@ -258,7 +258,7 @@ mixin NetworkManagerUser on NetworkGeneral {
       }
       throw ErrorDescription('Error ${response.statusCode}: ${response.body}');
     } on Error catch (e) {
-      _print('ERROR - deleteProfilePic: $e');
+      safePrint('ERROR - deleteProfilePic: $e');
       _refreshTokenRetryCounter = 0;
       var data = await rootBundle.load('assets/placeholderImage.jpg');
       return data.buffer.asUint8List();
@@ -303,7 +303,7 @@ mixin NetworkManagerUser on NetworkGeneral {
         }
       }
     } on Error catch (e) {
-      _print('ERROR - getPublicProfile: $e');
+      safePrint('ERROR - getPublicProfile: $e');
       _refreshTokenRetryCounter = 0;
       return e;
     }
@@ -351,7 +351,7 @@ mixin NetworkManagerUser on NetworkGeneral {
         }
       }
     } on Error catch (e) {
-      _print('ERROR - addPudoFavorite: $e');
+      safePrint('ERROR - addPudoFavorite: $e');
       _refreshTokenRetryCounter = 0;
       return e;
     }
@@ -399,7 +399,7 @@ mixin NetworkManagerUser on NetworkGeneral {
         }
       }
     } on Error catch (e) {
-      _print('ERROR - removePudoFavorite: $e');
+      safePrint('ERROR - removePudoFavorite: $e');
       _refreshTokenRetryCounter = 0;
       return e;
     }
@@ -447,7 +447,7 @@ mixin NetworkManagerUser on NetworkGeneral {
         }
       }
     } on Error catch (e) {
-      _print('ERROR - getMyPudos: $e');
+      safePrint('ERROR - getMyPudos: $e');
       _refreshTokenRetryCounter = 0;
       return e;
     }
@@ -493,7 +493,7 @@ mixin NetworkManagerUser on NetworkGeneral {
         }
       }
     } on Error catch (e) {
-      _print('ERROR - updateUserPreferences: $e');
+      safePrint('ERROR - updateUserPreferences: $e');
       _refreshTokenRetryCounter = 0;
       return e;
     }

@@ -1,5 +1,6 @@
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
+import 'package:qui_green/commons/utilities/print_helper.dart';
 import 'package:qui_green/models/pudo_profile.dart';
 import 'package:qui_green/models/user_profile.dart';
 import 'package:qui_green/resources/routes_enum.dart';
@@ -45,12 +46,12 @@ class CurrentUser with ChangeNotifier {
         }).catchError((onError) {
           user = null;
           pushPage(Routes.login);
-          print(onError);
+          safePrint(onError);
         });
       }).catchError((onError) {
         user = null;
         pushPage(Routes.login);
-        print(onError);
+        safePrint(onError);
       });
     } else {
       user = null;
@@ -78,7 +79,7 @@ class CurrentUser with ChangeNotifier {
           },
         ).catchError(
           (onError) {
-            print(onError.toString());
+            safePrint(onError.toString());
           },
         );
       }

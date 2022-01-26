@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:qui_green/controllers/insert_address/viewmodel/insert_address_controller_viewmodel.dart';
+import 'package:qui_green/view_models/insert_address_controller_viewmodel.dart';
 import 'package:qui_green/controllers/insert_address/widgets/address_overlay.dart';
 import 'package:qui_green/resources/res.dart';
 

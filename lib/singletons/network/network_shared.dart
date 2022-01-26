@@ -3,10 +3,10 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:connectivity/connectivity.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart';
+import 'package:qui_green/commons/utilities/print_helper.dart';
 import 'package:qui_green/models/access_token_data.dart';
 import 'package:qui_green/models/address_marker.dart';
 import 'package:qui_green/models/address_model.dart';
@@ -67,12 +67,6 @@ mixin NetworkGeneral {
     _headers = newVal;
   }
 
-  void _print(String text) {
-    if (kDebugMode) {
-      print(text);
-    }
-  }
-
   get networkActivity {
     return _networkActivity;
   }
@@ -124,7 +118,7 @@ mixin NetworkGeneral {
       }
     } on Error catch (e) {
       _refreshTokenRetryCounter++;
-      _print('ERROR - checkUser: $e');
+      safePrint('ERROR - checkUser: $e');
       return e;
     }
   }
@@ -213,7 +207,7 @@ mixin NetworkGeneral {
         }
       }
     } on Error catch (e) {
-      _print('ERROR - search: $e');
+      safePrint('ERROR - search: $e');
       _refreshTokenRetryCounter = 0;
       return e;
     }
@@ -266,7 +260,7 @@ mixin NetworkGeneral {
         }
       }
     } on Error catch (e) {
-      _print('ERROR - getAddress: $e');
+      safePrint('ERROR - getAddress: $e');
       _refreshTokenRetryCounter = 0;
       return e;
     }
@@ -324,7 +318,7 @@ mixin NetworkGeneral {
         }
       }
     } on Error catch (e) {
-      _print('ERROR - photoupload: $e');
+      safePrint('ERROR - photoupload: $e');
       _refreshTokenRetryCounter = 0;
       return e;
     }
@@ -371,7 +365,7 @@ mixin NetworkGeneral {
         }
       }
     } on Error catch (e) {
-      _print('ERROR - setDeviceInfo: $e');
+      safePrint('ERROR - setDeviceInfo: $e');
       _refreshTokenRetryCounter = 0;
       return e;
     }

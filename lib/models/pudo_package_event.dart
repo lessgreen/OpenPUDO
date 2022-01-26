@@ -12,7 +12,6 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'pudo_package_event.g.dart';
 
-
 enum PudoPackageStatus {
   @JsonValue("ACCEPTED")
   ACCEPTED,
@@ -45,7 +44,10 @@ class PudoPackageEvent {
     this.notes,
     this.packageStatus,
   });
-  factory PudoPackageEvent.fromJson(Map<String, dynamic> json) => _$PudoPackageEventFromJson(json);
+
+  factory PudoPackageEvent.fromJson(Map<String, dynamic> json) =>
+      _$PudoPackageEventFromJson(json);
+
   Map<String, dynamic> toJson() => _$PudoPackageEventToJson(this);
 
   String? get packageStatusRaw {

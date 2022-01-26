@@ -46,7 +46,7 @@ mixin NetworkManagerUserPudo on NetworkGeneral {
       var baseResponse = OPBaseResponse.fromJson(json);
       return baseResponse;
     } on Error catch (e) {
-      _print('ERROR - registerPudo: $e');
+      safePrint('ERROR - registerPudo: $e');
       _refreshTokenRetryCounter = 0;
       return e;
     }*/
@@ -94,7 +94,7 @@ mixin NetworkManagerUserPudo on NetworkGeneral {
         }
       }
     } on Error catch (e) {
-      _print('ERROR - getMyPudoUsers: $e');
+      safePrint('ERROR - getMyPudoUsers: $e');
       _refreshTokenRetryCounter = 0;
       return e;
     }
@@ -140,7 +140,7 @@ mixin NetworkManagerUserPudo on NetworkGeneral {
         }
       }
     } on Error catch (e) {
-      _print('ERROR - setMyPudoAddress: $e');
+      safePrint('ERROR - setMyPudoAddress: $e');
       _refreshTokenRetryCounter = 0;
       return e;
     }
@@ -186,7 +186,7 @@ mixin NetworkManagerUserPudo on NetworkGeneral {
         }
       }
     } on Error catch (e) {
-      _print('ERROR - setMyPudoProfile: $e');
+      safePrint('ERROR - setMyPudoProfile: $e');
       _refreshTokenRetryCounter = 0;
       return e;
     }
@@ -230,7 +230,7 @@ mixin NetworkManagerUserPudo on NetworkGeneral {
         }
       }
     } on Error catch (e) {
-      _print('ERROR - getMyPudoProfile: $e');
+      safePrint('ERROR - getMyPudoProfile: $e');
       _refreshTokenRetryCounter = 0;
       return e;
     }
