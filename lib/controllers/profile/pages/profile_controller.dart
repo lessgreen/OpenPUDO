@@ -66,7 +66,7 @@ class _ProfileControllerState extends State<ProfileController> {
                   ),
                   Text(
                     "${currentUser.user?.firstName ?? " "} ${currentUser.user?.lastName ?? " "}",
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
+                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
                   ),
                   Text(
                     'Utente dal ${currentUser.user?.createTms ?? " "}',

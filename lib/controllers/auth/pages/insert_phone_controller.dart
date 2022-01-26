@@ -33,9 +33,12 @@ class _InsertPhoneControllerState extends State<InsertPhoneController> {
   String _phoneNumberValue = "";
 
   Future<void> sendRequest() async {
-    NetworkManager.instance.registerUser(phoneNumber: _phoneNumberValue).then((response) {
+    //TODO create a national phone prefix selector, the be needs it,for now lets presume it's all italy
+    NetworkManager.instance
+        .sendPhoneAuth(phoneNumber: "+39$_phoneNumberValue")
+        .then((response) {
       if (response is OPBaseResponse && response.returnCode == 0) {
-        Navigator.of(context).pushReplacementNamed(Routes.confirmPhone);
+        Navigator.of(context).pushReplacementNamed(Routes.confirmPhone,arguments: "+39$_phoneNumberValue");
       } else {
         throw response;
       }
@@ -79,7 +82,10 @@ class _InsertPhoneControllerState extends State<InsertPhoneController> {
                 Padding(
                   padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
                   child: CupertinoTextField(
-                    decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Theme.of(context).primaryColor))),
+                    decoration: BoxDecoration(
+                        border: Border(
+                            bottom: BorderSide(
+                                color: Theme.of(context).primaryColor))),
                     autofocus: false,
                     focusNode: _phoneNumber,
                     suffix: TextFieldButton(
@@ -99,15 +105,21 @@ class _InsertPhoneControllerState extends State<InsertPhoneController> {
                     },
                   ),
                 ),
-                const SizedBox(
-                  height: Dimension.paddingL,
-                ),
-                SvgPicture.asset(ImageSrc.smsArt, semanticsLabel: 'Art Background'),
                 const Spacer(),
-                MainButton(
-                  enabled: _phoneNumberValue.isValidPhoneNumber(),
-                  onPressed: sendRequest,
-                  text: 'Invia',
+                SvgPicture.asset(ImageSrc.smsArt,
+                    semanticsLabel: 'Art Background'),
+                const Spacer(),
+                AnimatedCrossFade(
+                  crossFadeState: isKeyboardVisible
+                      ? CrossFadeState.showSecond
+                      : CrossFadeState.showFirst,
+                  secondChild: const SizedBox(),
+                  firstChild: MainButton(
+                    onPressed: sendRequest,
+                    text: 'Invia',
+                    enabled: _phoneNumberValue.isValidPhoneNumber(),
+                  ),
+                  duration: const Duration(milliseconds: 150),
                 ),
               ],
             ),

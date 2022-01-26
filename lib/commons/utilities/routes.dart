@@ -42,6 +42,7 @@ dynamic routeWithSetting(RouteSettings settings) {
   // if (settings.arguments != null) {
   //   var arguments = settings.arguments;
   // }
+
   switch (settings.name) {
     // case '/notificationDetails':
     //   return MaterialPageRoute(
@@ -58,7 +59,7 @@ dynamic routeWithSetting(RouteSettings settings) {
       );
     case Routes.confirmPhone:
       return CupertinoPageRoute(
-        builder: (context) => const ConfirmPhoneController(),
+        builder: (context) => ConfirmPhoneController(phoneNumber: settings.arguments as String,),
       );
     case Routes.aboutYou:
       return CupertinoPageRoute(

@@ -94,17 +94,16 @@ mixin NetworkGeneral {
   //
 
   Future<dynamic> renewToken({required String accessToken}) async {
-    Map<String, String> aRequest = {'accessToken': accessToken};
-
-    var url = _baseURL + '/api/v2/user/me/device-tokens';
-    var body = jsonEncode(aRequest);
-
+    if (_accessToken != null) {
+      _headers['Authorization'] = 'Bearer $_accessToken';
+    }
+    var url = _baseURL + '/api/v2/auth/renew';
     try {
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
       Response response =
-          await post(Uri.parse(url), body: body, headers: _headers)
+          await post(Uri.parse(url), headers: _headers)
               .timeout(Duration(seconds: _timeout));
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = false;
@@ -131,7 +130,6 @@ mixin NetworkGeneral {
   }
 
   void setAccessToken(String? accessToken) {
-    //TODO Shared
     if (accessToken != null) {
       _sharedPreferences.setString('accessToken', accessToken);
     } else {
@@ -147,13 +145,12 @@ mixin NetworkGeneral {
 
   bool _handleTokenRefresh(
       OPBaseResponse baseResponse, Function? retryCallack) {
-    if (baseResponse.returnCode == 3) {
+    if (baseResponse.returnCode == 401) {
       //try to refreshToken
       if (_refreshTokenRetryCounter > _maxRetryCounter) {
         throw ErrorDescription('Error maxRetryRefreshToken Exceeded');
       }
       if (_accessToken == null) {
-        //needsLogin.value = true;
         return false;
       } else if (_accessToken != null) {
         renewToken(accessToken: _accessToken!).then((value) {

@@ -86,12 +86,12 @@ class PackageCard extends StatelessWidget {
             if (!isRead)
               Positioned(
                   child: Container(
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                         color: Colors.red,
                         borderRadius: BorderRadius.all(Radius.circular(20))),
                     height: 30,
                     width: 30,
-                    child: Icon(
+                    child: const Icon(
                       Icons.add_alert,
                       color: Colors.white,
                       size: 20,

@@ -12,34 +12,25 @@ class CurrentUser with ChangeNotifier {
   UserProfile? _user;
   PudoProfile? _pudo;
   SharedPreferences? sharedPreferences;
-  GlobalKey<NavigatorState>? navigatorKey;
+  Function(String) pushPage;
 
-  CurrentUser(this.sharedPreferences) {
+
+  CurrentUser(this.sharedPreferences,{required this.pushPage}) {
+
     Connectivity().onConnectivityChanged.listen((result) {
       switch (result) {
         case ConnectivityResult.none:
           break;
         default:
-          _fetchUser();
+          _refreshToken();
       }
     });
-    _fetchUser();
+    _refreshToken();
   }
 
   void refresh() {
     firstNavigationDone = false;
-    _fetchUser();
-  }
-
-  _fetchUser() {
-    NetworkManager.instance.getMyProfile().then((profile) {
-      user = profile;
-      navigatorKey?.currentState?.pushReplacementNamed(Routes.home);
-    }).catchError((onError) {
-      user = null;
-      print(onError);
-      navigatorKey?.currentState?.pushReplacementNamed(Routes.login);
-    });
+    _refreshToken();
   }
 
   _refreshToken() {
@@ -50,13 +41,21 @@ class CurrentUser with ChangeNotifier {
           .then((response) {
         NetworkManager.instance.getMyProfile().then((profile) {
           user = profile;
+          pushPage(Routes.home);
         }).catchError((onError) {
           user = null;
+          pushPage(Routes.login);
           print(onError);
         });
       }).catchError((onError) {
         user = null;
+        pushPage(Routes.login);
         print(onError);
+      });
+    } else {
+      user = null;
+      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+        pushPage(Routes.login);
       });
     }
   }
@@ -96,6 +95,4 @@ class CurrentUser with ChangeNotifier {
   PudoProfile? get pudoProfile {
     return _pudo;
   }
-
-
 }

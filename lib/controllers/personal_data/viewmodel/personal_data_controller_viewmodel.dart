@@ -4,24 +4,34 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:location/location.dart';
 import 'package:qui_green/models/pudo_profile.dart';
-import 'package:qui_green/models/user_profile.dart';
 import 'package:qui_green/resources/routes_enum.dart';
 import 'package:qui_green/singletons/network/network_manager.dart';
 
 class PersonalDataControllerViewModel extends ChangeNotifier {
   //Example: to use NetworkManager, use the getInstance: NetworkManager.instance...
 
+  Function(String)? showErrorDialog;
+
   // ************ Navigation *****
-  onSendClick(BuildContext context, PudoProfile? pudoModel) async {
-    if (image != null) {
-      await NetworkManager.instance.photoUpload(image!);
+  onSendClick(BuildContext context, PudoProfile? pudoModel) {
+    if (_name.isNotEmpty) {
+      NetworkManager.instance
+          .registerUser(name: name, surname: surname)
+          .then((value) {
+        if (image != null) {
+          NetworkManager.instance
+              .photoUpload(image!)
+              .catchError((onError) => showErrorDialog!(onError));
+        }
+        if (pudoModel != null) {
+          NetworkManager.instance
+              .addPudoFavorite(pudoModel.pudoId.toString())
+              .catchError((onError) => showErrorDialog!(onError));
+        }
+        Navigator.of(context).pushReplacementNamed(Routes.registrationComplete,
+            arguments: pudoModel);
+      }).catchError((onError) => showErrorDialog!(onError));
     }
-    if(_name.isNotEmpty) {
-      await NetworkManager.instance
-          .setMyProfile(UserProfile(firstName: name, lastName: surname));
-    }
-    Navigator.of(context).pushReplacementNamed(Routes.registrationComplete,
-        arguments: pudoModel);
   }
 
   // ************ Location *******
@@ -71,9 +81,6 @@ class PersonalDataControllerViewModel extends ChangeNotifier {
   }
 
   get isValid {
-    if(image!=null){
-      return true;
-    }
     if (_name.isEmpty) {
       return false;
     }

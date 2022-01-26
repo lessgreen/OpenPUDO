@@ -4,10 +4,6 @@
 //
 //  Created by Costantino Pistagna on 28/02/2020.
 //  Copyright © 2020 Sofapps. All rights reserved.
-
-import 'dart:io';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:html_unescape/html_unescape_small.dart';
 import 'package:qui_green/commons/utilities/localization.dart';
@@ -19,14 +15,15 @@ class SAAlertDialog extends StatelessWidget {
   final List<Widget> actions;
   static bool isAlreadyShown = false;
 
-  SAAlertDialog({
+  const SAAlertDialog({
     Key? key,
     required this.title,
     required this.description,
     required this.actions,
-  });
+  }) : super(key: key);
 
-  static displayAlertWithButtons(BuildContext context, String title, String description, List<MaterialButton> actions) {
+  static displayAlertWithButtons(BuildContext context, String title,
+      String description, List<MaterialButton> actions) {
     if (isAlreadyShown) {
       return;
     }
@@ -54,7 +51,10 @@ class SAAlertDialog extends StatelessWidget {
                   })
                   .values
                   .toList();
-              return SAAlertDialog(title: title, description: HtmlUnescape().convert(description), actions: modifiedActions);
+              return SAAlertDialog(
+                  title: title,
+                  description: HtmlUnescape().convert(description),
+                  actions: modifiedActions);
             },
             context: context)
         .then((value) {
@@ -62,7 +62,8 @@ class SAAlertDialog extends StatelessWidget {
     });
   }
 
-  static displayAlertWithClose(BuildContext context, String title, dynamic description) {
+  static displayAlertWithClose(
+      BuildContext context, String title, dynamic description) {
     if (isAlreadyShown) {
       return;
     }
@@ -72,11 +73,13 @@ class SAAlertDialog extends StatelessWidget {
               return SAAlertDialog(
                   title: title,
                   description: (description is OPBaseResponse)
-                      ? HtmlUnescape().convert(description.message ?? "General error")
+                      ? HtmlUnescape()
+                          .convert(description.message ?? "General error")
                       : (description is Error)
                           ? HtmlUnescape().convert(description.toString())
                           : (description is ErrorDescription)
-                              ? HtmlUnescape().convert(description.value.first.toString())
+                              ? HtmlUnescape()
+                                  .convert(description.value.first.toString())
                               : HtmlUnescape().convert(description),
                   actions: <Widget>[
                     MaterialButton(

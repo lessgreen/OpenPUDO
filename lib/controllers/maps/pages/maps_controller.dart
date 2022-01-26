@@ -14,6 +14,7 @@ import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
+import 'package:qui_green/commons/alert_dialog.dart';
 import 'package:qui_green/commons/widgets/text_field_button.dart';
 import 'package:qui_green/controllers/maps/viewmodel/maps_controller_viewmodel.dart';
 import 'package:qui_green/controllers/maps/widgets/pudo_map_card.dart';
@@ -32,6 +33,8 @@ class MapsController extends StatefulWidget {
 }
 
 class _MapsControllerState extends State<MapsController> {
+  void _showErrorDialog(BuildContext context,String val)=>SAAlertDialog.displayAlertWithClose(context, "Error", val);
+
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -41,6 +44,8 @@ class _MapsControllerState extends State<MapsController> {
               update: (context, viewModel) => viewModel),
         ],
         child: Consumer<MapsControllerViewModel?>(builder: (_, viewModel, __) {
+          viewModel?.showErrorDialog =
+              (String val) => _showErrorDialog(context, val);
           return WillPopScope(
             onWillPop: () async => false,
             child: Scaffold(
@@ -182,9 +187,7 @@ class _MapsControllerState extends State<MapsController> {
                                         widget.initialPosition);
                                   },
                                   image: viewModel.pudoProfile?.pudoPicId ??
-                                      'https://cdn.skuola.net/news_foto/2017/descrizione-bar.jpg'
-                                  //,
-                                  )),
+                                      'https://cdn.skuola.net/news_foto/2017/descrizione-bar.jpg')),
                           crossFadeState: viewModel.pudoProfile == null
                               ? CrossFadeState.showFirst
                               : CrossFadeState.showSecond,
