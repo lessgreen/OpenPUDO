@@ -38,45 +38,42 @@ class SAScaffold extends StatelessWidget {
         ? ValueListenableBuilder(
             valueListenable: isLoading!,
             builder: (context, newValue, _) {
-              return Container(
-                child: Stack(
-                  children: [
-                    Scaffold(
-                      backgroundColor: backgroundColor,
-                      bottomSheet: bottomSheet,
-                      resizeToAvoidBottomInset: resizeToAvoidBottomInset ?? true,
-                      appBar: appBar,
-                      body: body,
-                      floatingActionButton: floatingActionButton,
-                      floatingActionButtonLocation: floatingActionButtonLocation,
-                    ),
-                    newValue == true
-                        ? Container(
-                            color: backgroundLoadingColor,
-                            child: SpinKitThreeBounce(
-                              color: Theme.of(context).primaryColor,
-                              size: 24.0,
-                            ),
-                          )
-                        : SizedBox()
-                  ],
-                ),
+              return Stack(
+                children: [
+                  Scaffold(
+                    backgroundColor: backgroundColor,
+                    bottomSheet: bottomSheet,
+                    resizeToAvoidBottomInset: resizeToAvoidBottomInset ?? true,
+                    appBar: appBar,
+                    body: body,
+                    floatingActionButton: floatingActionButton,
+                    floatingActionButtonLocation: floatingActionButtonLocation,
+                  ),
+                  newValue == true
+                      ? Container(
+                          color: backgroundLoadingColor,
+                          child: SpinKitThreeBounce(
+                            color: Theme.of(context).primaryColor,
+                            size: 24.0,
+                          ),
+                        )
+                      : const SizedBox()
+                ],
               );
             },
           )
-        : Container(
-            child: Stack(
-              children: [
-                Scaffold(
-                  backgroundColor: backgroundColor ?? Theme.of(context).backgroundColor,
-                  bottomSheet: bottomSheet,
-                  resizeToAvoidBottomInset: resizeToAvoidBottomInset ?? true,
-                  appBar: appBar,
-                  body: body,
-                  floatingActionButton: floatingActionButton,
-                ),
-              ],
-            ),
+        : Stack(
+            children: [
+              Scaffold(
+                backgroundColor:
+                    backgroundColor ?? Theme.of(context).backgroundColor,
+                bottomSheet: bottomSheet,
+                resizeToAvoidBottomInset: resizeToAvoidBottomInset ?? true,
+                appBar: appBar,
+                body: body,
+                floatingActionButton: floatingActionButton,
+              ),
+            ],
           );
   }
 }

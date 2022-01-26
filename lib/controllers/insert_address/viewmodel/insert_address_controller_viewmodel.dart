@@ -12,7 +12,8 @@ class InsertAddressControllerViewModel extends ChangeNotifier {
 
   // ************ Navigation *****
   onSendClick(BuildContext context) {
-    Navigator.of(context).pushReplacementNamed(Routes.maps,arguments: position);
+    Navigator.of(context)
+        .pushReplacementNamed(Routes.maps, arguments: position);
   }
 
   TextEditingController addressController = TextEditingController();
@@ -50,10 +51,10 @@ class InsertAddressControllerViewModel extends ChangeNotifier {
 
   LatLng position = LatLng(45.464664, 9.188540);
 
-  void onSearchChanged(String query,Function() onAfter) {
+  void onSearchChanged(String query, Function() onAfter) {
     if (debounce.isActive) debounce.cancel();
     debounce = Timer(const Duration(milliseconds: 500), () {
-      fetchSuggestions(query,onAfter);
+      fetchSuggestions(query, onAfter);
     });
   }
 
@@ -84,26 +85,28 @@ class InsertAddressControllerViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> fetchSuggestions(String val,Function() onAfter) async {
-    if(val.trim().isNotEmpty) {
+  Future<void> fetchSuggestions(String val, Function() onAfter) async {
+    if (val.trim().isNotEmpty) {
       var res = await NetworkManager.instance.getAddresses(text: val);
       if (res is List<AddressModel>) {
-        if(res.isNotEmpty) {
+        if (res.isNotEmpty) {
           addresses = res;
           onAfter();
-        }else{
+        } else {
           addresses = [];
         }
         return;
       }
-    }else{
+    } else {
       addresses = [];
     }
   }
 
   bool _hasSelected = false;
+
   bool get hasSelected => _hasSelected;
-  set hasSelected(bool newVal){
+
+  set hasSelected(bool newVal) {
     _hasSelected = newVal;
     notifyListeners();
   }

@@ -6,7 +6,6 @@
 //  Copyright © 2022 Sofapps. All rights reserved.
 //
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -42,8 +41,6 @@ void mainCommon({required String host, required bool isProd}) async {
   runApp(App(
     config: appConfig,
   ));
-  //print(NetworkManager.instance.accessToken);
-  //NetworkManager.instance.login(login: "+39328000001", password: "6732");
 }
 
 class App extends StatelessWidget {
@@ -55,27 +52,19 @@ class App extends StatelessWidget {
   // checkRedirect uses two booleans to intercept changes in the user status (logged or not)
   // if the user is logged navigates the app to the home route
   // if the user is not logged navigates the app to the login route
-  void checkRedirect(CurrentUser currentUser) {
-    if (currentUser.fetchOnOpenApp && !currentUser.firstNavigationDone) {
-      if (currentUser.user == null) {
-        navigatorKey.currentState?.pushReplacementNamed(Routes.login);
-        currentUser.firstNavigationDone = true;
-      } else {
-        navigatorKey.currentState?.pushReplacementNamed(Routes.home);
-        currentUser.firstNavigationDone = true;
-      }
-    }
-  }
+
+  void pushPage(String route)=>navigatorKey.currentState?.pushReplacementNamed(route);
+
 
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => CurrentUser(config.sharedPreferencesInstance)),
+        ChangeNotifierProvider(
+            create: (_) => CurrentUser(config.sharedPreferencesInstance,pushPage: pushPage)),
       ],
       child: Consumer<CurrentUser>(
         builder: (context, currentUser, _) {
-          currentUser.navigatorKey = navigatorKey;
           return MaterialApp(
             navigatorKey: navigatorKey,
             debugShowCheckedModeBanner: false,
@@ -89,7 +78,7 @@ class App extends StatelessWidget {
             ],
             theme: MyAppTheme.themeData(context),
             darkTheme: MyAppTheme.darkThemeData(context),
-            initialRoute: "/",
+            initialRoute: NetworkManager.instance.accessToken.isEmpty?Routes.login:"/",
             onGenerateRoute: (settings) {
               return routeWithSetting(settings);
             },

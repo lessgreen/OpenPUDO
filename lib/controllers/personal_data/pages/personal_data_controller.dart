@@ -10,6 +10,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:qui_green/commons/alert_dialog.dart';
 import 'package:qui_green/commons/utilities/keyboard_visibility.dart';
 import 'package:qui_green/commons/widgets/main_button.dart';
 import 'package:qui_green/controllers/personal_data/viewmodel/personal_data_controller_viewmodel.dart';
@@ -18,13 +19,18 @@ import 'package:qui_green/models/pudo_profile.dart';
 import 'package:qui_green/resources/res.dart';
 
 class PersonalDataController extends StatefulWidget {
-  const PersonalDataController({Key? key,this.pudoDataModel}) : super(key: key);
+  const PersonalDataController({Key? key, this.pudoDataModel})
+      : super(key: key);
   final PudoProfile? pudoDataModel;
+
   @override
   _PersonalDataControllerState createState() => _PersonalDataControllerState();
 }
 
 class _PersonalDataControllerState extends State<PersonalDataController> {
+  void _showErrorDialog(BuildContext context, String val) =>
+      SAAlertDialog.displayAlertWithClose(context, "Error", val);
+
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -35,6 +41,8 @@ class _PersonalDataControllerState extends State<PersonalDataController> {
         ],
         child: Consumer<PersonalDataControllerViewModel?>(
             builder: (_, viewModel, __) {
+          viewModel?.showErrorDialog =
+              (String val) => _showErrorDialog(context, val);
           return KeyboardVisibilityBuilder(
               builder: (context, child, isKeyboardVisible) {
             return WillPopScope(
@@ -68,7 +76,10 @@ class _PersonalDataControllerState extends State<PersonalDataController> {
                     const SizedBox(
                       height: Dimension.paddingM,
                     ),
-                    ProfilePicBox(onTap: ()=>viewModel!.pickFile(),image: viewModel!.image,),
+                    ProfilePicBox(
+                      onTap: () => viewModel!.pickFile(),
+                      image: viewModel!.image,
+                    ),
                     const SizedBox(height: Dimension.padding),
                     const Center(
                       child: Text(
@@ -119,12 +130,12 @@ class _PersonalDataControllerState extends State<PersonalDataController> {
                     AnimatedCrossFade(
                       crossFadeState: isKeyboardVisible
                           ? CrossFadeState.showSecond
-                          : viewModel.isValid
-                              ? CrossFadeState.showFirst
-                              : CrossFadeState.showSecond,
+                          : CrossFadeState.showFirst,
                       secondChild: const SizedBox(),
                       firstChild: MainButton(
-                        onPressed: () => viewModel.onSendClick(context,widget.pudoDataModel),
+                        enabled: viewModel.isValid,
+                        onPressed: () => viewModel.onSendClick(
+                            context, widget.pudoDataModel),
                         text: 'Invia',
                       ),
                       duration: const Duration(milliseconds: 150),

@@ -40,7 +40,7 @@ mixin NetworkManagerUser on NetworkGeneral {
     }
   }
 
-  Future<dynamic> registerUser({required String phoneNumber}) async {
+  Future<dynamic> sendPhoneAuth({required String phoneNumber}) async {
     /*UserProfile userProfile = UserProfile(
       firstName: firstName,
       lastName: lastName,
@@ -52,7 +52,35 @@ mixin NetworkManagerUser on NetworkGeneral {
     _phoneNumber = phoneNumber;
     var url = _baseURL + '/api/v2/auth/login/send';
     var body = jsonEncode(aRequest.toJson());
+    try {
+      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+        _networkActivity.value = true;
+      });
+      Response response =
+          await post(Uri.parse(url), body: body, headers: _headers)
+              .timeout(Duration(seconds: _timeout));
+      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+        _networkActivity.value = false;
+      });
 
+      final codeUnits = response.body.codeUnits;
+      var decodedUTF8 = const Utf8Decoder().convert(codeUnits);
+      var json = jsonDecode(decodedUTF8);
+      var baseResponse = OPBaseResponse.fromJson(json);
+      return baseResponse;
+    } on Error catch (e) {
+      _print('ERROR - registerUser: $e');
+      _refreshTokenRetryCounter = 0;
+      return e;
+    }
+  }
+
+  Future<dynamic> registerUser(
+      {required String name, required String surname}) async {
+    var url = _baseURL + '/api/v2/auth/register/customer';
+    var body = jsonEncode({
+      "user": {"firstName": name, "lastName": surname}
+    });
     try {
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
@@ -67,6 +95,10 @@ mixin NetworkManagerUser on NetworkGeneral {
       var decodedUTF8 = const Utf8Decoder().convert(codeUnits);
       var json = jsonDecode(decodedUTF8);
       var baseResponse = OPBaseResponse.fromJson(json);
+      if (baseResponse.returnCode == 0 && baseResponse.payload != null) {
+        var accessTokenData = AccessTokenData.fromJson(baseResponse.payload);
+        setAccessToken(accessTokenData.accessToken);
+      }
       return baseResponse;
     } on Error catch (e) {
       _print('ERROR - registerUser: $e');
@@ -79,9 +111,7 @@ mixin NetworkManagerUser on NetworkGeneral {
     if (_accessToken != null) {
       _headers['Authorization'] = 'Bearer $_accessToken';
     }
-
     var url = _baseURL + '/api/v2/user/me';
-
     try {
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
@@ -112,10 +142,10 @@ mixin NetworkManagerUser on NetworkGeneral {
               'Error ${baseResponse.returnCode}: ${baseResponse.message}');
         }
       }
-    } on Error catch (e) {
+    } catch (e) {
       _print('ERROR - getMyProfile: $e');
       _refreshTokenRetryCounter = 0;
-      return e;
+      rethrow;
     }
   }
 
