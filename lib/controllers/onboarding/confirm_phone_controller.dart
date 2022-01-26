@@ -61,16 +61,16 @@ class _ConfirmPhoneControllerState extends State<ConfirmPhoneController> {
   void sendOtp() {
     NetworkManager.instance.login(login: widget.phoneNumber, password: _confirmValue).then((value) {
       NetworkManager.instance.getMyProfile().then((value) {
-        // if (value is UserProfile) {
-        //   //user exists
-        //   Provider.of<CurrentUser>(context, listen: false).user = value;
-        //   Navigator.of(context).pushReplacementNamed(Routes.home);
-        // } else if (value == null) {
-        //user doesn't exists
-        Navigator.of(context).pushReplacementNamed(Routes.aboutYou);
-        // } else {
-        //   SAAlertDialog.displayAlertWithClose(context, "Error", "Generic error");
-        // }
+        if (value is UserProfile) {
+          //user exists
+          Provider.of<CurrentUser>(context, listen: false).user = value;
+          Navigator.of(context).pushReplacementNamed(Routes.home);
+        } else if (value == null) {
+          //user doesn't exists
+          Navigator.of(context).pushReplacementNamed(Routes.aboutYou);
+        } else {
+          SAAlertDialog.displayAlertWithClose(context, "Error", "Generic error");
+        }
       }).catchError((onError) => SAAlertDialog.displayAlertWithClose(context, "Error", onError));
     }).catchError((onError) => SAAlertDialog.displayAlertWithClose(context, "Error", onError));
   }
