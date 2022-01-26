@@ -1,6 +1,6 @@
-# qui_green
+# Qui Green
 
-A new Flutter project.
+An open source mobile implementation for OpenPudo project.
 
 ## Getting Started
 
