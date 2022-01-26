@@ -200,7 +200,7 @@ public class AuthService {
         userPreferences.setShowPhoneNumber(true);
         userPreferencesDao.persist(userPreferences);
         userPreferencesDao.flush();
-        log.info("[{}] Registered user {} as {}", context.getExecutionId(), user.getUserId(), user.getAccountType());
+        log.info("[{}] Registered user: {} as: {}", context.getExecutionId(), user.getUserId(), user.getAccountType());
         return jwtService.generateUserTokenData(user.getUserId(), mapAccountTypeToAccessProfile(user.getAccountType()));
     }
 
@@ -212,7 +212,7 @@ public class AuthService {
             throw new ApiException(ApiReturnCodes.FORBIDDEN, localizationService.getMessage(context.getLanguage(), "error.auth.already_registered"));
         }
         // deep validation of reward policy before persisting data
-        TbRewardPolicy tbRewardPolicy = pudoService.mapRewardPolicyDtoToEntity(req.getRewardPolicy());
+        TbRewardPolicy rewardPolicy = pudoService.mapRewardPolicyDtoToEntity(req.getRewardPolicy());
 
         Date now = new Date();
         user = new TbUser();
@@ -250,12 +250,12 @@ public class AuthService {
         rating.setReviewCount(0L);
         rating.setAverageScore(null);
         ratingDao.persist(rating);
-        tbRewardPolicy.setPudoId(pudo.getPudoId());
-        tbRewardPolicy.setCreateTms(now);
-        tbRewardPolicy.setDeleteTms(null);
-        rewardPolicyDao.persist(tbRewardPolicy);
+        rewardPolicy.setPudoId(pudo.getPudoId());
+        rewardPolicy.setCreateTms(now);
+        rewardPolicy.setDeleteTms(null);
+        rewardPolicyDao.persist(rewardPolicy);
         pudoDao.flush();
-        log.info("[{}] Registered user {} as {}", context.getExecutionId(), user.getUserId(), user.getAccountType());
+        log.info("[{}] Registered user: {} as: {} with id: {}", context.getExecutionId(), user.getUserId(), user.getAccountType(), pudo.getPudoId());
         return jwtService.generateUserTokenData(user.getUserId(), mapAccountTypeToAccessProfile(user.getAccountType()));
     }
 

@@ -48,6 +48,8 @@ public class PudoService {
     @Inject
     PudoDao pudoDao;
     @Inject
+    RewardPolicyDao rewardPolicyDao;
+    @Inject
     UserDao userDao;
     @Inject
     UserPudoRelationDao userPudoRelationDao;
@@ -77,47 +79,13 @@ public class PudoService {
     }
 
     public Pudo getCurrentPudo() {
-        TbUser user = userDao.get(context.getUserId());
-        if (user.getAccountType() != AccountType.PUDO) {
-            throw new ApiException(ApiReturnCodes.FORBIDDEN, localizationService.getMessage(context.getLanguage(), "error.forbidden.wrong_account_type"));
-        }
-        Long pudoId = userPudoRelationDao.getPudoIdByOwnerUserId(context.getUserId());
+        Long pudoId = getCurrentPudoId();
         return getPudo(pudoId);
     }
 
-    private String createCustomizedAddress(TbPudo pudo, TbAddress address, TbUserPudoRelation userPudoRelation) {
-        StringBuilder sb = new StringBuilder();
-        // first line: pudo name and customer suffix
-        sb.append(pudo.getBusinessName());
-        sb.append(" ");
-        sb.append(userPudoRelation.getCustomerSuffix());
-        sb.append("\n");
-        // second line: street and street number (if any)
-        sb.append(address.getStreet());
-        if (!isEmpty(address.getStreetNum())) {
-            sb.append(" ");
-            sb.append(address.getStreetNum());
-            sb.append("\n");
-        }
-        // third line: zip code (if any), city and province
-        if (!isEmpty(address.getZipCode())) {
-            sb.append(address.getZipCode());
-            sb.append(" ");
-        }
-        sb.append(address.getCity());
-        sb.append(" (");
-        sb.append(address.getProvince());
-        sb.append(")");
-        return sb.toString();
-    }
-
     public UUID updateCurrentPudoPicture(String mimeType, byte[] bytes) {
-        TbUser user = userDao.get(context.getUserId());
-        if (user.getAccountType() != AccountType.PUDO) {
-            throw new ApiException(ApiReturnCodes.FORBIDDEN, localizationService.getMessage(context.getLanguage(), "error.forbidden.wrong_account_type"));
-        }
+        Long pudoId = getCurrentPudoId();
         Date now = new Date();
-        Long pudoId = userPudoRelationDao.getPudoIdByOwnerUserId(context.getUserId());
         TbPudo pudo = pudoDao.get(pudoId);
         UUID oldId = pudo.getPudoPicId();
         UUID newId = UUID.randomUUID();
@@ -142,12 +110,13 @@ public class PudoService {
         // remove old row
         externalFileDao.delete(oldId);
         externalFileDao.flush();
-        log.info("[{}] Updated profile picture for pudo: {}", context.getExecutionId(), pudo.getPudoId());
+        log.info("[{}] Updated profile picture for PUDO: {}", context.getExecutionId(), pudo.getPudoId());
         return newId;
     }
 
     public List<RewardOption> getRewardSchema() {
         List<RewardOption> ret = new ArrayList<>(5);
+
         // free for all
         RewardOption free = new RewardOption();
         ret.add(free);
@@ -155,6 +124,7 @@ public class PudoService {
         free.setText(localizationService.getMessage(context.getLanguage(), "label.reward.free"));
         free.setExclusive(true);
         free.setExtraInfo(null);
+
         // customers
         RewardOption customers = new RewardOption();
         ret.add(customers);
@@ -219,6 +189,7 @@ public class PudoService {
         otherExtraInfo.setMandatoryValue(true);
         otherExtraInfo.setName("customers.select.other.text");
         otherExtraInfo.setText(localizationService.getMessage(context.getLanguage(), "label.reward.customers.select.other.text"));
+
         // members
         RewardOption members = new RewardOption();
         ret.add(members);
@@ -231,6 +202,7 @@ public class PudoService {
         membersExtraInfo.setText(localizationService.getMessage(context.getLanguage(), "label.reward.members.text"));
         membersExtraInfo.setType(ExtraInfoType.TEXT);
         membersExtraInfo.setMandatoryValue(false);
+
         // buy
         RewardOption buy = new RewardOption();
         ret.add(buy);
@@ -243,6 +215,7 @@ public class PudoService {
         buyExtraInfo.setText(localizationService.getMessage(context.getLanguage(), "label.reward.buy.text"));
         buyExtraInfo.setType(ExtraInfoType.TEXT);
         buyExtraInfo.setMandatoryValue(false);
+
         // fee
         RewardOption fee = new RewardOption();
         ret.add(fee);
@@ -259,10 +232,167 @@ public class PudoService {
         feeExtraInfo.setMax(BigDecimal.valueOf(2.0));
         feeExtraInfo.setScale(2);
         feeExtraInfo.setStep(BigDecimal.valueOf(0.1));
+
         return ret;
     }
 
-    public TbRewardPolicy mapRewardPolicyDtoToEntity(List<RewardOption> rewardPolicy) {
+    public List<RewardOption> getCurrentPudoRewardPolicy() {
+        Long pudoId = getCurrentPudoId();
+        TbRewardPolicy rewardPolicy = rewardPolicyDao.getActiveRewardPolicy(pudoId);
+        List<RewardOption> ret = new ArrayList<>(5);
+
+        // free for all
+        RewardOption free = new RewardOption();
+        ret.add(free);
+        free.setName("free");
+        free.setText(localizationService.getMessage(context.getLanguage(), "label.reward.free"));
+        free.setExclusive(true);
+        free.setExtraInfo(null);
+        free.setChecked(rewardPolicy.getFeeChecked());
+
+        // customers
+        RewardOption customers = new RewardOption();
+        ret.add(customers);
+        customers.setName("customers");
+        customers.setText(localizationService.getMessage(context.getLanguage(), "label.reward.customers"));
+        customers.setExclusive(false);
+        customers.setChecked(rewardPolicy.getCustomerChecked());
+        if (rewardPolicy.getCustomerChecked()) {
+            ExtraInfoSelect customersExtraInfo = new ExtraInfoSelect();
+            customers.setExtraInfo(customersExtraInfo);
+            customersExtraInfo.setName("customers.select");
+            customersExtraInfo.setText(localizationService.getMessage(context.getLanguage(), "label.reward.customers.select"));
+            customersExtraInfo.setType(ExtraInfoType.SELECT);
+            customersExtraInfo.setMandatoryValue(true);
+            ExtraInfoSelectItem customersValue = new ExtraInfoSelectItem();
+            customersExtraInfo.setValue(customersValue);
+            customersValue.setName(rewardPolicy.getCustomerSelectitem());
+            customersValue.setText(localizationService.getMessage(context.getLanguage(), "label.reward.customers.select." + rewardPolicy.getCustomerSelectitem()));
+            if ("other".equals(rewardPolicy.getCustomerSelectitem())) {
+                ExtraInfoText otherExtraInfo = new ExtraInfoText();
+                customersValue.setExtraInfo(otherExtraInfo);
+                otherExtraInfo.setType(ExtraInfoType.TEXT);
+                otherExtraInfo.setMandatoryValue(true);
+                otherExtraInfo.setName("customers.select.other.text");
+                otherExtraInfo.setText(localizationService.getMessage(context.getLanguage(), "label.reward.customers.select.other.text"));
+                otherExtraInfo.setValue(rewardPolicy.getCustomerSelectitemText());
+            }
+        }
+
+        // members
+        RewardOption members = new RewardOption();
+        ret.add(members);
+        members.setName("members");
+        members.setText(localizationService.getMessage(context.getLanguage(), "label.reward.members"));
+        members.setExclusive(false);
+        members.setChecked(rewardPolicy.getMembersChecked());
+        if (rewardPolicy.getMembersChecked()) {
+            ExtraInfoText membersExtraInfo = new ExtraInfoText();
+            members.setExtraInfo(membersExtraInfo);
+            membersExtraInfo.setName("members.text");
+            membersExtraInfo.setText(localizationService.getMessage(context.getLanguage(), "label.reward.members.text"));
+            membersExtraInfo.setType(ExtraInfoType.TEXT);
+            membersExtraInfo.setMandatoryValue(false);
+            membersExtraInfo.setValue(rewardPolicy.getMembersText());
+        }
+
+        // buy
+        RewardOption buy = new RewardOption();
+        ret.add(buy);
+        buy.setName("buy");
+        buy.setText(localizationService.getMessage(context.getLanguage(), "label.reward.buy"));
+        buy.setExclusive(false);
+        buy.setChecked(rewardPolicy.getBuyChecked());
+        if (rewardPolicy.getBuyChecked()) {
+            ExtraInfoText buyExtraInfo = new ExtraInfoText();
+            buy.setExtraInfo(buyExtraInfo);
+            buyExtraInfo.setName("buy.text");
+            buyExtraInfo.setText(localizationService.getMessage(context.getLanguage(), "label.reward.buy.text"));
+            buyExtraInfo.setType(ExtraInfoType.TEXT);
+            buyExtraInfo.setMandatoryValue(false);
+            buyExtraInfo.setValue(rewardPolicy.getBuyText());
+        }
+
+        // fee
+        RewardOption fee = new RewardOption();
+        ret.add(fee);
+        fee.setName("fee");
+        fee.setText(localizationService.getMessage(context.getLanguage(), "label.reward.fee"));
+        fee.setExclusive(false);
+        fee.setChecked(rewardPolicy.getFeeChecked());
+        if (rewardPolicy.getFeeChecked()) {
+            ExtraInfoDecimal feeExtraInfo = new ExtraInfoDecimal();
+            fee.setExtraInfo(feeExtraInfo);
+            feeExtraInfo.setName("fee.price");
+            feeExtraInfo.setText(localizationService.getMessage(context.getLanguage(), "label.reward.fee.price"));
+            feeExtraInfo.setType(ExtraInfoType.DECIMAL);
+            feeExtraInfo.setMandatoryValue(true);
+            feeExtraInfo.setMin(BigDecimal.valueOf(0.1));
+            feeExtraInfo.setMax(BigDecimal.valueOf(2.0));
+            feeExtraInfo.setScale(2);
+            feeExtraInfo.setStep(BigDecimal.valueOf(0.1));
+            feeExtraInfo.setValue(rewardPolicy.getFeePrice());
+        }
+
+        return ret;
+    }
+
+    public List<RewardOption> updateCurrentPudoRewardPolicy(List<RewardOption> rewardPolicy) {
+        Long pudoId = getCurrentPudoId();
+        TbRewardPolicy newRewardPolicy = mapRewardPolicyDtoToEntity(rewardPolicy);
+        Date now = new Date();
+        TbRewardPolicy oldRewardPolicy = rewardPolicyDao.getActiveRewardPolicy(pudoId);
+        oldRewardPolicy.setDeleteTms(now);
+        rewardPolicyDao.flush();
+        newRewardPolicy.setPudoId(pudoId);
+        newRewardPolicy.setCreateTms(now);
+        newRewardPolicy.setDeleteTms(null);
+        rewardPolicyDao.persist(newRewardPolicy);
+        rewardPolicyDao.flush();
+        log.info("[{}] Updated reward policy for PUDO: {}", context.getExecutionId(), pudoId);
+        return getCurrentPudoRewardPolicy();
+    }
+
+    private Long getCurrentPudoId() {
+        TbUser user = userDao.get(context.getUserId());
+        if (user.getAccountType() != AccountType.PUDO) {
+            throw new ApiException(ApiReturnCodes.FORBIDDEN, localizationService.getMessage(context.getLanguage(), "error.forbidden.wrong_account_type"));
+        }
+        Long pudoId = userPudoRelationDao.getPudoIdByOwnerUserId(context.getUserId());
+        if (pudoId == null) {
+            log.error("[{}] User: {} has accountType: {}, but no ownership relation found", context.getExecutionId(), user.getUserId(), user.getAccountType());
+            throw new ApiException(ApiReturnCodes.FORBIDDEN, localizationService.getMessage(context.getLanguage(), "error.forbidden.wrong_account_type"));
+        }
+        return pudoId;
+    }
+
+    private String createCustomizedAddress(TbPudo pudo, TbAddress address, TbUserPudoRelation userPudoRelation) {
+        StringBuilder sb = new StringBuilder();
+        // first line: pudo name and customer suffix
+        sb.append(pudo.getBusinessName());
+        sb.append(" ");
+        sb.append(userPudoRelation.getCustomerSuffix());
+        sb.append("\n");
+        // second line: street and street number (if any)
+        sb.append(address.getStreet());
+        if (!isEmpty(address.getStreetNum())) {
+            sb.append(" ");
+            sb.append(address.getStreetNum());
+            sb.append("\n");
+        }
+        // third line: zip code (if any), city and province
+        if (!isEmpty(address.getZipCode())) {
+            sb.append(address.getZipCode());
+            sb.append(" ");
+        }
+        sb.append(address.getCity());
+        sb.append(" (");
+        sb.append(address.getProvince());
+        sb.append(")");
+        return sb.toString();
+    }
+
+    protected TbRewardPolicy mapRewardPolicyDtoToEntity(List<RewardOption> rewardPolicy) {
         if (rewardPolicy.size() != 5) {
             throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.invalid_field", "rewardPolicy"));
         }
@@ -291,19 +421,11 @@ public class PudoService {
             throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.invalid_field", "rewardPolicy"));
         }
 
-        // free
-        if (free.getChecked()) {
-            ret.setFreeChecked(true);
-        } else {
-            ret.setFreeChecked(false);
-        }
+        // free for all
+        ret.setFreeChecked(free.getChecked());
 
         // customers
-        if (customers.getChecked()) {
-            ret.setCustomerChecked(true);
-        } else {
-            ret.setCustomerChecked(false);
-        }
+        ret.setCustomerChecked(customers.getChecked());
         if (customers.getChecked()) {
             if (customers.getExtraInfo() == null || !(customers.getExtraInfo() instanceof ExtraInfoSelect)) {
                 throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.invalid_field", "rewardPolicy"));
@@ -338,11 +460,7 @@ public class PudoService {
         }
 
         // members
-        if (members.getChecked()) {
-            ret.setMembersChecked(true);
-        } else {
-            ret.setMembersChecked(false);
-        }
+        ret.setMembersChecked(members.getChecked());
         if (members.getChecked()) {
             if (members.getExtraInfo() == null || !(members.getExtraInfo() instanceof ExtraInfoText)) {
                 throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.invalid_field", "rewardPolicy"));
@@ -355,11 +473,7 @@ public class PudoService {
         }
 
         // buy
-        if (buy.getChecked()) {
-            ret.setBuyChecked(true);
-        } else {
-            ret.setBuyChecked(false);
-        }
+        ret.setBuyChecked(buy.getChecked());
         if (buy.getChecked()) {
             if (buy.getExtraInfo() == null || !(buy.getExtraInfo() instanceof ExtraInfoText)) {
                 throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.invalid_field", "rewardPolicy"));
@@ -372,11 +486,7 @@ public class PudoService {
         }
 
         // fee
-        if (fee.getChecked()) {
-            ret.setFeeChecked(true);
-        } else {
-            ret.setFeeChecked(false);
-        }
+        ret.setFeeChecked(fee.getChecked());
         if (fee.getChecked()) {
             if (fee.getExtraInfo() == null || !(fee.getExtraInfo() instanceof ExtraInfoDecimal)) {
                 throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.invalid_field", "rewardPolicy"));
@@ -399,5 +509,6 @@ public class PudoService {
 
         return ret;
     }
+
 
 }

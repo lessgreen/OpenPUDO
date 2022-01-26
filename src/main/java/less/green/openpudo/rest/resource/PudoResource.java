@@ -106,4 +106,22 @@ public class PudoResource {
         return new RewardOptionListResponse(context.getExecutionId(), ApiReturnCodes.OK, ret);
     }
 
+    @GET
+    @Path("/me/reward-policy")
+    @SecurityRequirement(name = "JWT")
+    @Operation(summary = "Get PUDO reward policy")
+    public RewardOptionListResponse getCurrentPudoRewardPolicy() {
+        List<RewardOption> ret = pudoService.getCurrentPudoRewardPolicy();
+        return new RewardOptionListResponse(context.getExecutionId(), ApiReturnCodes.OK, ret);
+    }
+
+    @POST
+    @Path("/me/reward-policy")
+    @SecurityRequirement(name = "JWT")
+    @Operation(summary = "Get PUDO reward policy")
+    public RewardOptionListResponse updateCurrentPudoRewardPolicy(List<RewardOption> rewardPolicy) {
+        List<RewardOption> ret = pudoService.updateCurrentPudoRewardPolicy(rewardPolicy);
+        return new RewardOptionListResponse(context.getExecutionId(), ApiReturnCodes.OK, ret);
+    }
+
 }

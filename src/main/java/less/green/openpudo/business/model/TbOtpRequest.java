@@ -49,7 +49,7 @@ public class TbOtpRequest implements Serializable {
     // transient properties
     public String getRecipient() {
         if (userId != null) {
-            return "userId: " + userId;
+            return "user: " + userId;
         }
         return "phoneNumber: " + phoneNumber;
     }
