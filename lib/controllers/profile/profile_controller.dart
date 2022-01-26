@@ -60,7 +60,7 @@ class _ProfileControllerState extends State<ProfileController> {
                 Text(
                   "${currentUser.user?.firstName ?? " "} ${currentUser.user?.lastName ?? " "}",
                   style: const TextStyle(
-                      fontWeight: FontWeight.bold, fontSize: 17),
+                      fontWeight: FontWeight.w500, fontSize: 17),
                 ),
                 Text(
                   'Utente dal ${currentUser.user?.createTms ?? " "}',
@@ -80,14 +80,14 @@ class _ProfileControllerState extends State<ProfileController> {
                           text: "123",
                           style: TextStyle(
                               color: AppColors.accentColor,
-                              fontWeight: FontWeight.bold)),
+                              fontWeight: FontWeight.w500)),
                       TextSpan(text: " volte,"),
                       TextSpan(text: " contribuendo a ridurre di "),
                       TextSpan(
                           text: "456kg",
                           style: TextStyle(
                               color: AppColors.accentColor,
-                              fontWeight: FontWeight.bold)),
+                              fontWeight: FontWeight.w500)),
                       TextSpan(text: " le emissioni di CO2")
                     ],
                   ),

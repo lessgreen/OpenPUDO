@@ -29,7 +29,7 @@ class _InstructionControllerState extends State<InstructionController> {
   int _currentPage = 0;
 
   //TODO Once api in place structure this widget
-  Widget _buildFirstPageWidget() => Column(
+  Widget _buildFirstPageWidget(String userId) => Column(
         children: [
           Container(
             margin: const EdgeInsets.symmetric(horizontal: Dimension.padding),
@@ -45,7 +45,7 @@ class _InstructionControllerState extends State<InstructionController> {
                 Container(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      '${widget.pudoDataModel?.businessName} AC12',
+                      '${widget.pudoDataModel?.businessName} AC$userId',
                       style: const TextStyle(fontSize: 16),
                     )),
                 Container(
@@ -93,55 +93,58 @@ class _InstructionControllerState extends State<InstructionController> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async => false,
-      child: Scaffold(
-        resizeToAvoidBottomInset: false,
-        appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          systemOverlayStyle: SystemUiOverlayStyle.dark,
-          leading: const SizedBox(),
-        ),
-        body: Column(
-          children: [
-            Expanded(
-              child: PageView(
-                physics: const ClampingScrollPhysics(),
-                controller: _pageController,
-                onPageChanged: (int page) {
-                  setState(() {
-                    _currentPage = page;
-                  });
-                },
-                children: [
-                  InstructionCard(
-                      title: "É semplicissimo!",
-                      description:
-                          'Per poter ricevere il tuo pacco senza pensieri, utilizzando il tuo PUDO come destinatario ti basterà usare il seguente indirizzo di spedizione:',
-                      activeIndex: _currentPage,
-                      pages: 2,
-                      bottomWidget: _buildFirstPageWidget()),
-                  InstructionCard(
-                      title: "Notifica in tempo reale",
-                      description:
-                          'Riceverai una notifica quando il tuo pacco sarà giunto a destinazione presso il tuo PUDO.',
-                      activeIndex: _currentPage,
-                      pages: 2,
-                      bottomWidget: SvgPicture.asset(ImageSrc.aboutYouArt,
-                          semanticsLabel: 'Art Background')),
-                ],
+    return Consumer<CurrentUser>(
+      builder: (_, currentUser, __) => WillPopScope(
+        onWillPop: () async => false,
+        child: Scaffold(
+          resizeToAvoidBottomInset: false,
+          appBar: AppBar(
+            backgroundColor: Colors.transparent,
+            systemOverlayStyle: SystemUiOverlayStyle.dark,
+            leading: const SizedBox(),
+          ),
+          body: Column(
+            children: [
+              Expanded(
+                child: PageView(
+                  physics: const ClampingScrollPhysics(),
+                  controller: _pageController,
+                  onPageChanged: (int page) {
+                    setState(() {
+                      _currentPage = page;
+                    });
+                  },
+                  children: [
+                    InstructionCard(
+                        title: "É semplicissimo!",
+                        description:
+                            'Per poter ricevere il tuo pacco senza pensieri, utilizzando il tuo PUDO come destinatario ti basterà usare il seguente indirizzo di spedizione:',
+                        activeIndex: _currentPage,
+                        pages: 2,
+                        bottomWidget: _buildFirstPageWidget(
+                            currentUser.user!.userId.toString())),
+                    InstructionCard(
+                        title: "Notifica in tempo reale",
+                        description:
+                            'Riceverai una notifica quando il tuo pacco sarà giunto a destinazione presso il tuo PUDO.',
+                        activeIndex: _currentPage,
+                        pages: 2,
+                        bottomWidget: SvgPicture.asset(ImageSrc.aboutYouArt,
+                            semanticsLabel: 'Art Background')),
+                  ],
+                ),
               ),
-            ),
-            MainButton(
-              onPressed: () =>
-                  Provider.of<CurrentUser>(context, listen: false).refresh(),
-              text: 'Fine',
-            ),
-            // MainButton(
-            //   onPressed: () => Navigator.of(context).pop(),
-            //   text: 'Vai alla home',
-            // ),
-          ],
+              MainButton(
+                onPressed: () =>
+                    Provider.of<CurrentUser>(context, listen: false).refresh(),
+                text: 'Fine',
+              ),
+              // MainButton(
+              //   onPressed: () => Navigator.of(context).pop(),
+              //   text: 'Vai alla home',
+              // ),
+            ],
+          ),
         ),
       ),
     );

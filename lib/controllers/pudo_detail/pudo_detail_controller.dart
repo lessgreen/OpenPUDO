@@ -128,7 +128,7 @@ class _PudoDetailControllerState extends State<PudoDetailController> {
                 TextSpan(
                     text: (widget.dataModel.pudoProfile.customerCount ?? 0)
                         .toString(),
-                    style: const TextStyle(fontWeight: FontWeight.bold)),
+                    style: const TextStyle(fontWeight: FontWeight.w500)),
                 const TextSpan(
                     text:
                         ' persone hanno già scelto quest’attività come punto di ritiro QuiGreen.'),
@@ -150,7 +150,7 @@ class _PudoDetailControllerState extends State<PudoDetailController> {
           title: Text(
             widget.dataModel.pudoProfile.businessName,
             style: Theme.of(context).textTheme.headline6?.copyWith(
-                color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold),
+                color: Colors.black, fontSize: 16, fontWeight: FontWeight.w500),
           ),
           centerTitle: true,
           leading: GestureDetector(

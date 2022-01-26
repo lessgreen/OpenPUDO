@@ -102,7 +102,7 @@ class _PudoTutorialControllerState extends State<PudoTutorialController> {
           const Text('QuiGreen',
               style: TextStyle(
                   color: AppColors.cardColor,
-                  fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.w500,
                   fontSize: 18)),
         ],
       );
@@ -134,7 +134,7 @@ class _PudoTutorialControllerState extends State<PudoTutorialController> {
           const Text('QuiGreen',
               style: TextStyle(
                   color: AppColors.cardColor,
-                  fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.w500,
                   fontSize: 18)),
         ],
       );
@@ -173,7 +173,7 @@ class _PudoTutorialControllerState extends State<PudoTutorialController> {
               Text('et voilà!',
                   style: TextStyle(
                       color: AppColors.cardColor,
-                      fontWeight: FontWeight.bold,
+                      fontWeight: FontWeight.w500,
                       fontSize: 18)),
               Text(
                 ', il gioco è fatto!',

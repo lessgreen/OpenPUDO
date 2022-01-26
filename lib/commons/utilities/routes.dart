@@ -42,7 +42,6 @@ dynamic routeWithSetting(RouteSettings settings) {
   // if (settings.arguments != null) {
   //   var arguments = settings.arguments;
   // }
-
   switch (settings.name) {
     // case '/notificationDetails':
     //   return MaterialPageRoute(
@@ -101,7 +100,7 @@ dynamic routeWithSetting(RouteSettings settings) {
       return CupertinoPageRoute(
         builder: (context) => InstructionController(
             pudoDataModel: settings.arguments == null
-                ? null
+                ? PudoProfile(businessName: "Nome Pudo")
                 : settings.arguments as PudoProfile),
       );
     case Routes.thanks:

@@ -3,9 +3,11 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:location/location.dart';
+import 'package:provider/provider.dart';
 import 'package:qui_green/commons/utilities/print_helper.dart';
 import 'package:qui_green/models/pudo_profile.dart';
 import 'package:qui_green/resources/routes_enum.dart';
+import 'package:qui_green/singletons/current_user.dart';
 import 'package:qui_green/singletons/network/network_manager.dart';
 
 class PersonalDataControllerViewModel extends ChangeNotifier {
@@ -15,24 +17,23 @@ class PersonalDataControllerViewModel extends ChangeNotifier {
 
   // ************ Navigation *****
   onSendClick(BuildContext context, PudoProfile? pudoModel) {
-    if (_name.isNotEmpty) {
-      NetworkManager.instance
-          .registerUser(name: name, surname: surname)
-          .then((value) {
-        if (image != null) {
-          NetworkManager.instance
-              .photoUpload(image!)
-              .catchError((onError) => showErrorDialog!(onError));
-        }
-        if (pudoModel != null) {
-          NetworkManager.instance
-              .addPudoFavorite(pudoModel.pudoId.toString())
-              .catchError((onError) => showErrorDialog!(onError));
-        }
-        Navigator.of(context).pushReplacementNamed(Routes.registrationComplete,
-            arguments: pudoModel);
-      }).catchError((onError) => showErrorDialog!(onError));
-    }
+    NetworkManager.instance
+        .registerUser(name: name, surname: surname)
+        .then((value) {
+      Provider.of<CurrentUser>(context, listen: false).user = value;
+      if (image != null) {
+        NetworkManager.instance
+            .photoUpload(image!)
+            .catchError((onError) => showErrorDialog!(onError));
+      }
+      if (pudoModel != null) {
+        NetworkManager.instance
+            .addPudoFavorite(pudoModel.pudoId.toString())
+            .catchError((onError) => showErrorDialog!(onError));
+      }
+      Navigator.of(context).pushReplacementNamed(Routes.registrationComplete,
+          arguments: pudoModel);
+    }).catchError((onError) => showErrorDialog!(onError));
   }
 
   // ************ Location *******
@@ -82,6 +83,9 @@ class PersonalDataControllerViewModel extends ChangeNotifier {
   }
 
   get isValid {
+    if (_image != null) {
+      return true;
+    }
     if (_name.isEmpty) {
       return false;
     }

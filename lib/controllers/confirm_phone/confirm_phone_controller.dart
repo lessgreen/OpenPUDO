@@ -153,7 +153,7 @@ class _ConfirmPhoneControllerState extends State<ConfirmPhoneController> {
                                 .textTheme
                                 .bodyText1
                                 ?.copyWith(
-                                    fontWeight: FontWeight.bold,
+                                    fontWeight: FontWeight.w500,
                                     color: AppColors.primaryColorDark)))
                   ],
                 ),
