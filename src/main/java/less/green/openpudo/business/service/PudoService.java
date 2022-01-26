@@ -3,6 +3,7 @@ package less.green.openpudo.business.service;
 import less.green.openpudo.business.dao.*;
 import less.green.openpudo.business.model.*;
 import less.green.openpudo.business.model.usertype.AccountType;
+import less.green.openpudo.business.model.usertype.RelationType;
 import less.green.openpudo.cdi.ExecutionContext;
 import less.green.openpudo.cdi.service.LocalizationService;
 import less.green.openpudo.cdi.service.StorageService;
@@ -68,11 +69,13 @@ public class PudoService {
         ret.setCustomerCount(customerCount);
         long packageCount = packageDao.getPackageCountByPudoId(pudoId);
         ret.setPackageCount(packageCount);
-        // customized address must be populated only if the caller is a pudo customer
+        // customized address must be populated only if the caller is a pudo customer, of if it is the pudo owner (with a fake suffix)
         if (context.getUserId() != null) {
-            TbUserPudoRelation userPudoRelation = userPudoRelationDao.getUserPudoActiveCustomerRelation(pudoId, context.getUserId());
-            if (userPudoRelation != null) {
-                ret.setCustomizedAddress(createCustomizedAddress(rs.getValue0(), rs.getValue1(), userPudoRelation));
+            TbUserPudoRelation userPudoRelation = userPudoRelationDao.getUserPudoActiveRelation(pudoId, context.getUserId());
+            if (userPudoRelation != null && userPudoRelation.getRelationType() == RelationType.CUSTOMER) {
+                ret.setCustomizedAddress(createCustomizedAddress(rs.getValue0(), rs.getValue1(), userPudoRelation.getCustomerSuffix()));
+            } else if (userPudoRelation != null && userPudoRelation.getRelationType() == RelationType.OWNER) {
+                ret.setCustomizedAddress(createCustomizedAddress(rs.getValue0(), rs.getValue1(), "AB123"));
             }
         }
         return ret;
@@ -366,12 +369,12 @@ public class PudoService {
         return pudoId;
     }
 
-    private String createCustomizedAddress(TbPudo pudo, TbAddress address, TbUserPudoRelation userPudoRelation) {
+    private String createCustomizedAddress(TbPudo pudo, TbAddress address, String customerSuffix) {
         StringBuilder sb = new StringBuilder();
         // first line: pudo name and customer suffix
         sb.append(pudo.getBusinessName());
         sb.append(" ");
-        sb.append(userPudoRelation.getCustomerSuffix());
+        sb.append(customerSuffix);
         sb.append("\n");
         // second line: street and street number (if any)
         sb.append(address.getStreet());
