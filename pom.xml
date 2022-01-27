@@ -10,14 +10,14 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <compiler-plugin.version>3.9.0</compiler-plugin.version>
         <maven.compiler.release>11</maven.compiler.release>
-        <compiler-plugin.version>3.8.1</compiler-plugin.version>
         <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
         <quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
         <quarkus.platform.version>2.6.3.Final</quarkus.platform.version>
         <lombok.version>1.18.22</lombok.version>
         <mapstruct.version>1.4.2.Final</mapstruct.version>
-        <pmd.version>3.15.0</pmd.version>
+        <pmd.version>3.14.0</pmd.version>
         <libphonenumber.version>8.12.41</libphonenumber.version>
         <unirest.version>3.13.6</unirest.version>
         <firebase.version>8.1.0</firebase.version>
