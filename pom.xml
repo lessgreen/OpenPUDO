@@ -17,7 +17,7 @@
         <quarkus.platform.version>2.6.3.Final</quarkus.platform.version>
         <lombok.version>1.18.22</lombok.version>
         <mapstruct.version>1.4.2.Final</mapstruct.version>
-        <pmd.version>3.14.0</pmd.version>
+        <pmd.version>3.15.0</pmd.version>
         <libphonenumber.version>8.12.41</libphonenumber.version>
         <unirest.version>3.13.6</unirest.version>
         <firebase.version>8.1.0</firebase.version>
