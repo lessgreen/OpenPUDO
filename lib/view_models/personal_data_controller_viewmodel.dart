@@ -37,15 +37,24 @@ class PersonalDataControllerViewModel extends ChangeNotifier {
 
   // ************ Navigation *****
   onSendClick(BuildContext context, PudoProfile? pudoModel) {
-    NetworkManager.instance.registerUser(name: name, surname: surname).then((value) {
-      Provider.of<CurrentUser>(context, listen: false).user = value;
-      if (image != null) {
-        NetworkManager.instance.photoUpload(image!).catchError((onError) => showErrorDialog!(onError));
-      }
-      if (pudoModel != null) {
-        NetworkManager.instance.addPudoFavorite(pudoModel.pudoId.toString()).catchError((onError) => showErrorDialog!(onError));
-      }
-      Navigator.of(context).pushReplacementNamed(Routes.registrationComplete, arguments: pudoModel);
+    NetworkManager.instance
+        .registerUser(name: name, surname: surname)
+        .then((value) {
+      NetworkManager.instance.getMyProfile().then((user) {
+        Provider.of<CurrentUser>(context, listen: false).user = user;
+        if (image != null) {
+          NetworkManager.instance
+              .photoUpload(image!)
+              .catchError((onError) => showErrorDialog!(onError));
+        }
+        if (pudoModel != null) {
+          NetworkManager.instance
+              .addPudoFavorite(pudoModel.pudoId.toString())
+              .catchError((onError) => showErrorDialog!(onError));
+        }
+        Navigator.of(context).pushReplacementNamed(Routes.registrationComplete,
+            arguments: pudoModel);
+      }).catchError((onError) => showErrorDialog!(onError));
     }).catchError((onError) => showErrorDialog!(onError));
   }
 
@@ -118,7 +127,8 @@ class PersonalDataControllerViewModel extends ChangeNotifier {
   }
 
   pickFile() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles(allowMultiple: false, type: FileType.image);
+    FilePickerResult? result = await FilePicker.platform
+        .pickFiles(allowMultiple: false, type: FileType.image);
     if (result != null) {
       try {
         File file = File(result.files.first.path ?? "");
