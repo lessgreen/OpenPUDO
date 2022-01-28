@@ -203,7 +203,7 @@ mixin NetworkManagerUserPudo on NetworkGeneral {
       _headers['Authorization'] = 'Bearer $_accessToken';
     }
 
-    var url = _baseURL + '/api/v1/pudos/me';
+    var url = _baseURL + '/api/v2/pudo/me';
 
     try {
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {

@@ -56,14 +56,34 @@ class CurrentUser with ChangeNotifier {
     if (sharedPreferences?.getString('accessToken') != null) {
       var oldToken = sharedPreferences?.getString('accessToken');
       NetworkManager.instance.renewToken(accessToken: oldToken!).then((response) {
-        NetworkManager.instance.getMyProfile().then((profile) {
-          user = profile;
-          pushPage(Routes.home);
-        }).catchError((onError) {
-          user = null;
-          pushPage(Routes.login);
-          safePrint(onError);
-        });
+        switch (NetworkManager.instance.accessTokenAccess) {
+          case "customer":
+            NetworkManager.instance.getMyProfile().then((profile) {
+              user = profile;
+              pushPage(Routes.home);
+            }).catchError((onError) {
+              user = null;
+              pushPage(Routes.login);
+              safePrint(onError);
+            });
+            break;
+          case "pudo":
+            NetworkManager.instance.getMyPudoProfile().then((profile) {
+              pudoProfile = profile;
+              pushPage(Routes.pudoHome);
+            }).catchError((onError) {
+              user = null;
+              pushPage(Routes.login);
+              safePrint(onError);
+            });
+            break;
+          case "guest":
+            pushPage(Routes.aboutYou);
+            break;
+          default:
+            safePrint("wrong access type");
+            break;
+        }
       }).catchError((onError) {
         user = null;
         pushPage(Routes.login);
@@ -84,24 +104,6 @@ class CurrentUser with ChangeNotifier {
 
   set user(UserProfile? newProfile) {
     _user = newProfile;
-    if (_user != null) {
-      if (_user!.pudoOwner == true) {
-        NetworkManager.instance.getMyPudoProfile().then(
-          (pudoProfile) {
-            if (pudoProfile is PudoProfile) {
-              _pudo = pudoProfile;
-              notifyListeners();
-            }
-          },
-        ).catchError(
-          (onError) {
-            safePrint(onError.toString());
-          },
-        );
-      }
-    } else {
-      _pudo = null;
-    }
     notifyListeners();
   }
 

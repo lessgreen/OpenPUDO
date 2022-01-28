@@ -27,8 +27,8 @@ class AccessTokenData {
   final String accessToken;
   final String expireDate;
   final String issueDate;
-
-  AccessTokenData({required this.accessToken, required this.expireDate, required this.issueDate});
+  final String accessProfile;
+  AccessTokenData({required this.accessToken, required this.expireDate, required this.issueDate,required this.accessProfile});
   factory AccessTokenData.fromJson(Map<String, dynamic> json) => _$AccessTokenDataFromJson(json);
   Map<String, dynamic> toJson() => _$AccessTokenDataToJson(this);
 }
