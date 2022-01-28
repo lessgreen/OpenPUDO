@@ -1,11 +1,13 @@
 package less.green.openpudo.rest.dto.pudo.reward;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import lombok.Data;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 @Data
+@JsonInclude(JsonInclude.Include.ALWAYS)
 @Schema(oneOf = {ExtraInfoText.class, ExtraInfoDecimal.class, ExtraInfoSelect.class})
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.EXISTING_PROPERTY, property = "type", defaultImpl = ExtraInfoType.class, visible = true)
 @JsonSubTypes({
