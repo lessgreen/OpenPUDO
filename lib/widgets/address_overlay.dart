@@ -31,7 +31,14 @@ class AddressOverlay extends StatefulWidget {
   final Function(AddressModel) onSelect;
   final Function() removeOverlay;
 
-  const AddressOverlay({Key? key, required this.viewModel, required this.positionTop, required this.positionLeft, required this.width, required this.removeOverlay, required this.onSelect})
+  const AddressOverlay(
+      {Key? key,
+      required this.viewModel,
+      required this.positionTop,
+      required this.positionLeft,
+      required this.width,
+      required this.removeOverlay,
+      required this.onSelect})
       : super(key: key);
 
   @override
@@ -59,27 +66,35 @@ class _AddressOverlayState extends State<AddressOverlay> {
                   child: ListView(
                     padding: EdgeInsets.zero,
                     children: widget.viewModel.addresses.map((e) {
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          Material(
-                              color: Colors.transparent,
-                              child: InkWell(
-                                  onTap: () => widget.onSelect(e),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      const SizedBox(
-                                        height: Dimension.paddingXS,
-                                      ),
-                                      Text(e.label ?? ""),
-                                      const SizedBox(
-                                        height: Dimension.paddingXS,
-                                      ),
-                                    ],
-                                  ))),
-                          Divider(color: Colors.grey.shade400, height: 1),
-                        ],
+                      return Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          onTap: () => widget.onSelect(e),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              const SizedBox(
+                                height: Dimension.paddingS,
+                              ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const SizedBox(
+                                    height: Dimension.paddingXS,
+                                  ),
+                                  Text(e.label ?? ""),
+                                  const SizedBox(
+                                    height: Dimension.paddingXS,
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(
+                                height: Dimension.paddingS,
+                              ),
+                              Divider(color: Colors.grey.shade400, height: 1),
+                            ],
+                          ),
+                        ),
                       );
                     }).toList(),
                   ),

@@ -166,12 +166,12 @@ class _MapsControllerState extends State<MapsController> {
                                   children: [
                                     CupertinoNavigationBarBackButton(
                                         color: AppColors.primaryColorDark,
-                                        onPressed: () {}),
+                                        onPressed: ()=>Navigator.pop(context)),
                                     TextFieldButton(
                                       text: "Salta",
                                       onPressed: () => Navigator.of(context)
-                                          .pushReplacementNamed(
-                                              Routes.personalData),
+                                          .pushNamedAndRemoveUntil(
+                                              Routes.personalData,ModalRoute.withName('/')),
                                     ),
                                   ],
                                 ),

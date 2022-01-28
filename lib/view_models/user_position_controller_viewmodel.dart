@@ -28,11 +28,11 @@ class UserPositionControllerViewModel extends ChangeNotifier {
 
   // ************ Navigation *****
   onAddAddressClick(BuildContext context) {
-    Navigator.of(context).pushReplacementNamed(Routes.insertAddress);
+    Navigator.of(context).pushNamed(Routes.insertAddress);
   }
 
   onMapClick(BuildContext context) {
-    Navigator.of(context).pushReplacementNamed(Routes.maps, arguments: pos);
+    Navigator.of(context).pushNamed(Routes.maps, arguments: pos);
   }
 
   LatLng pos = LatLng(45.464664, 9.188540);

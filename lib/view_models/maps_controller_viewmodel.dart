@@ -31,7 +31,8 @@ class MapsControllerViewModel extends ChangeNotifier {
   //Example: to use NetworkManager, use the getInstance: NetworkManager.instance...
 
   onPudoClick(BuildContext context, PudoProfile data, LatLng position) {
-    Navigator.of(context).pushReplacementNamed(Routes.pudoDetail, arguments: PudoDetailControllerDataModel(position, data));
+    Navigator.of(context).pushNamed(Routes.pudoDetail,
+        arguments: PudoDetailControllerDataModel(position, data));
   }
 
   MapController? mapController;
@@ -67,14 +68,19 @@ class MapsControllerViewModel extends ChangeNotifier {
   }
 
   loadPudos() {
-    NetworkManager.instance.getPudos(lat: currentLatitude, lon: currentLongitude, zoom: currentZoomLevel).then((response) {
+    NetworkManager.instance
+        .getPudos(
+            lat: currentLatitude, lon: currentLongitude, zoom: currentZoomLevel)
+        .then((response) {
       if (response is List<PudoMarker>) {
         if (_pudos.isNotEmpty && response.isEmpty) {
-          mapController?.move(LatLng(currentLatitude, currentLongitude), currentZoomLevel.toDouble());
+          mapController?.move(LatLng(currentLatitude, currentLongitude),
+              currentZoomLevel.toDouble());
           return;
         }
         pudos = response;
-        mapController?.move(LatLng(currentLatitude, currentLongitude), currentZoomLevel.toDouble());
+        mapController?.move(LatLng(currentLatitude, currentLongitude),
+            currentZoomLevel.toDouble());
       }
     }).catchError((onError) => showErrorDialog!(onError));
   }
