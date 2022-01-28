@@ -1,13 +1,12 @@
 package less.green.openpudo.rest.dto;
 
 import less.green.openpudo.business.model.*;
-import less.green.openpudo.common.GPSUtils;
 import less.green.openpudo.common.dto.geojson.Feature;
 import less.green.openpudo.common.dto.geojson.Point;
 import less.green.openpudo.common.dto.tuple.Quartet;
 import less.green.openpudo.common.dto.tuple.Quintet;
 import less.green.openpudo.common.dto.tuple.Triplet;
-import less.green.openpudo.rest.dto.map.AddressMarker;
+import less.green.openpudo.rest.dto.map.AddressSearchResult;
 import less.green.openpudo.rest.dto.map.PudoMarker;
 import less.green.openpudo.rest.dto.pudo.Address;
 import less.green.openpudo.rest.dto.pudo.Pudo;
@@ -39,13 +38,13 @@ public interface DtoMapper {
 
     Rating mapRatingEntityToDto(TbRating ent);
 
-    TbAddress mapAddressMarkerToAddressEntity(AddressMarker dto);
+    TbAddress mapAddressSearchResultToAddressEntity(AddressSearchResult dto);
 
-    @Mapping(source = "values.value0", target = "lat")
-    @Mapping(source = "values.value1", target = "lon")
-    @Mapping(source = "values.value2", target = "distanceFromOrigin")
-    @Mapping(source = "values.value3", target = "pudo")
-    PudoMarker mapProjectionToPudoMarker(Quartet<BigDecimal, BigDecimal, BigDecimal, PudoSummary> values);
+    @Mapping(source = "values.value0", target = "pudo")
+    @Mapping(source = "values.value1", target = "lat")
+    @Mapping(source = "values.value2", target = "lon")
+    @Mapping(source = "values.value3", target = "distanceFromOrigin")
+    PudoMarker mapProjectionToPudoMarker(Quartet<PudoSummary, BigDecimal, BigDecimal, BigDecimal> values);
 
     @Mapping(source = "values.value0", target = "pudoId")
     @Mapping(source = "values.value1", target = "businessName")
@@ -56,11 +55,11 @@ public interface DtoMapper {
 
     List<PudoSummary> mapProjectionListToPudoSummaryList(List<Quintet<Long, String, UUID, String, TbRating>> values);
 
-    default AddressMarker mapFeatureToAddressMarker(Feature feat, BigDecimal lat, BigDecimal lon) {
+    default AddressSearchResult mapFeatureToAddressSearchResult(Feature feat) {
         if (feat == null) {
             return null;
         }
-        AddressMarker ret = new AddressMarker();
+        AddressSearchResult ret = new AddressSearchResult();
         Map<String, Object> properties = feat.getProperties();
         ret.setLabel((String) properties.get("label"));
         ret.setStreet((String) properties.get("street"));
@@ -72,9 +71,6 @@ public interface DtoMapper {
         Point geometry = feat.getGeometry();
         ret.setLat(geometry.getCoordinates().get(1));
         ret.setLon(geometry.getCoordinates().get(0));
-        if (lat != null && lon != null) {
-            ret.setDistanceFromOrigin(GPSUtils.calculateDistanceFromOrigin(lat, lon, ret.getLat(), ret.getLon()));
-        }
         return ret;
     }
 

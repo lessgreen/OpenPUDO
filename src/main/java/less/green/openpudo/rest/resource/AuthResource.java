@@ -130,13 +130,13 @@ public class AuthResource {
             throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.empty_mandatory_field", "pudo"));
         } else if (isEmpty(req.getPudo().getBusinessName())) {
             throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.empty_mandatory_field", "businessName"));
-        } else if (req.getSignedAddressMarker() == null) {
-            throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.empty_mandatory_field", "signedAddressMarker"));
-        } else if (req.getSignedAddressMarker().getAddress() == null) {
+        } else if (req.getAddressMarker() == null) {
+            throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.empty_mandatory_field", "addressMarker"));
+        } else if (req.getAddressMarker().getAddress() == null) {
             throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.empty_mandatory_field", "address"));
-        } else if (isEmpty(req.getSignedAddressMarker().getSignature())) {
+        } else if (isEmpty(req.getAddressMarker().getSignature())) {
             throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.empty_mandatory_field", "signature"));
-        } else if (!cryptoService.isValidSignature(req.getSignedAddressMarker().getAddress(), req.getSignedAddressMarker().getSignature())) {
+        } else if (!cryptoService.isValidSignature(req.getAddressMarker().getAddress(), req.getAddressMarker().getSignature())) {
             throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.invalid_field", "signature"));
         } else if (req.getRewardPolicy() == null || req.getRewardPolicy().isEmpty()) {
             throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.empty_mandatory_field", "rewardPolicy"));

@@ -1,6 +1,6 @@
 package less.green.openpudo.rest.dto.auth;
 
-import less.green.openpudo.rest.dto.map.SignedAddressMarker;
+import less.green.openpudo.rest.dto.map.AddressMarker;
 import less.green.openpudo.rest.dto.pudo.Pudo;
 import less.green.openpudo.rest.dto.pudo.reward.RewardOption;
 import lombok.Data;
@@ -15,7 +15,7 @@ public class RegisterPudoRequest {
     private Pudo pudo;
 
     @Schema(required = true)
-    private SignedAddressMarker signedAddressMarker;
+    private AddressMarker addressMarker;
 
     @Schema(required = true)
     private List<RewardOption> rewardPolicy;

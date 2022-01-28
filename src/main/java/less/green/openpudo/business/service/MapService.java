@@ -17,8 +17,8 @@ import less.green.openpudo.common.dto.tuple.Septet;
 import less.green.openpudo.rest.config.exception.ApiException;
 import less.green.openpudo.rest.dto.DtoMapper;
 import less.green.openpudo.rest.dto.map.AddressMarker;
+import less.green.openpudo.rest.dto.map.AddressSearchResult;
 import less.green.openpudo.rest.dto.map.PudoMarker;
-import less.green.openpudo.rest.dto.map.SignedAddressMarker;
 import less.green.openpudo.rest.dto.pudo.PudoSummary;
 import lombok.extern.log4j.Log4j2;
 
@@ -60,7 +60,7 @@ public class MapService {
     DtoMapper dtoMapper;
 
     @Transactional(Transactional.TxType.NOT_SUPPORTED)
-    public List<SignedAddressMarker> searchAddress(String text, BigDecimal lat, BigDecimal lon) {
+    public List<AddressMarker> searchAddress(String text, BigDecimal lat, BigDecimal lon) {
         try {
             FeatureCollection fc = geocodeService.autocomplete(context.getLanguage(), text, lat, lon);
             List<Feature> rs = fc.getFeatures();
@@ -68,11 +68,15 @@ public class MapService {
             if (rs.size() > MAX_SEARCH_RESULTS) {
                 rs = rs.subList(0, MAX_SEARCH_RESULTS);
             }
-            List<SignedAddressMarker> ret = new ArrayList<>(rs.size());
+            List<AddressMarker> ret = new ArrayList<>(rs.size());
             for (var feat : rs) {
-                AddressMarker address = dtoMapper.mapFeatureToAddressMarker(feat, lat, lon);
+                AddressSearchResult address = dtoMapper.mapFeatureToAddressSearchResult(feat);
                 String signature = cryptoService.signObject(address);
-                ret.add(new SignedAddressMarker(address, signature));
+                BigDecimal distanceFromOrigin = null;
+                if (lat != null && lon != null) {
+                    distanceFromOrigin = GPSUtils.calculateDistanceFromOrigin(address.getLat(), address.getLon(), lat, lon);
+                }
+                ret.add(new AddressMarker(address, signature, distanceFromOrigin));
             }
             return ret;
         } catch (RuntimeException ex) {
@@ -128,12 +132,12 @@ public class MapService {
         BigDecimal lonMin = lon.subtract(correctedDeltaDegree);
         BigDecimal lonMax = lon.add(correctedDeltaDegree);
 
-        List<Septet<BigDecimal, BigDecimal, Long, String, UUID, String, TbRating>> rs = pudoDao.getPudosOnMap(latMin, latMax, lonMin, lonMax);
+        List<Septet<Long, String, UUID, String, TbRating, BigDecimal, BigDecimal>> rs = pudoDao.getPudosOnMap(latMin, latMax, lonMin, lonMax);
         List<PudoMarker> ret = new ArrayList<>(rs.size());
         for (var row : rs) {
-            PudoSummary pudoSummary = dtoMapper.mapProjectionToPudoSummary(new Quintet<>(row.getValue2(), row.getValue3(), row.getValue4(), row.getValue5(), row.getValue6()));
-            BigDecimal distanceFromOrigin = GPSUtils.calculateDistanceFromOrigin(row.getValue0(), row.getValue1(), lat, lon);
-            PudoMarker marker = dtoMapper.mapProjectionToPudoMarker(new Quartet<>(row.getValue0(), row.getValue1(), distanceFromOrigin, pudoSummary));
+            PudoSummary pudoSummary = dtoMapper.mapProjectionToPudoSummary(new Quintet<>(row.getValue0(), row.getValue1(), row.getValue2(), row.getValue3(), row.getValue4()));
+            BigDecimal distanceFromOrigin = GPSUtils.calculateDistanceFromOrigin(row.getValue5(), row.getValue6(), lat, lon);
+            PudoMarker marker = dtoMapper.mapProjectionToPudoMarker(new Quartet<>(pudoSummary, row.getValue5(), row.getValue6(), distanceFromOrigin));
             ret.add(marker);
         }
         // ordering by distance

@@ -43,8 +43,8 @@ public class PudoDao extends BaseEntityDao<TbPudo, Long> {
         }
     }
 
-    public List<Septet<BigDecimal, BigDecimal, Long, String, UUID, String, TbRating>> getPudosOnMap(BigDecimal latMin, BigDecimal latMax, BigDecimal lonMin, BigDecimal lonMax) {
-        String qs = "SELECT t2.lat, t2.lon, t1.pudoId, t1.businessName, t1.pudoPicId, t2.label, t3 " +
+    public List<Septet<Long, String, UUID, String, TbRating, BigDecimal, BigDecimal>> getPudosOnMap(BigDecimal latMin, BigDecimal latMax, BigDecimal lonMin, BigDecimal lonMax) {
+        String qs = "SELECT t1.pudoId, t1.businessName, t1.pudoPicId, t2.label, t3, t2.lat, t2.lon " +
                 "FROM TbPudo t1, TbAddress t2, TbRating t3 " +
                 "WHERE t1.pudoId = t2.pudoId AND t1.pudoId = t3.pudoId " +
                 "AND t1.pudoPicId IS NOT NULL " +
@@ -56,7 +56,7 @@ public class PudoDao extends BaseEntityDao<TbPudo, Long> {
         q.setParameter("lonMin", lonMin);
         q.setParameter("lonMax", lonMax);
         List<Object[]> rs = q.getResultList();
-        return rs.isEmpty() ? Collections.emptyList() : rs.stream().map(row -> new Septet<>((BigDecimal) row[0], (BigDecimal) row[1], (Long) row[2], (String) row[3], (UUID) row[4], (String) row[5], (TbRating) row[6])).collect(Collectors.toList());
+        return rs.isEmpty() ? Collections.emptyList() : rs.stream().map(row -> new Septet<>((Long) row[0], (String) row[1], (UUID) row[2], (String) row[3], (TbRating) row[4], (BigDecimal) row[5], (BigDecimal) row[6])).collect(Collectors.toList());
     }
 
     public List<Quintet<Long, String, UUID, String, TbRating>> getCurrentUserPudos(Long userId) {

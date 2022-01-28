@@ -10,6 +10,9 @@ import java.math.BigDecimal;
 public class PudoMarker {
 
     @Schema(readOnly = true)
+    private PudoSummary pudo;
+
+    @Schema(readOnly = true)
     private BigDecimal lat;
 
     @Schema(readOnly = true)
@@ -17,8 +20,5 @@ public class PudoMarker {
 
     @Schema(readOnly = true)
     private BigDecimal distanceFromOrigin;
-
-    @Schema(readOnly = true)
-    private PudoSummary pudo;
 
 }

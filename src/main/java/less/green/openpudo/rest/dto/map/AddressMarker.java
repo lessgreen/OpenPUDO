@@ -1,30 +1,24 @@
 package less.green.openpudo.rest.dto.map;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 import java.math.BigDecimal;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class AddressMarker {
 
-    private String label;
+    @Schema(required = true)
+    private AddressSearchResult address;
 
-    private String street;
+    @Schema(required = true)
+    private String signature;
 
-    private String streetNum;
-
-    private String zipCode;
-
-    private String city;
-
-    private String province;
-
-    private String country;
-
-    private BigDecimal lat;
-
-    private BigDecimal lon;
-
+    @Schema(readOnly = true)
     private BigDecimal distanceFromOrigin;
 
 }
