@@ -6,7 +6,8 @@ import less.green.openpudo.business.model.TbRating;
 import less.green.openpudo.business.model.TbRewardPolicy;
 import less.green.openpudo.business.model.usertype.RelationType;
 import less.green.openpudo.common.dto.tuple.Quartet;
-import less.green.openpudo.common.dto.tuple.Triplet;
+import less.green.openpudo.common.dto.tuple.Quintet;
+import less.green.openpudo.common.dto.tuple.Septet;
 import lombok.extern.log4j.Log4j2;
 
 import javax.enterprise.context.RequestScoped;
@@ -42,10 +43,10 @@ public class PudoDao extends BaseEntityDao<TbPudo, Long> {
         }
     }
 
-    public List<Triplet<Long, BigDecimal, BigDecimal>> getPudosOnMap(BigDecimal latMin, BigDecimal latMax, BigDecimal lonMin, BigDecimal lonMax) {
-        String qs = "SELECT t1.pudoId, t2.lat, t2.lon " +
-                "FROM TbPudo t1, TbAddress t2 " +
-                "WHERE t1.pudoId = t2.pudoId " +
+    public List<Septet<BigDecimal, BigDecimal, Long, String, UUID, String, TbRating>> getPudosOnMap(BigDecimal latMin, BigDecimal latMax, BigDecimal lonMin, BigDecimal lonMax) {
+        String qs = "SELECT t2.lat, t2.lon, t1.pudoId, t1.businessName, t1.pudoPicId, t2.label, t3 " +
+                "FROM TbPudo t1, TbAddress t2, TbRating t3 " +
+                "WHERE t1.pudoId = t2.pudoId AND t1.pudoId = t3.pudoId " +
                 "AND t1.pudoPicId IS NOT NULL " +
                 "AND t2.lat >= :latMin AND t2.lat <= :latMax " +
                 "AND t2.lon >= :lonMin AND t2.lon <= :lonMax";
@@ -55,20 +56,20 @@ public class PudoDao extends BaseEntityDao<TbPudo, Long> {
         q.setParameter("lonMin", lonMin);
         q.setParameter("lonMax", lonMax);
         List<Object[]> rs = q.getResultList();
-        return rs.isEmpty() ? Collections.emptyList() : rs.stream().map(row -> new Triplet<>((Long) row[0], (BigDecimal) row[1], (BigDecimal) row[2])).collect(Collectors.toList());
+        return rs.isEmpty() ? Collections.emptyList() : rs.stream().map(row -> new Septet<>((BigDecimal) row[0], (BigDecimal) row[1], (Long) row[2], (String) row[3], (UUID) row[4], (String) row[5], (TbRating) row[6])).collect(Collectors.toList());
     }
 
-    public List<Quartet<Long, String, UUID, String>> getCurrentUserPudos(Long userId) {
-        String qs = "SELECT t1.pudoId, t1.businessName, t1.pudoPicId, t2.label " +
-                "FROM TbPudo t1, TbAddress t2, TbUserPudoRelation t3 " +
-                "WHERE t1.pudoId = t2.pudoId AND t1.pudoId = t3.pudoId " +
+    public List<Quintet<Long, String, UUID, String, TbRating>> getCurrentUserPudos(Long userId) {
+        String qs = "SELECT t1.pudoId, t1.businessName, t1.pudoPicId, t2.label, t4 " +
+                "FROM TbPudo t1, TbAddress t2, TbUserPudoRelation t3, TbRating t4 " +
+                "WHERE t1.pudoId = t2.pudoId AND t1.pudoId = t3.pudoId AND t1.pudoId = t4.pudoId " +
                 "AND t3.userId = :userId AND t3.relationType = :relationType AND t3.deleteTms IS NULL " +
-                "ORDER BY t1.pudoId";
+                "ORDER BY t3.createTms ASC";
         TypedQuery<Object[]> q = em.createQuery(qs, Object[].class);
         q.setParameter("userId", userId);
         q.setParameter("relationType", RelationType.CUSTOMER);
         List<Object[]> rs = q.getResultList();
-        return rs.isEmpty() ? Collections.emptyList() : rs.stream().map(row -> new Quartet<>((Long) row[0], (String) row[1], (UUID) row[2], (String) row[3])).collect(Collectors.toList());
+        return rs.isEmpty() ? Collections.emptyList() : rs.stream().map(row -> new Quintet<>((Long) row[0], (String) row[1], (UUID) row[2], (String) row[3], (TbRating) row[4])).collect(Collectors.toList());
     }
 
 }

@@ -1,6 +1,7 @@
 package less.green.openpudo.business.service;
 
 import less.green.openpudo.business.dao.PudoDao;
+import less.green.openpudo.business.model.TbRating;
 import less.green.openpudo.cdi.ExecutionContext;
 import less.green.openpudo.cdi.service.CryptoService;
 import less.green.openpudo.cdi.service.GeocodeService;
@@ -11,12 +12,14 @@ import less.green.openpudo.common.GPSUtils;
 import less.green.openpudo.common.dto.geojson.Feature;
 import less.green.openpudo.common.dto.geojson.FeatureCollection;
 import less.green.openpudo.common.dto.tuple.Quartet;
-import less.green.openpudo.common.dto.tuple.Triplet;
+import less.green.openpudo.common.dto.tuple.Quintet;
+import less.green.openpudo.common.dto.tuple.Septet;
 import less.green.openpudo.rest.config.exception.ApiException;
 import less.green.openpudo.rest.dto.DtoMapper;
 import less.green.openpudo.rest.dto.map.AddressMarker;
 import less.green.openpudo.rest.dto.map.PudoMarker;
 import less.green.openpudo.rest.dto.map.SignedAddressMarker;
+import less.green.openpudo.rest.dto.pudo.PudoSummary;
 import lombok.extern.log4j.Log4j2;
 
 import javax.enterprise.context.RequestScoped;
@@ -28,6 +31,7 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.UUID;
 
 @RequestScoped
 @Transactional(Transactional.TxType.REQUIRED)
@@ -124,11 +128,13 @@ public class MapService {
         BigDecimal lonMin = lon.subtract(correctedDeltaDegree);
         BigDecimal lonMax = lon.add(correctedDeltaDegree);
 
-        List<Triplet<Long, BigDecimal, BigDecimal>> rs = pudoDao.getPudosOnMap(latMin, latMax, lonMin, lonMax);
+        List<Septet<BigDecimal, BigDecimal, Long, String, UUID, String, TbRating>> rs = pudoDao.getPudosOnMap(latMin, latMax, lonMin, lonMax);
         List<PudoMarker> ret = new ArrayList<>(rs.size());
         for (var row : rs) {
-            Quartet<Long, BigDecimal, BigDecimal, BigDecimal> values = new Quartet<>(row.getValue0(), row.getValue1(), row.getValue2(), GPSUtils.calculateDistanceFromOrigin(row.getValue1(), row.getValue2(), lat, lon));
-            ret.add(dtoMapper.mapProjectionToPudoMarker(values));
+            PudoSummary pudoSummary = dtoMapper.mapProjectionToPudoSummary(new Quintet<>(row.getValue2(), row.getValue3(), row.getValue4(), row.getValue5(), row.getValue6()));
+            BigDecimal distanceFromOrigin = GPSUtils.calculateDistanceFromOrigin(row.getValue0(), row.getValue1(), lat, lon);
+            PudoMarker marker = dtoMapper.mapProjectionToPudoMarker(new Quartet<>(row.getValue0(), row.getValue1(), distanceFromOrigin, pudoSummary));
+            ret.add(marker);
         }
         // ordering by distance
         if (ret.size() > 1) {

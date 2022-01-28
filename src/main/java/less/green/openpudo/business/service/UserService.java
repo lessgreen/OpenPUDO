@@ -9,6 +9,7 @@ import less.green.openpudo.cdi.service.LocalizationService;
 import less.green.openpudo.cdi.service.StorageService;
 import less.green.openpudo.common.ApiReturnCodes;
 import less.green.openpudo.common.dto.tuple.Quartet;
+import less.green.openpudo.common.dto.tuple.Quintet;
 import less.green.openpudo.rest.config.exception.ApiException;
 import less.green.openpudo.rest.dto.DtoMapper;
 import less.green.openpudo.rest.dto.pudo.PudoSummary;
@@ -214,7 +215,7 @@ public class UserService {
         if (user.getAccountType() != AccountType.CUSTOMER) {
             throw new ApiException(ApiReturnCodes.FORBIDDEN, localizationService.getMessage(context.getLanguage(), "error.forbidden.wrong_account_type"));
         }
-        List<Quartet<Long, String, UUID, String>> rs = pudoDao.getCurrentUserPudos(context.getUserId());
+        List<Quintet<Long, String, UUID, String, TbRating>> rs = pudoDao.getCurrentUserPudos(context.getUserId());
         return dtoMapper.mapProjectionListToPudoSummaryList(rs);
     }
 

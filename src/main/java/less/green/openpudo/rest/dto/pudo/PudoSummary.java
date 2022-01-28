@@ -15,7 +15,7 @@ public class PudoSummary {
     @Schema(readOnly = true)
     private Long pudoId;
 
-    @Schema(required = true)
+    @Schema(readOnly = true)
     private String businessName;
 
     @Schema(readOnly = true)
@@ -23,5 +23,8 @@ public class PudoSummary {
 
     @Schema(readOnly = true)
     private String label;
+
+    @Schema(readOnly = true)
+    private Rating rating;
 
 }

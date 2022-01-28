@@ -61,7 +61,7 @@ public class PudoService {
         if (rs == null) {
             return null;
         }
-        Pudo ret = dtoMapper.mapPudoEntityToDto(new Triplet<TbPudo, TbAddress, TbRating>(rs.getValue0(), rs.getValue1(), rs.getValue2()));
+        Pudo ret = dtoMapper.mapPudoEntityToDto(new Triplet<>(rs.getValue0(), rs.getValue1(), rs.getValue2()));
         ret.setRewardMessage(createPolicyMessage(rs.getValue3()));
         ret.setCustomerCount(userPudoRelationDao.getActiveCustomerCountByPudoId(pudoId));
         ret.setPackageCount(packageDao.getPackageCountByPudoId(pudoId));
