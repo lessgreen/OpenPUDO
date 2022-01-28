@@ -8,6 +8,7 @@ import less.green.openpudo.cdi.ExecutionContext;
 import less.green.openpudo.cdi.service.LocalizationService;
 import less.green.openpudo.cdi.service.StorageService;
 import less.green.openpudo.common.ApiReturnCodes;
+import less.green.openpudo.common.dto.tuple.Quartet;
 import less.green.openpudo.common.dto.tuple.Triplet;
 import less.green.openpudo.rest.config.exception.ApiException;
 import less.green.openpudo.rest.dto.DtoMapper;
@@ -20,10 +21,7 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 import static less.green.openpudo.common.StringUtils.isEmpty;
 import static less.green.openpudo.common.StringUtils.sanitizeString;
@@ -59,17 +57,15 @@ public class PudoService {
     DtoMapper dtoMapper;
 
     public Pudo getPudo(Long pudoId) {
-        Triplet<TbPudo, TbAddress, TbRating> rs = pudoDao.getPudoDeep(pudoId);
+        Quartet<TbPudo, TbAddress, TbRating, TbRewardPolicy> rs = pudoDao.getPudoDeep(pudoId);
         if (rs == null) {
             return null;
         }
-        Pudo ret = dtoMapper.mapPudoEntityToDto(rs);
-        // TODO: reward message
-        long customerCount = userPudoRelationDao.getActiveCustomerCountByPudoId(pudoId);
-        ret.setCustomerCount(customerCount);
-        long packageCount = packageDao.getPackageCountByPudoId(pudoId);
-        ret.setPackageCount(packageCount);
-        // customized address must be populated only if the caller is a pudo customer, of if it is the pudo owner (with a fake suffix)
+        Pudo ret = dtoMapper.mapPudoEntityToDto(new Triplet<TbPudo, TbAddress, TbRating>(rs.getValue0(), rs.getValue1(), rs.getValue2()));
+        ret.setRewardMessage(createPolicyMessage(rs.getValue3()));
+        ret.setCustomerCount(userPudoRelationDao.getActiveCustomerCountByPudoId(pudoId));
+        ret.setPackageCount(packageDao.getPackageCountByPudoId(pudoId));
+        // customized address must be populated only if the caller is a pudo customer, of if it is the pudo owner (with a fake example suffix)
         if (context.getUserId() != null) {
             TbUserPudoRelation userPudoRelation = userPudoRelationDao.getUserPudoActiveRelation(pudoId, context.getUserId());
             if (userPudoRelation != null && userPudoRelation.getRelationType() == RelationType.CUSTOMER) {
@@ -367,6 +363,50 @@ public class PudoService {
             throw new ApiException(ApiReturnCodes.FORBIDDEN, localizationService.getMessage(context.getLanguage(), "error.forbidden.wrong_account_type"));
         }
         return pudoId;
+    }
+
+    private String createPolicyMessage(TbRewardPolicy tbRewardPolicy) {
+        if (tbRewardPolicy.getFreeChecked()) {
+            return localizationService.getMessage(context.getLanguage(), "label.reward.free");
+        }
+        List<String> messages = new ArrayList<>(4);
+        if (tbRewardPolicy.getCustomerChecked()) {
+            String msg = localizationService.getMessage(context.getLanguage(), "label.reward.customers");
+            if (!tbRewardPolicy.getCustomerSelectitem().equals("other")) {
+                msg += " (" + localizationService.getMessage(context.getLanguage(), "label.reward.customers.select." + tbRewardPolicy.getCustomerSelectitem()) + ")";
+            } else {
+                msg += " (" + tbRewardPolicy.getCustomerSelectitemText() + ")";
+            }
+            messages.add(msg);
+        }
+        if (tbRewardPolicy.getMembersChecked()) {
+            String msg = localizationService.getMessage(context.getLanguage(), "label.reward.members");
+            if (tbRewardPolicy.getMembersText() != null) {
+                msg += " (" + tbRewardPolicy.getMembersText() + ")";
+            }
+            messages.add(msg);
+        }
+        if (tbRewardPolicy.getBuyChecked()) {
+            String msg = localizationService.getMessage(context.getLanguage(), "label.reward.buy");
+            if (tbRewardPolicy.getBuyText() != null) {
+                msg += " (" + tbRewardPolicy.getBuyText() + ")";
+            }
+            messages.add(msg);
+        }
+        if (tbRewardPolicy.getFeeChecked()) {
+            String msg = localizationService.getMessage(context.getLanguage(), "label.reward.fee");
+            if (tbRewardPolicy.getFeePrice() != null) {
+                msg += " (" + tbRewardPolicy.getFeePrice() + " €)";
+            }
+            messages.add(msg);
+        }
+        if (messages.size() == 1) {
+            return messages.get(0);
+        } else {
+            StringJoiner sj = new StringJoiner("\n", "", "");
+            messages.forEach(i -> sj.add("- " + i));
+            return sj.toString();
+        }
     }
 
     private String createCustomizedAddress(TbPudo pudo, TbAddress address, String customerSuffix) {

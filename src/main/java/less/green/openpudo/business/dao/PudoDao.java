@@ -3,6 +3,7 @@ package less.green.openpudo.business.dao;
 import less.green.openpudo.business.model.TbAddress;
 import less.green.openpudo.business.model.TbPudo;
 import less.green.openpudo.business.model.TbRating;
+import less.green.openpudo.business.model.TbRewardPolicy;
 import less.green.openpudo.business.model.usertype.RelationType;
 import less.green.openpudo.common.dto.tuple.Quartet;
 import less.green.openpudo.common.dto.tuple.Triplet;
@@ -27,15 +28,15 @@ public class PudoDao extends BaseEntityDao<TbPudo, Long> {
         super(TbPudo.class, "pudoId");
     }
 
-    public Triplet<TbPudo, TbAddress, TbRating> getPudoDeep(Long pudoId) {
-        String qs = "SELECT t1, t2, t3 " +
-                "FROM TbPudo t1, TbAddress t2, TbRating t3 " +
-                "WHERE t1.pudoId = :pudoId AND t1.pudoId = t2.pudoId AND t1.pudoId = t3.pudoId";
+    public Quartet<TbPudo, TbAddress, TbRating, TbRewardPolicy> getPudoDeep(Long pudoId) {
+        String qs = "SELECT t1, t2, t3, t4 " +
+                "FROM TbPudo t1, TbAddress t2, TbRating t3, TbRewardPolicy t4 " +
+                "WHERE t1.pudoId = :pudoId AND t1.pudoId = t2.pudoId AND t1.pudoId = t3.pudoId AND t1.pudoId = t4.pudoId and t4.deleteTms IS NULL";
         try {
             TypedQuery<Object[]> q = em.createQuery(qs, Object[].class);
             q.setParameter("pudoId", pudoId);
             Object[] rs = q.getSingleResult();
-            return new Triplet<>((TbPudo) rs[0], (TbAddress) rs[1], (TbRating) rs[2]);
+            return new Quartet<>((TbPudo) rs[0], (TbAddress) rs[1], (TbRating) rs[2], (TbRewardPolicy) rs[3]);
         } catch (NoResultException ex) {
             return null;
         }
