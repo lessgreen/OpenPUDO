@@ -29,7 +29,7 @@ mixin NetworkManagerPudo on NetworkGeneral {
 
     var queryString = "?lat=$lat&lon=$lon";
 
-    var url = _baseURL + '/api/v1/map/suggested-zoom$queryString';
+    var url = _baseURL + '/api/v2/map/suggested-zoom$queryString';
 
     try {
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {

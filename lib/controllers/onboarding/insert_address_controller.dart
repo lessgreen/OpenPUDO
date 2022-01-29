@@ -69,7 +69,10 @@ class _InsertAddressControllerState extends State<InsertAddressController> {
                 appBar: AppBar(
                   backgroundColor: Colors.transparent,
                   systemOverlayStyle: SystemUiOverlayStyle.dark,
-                  leading: const SizedBox(),
+                  leading: CupertinoNavigationBarBackButton(
+                    color: AppColors.primaryColorDark,
+                    onPressed: () => Navigator.of(context).pop(),
+                  ),
                 ),
                 body: Column(
                   children: [

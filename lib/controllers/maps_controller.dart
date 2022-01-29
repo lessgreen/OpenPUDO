@@ -29,6 +29,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
 import 'package:qui_green/commons/alert_dialog.dart';
+import 'package:qui_green/widgets/sascaffold.dart';
 import 'package:qui_green/widgets/text_field_button.dart';
 import 'package:qui_green/view_models/maps_controller_viewmodel.dart';
 import 'package:qui_green/widgets/pudo_map_card.dart';
@@ -49,6 +50,7 @@ class _MapsControllerState extends State<MapsController> {
   void _showErrorDialog(BuildContext context, String val) =>
       SAAlertDialog.displayAlertWithClose(context, "Error", val);
 
+
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -62,7 +64,8 @@ class _MapsControllerState extends State<MapsController> {
               (String val) => _showErrorDialog(context, val);
           return WillPopScope(
             onWillPop: () async => false,
-            child: Scaffold(
+            child: SAScaffold(
+              isLoading: NetworkManager.instance.networkActivity,
               resizeToAvoidBottomInset: false,
               extendBodyBehindAppBar: true,
               appBar: AppBar(
@@ -79,9 +82,10 @@ class _MapsControllerState extends State<MapsController> {
                     options: MapOptions(
                       center: widget.initialPosition,
                       onMapCreated: (controller) {
-                        viewModel.mapController = controller;
+                        viewModel.onMapCreate(controller,widget.initialPosition);
                         viewModel.loadPudos();
                       },
+                      interactiveFlags: InteractiveFlag.pinchZoom | InteractiveFlag.drag,
                       onPositionChanged: (mapPosition, boolValue) {
                         var mapVisibleMaxDistance = Geolocator.distanceBetween(
                           mapPosition.bounds!.northEast!.latitude,
@@ -110,6 +114,7 @@ class _MapsControllerState extends State<MapsController> {
                       },
                       maxZoom: 16,
                       minZoom: 8,
+                      zoom: viewModel.currentZoomLevel.toDouble(),
                       plugins: [
                         MarkerClusterPlugin(),
                       ],
@@ -129,7 +134,7 @@ class _MapsControllerState extends State<MapsController> {
                         ),
                         markers: viewModel.pudos.markers(
                           (marker) {
-                            viewModel.selectPudo(context, marker.pudoId);
+                            viewModel.selectedPudoMarker=marker;
                           },
                           tintColor: AppColors.primaryColorDark,
                         ),
@@ -197,22 +202,22 @@ class _MapsControllerState extends State<MapsController> {
                                   bottom: Dimension.paddingM),
                               child: PudoMapCard(
                                   name:
-                                      viewModel.pudoProfile?.businessName ?? "",
+                                      viewModel.selectedPudoMarker?.pudo.businessName ?? "",
                                   address:
-                                      viewModel.pudoProfile?.address?.label ??
+                                      viewModel.selectedPudoMarker?.pudo.label ??
                                           "",
-                                  stars: viewModel.pudoProfile?.ratingModel
+                                  stars: viewModel.selectedPudoMarker?.pudo.rating
                                           ?.averageScore ??
                                       0,
                                   onTap: () {
                                     viewModel.onPudoClick(
                                         context,
-                                        viewModel.pudoProfile!,
+                                        viewModel.selectedPudoMarker!,
                                         widget.initialPosition);
                                   },
-                                  image: viewModel.pudoProfile?.pudoPicId ??
+                                  image: viewModel.selectedPudoMarker?.pudo.pudoPicId ??
                                       'https://cdn.skuola.net/news_foto/2017/descrizione-bar.jpg')),
-                          crossFadeState: viewModel.pudoProfile == null
+                          crossFadeState: viewModel.selectedPudoMarker == null
                               ? CrossFadeState.showFirst
                               : CrossFadeState.showSecond,
                           duration: const Duration(milliseconds: 100),

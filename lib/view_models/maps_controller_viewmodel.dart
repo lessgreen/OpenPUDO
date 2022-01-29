@@ -30,12 +30,37 @@ import 'package:qui_green/singletons/network/network_manager.dart';
 class MapsControllerViewModel extends ChangeNotifier {
   //Example: to use NetworkManager, use the getInstance: NetworkManager.instance...
 
-  onPudoClick(BuildContext context, PudoProfile data, LatLng position) {
-    Navigator.of(context).pushNamed(Routes.pudoDetail,
-        arguments: PudoDetailControllerDataModel(position, data));
+  onPudoClick(BuildContext context, PudoMarker data, LatLng position) {
+    NetworkManager.instance
+        .getPudoDetails(pudoId: data.pudo.pudoId.toString())
+        .then(
+      (response) {
+        if (response is PudoProfile) {
+          Navigator.of(context).pushNamed(Routes.pudoDetail,
+              arguments: PudoDetailControllerDataModel(position, response));
+        } else {
+          showErrorDialog!("Qualcosa e' andato storto");
+        }
+      },
+    ).catchError((onError) => showErrorDialog!(onError));
   }
 
   MapController? mapController;
+
+  onMapCreate(MapController mapController,LatLng center) {
+    this.mapController = mapController;
+    NetworkManager.instance
+        .getSuggestedZoom(
+            lat: center.latitude,
+            lon: center.longitude)
+        .then((value) {
+      if (value is int) {
+        WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+          mapController.move(center, value.toDouble());
+        });
+      }
+    });
+  }
 
   Function(String)? showErrorDialog;
 
@@ -85,22 +110,12 @@ class MapsControllerViewModel extends ChangeNotifier {
     }).catchError((onError) => showErrorDialog!(onError));
   }
 
-  PudoProfile? _pudoProfile;
+  PudoMarker? _selectedPudoMarker;
 
-  PudoProfile? get pudoProfile => _pudoProfile;
+  PudoMarker? get selectedPudoMarker => _selectedPudoMarker;
 
-  set pudoProfile(PudoProfile? newVal) {
-    _pudoProfile = newVal;
+  set selectedPudoMarker(PudoMarker? newVal) {
+    _selectedPudoMarker = newVal;
     notifyListeners();
-  }
-
-  selectPudo(BuildContext context, int pudoId) {
-    NetworkManager.instance.getPudoDetails(pudoId: pudoId.toString()).then(
-      (response) {
-        if (response is PudoProfile) {
-          pudoProfile = response;
-        }
-      },
-    ).catchError((onError) => showErrorDialog!(onError));
   }
 }

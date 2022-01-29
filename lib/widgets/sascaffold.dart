@@ -30,6 +30,7 @@ class SAScaffold extends StatelessWidget {
   final bool? resizeToAvoidBottomInset;
   final Color? backgroundColor;
   final ValueNotifier? isLoading;
+  final bool extendBodyBehindAppBar;
 
   const SAScaffold({
     Key? key,
@@ -41,6 +42,7 @@ class SAScaffold extends StatelessWidget {
     this.floatingActionButton,
     this.floatingActionButtonLocation,
     this.isLoading,
+    this.extendBodyBehindAppBar=false
   }) : super(key: key);
 
   @override
@@ -77,6 +79,7 @@ class SAScaffold extends StatelessWidget {
         : Stack(
             children: [
               Scaffold(
+                extendBodyBehindAppBar: extendBodyBehindAppBar,
                 backgroundColor: backgroundColor ?? Theme.of(context).backgroundColor,
                 bottomSheet: bottomSheet,
                 resizeToAvoidBottomInset: resizeToAvoidBottomInset ?? true,

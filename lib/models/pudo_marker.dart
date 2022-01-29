@@ -28,16 +28,43 @@ part 'pudo_marker.g.dart';
 
 @JsonSerializable()
 class PudoMarker {
-  final int pudoId;
-  final String? label;
+  final PudoMarkerData pudo;
   final double? lat;
   final double? lon;
+  final double? distanceFromOrigin;
 
-  PudoMarker({required this.pudoId, this.label, this.lat, this.lon});
+  PudoMarker({required this.pudo, this.lat, this.lon,this.distanceFromOrigin});
 
   factory PudoMarker.fromJson(Map<String, dynamic> json) => _$PudoMarkerFromJson(json);
 
   Map<String, dynamic> toJson() => _$PudoMarkerToJson(this);
+}
+
+@JsonSerializable()
+class PudoMarkerData{
+  final int pudoId;
+  final String? businessName;
+  final String? pudoPicId;
+  final String? label;
+  final PudoMarkerRating? rating;
+
+  PudoMarkerData(
+      {required this.pudoId, this.businessName, this.pudoPicId, this.label, this.rating});
+  factory PudoMarkerData.fromJson(Map<String, dynamic> json) => _$PudoMarkerDataFromJson(json);
+
+  Map<String, dynamic> toJson() => _$PudoMarkerDataToJson(this);
+}
+
+@JsonSerializable()
+class PudoMarkerRating{
+  final int pudoId;
+  final int? reviewCount;
+  final int? averageScore;
+
+  PudoMarkerRating({required this.pudoId, this.reviewCount, this.averageScore});
+  factory PudoMarkerRating.fromJson(Map<String, dynamic> json) => _$PudoMarkerRatingFromJson(json);
+
+  Map<String, dynamic> toJson() => _$PudoMarkerRatingToJson(this);
 }
 
 extension PudoUtilities on List<PudoMarker> {

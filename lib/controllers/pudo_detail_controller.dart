@@ -50,20 +50,12 @@ class _PudoDetailControllerState extends State<PudoDetailController> {
                 width: Dimension.paddingS,
               ),
               Row(
-                children: [
-                  Icon(
-                    Icons.star_rounded,
-                    color: Colors.yellow.shade700,
-                  ),
-                  Icon(
-                    Icons.star_rounded,
-                    color: Colors.yellow.shade700,
-                  ),
-                  Icon(
-                    Icons.star_rounded,
-                    color: Colors.yellow.shade700,
-                  ),
-                ],
+                children: List<Widget>.generate(
+                    (widget.dataModel.pudoProfile.ratingModel?.averageScore??0) > 5 ? 5 : widget.dataModel.pudoProfile.ratingModel?.averageScore??0,
+                        (index) => Icon(
+                      Icons.star_rounded,
+                      color: Colors.yellow.shade700,
+                    )),
               ),
             ],
           ),
