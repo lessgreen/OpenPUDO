@@ -6,6 +6,7 @@ import less.green.openpudo.common.dto.geojson.Point;
 import less.green.openpudo.common.dto.tuple.Quartet;
 import less.green.openpudo.common.dto.tuple.Quintet;
 import less.green.openpudo.common.dto.tuple.Triplet;
+import less.green.openpudo.rest.dto.map.AddressMarker;
 import less.green.openpudo.rest.dto.map.AddressSearchResult;
 import less.green.openpudo.rest.dto.map.PudoMarker;
 import less.green.openpudo.rest.dto.pudo.Address;
@@ -40,12 +41,6 @@ public interface DtoMapper {
 
     TbAddress mapAddressSearchResultToAddressEntity(AddressSearchResult dto);
 
-    @Mapping(source = "values.value0", target = "pudo")
-    @Mapping(source = "values.value1", target = "lat")
-    @Mapping(source = "values.value2", target = "lon")
-    @Mapping(source = "values.value3", target = "distanceFromOrigin")
-    PudoMarker mapProjectionToPudoMarker(Quartet<PudoSummary, BigDecimal, BigDecimal, BigDecimal> values);
-
     @Mapping(source = "values.value0", target = "pudoId")
     @Mapping(source = "values.value1", target = "businessName")
     @Mapping(source = "values.value2", target = "pudoPicId")
@@ -54,6 +49,19 @@ public interface DtoMapper {
     PudoSummary mapProjectionToPudoSummary(Quintet<Long, String, UUID, String, TbRating> values);
 
     List<PudoSummary> mapProjectionListToPudoSummaryList(List<Quintet<Long, String, UUID, String, TbRating>> values);
+
+    @Mapping(source = "values.value0", target = "pudo")
+    @Mapping(source = "values.value1", target = "lat")
+    @Mapping(source = "values.value2", target = "lon")
+    @Mapping(source = "values.value3", target = "distanceFromOrigin")
+    PudoMarker mapProjectionToPudoMarker(Quartet<PudoSummary, BigDecimal, BigDecimal, BigDecimal> values);
+
+    @Mapping(source = "values.value0", target = "address")
+    @Mapping(source = "values.value1", target = "signature")
+    @Mapping(source = "values.value2", target = "lat")
+    @Mapping(source = "values.value3", target = "lon")
+    @Mapping(source = "values.value4", target = "distanceFromOrigin")
+    AddressMarker mapProjectionToAddressMarker(Quintet<AddressSearchResult, String, BigDecimal, BigDecimal, BigDecimal> values);
 
     default AddressSearchResult mapFeatureToAddressSearchResult(Feature feat) {
         if (feat == null) {

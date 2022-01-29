@@ -76,7 +76,7 @@ public class MapService {
                 if (lat != null && lon != null) {
                     distanceFromOrigin = GPSUtils.calculateDistanceFromOrigin(address.getLat(), address.getLon(), lat, lon);
                 }
-                ret.add(new AddressMarker(address, signature, distanceFromOrigin));
+                ret.add(dtoMapper.mapProjectionToAddressMarker(new Quintet<>(address, signature, address.getLat(), address.getLon(), distanceFromOrigin)));
             }
             return ret;
         } catch (RuntimeException ex) {
