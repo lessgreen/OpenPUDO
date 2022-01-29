@@ -23,52 +23,49 @@ import 'package:json_annotation/json_annotation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:qui_green/models/address_model.dart';
+import 'package:qui_green/models/pudo_model.dart';
 
-part 'pudo_marker.g.dart';
+part 'geo_marker.g.dart';
 
 @JsonSerializable()
-class PudoMarker {
-  final PudoMarkerData pudo;
+class GeoMarker {
+  final PudoModel? pudo;
+  final AddressModel? address;
   final double? lat;
   final double? lon;
+  final String? signature;
   final double? distanceFromOrigin;
 
-  PudoMarker({required this.pudo, this.lat, this.lon,this.distanceFromOrigin});
+  GeoMarker({required this.pudo, this.address, this.lat, this.lon, this.signature, this.distanceFromOrigin});
 
-  factory PudoMarker.fromJson(Map<String, dynamic> json) => _$PudoMarkerFromJson(json);
+  factory GeoMarker.fromJson(Map<String, dynamic> json) => _$GeoMarkerFromJson(json);
 
-  Map<String, dynamic> toJson() => _$PudoMarkerToJson(this);
+  Map<String, dynamic> toJson() => _$GeoMarkerToJson(this);
 }
 
-@JsonSerializable()
-class PudoMarkerData{
-  final int pudoId;
-  final String? businessName;
-  final String? pudoPicId;
-  final String? label;
-  final PudoMarkerRating? rating;
+extension PudoUtilities on List<GeoMarker> {
+  List<AddressModel>? get addresses {
+    List<AddressModel> retArray = [];
+    for (final aRow in this) {
+      if (aRow.address != null) {
+        retArray.add(aRow.address!);
+      }
+    }
+    return retArray.isNotEmpty ? retArray : null;
+  }
 
-  PudoMarkerData(
-      {required this.pudoId, this.businessName, this.pudoPicId, this.label, this.rating});
-  factory PudoMarkerData.fromJson(Map<String, dynamic> json) => _$PudoMarkerDataFromJson(json);
+  List<PudoModel>? get pudos {
+    List<PudoModel> retArray = [];
+    for (final aRow in this) {
+      if (aRow.pudo != null) {
+        retArray.add(aRow.pudo!);
+      }
+    }
+    return retArray.isNotEmpty ? retArray : null;
+  }
 
-  Map<String, dynamic> toJson() => _$PudoMarkerDataToJson(this);
-}
-
-@JsonSerializable()
-class PudoMarkerRating{
-  final int pudoId;
-  final int? reviewCount;
-  final int? averageScore;
-
-  PudoMarkerRating({required this.pudoId, this.reviewCount, this.averageScore});
-  factory PudoMarkerRating.fromJson(Map<String, dynamic> json) => _$PudoMarkerRatingFromJson(json);
-
-  Map<String, dynamic> toJson() => _$PudoMarkerRatingToJson(this);
-}
-
-extension PudoUtilities on List<PudoMarker> {
-  List<Marker> markers(Function(PudoMarker)? callback, {required Color tintColor}) {
+  List<Marker> markers(Function(GeoMarker)? callback, {required Color tintColor}) {
     List<Marker> retArray = [];
 
     for (final aRow in this) {

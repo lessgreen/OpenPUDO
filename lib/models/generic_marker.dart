@@ -19,7 +19,7 @@
 */
 
 import 'package:json_annotation/json_annotation.dart';
-import 'package:qui_green/models/pudo_marker.dart';
+import 'package:qui_green/models/geo_marker.dart';
 
 import 'address_marker.dart';
 
@@ -40,7 +40,7 @@ class GenericMarker {
   static GenericMarker fromGenericJson(Map<String, dynamic> json) {
     var retValue = GenericMarker.fromJson(json);
     if (retValue.type.toLowerCase() == "pudo") {
-      retValue.marker = PudoMarker.fromJson(retValue.marker);
+      retValue.marker = GeoMarker.fromJson(retValue.marker);
     } else if (retValue.type.toLowerCase() == "address") {
       retValue.marker = AddressMarker.fromJson(retValue.marker);
     }

@@ -80,7 +80,7 @@ class _RegistrationCompleteControllerState extends State<RegistrationCompleteCon
                           child: PudoMapCard(
                               name: widget.pudoDataModel?.businessName ?? "",
                               address: widget.pudoDataModel?.address?.label ?? "",
-                              stars: widget.pudoDataModel?.ratingModel?.averageScore ?? 0,
+                              stars: widget.pudoDataModel?.ratingModel?.stars ?? 0,
                               onTap: () {},
                               image: widget.pudoDataModel?.pudoPicId ?? 'https://cdn.skuola.net/news_foto/2017/descrizione-bar.jpg')),
                     const SizedBox(height: Dimension.paddingL),

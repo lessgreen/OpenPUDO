@@ -23,22 +23,39 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:qui_green/commons/utilities/print_helper.dart';
 import 'package:qui_green/models/pudo_detail_controller_data_model.dart';
-import 'package:qui_green/models/pudo_marker.dart';
+import 'package:qui_green/models/geo_marker.dart';
 import 'package:qui_green/models/pudo_profile.dart';
 import 'package:qui_green/resources/routes_enum.dart';
 import 'package:qui_green/singletons/network/network_manager.dart';
 
 class MapsControllerViewModel extends ChangeNotifier {
-  //Example: to use NetworkManager, use the getInstance: NetworkManager.instance...
+  var lastTriggeredLatitude = 45.4642;
+  var lastTriggeredLongitude = 9.1900;
+  var lastTriggeredZoom = 8;
+  var currentLatitude = 45.4642;
+  var currentLongitude = 9.1900;
+  var currentZoomLevel = 8;
+  MapController? mapController;
 
-  onPudoClick(BuildContext context, PudoMarker data, LatLng position) {
-    NetworkManager.instance
-        .getPudoDetails(pudoId: data.pudo.pudoId.toString())
-        .then(
+  List<GeoMarker> _pudos = [];
+  List<GeoMarker> get pudos => _pudos;
+  set pudos(List<GeoMarker> newVal) {
+    _pudos = newVal;
+    notifyListeners();
+  }
+
+  PudoProfile? _pudoProfile;
+  PudoProfile? get pudoProfile => _pudoProfile;
+  set pudoProfile(PudoProfile? newVal) {
+    _pudoProfile = newVal;
+    notifyListeners();
+  }
+
+  onPudoClick(BuildContext context, PudoProfile pudo, LatLng position) {
+    NetworkManager.instance.getPudoDetails(pudoId: pudo.pudoId.toString()).then(
       (response) {
         if (response is PudoProfile) {
-          Navigator.of(context).pushNamed(Routes.pudoDetail,
-              arguments: PudoDetailControllerDataModel(position, response));
+          Navigator.of(context).pushNamed(Routes.pudoDetail, arguments: PudoDetailControllerDataModel(position, response));
         } else {
           showErrorDialog!("Qualcosa e' andato storto");
         }
@@ -46,15 +63,11 @@ class MapsControllerViewModel extends ChangeNotifier {
     ).catchError((onError) => showErrorDialog!(onError));
   }
 
-  MapController? mapController;
+  Function(String)? showErrorDialog;
 
-  onMapCreate(MapController mapController,LatLng center) {
+  onMapCreate(MapController mapController, LatLng center) {
     this.mapController = mapController;
-    NetworkManager.instance
-        .getSuggestedZoom(
-            lat: center.latitude,
-            lon: center.longitude)
-        .then((value) {
+    NetworkManager.instance.getSuggestedZoom(lat: center.latitude, lon: center.longitude).then((value) {
       if (value is int) {
         WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
           mapController.move(center, value.toDouble());
@@ -62,15 +75,6 @@ class MapsControllerViewModel extends ChangeNotifier {
       }
     });
   }
-
-  Function(String)? showErrorDialog;
-
-  var lastTriggeredLatitude = 45.4642;
-  var lastTriggeredLongitude = 9.1900;
-  var lastTriggeredZoom = 8;
-  var currentLatitude = 45.4642;
-  var currentLongitude = 9.1900;
-  var currentZoomLevel = 8;
 
   updateCurrentMapPosition(MapPosition mapPosition) {
     currentLatitude = mapPosition.center!.latitude;
@@ -84,36 +88,33 @@ class MapsControllerViewModel extends ChangeNotifier {
     lastTriggeredZoom = currentZoomLevel;
   }
 
-  List<PudoMarker> _pudos = [];
-
-  List<PudoMarker> get pudos => _pudos;
-
-  set pudos(List<PudoMarker> newVal) {
-    _pudos = newVal;
-    notifyListeners();
-  }
-
   loadPudos() {
+    /*NetworkManager.instance
+        .getSuggestedZoom(lat: currentLatitude, lon: currentLongitude)
+        .then((value) => mapController.)
+        .catchError((onError) => safePrint(onError));*/
     NetworkManager.instance.getPudos(lat: currentLatitude, lon: currentLongitude, zoom: currentZoomLevel).then((response) {
-      if (response is List<PudoMarker>) {
+      if (response is List<GeoMarker>) {
         if (_pudos.isNotEmpty && response.isEmpty) {
-          mapController?.move(LatLng(currentLatitude, currentLongitude),
-              currentZoomLevel.toDouble());
+          mapController?.move(LatLng(currentLatitude, currentLongitude), currentZoomLevel.toDouble());
           return;
         }
         pudos = response;
-        mapController?.move(LatLng(currentLatitude, currentLongitude),
-            currentZoomLevel.toDouble());
+        mapController?.move(LatLng(currentLatitude, currentLongitude), currentZoomLevel.toDouble());
       }
     }).catchError((onError) => showErrorDialog!(onError));
   }
 
-  PudoMarker? _selectedPudoMarker;
-
-  PudoMarker? get selectedPudoMarker => _selectedPudoMarker;
-
-  set selectedPudoMarker(PudoMarker? newVal) {
-    _selectedPudoMarker = newVal;
-    notifyListeners();
+  selectPudo(BuildContext context, int? pudoId) {
+    if (pudoId == null) {
+      return;
+    }
+    NetworkManager.instance.getPudoDetails(pudoId: pudoId.toString()).then(
+      (response) {
+        if (response is PudoProfile) {
+          pudoProfile = response;
+        }
+      },
+    ).catchError((onError) => showErrorDialog!(onError));
   }
 }
