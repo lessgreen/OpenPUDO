@@ -44,6 +44,7 @@ mixin NetworkManagerUser on NetworkGeneral {
       var baseResponse = OPBaseResponse.fromJson(json);
       if (baseResponse.returnCode == 0 && baseResponse.payload != null) {
         var accessTokenData = AccessTokenData.fromJson(baseResponse.payload);
+        setAccessTokenData(accessTokenData);
         setAccessToken(accessTokenData.accessToken);
       }
       return baseResponse;
@@ -105,6 +106,7 @@ mixin NetworkManagerUser on NetworkGeneral {
       var baseResponse = OPBaseResponse.fromJson(json);
       if (baseResponse.returnCode == 0 && baseResponse.payload != null) {
         var accessTokenData = AccessTokenData.fromJson(baseResponse.payload);
+        setAccessTokenData(accessTokenData);
         setAccessToken(accessTokenData.accessToken);
       }
       return baseResponse;

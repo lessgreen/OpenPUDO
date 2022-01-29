@@ -24,14 +24,17 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:qui_green/commons/alert_dialog.dart';
 import 'package:qui_green/commons/utilities/keyboard_visibility.dart';
+import 'package:qui_green/singletons/network/network_manager.dart';
 import 'package:qui_green/widgets/main_button.dart';
 import 'package:qui_green/view_models/personal_data_controller_viewmodel.dart';
 import 'package:qui_green/widgets/profile_pic_box.dart';
 import 'package:qui_green/models/pudo_profile.dart';
 import 'package:qui_green/resources/res.dart';
+import 'package:qui_green/widgets/sascaffold.dart';
 
 class PersonalDataController extends StatefulWidget {
-  const PersonalDataController({Key? key, this.pudoDataModel}) : super(key: key);
+  const PersonalDataController({Key? key, this.pudoDataModel})
+      : super(key: key);
   final PudoProfile? pudoDataModel;
 
   @override
@@ -39,20 +42,27 @@ class PersonalDataController extends StatefulWidget {
 }
 
 class _PersonalDataControllerState extends State<PersonalDataController> {
-  void _showErrorDialog(BuildContext context, String val) => SAAlertDialog.displayAlertWithClose(context, "Error", val);
+  void _showErrorDialog(BuildContext context, String val) =>
+      SAAlertDialog.displayAlertWithClose(context, "Error", val);
 
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
         providers: [
-          ChangeNotifierProxyProvider0<PersonalDataControllerViewModel?>(create: (context) => PersonalDataControllerViewModel(), update: (context, viewModel) => viewModel),
+          ChangeNotifierProxyProvider0<PersonalDataControllerViewModel?>(
+              create: (context) => PersonalDataControllerViewModel(),
+              update: (context, viewModel) => viewModel),
         ],
-        child: Consumer<PersonalDataControllerViewModel?>(builder: (_, viewModel, __) {
-          viewModel?.showErrorDialog = (String val) => _showErrorDialog(context, val);
-          return KeyboardVisibilityBuilder(builder: (context, child, isKeyboardVisible) {
+        child: Consumer<PersonalDataControllerViewModel?>(
+            builder: (_, viewModel, __) {
+          viewModel?.showErrorDialog =
+              (String val) => _showErrorDialog(context, val);
+          return KeyboardVisibilityBuilder(
+              builder: (context, child, isKeyboardVisible) {
             return WillPopScope(
               onWillPop: () async => false,
-              child: Scaffold(
+              child: SAScaffold(
+                isLoading: NetworkManager.instance.networkActivity,
                 resizeToAvoidBottomInset: false,
                 appBar: AppBar(
                   backgroundColor: Colors.transparent,
@@ -71,7 +81,8 @@ class _PersonalDataControllerState extends State<PersonalDataController> {
                       height: Dimension.paddingM,
                     ),
                     Container(
-                        padding: const EdgeInsets.only(left: Dimension.padding, right: Dimension.padding),
+                        padding: const EdgeInsets.only(
+                            left: Dimension.padding, right: Dimension.padding),
                         child: const Text(
                           'Per poterti identificare quando il tuo pacco arriverà, abbiamo bisogno di qualche altro dato.',
                           textAlign: TextAlign.center,
@@ -95,7 +106,10 @@ class _PersonalDataControllerState extends State<PersonalDataController> {
                       padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
                       child: CupertinoTextField(
                         placeholder: 'Nome',
-                        decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Theme.of(context).primaryColor))),
+                        decoration: BoxDecoration(
+                            border: Border(
+                                bottom: BorderSide(
+                                    color: Theme.of(context).primaryColor))),
                         autofocus: false,
                         textInputAction: TextInputAction.done,
                         onChanged: (newValue) {
@@ -107,7 +121,10 @@ class _PersonalDataControllerState extends State<PersonalDataController> {
                       padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
                       child: CupertinoTextField(
                         placeholder: 'Cognome',
-                        decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Theme.of(context).primaryColor))),
+                        decoration: BoxDecoration(
+                            border: Border(
+                                bottom: BorderSide(
+                                    color: Theme.of(context).primaryColor))),
                         autofocus: false,
                         textInputAction: TextInputAction.done,
                         onChanged: (newValue) {
@@ -117,7 +134,8 @@ class _PersonalDataControllerState extends State<PersonalDataController> {
                     ),
                     const SizedBox(height: 10),
                     const Padding(
-                      padding: EdgeInsets.only(left: Dimension.padding, right: Dimension.padding),
+                      padding: EdgeInsets.only(
+                          left: Dimension.padding, right: Dimension.padding),
                       child: Text(
                         'Se usi il nome e cognome come sistema di identificazione, dovrai esibire un documento valido per il ritiro.',
                         style: TextStyle(fontSize: 12),
@@ -125,11 +143,14 @@ class _PersonalDataControllerState extends State<PersonalDataController> {
                     ),
                     const Spacer(),
                     AnimatedCrossFade(
-                      crossFadeState: isKeyboardVisible ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+                      crossFadeState: isKeyboardVisible
+                          ? CrossFadeState.showSecond
+                          : CrossFadeState.showFirst,
                       secondChild: const SizedBox(),
                       firstChild: MainButton(
                         enabled: viewModel.isValid,
-                        onPressed: () => viewModel.onSendClick(context, widget.pudoDataModel),
+                        onPressed: () => viewModel.onSendClick(
+                            context, widget.pudoDataModel),
                         text: 'Invia',
                       ),
                       duration: const Duration(milliseconds: 150),

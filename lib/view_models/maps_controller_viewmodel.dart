@@ -21,6 +21,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:qui_green/commons/utilities/print_helper.dart';
 import 'package:qui_green/models/pudo_detail_controller_data_model.dart';
 import 'package:qui_green/models/pudo_marker.dart';
 import 'package:qui_green/models/pudo_profile.dart';
@@ -93,10 +94,7 @@ class MapsControllerViewModel extends ChangeNotifier {
   }
 
   loadPudos() {
-    NetworkManager.instance
-        .getPudos(
-            lat: currentLatitude, lon: currentLongitude, zoom: currentZoomLevel)
-        .then((response) {
+    NetworkManager.instance.getPudos(lat: currentLatitude, lon: currentLongitude, zoom: currentZoomLevel).then((response) {
       if (response is List<PudoMarker>) {
         if (_pudos.isNotEmpty && response.isEmpty) {
           mapController?.move(LatLng(currentLatitude, currentLongitude),

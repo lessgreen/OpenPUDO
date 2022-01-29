@@ -11,6 +11,7 @@ AccessTokenData _$AccessTokenDataFromJson(Map<String, dynamic> json) =>
       accessToken: json['accessToken'] as String,
       expireDate: json['expireDate'] as String,
       issueDate: json['issueDate'] as String,
+      accessProfile: json['accessProfile'] as String,
     );
 
 Map<String, dynamic> _$AccessTokenDataToJson(AccessTokenData instance) =>
@@ -18,4 +19,5 @@ Map<String, dynamic> _$AccessTokenDataToJson(AccessTokenData instance) =>
       'accessToken': instance.accessToken,
       'expireDate': instance.expireDate,
       'issueDate': instance.issueDate,
+      'accessProfile': instance.accessProfile,
     };
