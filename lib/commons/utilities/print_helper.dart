@@ -20,7 +20,7 @@
 
 import 'package:flutter/foundation.dart';
 
-void safePrint(String val) {
+void safePrint(Object val) {
   if (kDebugMode) {
     print(val);
   }

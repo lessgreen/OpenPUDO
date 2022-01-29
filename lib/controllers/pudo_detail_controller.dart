@@ -49,20 +49,13 @@ class _PudoDetailControllerState extends State<PudoDetailController> {
                 width: Dimension.paddingS,
               ),
               Row(
-                children: [
-                  Icon(
+                children: List<Widget>.generate(
+                  (widget.dataModel.pudoProfile.ratingModel?.stars ?? 0) > 5 ? 5 : widget.dataModel.pudoProfile.ratingModel?.stars ?? 0,
+                  (index) => Icon(
                     Icons.star_rounded,
                     color: Colors.yellow.shade700,
                   ),
-                  Icon(
-                    Icons.star_rounded,
-                    color: Colors.yellow.shade700,
-                  ),
-                  Icon(
-                    Icons.star_rounded,
-                    color: Colors.yellow.shade700,
-                  ),
-                ],
+                ),
               ),
             ],
           ),
@@ -155,7 +148,7 @@ class _PudoDetailControllerState extends State<PudoDetailController> {
           ),
           centerTitle: true,
           leading: GestureDetector(
-            onTap: () => Navigator.of(context).pushReplacementNamed(Routes.maps, arguments: widget.dataModel.initialPosition),
+            onTap: () => Navigator.of(context).pop(),
             child: const Icon(
               Icons.arrow_back_ios_rounded,
               color: AppColors.primaryColorDark,
@@ -164,7 +157,7 @@ class _PudoDetailControllerState extends State<PudoDetailController> {
           actions: [
             TextFieldButton(
               text: "Scegli",
-              onPressed: () => Navigator.of(context).pushReplacementNamed(Routes.personalData, arguments: widget.dataModel.pudoProfile),
+              onPressed: () => Navigator.of(context).pushNamedAndRemoveUntil(Routes.personalData, ModalRoute.withName('/'), arguments: widget.dataModel.pudoProfile),
             )
           ],
         ),

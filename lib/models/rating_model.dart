@@ -25,7 +25,7 @@ part 'rating_model.g.dart';
 @JsonSerializable()
 class RatingModel {
   int pudoId;
-  int averageScore;
+  double? averageScore;
   int reviewCount;
 
   RatingModel({required this.pudoId, required this.averageScore, required this.reviewCount});
@@ -33,4 +33,23 @@ class RatingModel {
   factory RatingModel.fromJson(Map<String, dynamic> json) => _$RatingModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$RatingModelToJson(this);
+
+  int get stars {
+    if (averageScore == null) {
+      return 0;
+    }
+    if (averageScore! <= 0) {
+      return 0;
+    } else if (averageScore! > 0 && averageScore! < 2) {
+      return 1;
+    } else if (averageScore! > 1 && averageScore! < 3) {
+      return 2;
+    } else if (averageScore! > 2 && averageScore! < 4) {
+      return 3;
+    } else if (averageScore! > 3 && averageScore! < 5) {
+      return 4;
+    } else {
+      return 5;
+    }
+  }
 }

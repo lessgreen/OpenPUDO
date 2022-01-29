@@ -29,7 +29,7 @@ mixin NetworkManagerPudo on NetworkGeneral {
 
     var queryString = "?lat=$lat&lon=$lon";
 
-    var url = _baseURL + '/api/v1/map/suggested-zoom$queryString';
+    var url = _baseURL + '/api/v2/map/suggested-zoom$queryString';
 
     try {
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
@@ -130,7 +130,7 @@ mixin NetworkManagerPudo on NetworkGeneral {
       var decodedUTF8 = const Utf8Decoder().convert(codeUnits);
       var json = jsonDecode(decodedUTF8);
       var baseResponse = OPBaseResponse.fromJson(json);
-      List<PudoMarker> pudos = <PudoMarker>[];
+      List<GeoMarker> pudos = <GeoMarker>[];
 
       var needHandleTokenRefresh = _handleTokenRefresh(
         baseResponse,
@@ -141,7 +141,7 @@ mixin NetworkManagerPudo on NetworkGeneral {
       if (needHandleTokenRefresh == false) {
         if (baseResponse.returnCode == 0 && baseResponse.payload != null && baseResponse.payload is List) {
           for (dynamic aRow in baseResponse.payload) {
-            pudos.add(PudoMarker.fromJson(aRow));
+            pudos.add(GeoMarker.fromJson(aRow));
           }
           return pudos;
         } else {

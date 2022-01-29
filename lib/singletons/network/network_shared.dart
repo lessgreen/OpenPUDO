@@ -36,7 +36,7 @@ import 'package:qui_green/models/delivery_package_request.dart';
 import 'package:qui_green/models/device_info_model.dart';
 import 'package:qui_green/models/generic_marker.dart';
 import 'package:qui_green/models/login_request.dart';
-import 'package:qui_green/models/pudo_marker.dart';
+import 'package:qui_green/models/geo_marker.dart';
 import 'package:qui_green/models/pudo_notification.dart';
 import 'package:qui_green/models/pudo_package.dart';
 import 'package:qui_green/models/pudo_package_event.dart';
@@ -117,8 +117,7 @@ mixin NetworkGeneral {
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
-      Response response = await post(Uri.parse(url), headers: _headers)
-          .timeout(Duration(seconds: _timeout));
+      Response response = await post(Uri.parse(url), headers: _headers).timeout(Duration(seconds: _timeout));
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = false;
       });
@@ -134,8 +133,7 @@ mixin NetworkGeneral {
         return baseResponse;
       } else {
         _refreshTokenRetryCounter++;
-        throw ErrorDescription(
-            'Error ${baseResponse.returnCode}: ${baseResponse.message}');
+        throw ErrorDescription('Error ${baseResponse.returnCode}: ${baseResponse.message}');
       }
     } on Error catch (e) {
       _refreshTokenRetryCounter++;
@@ -148,8 +146,7 @@ mixin NetworkGeneral {
     _accessTokenData = newVal;
   }
 
-  get accessTokenAccess =>
-      _accessTokenData == null ? "none" : _accessTokenData!.accessProfile;
+  get accessTokenAccess => _accessTokenData == null ? "none" : _accessTokenData!.accessProfile;
 
   void setAccessToken(String? accessToken) {
     if (accessToken != null) {
@@ -165,8 +162,7 @@ mixin NetworkGeneral {
     _sharedPreferences.remove('accessToken');
   }
 
-  bool _handleTokenRefresh(
-      OPBaseResponse baseResponse, Function? retryCallack) {
+  bool _handleTokenRefresh(OPBaseResponse baseResponse, Function? retryCallack) {
     if (baseResponse.returnCode == 401) {
       //try to refreshToken
       if (_refreshTokenRetryCounter > _maxRetryCounter) {
@@ -179,70 +175,14 @@ mixin NetworkGeneral {
           retryCallack?.call();
         });
       } else {
-        throw ErrorDescription(
-            'Error: ${baseResponse.returnCode} - ${baseResponse.message}');
+        throw ErrorDescription('Error: ${baseResponse.returnCode} - ${baseResponse.message}');
       }
       return true;
     }
     return false;
   }
 
-  Future<dynamic> search(
-      {double? lat, double? lon, required String text}) async {
-    var queryString = "?text=$text";
-    if (lat != null && lon != null) {
-      queryString += "&lat=$lat&lon=$lon";
-    }
-    if (_accessToken != null) {
-      _headers['Authorization'] = 'Bearer $_accessToken';
-    }
-
-    var url = _baseURL + '/api/v1/map/search$queryString';
-
-    try {
-      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
-        _networkActivity.value = true;
-      });
-      Response response = await get(Uri.parse(url), headers: _headers)
-          .timeout(Duration(seconds: _timeout));
-      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
-        _networkActivity.value = false;
-      });
-      final codeUnits = response.body.codeUnits;
-      var decodedUTF8 = const Utf8Decoder().convert(codeUnits);
-      var json = jsonDecode(decodedUTF8);
-      var baseResponse = OPBaseResponse.fromJson(json);
-      List<GenericMarker> pudos = <GenericMarker>[];
-
-      var needHandleTokenRefresh = _handleTokenRefresh(
-        baseResponse,
-        () {
-          getAddresses(lat: lat, lon: lon, text: text)
-              .catchError((onError) => throw onError);
-        },
-      );
-      if (needHandleTokenRefresh == false) {
-        if (baseResponse.returnCode == 0 &&
-            baseResponse.payload != null &&
-            baseResponse.payload is List) {
-          for (dynamic aRow in baseResponse.payload) {
-            pudos.add(GenericMarker.fromGenericJson(aRow));
-          }
-          return pudos;
-        } else {
-          throw ErrorDescription(
-              'Error ${baseResponse.returnCode}: ${baseResponse.message}');
-        }
-      }
-    } on Error catch (e) {
-      safePrint('ERROR - search: $e');
-      _refreshTokenRetryCounter = 0;
-      return e;
-    }
-  }
-
-  Future<dynamic> getAddresses(
-      {double? lat, double? lon, required String text}) async {
+  Future<dynamic> getAddresses({double? lat, double? lon, required String text}) async {
     var queryString = "?text=$text";
     if (lat != null && lon != null) {
       queryString += "&lat=$lat&lon=$lon";
@@ -257,8 +197,7 @@ mixin NetworkGeneral {
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
-      Response response = await get(Uri.parse(url), headers: _headers)
-          .timeout(Duration(seconds: _timeout));
+      Response response = await get(Uri.parse(url), headers: _headers).timeout(Duration(seconds: _timeout));
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = false;
       });
@@ -266,25 +205,21 @@ mixin NetworkGeneral {
       var decodedUTF8 = const Utf8Decoder().convert(codeUnits);
       var json = jsonDecode(decodedUTF8);
       var baseResponse = OPBaseResponse.fromJson(json);
-      List<AddressModel> pudos = <AddressModel>[];
+      List<GeoMarker> pudos = <GeoMarker>[];
       var needHandleTokenRefresh = _handleTokenRefresh(
         baseResponse,
         () {
-          getAddresses(lat: lat, lon: lon, text: text)
-              .catchError((onError) => throw onError);
+          getAddresses(lat: lat, lon: lon, text: text).catchError((onError) => throw onError);
         },
       );
       if (needHandleTokenRefresh == false) {
-        if (baseResponse.returnCode == 0 &&
-            baseResponse.payload != null &&
-            baseResponse.payload is List) {
+        if (baseResponse.returnCode == 0 && baseResponse.payload != null && baseResponse.payload is List) {
           for (dynamic aRow in baseResponse.payload) {
-            pudos.add(AddressModel.fromJson(aRow['address']));
+            pudos.add(GeoMarker.fromJson(aRow));
           }
           return pudos;
         } else {
-          throw ErrorDescription(
-              'Error ${baseResponse.returnCode}: ${baseResponse.message}');
+          throw ErrorDescription('Error ${baseResponse.returnCode}: ${baseResponse.message}');
         }
       }
     } on Error catch (e) {
@@ -299,10 +234,7 @@ mixin NetworkGeneral {
       _headers['Authorization'] = 'Bearer $_accessToken';
     }
 
-    var url = _baseURL +
-        ((isPudo != null && isPudo == true)
-            ? '/api/v2/pudo/me/picture'
-            : '/api/v2/user/me/picture');
+    var url = _baseURL + ((isPudo != null && isPudo == true) ? '/api/v2/pudo/me/picture' : '/api/v2/user/me/picture');
     var uri = Uri.parse(url);
 
     // create multipart request
@@ -334,15 +266,13 @@ mixin NetworkGeneral {
       var baseResponse = OPBaseResponse.fromJson(json);
 
       var needHandleTokenRefresh = _handleTokenRefresh(baseResponse, () {
-        photoUpload(anImage, isPudo: isPudo)
-            .catchError((onError) => throw onError);
+        photoUpload(anImage, isPudo: isPudo).catchError((onError) => throw onError);
       });
       if (needHandleTokenRefresh == false) {
         if (baseResponse.returnCode == 0) {
           return null;
         } else {
-          throw ErrorDescription(
-              'Error ${baseResponse.returnCode}: ${baseResponse.message}');
+          throw ErrorDescription('Error ${baseResponse.returnCode}: ${baseResponse.message}');
         }
       }
     } on Error catch (e) {
@@ -364,9 +294,7 @@ mixin NetworkGeneral {
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
-      Response response =
-          await post(Uri.parse(url), body: body, headers: _headers)
-              .timeout(Duration(seconds: _timeout));
+      Response response = await post(Uri.parse(url), body: body, headers: _headers).timeout(Duration(seconds: _timeout));
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = false;
       });
@@ -378,18 +306,14 @@ mixin NetworkGeneral {
       var needHandleTokenRefresh = _handleTokenRefresh(
         baseResponse,
         () {
-          setDeviceInfo(infoRequest: infoRequest)
-              .catchError((onError) => throw onError);
+          setDeviceInfo(infoRequest: infoRequest).catchError((onError) => throw onError);
         },
       );
       if (needHandleTokenRefresh == false) {
-        if (baseResponse.returnCode == 0 &&
-            baseResponse.payload != null &&
-            baseResponse.payload is Map) {
+        if (baseResponse.returnCode == 0 && baseResponse.payload != null && baseResponse.payload is Map) {
           return UserProfile.fromJson(baseResponse.payload);
         } else {
-          throw ErrorDescription(
-              'Error ${baseResponse.returnCode}: ${baseResponse.message}');
+          throw ErrorDescription('Error ${baseResponse.returnCode}: ${baseResponse.message}');
         }
       }
     } on Error catch (e) {

@@ -19,36 +19,27 @@
 */
 
 import 'package:json_annotation/json_annotation.dart';
+import 'package:qui_green/models/rating_model.dart';
 
-part 'address_model.g.dart';
+part 'pudo_model.g.dart';
 
 @JsonSerializable()
-class AddressModel {
-  final int? pudoId;
-  final String? city;
-  final String? country;
+class PudoModel {
+  final int pudoId;
+  final String? businessName;
+  final String? pudoPicId;
   final String? label;
-  final double? lat;
-  final double? lon;
-  final String? province;
-  final String? street;
-  final String? streetNum;
-  final String? zipCode;
+  final RatingModel? rating;
 
-  AddressModel({
-    this.pudoId,
-    this.city,
-    this.country,
+  PudoModel({
+    required this.pudoId,
+    this.businessName,
+    this.pudoPicId,
     this.label,
-    this.lat,
-    this.lon,
-    this.province,
-    this.street,
-    this.streetNum,
-    this.zipCode,
+    this.rating,
   });
 
-  factory AddressModel.fromJson(Map<String, dynamic> json) => _$AddressModelFromJson(json);
+  factory PudoModel.fromJson(Map<String, dynamic> json) => _$PudoModelFromJson(json);
 
-  Map<String, dynamic> toJson() => _$AddressModelToJson(this);
+  Map<String, dynamic> toJson() => _$PudoModelToJson(this);
 }

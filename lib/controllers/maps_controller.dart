@@ -20,6 +20,7 @@
 
 // ignore_for_file: unused_import
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -28,10 +29,11 @@ import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
 import 'package:qui_green/commons/alert_dialog.dart';
+import 'package:qui_green/widgets/sascaffold.dart';
 import 'package:qui_green/widgets/text_field_button.dart';
 import 'package:qui_green/view_models/maps_controller_viewmodel.dart';
 import 'package:qui_green/widgets/pudo_map_card.dart';
-import 'package:qui_green/models/pudo_marker.dart';
+import 'package:qui_green/models/geo_marker.dart';
 import 'package:qui_green/resources/res.dart';
 import 'package:qui_green/resources/routes_enum.dart';
 import 'package:qui_green/singletons/network/network_manager.dart';
@@ -57,7 +59,8 @@ class _MapsControllerState extends State<MapsController> {
           viewModel?.showErrorDialog = (String val) => _showErrorDialog(context, val);
           return WillPopScope(
             onWillPop: () async => false,
-            child: Scaffold(
+            child: SAScaffold(
+              isLoading: NetworkManager.instance.networkActivity,
               resizeToAvoidBottomInset: false,
               extendBodyBehindAppBar: true,
               appBar: AppBar(
@@ -74,9 +77,10 @@ class _MapsControllerState extends State<MapsController> {
                     options: MapOptions(
                       center: widget.initialPosition,
                       onMapCreated: (controller) {
-                        viewModel.mapController = controller;
+                        viewModel.onMapCreate(controller, widget.initialPosition);
                         viewModel.loadPudos();
                       },
+                      interactiveFlags: InteractiveFlag.pinchZoom | InteractiveFlag.drag,
                       onPositionChanged: (mapPosition, boolValue) {
                         var mapVisibleMaxDistance = Geolocator.distanceBetween(
                           mapPosition.bounds!.northEast!.latitude,
@@ -97,6 +101,7 @@ class _MapsControllerState extends State<MapsController> {
                       },
                       maxZoom: 16,
                       minZoom: 8,
+                      zoom: viewModel.currentZoomLevel.toDouble(),
                       plugins: [
                         MarkerClusterPlugin(),
                       ],
@@ -115,7 +120,7 @@ class _MapsControllerState extends State<MapsController> {
                         ),
                         markers: viewModel.pudos.markers(
                           (marker) {
-                            viewModel.selectPudo(context, marker.pudoId);
+                            viewModel.selectPudo(context, marker.pudo?.pudoId);
                           },
                           tintColor: AppColors.primaryColorDark,
                         ),
@@ -138,11 +143,17 @@ class _MapsControllerState extends State<MapsController> {
                           alignment: Alignment.center,
                           child: Column(
                             children: [
-                              Align(
-                                alignment: Alignment.centerRight,
-                                child: TextFieldButton(
-                                  text: "Salta",
-                                  onPressed: () => Navigator.of(context).pushReplacementNamed(Routes.personalData),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: Dimension.paddingS),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    CupertinoNavigationBarBackButton(color: AppColors.primaryColorDark, onPressed: () => Navigator.pop(context)),
+                                    TextFieldButton(
+                                      text: "Salta",
+                                      onPressed: () => Navigator.of(context).pushNamedAndRemoveUntil(Routes.personalData, ModalRoute.withName('/')),
+                                    ),
+                                  ],
                                 ),
                               ),
                               Text(
@@ -159,7 +170,7 @@ class _MapsControllerState extends State<MapsController> {
                               child: PudoMapCard(
                                   name: viewModel.pudoProfile?.businessName ?? "",
                                   address: viewModel.pudoProfile?.address?.label ?? "",
-                                  stars: viewModel.pudoProfile?.ratingModel?.averageScore ?? 0,
+                                  stars: viewModel.pudoProfile?.ratingModel?.stars ?? 0,
                                   onTap: () {
                                     viewModel.onPudoClick(context, viewModel.pudoProfile!, widget.initialPosition);
                                   },
