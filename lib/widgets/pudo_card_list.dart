@@ -32,16 +32,16 @@ class PudoCardList extends StatelessWidget {
     return SizedBox(
       height: 100,
       child: PageView.builder(
-          onPageChanged: (index) => onPageChange(index),
-          controller: PageController(viewportFraction: 1),
-          itemCount: 2,
-          itemBuilder: (context, index) => PudoMapCard(
-                name: "Bar - La pinta",
-                address: "Via ippolito, 8",
-                stars: 3,
-                onTap: onTap,
-                image: 'https://cdn.skuola.net/news_foto/2017/descrizione-bar.jpg',
-              )),
+        onPageChanged: (index) => onPageChange(index),
+        controller: PageController(viewportFraction: 1),
+        itemCount: 2,
+        itemBuilder: (context, index) => PudoMapCard(
+          name: "Bar - La pinta",
+          address: "Via ippolito, 8",
+          stars: 3,
+          onTap: onTap,
+        ),
+      ),
     );
   }
 }

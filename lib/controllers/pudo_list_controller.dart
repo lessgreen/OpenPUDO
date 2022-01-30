@@ -63,14 +63,14 @@ class _PudoListControllerState extends State<PudoListController> {
             ),
             const SizedBox(height: 10),
             Padding(
-                padding: const EdgeInsets.only(left: Dimension.padding, right: Dimension.padding),
-                child: PudoMapCard(
-                  name: "Bar - La pinta",
-                  address: "Via ippolito, 8",
-                  stars: 3,
-                  onTap: () {},
-                  image: 'https://cdn.skuola.net/news_foto/2017/descrizione-bar.jpg',
-                )),
+              padding: const EdgeInsets.only(left: Dimension.padding, right: Dimension.padding),
+              child: PudoMapCard(
+                name: "Bar - La pinta",
+                address: "Via ippolito, 8",
+                stars: 3,
+                onTap: () {},
+              ),
+            ),
           ],
         ),
       ),

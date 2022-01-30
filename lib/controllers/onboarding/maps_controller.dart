@@ -163,16 +163,17 @@ class _MapsControllerState extends State<MapsController> {
                         const Spacer(),
                         AnimatedCrossFade(
                           secondChild: Padding(
-                              padding: const EdgeInsets.only(top: Dimension.paddingM, left: Dimension.paddingXS, right: Dimension.paddingXS, bottom: Dimension.paddingM),
-                              child: PudoMapCard(
-                                  name: viewModel.pudoProfile?.businessName ?? "",
-                                  address: viewModel.pudoProfile?.address?.label ?? "",
-                                  stars: viewModel.pudoProfile?.ratingModel?.stars ?? 0,
-                                  hasShadow: true,
-                                  onTap: () {
-                                    viewModel.onPudoClick(context, viewModel.pudoProfile!, widget.initialPosition);
-                                  },
-                                  image: viewModel.pudoProfile?.pudoPicId ?? 'https://cdn.skuola.net/news_foto/2017/descrizione-bar.jpg')),
+                            padding: const EdgeInsets.only(top: Dimension.paddingM, left: Dimension.paddingXS, right: Dimension.paddingXS, bottom: Dimension.paddingM),
+                            child: PudoMapCard(
+                                name: viewModel.pudoProfile?.businessName ?? "",
+                                address: viewModel.pudoProfile?.address?.label ?? "",
+                                stars: viewModel.pudoProfile?.ratingModel?.stars ?? 0,
+                                hasShadow: true,
+                                onTap: () {
+                                  viewModel.onPudoClick(context, viewModel.pudoProfile!, widget.initialPosition);
+                                },
+                                image: viewModel.pudoProfile?.pudoPicId),
+                          ),
                           crossFadeState: viewModel.pudoProfile == null ? CrossFadeState.showFirst : CrossFadeState.showSecond,
                           duration: const Duration(milliseconds: 100),
                           firstChild: SizedBox(width: MediaQuery.of(context).size.width),

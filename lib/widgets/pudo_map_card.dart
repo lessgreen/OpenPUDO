@@ -24,7 +24,7 @@ import 'package:qui_green/resources/res.dart';
 
 class PudoMapCard extends StatelessWidget {
   final Function() onTap;
-  final String image;
+  final String? image;
   final String name;
   final String address;
   final int stars;
@@ -33,7 +33,7 @@ class PudoMapCard extends StatelessWidget {
   const PudoMapCard({
     Key? key,
     required this.onTap,
-    required this.image,
+    this.image,
     required this.name,
     required this.address,
     required this.stars,
