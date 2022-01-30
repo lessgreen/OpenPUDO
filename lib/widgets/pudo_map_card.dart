@@ -28,8 +28,17 @@ class PudoMapCard extends StatelessWidget {
   final String name;
   final String address;
   final int stars;
+  final bool hasShadow;
 
-  const PudoMapCard({Key? key, required this.onTap, required this.image, required this.name, required this.address, required this.stars}) : super(key: key);
+  const PudoMapCard({
+    Key? key,
+    required this.onTap,
+    required this.image,
+    required this.name,
+    required this.address,
+    required this.stars,
+    this.hasShadow = false,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) => GestureDetector(
@@ -37,19 +46,35 @@ class PudoMapCard extends StatelessWidget {
         child: Container(
           margin: const EdgeInsets.symmetric(horizontal: Dimension.padding),
           height: 100,
-          decoration: const BoxDecoration(
+          decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.all(Radius.circular(Dimension.borderRadiusS)),
+            borderRadius: const BorderRadius.all(Radius.circular(Dimension.borderRadiusS)),
+            boxShadow: hasShadow
+                ? [
+                    BoxShadow(
+                      color: Theme.of(context).shadowColor.withAlpha(180),
+                      blurRadius: 15.0, // soften the shadow
+                      spreadRadius: 0.2, //extend the shadow
+                      offset: const Offset(
+                        0.0, // Move to right 10  horizontally
+                        0.0, // Move to bottom 10 Vertically
+                      ),
+                    )
+                  ]
+                : null,
           ),
           child: Row(
             children: [
               ClipRRect(
-                borderRadius: const BorderRadius.only(topLeft: Radius.circular(Dimension.borderRadiusS), bottomLeft: Radius.circular(Dimension.borderRadiusS)),
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(Dimension.borderRadiusS),
+                  bottomLeft: Radius.circular(Dimension.borderRadiusS),
+                ),
                 child: CustomNetworkImage(
                   url: image,
-                  width: 110,
+                  width: 100,
                   height: 100,
-                  fit: BoxFit.cover,
+                  fit: BoxFit.contain,
                 ),
               ),
               const SizedBox(
