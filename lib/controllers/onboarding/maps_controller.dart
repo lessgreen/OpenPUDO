@@ -75,7 +75,7 @@ class _MapsControllerState extends State<MapsController> {
                       center: widget.initialPosition,
                       onMapCreated: (controller) {
                         viewModel.onMapCreate(controller, widget.initialPosition);
-                        viewModel.loadPudos();
+                        viewModel.loadPudos(requireZoomLevelRefresh: true);
                       },
                       interactiveFlags: InteractiveFlag.pinchZoom | InteractiveFlag.drag,
                       onPositionChanged: (mapPosition, boolValue) {

@@ -21,7 +21,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:qui_green/commons/utilities/print_helper.dart';
 import 'package:qui_green/models/pudo_detail_controller_data_model.dart';
 import 'package:qui_green/models/geo_marker.dart';
 import 'package:qui_green/models/pudo_profile.dart';
@@ -88,20 +87,22 @@ class MapsControllerViewModel extends ChangeNotifier {
     lastTriggeredZoom = currentZoomLevel;
   }
 
-  loadPudos() {
-    /*NetworkManager.instance
-        .getSuggestedZoom(lat: currentLatitude, lon: currentLongitude)
-        .then((value) => mapController.)
-        .catchError((onError) => safePrint(onError));*/
-    NetworkManager.instance.getPudos(lat: currentLatitude, lon: currentLongitude, zoom: currentZoomLevel).then((response) {
-      if (response is List<GeoMarker>) {
-        if (_pudos.isNotEmpty && response.isEmpty) {
-          mapController?.move(LatLng(currentLatitude, currentLongitude), currentZoomLevel.toDouble());
-          return;
-        }
-        pudos = response;
-        mapController?.move(LatLng(currentLatitude, currentLongitude), currentZoomLevel.toDouble());
+  loadPudos({bool requireZoomLevelRefresh = false}) {
+    NetworkManager.instance.getSuggestedZoom(lat: currentLatitude, lon: currentLongitude).then((value) {
+      if (value is int && requireZoomLevelRefresh) {
+        currentZoomLevel = value;
+        lastTriggeredZoom = currentZoomLevel;
       }
+      NetworkManager.instance.getPudos(lat: currentLatitude, lon: currentLongitude, zoom: currentZoomLevel).then((response) {
+        if (response is List<GeoMarker>) {
+          if (_pudos.isNotEmpty && response.isEmpty) {
+            mapController?.move(LatLng(currentLatitude, currentLongitude), currentZoomLevel.toDouble());
+            return;
+          }
+          pudos = response;
+          mapController?.move(LatLng(currentLatitude, currentLongitude), currentZoomLevel.toDouble());
+        }
+      }).catchError((onError) => showErrorDialog!(onError));
     }).catchError((onError) => showErrorDialog!(onError));
   }
 
