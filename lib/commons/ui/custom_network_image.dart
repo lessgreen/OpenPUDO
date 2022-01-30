@@ -21,6 +21,7 @@
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:qui_green/resources/res.dart';
 import 'package:qui_green/singletons/network/network_manager.dart';
 
@@ -29,8 +30,9 @@ class CustomNetworkImage extends StatefulWidget {
   final double? width;
   final double? height;
   final BoxFit? fit;
+  final bool useSVGPlaceholder;
 
-  const CustomNetworkImage({Key? key, required this.url, this.width, this.height, this.fit}) : super(key: key);
+  const CustomNetworkImage({Key? key, required this.url, this.width, this.height, this.fit, this.useSVGPlaceholder = true}) : super(key: key);
 
   @override
   _CustomNetworkImageState createState() => _CustomNetworkImageState();
@@ -84,12 +86,23 @@ class _CustomNetworkImageState extends State<CustomNetworkImage> {
   @override
   Widget build(BuildContext context) {
     return _buffer == null
-        ? Image.asset(
-            ImageSrc.imagePlaceHolder,
-            width: widget.width,
-            height: widget.height,
-            fit: widget.fit,
-          )
+        ? widget.useSVGPlaceholder
+            ? SizedBox(
+                width: widget.width,
+                height: widget.height,
+                child: SvgPicture.asset(
+                  ImageSrc.imageSVGPlaceHolder,
+                  width: widget.width,
+                  height: widget.height,
+                  fit: BoxFit.cover,
+                ),
+              )
+            : Image.asset(
+                ImageSrc.imagePlaceHolder,
+                width: widget.width,
+                height: widget.height,
+                fit: widget.fit,
+              )
         : Image.memory(
             _buffer!,
             width: widget.width,
