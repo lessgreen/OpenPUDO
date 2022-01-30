@@ -16,7 +16,7 @@ public class GPSMarker {
 
     @Schema(readOnly = true)
     private BigDecimal distanceFromOrigin;
-    
+
     private String signature;
 
 }
