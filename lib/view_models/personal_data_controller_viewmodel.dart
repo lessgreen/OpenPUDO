@@ -31,29 +31,54 @@ import 'package:qui_green/singletons/current_user.dart';
 import 'package:qui_green/singletons/network/network_manager.dart';
 
 class PersonalDataControllerViewModel extends ChangeNotifier {
-  //Example: to use NetworkManager, use the getInstance: NetworkManager.instance...
-
   Function(String)? showErrorDialog;
+
+  String _name = "";
+  String get name => _name;
+  set name(String newVal) {
+    _name = newVal;
+    notifyListeners();
+  }
+
+  String _surname = "";
+  String get surname => _surname;
+  set surname(String newVal) {
+    _surname = newVal;
+    notifyListeners();
+  }
+
+  File? _image;
+  File? get image => _image;
+  set image(File? newVal) {
+    _image = newVal;
+    notifyListeners();
+  }
+
+  get isValid {
+    if (_image != null) {
+      return true;
+    }
+    if (_name.isEmpty) {
+      return false;
+    }
+    if (_surname.isEmpty) {
+      return false;
+    }
+    return true;
+  }
 
   // ************ Navigation *****
   onSendClick(BuildContext context, PudoProfile? pudoModel) {
-    NetworkManager.instance
-        .registerUser(name: name, surname: surname)
-        .then((value) {
+    NetworkManager.instance.registerUser(name: name, surname: surname).then((value) {
       NetworkManager.instance.getMyProfile().then((user) {
         Provider.of<CurrentUser>(context, listen: false).user = user;
         if (image != null) {
-          NetworkManager.instance
-              .photoUpload(image!)
-              .catchError((onError) => showErrorDialog!(onError));
+          NetworkManager.instance.photoUpload(image!).catchError((onError) => showErrorDialog!(onError));
         }
         if (pudoModel != null) {
-          NetworkManager.instance
-              .addPudoFavorite(pudoModel.pudoId.toString())
-              .catchError((onError) => showErrorDialog!(onError));
+          NetworkManager.instance.addPudoFavorite(pudoModel.pudoId.toString()).catchError((onError) => showErrorDialog!(onError));
         }
-        Navigator.of(context).pushReplacementNamed(Routes.registrationComplete,
-            arguments: pudoModel);
+        Navigator.of(context).pushReplacementNamed(Routes.registrationComplete, arguments: pudoModel);
       }).catchError((onError) => showErrorDialog!(onError));
     }).catchError((onError) => showErrorDialog!(onError));
   }
@@ -87,53 +112,14 @@ class PersonalDataControllerViewModel extends ChangeNotifier {
     return _locationData;
   }
 
-  String _name = "";
-  String _surname = "";
-
-  String get name => _name;
-
-  String get surname => _surname;
-
-  set name(String newVal) {
-    _name = newVal;
-    notifyListeners();
-  }
-
-  set surname(String newVal) {
-    _surname = newVal;
-    notifyListeners();
-  }
-
-  get isValid {
-    if (_image != null) {
-      return true;
-    }
-    if (_name.isEmpty) {
-      return false;
-    }
-    if (_surname.isEmpty) {
-      return false;
-    }
-    return true;
-  }
-
-  File? _image;
-
-  File? get image => _image;
-
-  set image(File? newVal) {
-    _image = newVal;
-    notifyListeners();
-  }
-
   pickFile() async {
-    FilePickerResult? result = await FilePicker.platform
-        .pickFiles(allowMultiple: false, type: FileType.image);
+    FilePickerResult? result = await FilePicker.platform.pickFiles(allowMultiple: false, type: FileType.media);
     if (result != null) {
       try {
         File file = File(result.files.first.path ?? "");
         image = file;
       } catch (e) {
+        showErrorDialog!(e.toString());
         safePrint(e.toString());
       }
     } else {
