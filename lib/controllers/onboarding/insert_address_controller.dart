@@ -35,8 +35,7 @@ class InsertAddressController extends StatefulWidget {
   const InsertAddressController({Key? key}) : super(key: key);
 
   @override
-  _InsertAddressControllerState createState() =>
-      _InsertAddressControllerState();
+  _InsertAddressControllerState createState() => _InsertAddressControllerState();
 }
 
 class _InsertAddressControllerState extends State<InsertAddressController> {
@@ -52,16 +51,10 @@ class _InsertAddressControllerState extends State<InsertAddressController> {
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-        providers: [
-          ChangeNotifierProxyProvider0<InsertAddressControllerViewModel?>(
-              create: (context) => InsertAddressControllerViewModel(),
-              update: (context, viewModel) => viewModel),
-        ],
-        child: Consumer<InsertAddressControllerViewModel?>(
-            builder: (_, viewModel, __) {
-          return KeyboardVisibilityBuilder(
-              builder: (context, child, isKeyboardVisible) {
+    return ChangeNotifierProvider(
+        create: (context) => InsertAddressControllerViewModel(),
+        child: Consumer<InsertAddressControllerViewModel?>(builder: (_, viewModel, __) {
+          return KeyboardVisibilityBuilder(builder: (context, child, isKeyboardVisible) {
             return WillPopScope(
               onWillPop: () async => false,
               child: Scaffold(
@@ -89,8 +82,7 @@ class _InsertAddressControllerState extends State<InsertAddressController> {
                           node: _address,
                         )),
                     const Spacer(),
-                    SvgPicture.asset(ImageSrc.userPositionArt,
-                        semanticsLabel: 'Art Background'),
+                    SvgPicture.asset(ImageSrc.userPositionArt, semanticsLabel: 'Art Background'),
                     const Spacer(),
                     const SizedBox(height: Dimension.padding),
                     AnimatedCrossFade(

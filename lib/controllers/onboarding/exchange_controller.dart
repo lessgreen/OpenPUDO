@@ -40,11 +40,10 @@ class _ExchangeControllerState extends State<ExchangeController> {
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-        providers: [
-          ChangeNotifierProxyProvider0<ExchangeControllerViewModel?>(create: (context) => ExchangeControllerViewModel(), update: (context, viewModel) => viewModel),
-        ],
-        child: Consumer<ExchangeControllerViewModel?>(builder: (_, viewModel, __) {
+    return ChangeNotifierProvider(
+      create: (context) => ExchangeControllerViewModel(),
+      child: Consumer<ExchangeControllerViewModel?>(
+        builder: (_, viewModel, __) {
           return KeyboardVisibilityBuilder(builder: (context, child, isKeyboardVisible) {
             return WillPopScope(
               onWillPop: () async => false,
@@ -101,6 +100,8 @@ class _ExchangeControllerState extends State<ExchangeController> {
               ),
             );
           });
-        }));
+        },
+      ),
+    );
   }
 }

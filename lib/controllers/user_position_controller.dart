@@ -39,10 +39,8 @@ class UserPositionController extends StatefulWidget {
 class _UserPositionControllerState extends State<UserPositionController> {
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-        providers: [
-          ChangeNotifierProxyProvider0<UserPositionControllerViewModel?>(create: (context) => UserPositionControllerViewModel(), update: (context, viewModel) => viewModel),
-        ],
+    return ChangeNotifierProvider(
+        create: (context) => UserPositionControllerViewModel(),
         child: Consumer<UserPositionControllerViewModel?>(builder: (_, viewModel, __) {
           return WillPopScope(
             onWillPop: () async => false,

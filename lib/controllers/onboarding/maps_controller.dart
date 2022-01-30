@@ -18,8 +18,6 @@
  If not, see <https://github.com/lessgreen/OpenPUDO>.
 */
 
-// ignore_for_file: unused_import
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -51,11 +49,10 @@ class _MapsControllerState extends State<MapsController> {
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-        providers: [
-          ChangeNotifierProxyProvider0<MapsControllerViewModel?>(create: (context) => MapsControllerViewModel(), update: (context, viewModel) => viewModel),
-        ],
-        child: Consumer<MapsControllerViewModel?>(builder: (_, viewModel, __) {
+    return ChangeNotifierProvider(
+      create: (context) => MapsControllerViewModel(),
+      child: Consumer<MapsControllerViewModel?>(
+        builder: (_, viewModel, __) {
           viewModel?.showErrorDialog = (String val) => _showErrorDialog(context, val);
           return WillPopScope(
             onWillPop: () async => false,
@@ -166,11 +163,12 @@ class _MapsControllerState extends State<MapsController> {
                         const Spacer(),
                         AnimatedCrossFade(
                           secondChild: Padding(
-                              padding: const EdgeInsets.only(left: Dimension.paddingXS, right: Dimension.paddingXS, bottom: Dimension.paddingM),
+                              padding: const EdgeInsets.only(top: Dimension.paddingM, left: Dimension.paddingXS, right: Dimension.paddingXS, bottom: Dimension.paddingM),
                               child: PudoMapCard(
                                   name: viewModel.pudoProfile?.businessName ?? "",
                                   address: viewModel.pudoProfile?.address?.label ?? "",
                                   stars: viewModel.pudoProfile?.ratingModel?.stars ?? 0,
+                                  hasShadow: true,
                                   onTap: () {
                                     viewModel.onPudoClick(context, viewModel.pudoProfile!, widget.initialPosition);
                                   },
@@ -186,6 +184,8 @@ class _MapsControllerState extends State<MapsController> {
               ),
             ),
           );
-        }));
+        },
+      ),
+    );
   }
 }

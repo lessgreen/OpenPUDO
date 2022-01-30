@@ -40,10 +40,8 @@ class RegistrationCompleteController extends StatefulWidget {
 class _RegistrationCompleteControllerState extends State<RegistrationCompleteController> {
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-        providers: [
-          ChangeNotifierProxyProvider0<RegistrationCompleteControllerViewModel?>(create: (context) => RegistrationCompleteControllerViewModel(), update: (context, viewModel) => viewModel),
-        ],
+    return ChangeNotifierProvider(
+        create: (context) => RegistrationCompleteControllerViewModel(),
         child: Consumer<RegistrationCompleteControllerViewModel?>(builder: (_, viewModel, __) {
           return KeyboardVisibilityBuilder(builder: (context, child, isKeyboardVisible) {
             return WillPopScope(
