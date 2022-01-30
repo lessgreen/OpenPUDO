@@ -55,6 +55,8 @@ class _HomeControllerState extends State<HomeController> {
                   '/': (context) {
                     return CupertinoPageScaffold(
                       navigationBar: CupertinoNavigationBar(
+                        padding: const EdgeInsetsDirectional.all(0),
+                        brightness: Brightness.dark,
                         backgroundColor: AppColors.primaryColorDark,
                         middle: Text(
                           'Pudo',
@@ -72,6 +74,8 @@ class _HomeControllerState extends State<HomeController> {
                   '/': (context) {
                     return CupertinoPageScaffold(
                         navigationBar: CupertinoNavigationBar(
+                          padding: const EdgeInsetsDirectional.all(0),
+                          brightness: Brightness.dark,
                           backgroundColor: AppColors.primaryColorDark,
                           middle: Text(
                             'Home',

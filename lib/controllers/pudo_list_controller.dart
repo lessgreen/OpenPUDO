@@ -36,6 +36,8 @@ class _PudoListControllerState extends State<PudoListController> {
     return Material(
       child: CupertinoPageScaffold(
         navigationBar: CupertinoNavigationBar(
+          padding: const EdgeInsetsDirectional.all(0),
+          brightness: Brightness.dark,
           backgroundColor: AppColors.primaryColorDark,
           middle: Text(
             'Il tuoi pudo',

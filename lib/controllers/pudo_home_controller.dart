@@ -57,6 +57,7 @@ class _PudoHomeControllerState extends State<PudoHomeController> {
                   '/': (context) {
                     return CupertinoPageScaffold(
                       navigationBar: CupertinoNavigationBar(
+                        padding: const EdgeInsetsDirectional.all(0),
                         backgroundColor: AppColors.primaryColorDark,
                         middle: Text(
                           'Il tuo profilo',
@@ -74,6 +75,8 @@ class _PudoHomeControllerState extends State<PudoHomeController> {
                   '/': (context) {
                     return CupertinoPageScaffold(
                         navigationBar: CupertinoNavigationBar(
+                          padding: const EdgeInsetsDirectional.all(0),
+                          brightness: Brightness.dark,
                           backgroundColor: AppColors.primaryColorDark,
                           middle: Text(
                             'HomePudo',
