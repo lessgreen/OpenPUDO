@@ -19,6 +19,13 @@ public class CalendarUtils {
         return cal;
     }
 
+    public static Date getDateWithOffset(Date date, int field, int amount) {
+        Calendar cal = getCalendar();
+        cal.setTime(date);
+        cal.add(field, amount);
+        return cal.getTime();
+    }
+
     public static String formatDate(Date d) {
         SimpleDateFormat sdf = new SimpleDateFormat(SDF_PATTERN);
         return sdf.format(d);

@@ -34,6 +34,18 @@ public class UserPudoRelationDao extends BaseEntityDao<TbUserPudoRelation, Long>
         }
     }
 
+    public Long getOwnerUserIdByPudoId(Long pudoId) {
+        String qs = "SELECT t.userId FROM TbUserPudoRelation t WHERE t.pudoId = :pudoId AND t.relationType = :relationType AND t.deleteTms IS NULL";
+        try {
+            TypedQuery<Long> q = em.createQuery(qs, Long.class);
+            q.setParameter("pudoId", pudoId);
+            q.setParameter("relationType", RelationType.OWNER);
+            return q.getSingleResult();
+        } catch (NoResultException ex) {
+            return null;
+        }
+    }
+
     public TbUserPudoRelation getUserPudoActiveCustomerRelation(Long pudoId, Long userId) {
         String qs = "SELECT t FROM TbUserPudoRelation t WHERE t.userId = :userId AND t.pudoId = :pudoId AND t.relationType = :relationType AND t.deleteTms IS NULL";
         try {

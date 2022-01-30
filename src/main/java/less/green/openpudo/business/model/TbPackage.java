@@ -35,9 +35,6 @@ public class TbPackage implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     private Date updateTms;
 
-    @Column(name = "package_name")
-    private String packageName;
-
     @Column(name = "package_pic_id")
     private UUID packagePicId;
 

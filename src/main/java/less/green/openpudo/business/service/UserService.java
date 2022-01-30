@@ -8,6 +8,7 @@ import less.green.openpudo.cdi.ExecutionContext;
 import less.green.openpudo.cdi.service.LocalizationService;
 import less.green.openpudo.cdi.service.StorageService;
 import less.green.openpudo.common.ApiReturnCodes;
+import less.green.openpudo.common.CalendarUtils;
 import less.green.openpudo.common.dto.tuple.Quintet;
 import less.green.openpudo.rest.config.exception.ApiException;
 import less.green.openpudo.rest.dto.DtoMapper;
@@ -20,10 +21,7 @@ import lombok.extern.log4j.Log4j2;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 import static less.green.openpudo.common.StringUtils.isEmpty;
@@ -47,6 +45,8 @@ public class UserService {
     DeviceTokenDao deviceTokenDao;
     @Inject
     ExternalFileDao externalFileDao;
+    @Inject
+    NotificationDao notificationDao;
     @Inject
     PudoDao pudoDao;
     @Inject
@@ -249,15 +249,33 @@ public class UserService {
                 customerSuffix = generateCustomerSuffix(userProfile.getFirstName(), userProfile.getLastName());
             } while (suffixes.contains(customerSuffix));
         }
+        Date now = new Date();
         userPudoRelation = new TbUserPudoRelation();
         userPudoRelation.setUserId(context.getUserId());
         userPudoRelation.setPudoId(pudoId);
-        userPudoRelation.setCreateTms(new Date());
+        userPudoRelation.setCreateTms(now);
         userPudoRelation.setDeleteTms(null);
         userPudoRelation.setRelationType(RelationType.CUSTOMER);
         userPudoRelation.setCustomerSuffix(customerSuffix);
         userPudoRelationDao.persist(userPudoRelation);
         userPudoRelationDao.flush();
+        // queue notification to pudo owner
+        Long ownerUserId = userPudoRelationDao.getOwnerUserIdByPudoId(pudoId);
+        TbNotificationRelation notification = new TbNotificationRelation();
+        notification.setCreateTms(now);
+        notification.setQueuedFlag(true);
+        notification.setDueTms(CalendarUtils.getDateWithOffset(now, Calendar.MINUTE, 5));
+        notification.setReadTms(null);
+        notification.setTitle("notification.relation.add-favourite.title");
+        notification.setTitleParams(null);
+        notification.setMessage("notification.relation.add-favourite.message");
+        notification.setMessageParams(new String[]{customerSuffix});
+        notification.setUserId(ownerUserId);
+        notification.setCustomerUserId(context.getUserId());
+        notification.setPudoId(pudoId);
+        notificationDao.persist(notification);
+        notificationDao.flush();
+        // TODO: setup push notification job
         log.info("[{}] Added PUDO: {} to user: {} favourites", context.getExecutionId(), pudoId, context.getUserId());
         return getCurrentUserPudos();
     }
@@ -278,6 +296,7 @@ public class UserService {
         // TODO: prevent removal when there are packages in transit
         userPudoRelation.setDeleteTms(new Date());
         userPudoRelationDao.flush();
+        notificationDao.removeQueuedNotificationRelation(context.getUserId(), pudo.getPudoId());
         log.info("[{}] Removed PUDO: {} from user: {} favourites", context.getExecutionId(), pudoId, context.getUserId());
         return getCurrentUserPudos();
     }

@@ -5,6 +5,7 @@ import lombok.extern.log4j.Log4j2;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 
 import javax.enterprise.context.RequestScoped;
+import javax.transaction.Transactional;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -51,6 +52,7 @@ public class RuntimeResource {
     @GET
     @Path("/test")
     @Operation(summary = "Test API for debugging purposes. DO NOT USE!")
+    @Transactional(Transactional.TxType.REQUIRED)
     public Response test() throws Exception {
         return null;
     }

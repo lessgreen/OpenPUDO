@@ -1,10 +1,10 @@
 -- reset schema
 DO 'DECLARE
-    rec RECORD;
+	rec RECORD;
 BEGIN
-    FOR rec IN (SELECT tablename FROM pg_tables WHERE schemaname = current_schema()) LOOP
-        EXECUTE ''DROP TABLE IF EXISTS '' || quote_ident(rec.tablename) || '' CASCADE'';
-    END LOOP;
+	FOR rec IN (SELECT tablename FROM pg_tables WHERE schemaname = current_schema()) LOOP
+		EXECUTE ''DROP TABLE IF EXISTS '' || quote_ident(rec.tablename) || '' CASCADE'';
+	END LOOP;
 END';
 
 
@@ -186,7 +186,7 @@ CREATE UNIQUE INDEX tb_reward_policy_pudo_id_delete_tms_idx ON tb_reward_policy(
 
 DROP TABLE IF EXISTS tb_user_pudo_relation CASCADE;
 CREATE TABLE IF NOT EXISTS tb_user_pudo_relation (
-    user_pudo_relation_id BIGSERIAL PRIMARY KEY,
+	user_pudo_relation_id BIGSERIAL PRIMARY KEY,
 	user_id BIGINT NOT NULL REFERENCES tb_user(user_id),
 	pudo_id BIGINT NOT NULL REFERENCES tb_pudo(pudo_id),
 	create_tms TIMESTAMP(3) NOT NULL,
@@ -205,7 +205,6 @@ CREATE TABLE IF NOT EXISTS tb_package (
 	user_id BIGINT NOT NULL REFERENCES tb_user(user_id),
 	create_tms TIMESTAMP(3) NOT NULL,
 	update_tms TIMESTAMP(3) NOT NULL,
-	package_name TEXT NOT NULL,
 	package_pic_id UUID REFERENCES tb_external_file(external_file_id)
 );
 CREATE INDEX tb_package_pudo_id_idx ON tb_package(pudo_id);
@@ -222,21 +221,6 @@ CREATE TABLE IF NOT EXISTS tb_package_event (
 	notes TEXT
 );
 CREATE UNIQUE INDEX tb_package_event_package_id_idx ON tb_package_event(package_id, create_tms);
-
-
-DROP TABLE IF EXISTS tb_notification CASCADE;
-CREATE TABLE IF NOT EXISTS tb_notification (
-	notification_id BIGSERIAL PRIMARY KEY,
-	user_id BIGINT NOT NULL REFERENCES tb_user(user_id),
-	create_tms TIMESTAMP(3) NOT NULL,
-	read_tms TIMESTAMP(3),
-	title TEXT NOT NULL,
-	title_params TEXT,
-	message TEXT NOT NULL,
-	message_params TEXT,
-	opt_data TEXT
-);
-CREATE INDEX tb_notification_user_id_idx ON tb_notification(user_id);
 
 
 DROP TABLE IF EXISTS tb_review CASCADE;
@@ -263,6 +247,41 @@ CREATE TABLE IF NOT EXISTS tb_rating (
 	review_count BIGINT NOT NULL,
 	average_score DECIMAL(3,2)
 );
+
+
+DROP TABLE IF EXISTS tb_notification CASCADE;
+CREATE TABLE IF NOT EXISTS tb_notification (
+	notification_id BIGSERIAL PRIMARY KEY,
+	user_id BIGINT NOT NULL REFERENCES tb_user(user_id),
+	create_tms TIMESTAMP(3) NOT NULL,
+	queued_flag BOOLEAN NOT NULL,
+	due_tms TIMESTAMP(3) NOT NULL,
+	read_tms TIMESTAMP(3),
+	title TEXT NOT NULL,
+	title_params TEXT,
+	message TEXT NOT NULL,
+	message_params TEXT
+);
+CREATE INDEX tb_notification_user_id_idx ON tb_notification(user_id);
+CREATE INDEX tb_notification_queued_flag_idx ON tb_notification(queued_flag);
+
+
+DROP TABLE IF EXISTS tb_notification_package CASCADE;
+CREATE TABLE IF NOT EXISTS tb_notification_package (
+	notification_id BIGINT PRIMARY KEY REFERENCES tb_notification(notification_id),
+	package_id BIGINT NOT NULL REFERENCES tb_package(package_id)
+);
+
+
+DROP TABLE IF EXISTS tb_notification_relation CASCADE;
+CREATE TABLE IF NOT EXISTS tb_notification_relation (
+	notification_id BIGINT PRIMARY KEY REFERENCES tb_notification(notification_id),
+	customer_user_id BIGINT NOT NULL REFERENCES tb_user(user_id),
+	pudo_id BIGINT NOT NULL REFERENCES tb_pudo(pudo_id)
+);
+CREATE INDEX tb_notification_customer_user_id_idx ON tb_notification_relation(customer_user_id);
+CREATE INDEX tb_notification_pudo_id_idx ON tb_notification_relation(pudo_id);
+
 
 -- maintenance
 VACUUM FULL ANALYZE;
