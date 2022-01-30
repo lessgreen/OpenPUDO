@@ -35,7 +35,7 @@ import 'package:qui_green/controllers/instruction_controller.dart';
 import 'package:qui_green/controllers/pudo_home_controller.dart';
 import 'package:qui_green/controllers/pudo_list_controller.dart';
 import 'package:qui_green/controllers/onboarding/login_controller.dart';
-import 'package:qui_green/controllers/maps_controller.dart';
+import 'package:qui_green/controllers/onboarding/maps_controller.dart';
 import 'package:qui_green/controllers/onboarding/personal_data_controller.dart';
 import 'package:qui_green/controllers/onboarding/personal_data_business_controller.dart';
 import 'package:qui_green/controllers/profile_controller.dart';
@@ -90,34 +90,23 @@ dynamic routeWithSetting(RouteSettings settings) {
       );
     case Routes.maps:
       return CupertinoPageRoute(
-        builder: (context) =>
-            MapsController(initialPosition: settings.arguments as LatLng),
+        builder: (context) => MapsController(initialPosition: settings.arguments as LatLng),
       );
     case Routes.pudoDetail:
       return CupertinoPageRoute(
-        builder: (context) => PudoDetailController(
-            dataModel: settings.arguments as PudoDetailControllerDataModel),
+        builder: (context) => PudoDetailController(dataModel: settings.arguments as PudoDetailControllerDataModel),
       );
     case Routes.personalData:
       return CupertinoPageRoute(
-        builder: (context) => PersonalDataController(
-            pudoDataModel: settings.arguments == null
-                ? null
-                : settings.arguments as PudoProfile),
+        builder: (context) => PersonalDataController(pudoDataModel: settings.arguments == null ? null : settings.arguments as PudoProfile),
       );
     case Routes.registrationComplete:
       return CupertinoPageRoute(
-        builder: (context) => RegistrationCompleteController(
-            pudoDataModel: settings.arguments == null
-                ? null
-                : settings.arguments as PudoProfile),
+        builder: (context) => RegistrationCompleteController(pudoDataModel: settings.arguments == null ? null : settings.arguments as PudoProfile),
       );
     case Routes.instruction:
       return CupertinoPageRoute(
-        builder: (context) => InstructionController(
-            pudoDataModel: settings.arguments == null
-                ? PudoProfile(businessName: "Nome Pudo")
-                : settings.arguments as PudoProfile),
+        builder: (context) => InstructionController(pudoDataModel: settings.arguments == null ? PudoProfile(businessName: "Nome Pudo") : settings.arguments as PudoProfile),
       );
     case Routes.thanks:
       return CupertinoPageRoute(
@@ -153,7 +142,8 @@ dynamic routeWithSetting(RouteSettings settings) {
       );
     case Routes.pudoHome:
       return CupertinoPageRoute(
-          builder: (context) => const PudoHomeController());
+        builder: (context) => const PudoHomeController(),
+      );
     default:
       return CupertinoPageRoute(
         builder: (context) => const Scaffold(

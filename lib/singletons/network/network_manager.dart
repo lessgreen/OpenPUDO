@@ -27,7 +27,11 @@ import 'package:qui_green/singletons/network/network_shared.dart';
 
 class NetworkManager with NetworkGeneral, NetworkManagerUser, NetworkManagerNotification, NetworkManagerPackages, NetworkManagerPudo, NetworkManagerUserPudo {
   static final NetworkManager _inst = NetworkManager._internal(
-    AppConfig(host: "https://api-dev.quigreen.it", isProd: false, appInfo: PackageInfo(appName: "", version: "1", packageName: "", buildNumber: "", buildSignature: "")),
+    AppConfig(
+      host: "https://api-dev.quigreen.it",
+      isProd: false,
+      appInfo: PackageInfo(appName: "", version: "1", packageName: "", buildNumber: "", buildSignature: ""),
+    ),
   );
 
   static NetworkManager get instance {
