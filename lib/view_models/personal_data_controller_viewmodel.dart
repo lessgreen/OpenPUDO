@@ -73,14 +73,14 @@ class PersonalDataControllerViewModel extends ChangeNotifier {
       NetworkManager.instance.getMyProfile().then((user) {
         Provider.of<CurrentUser>(context, listen: false).user = user;
         if (image != null) {
-          NetworkManager.instance.photoUpload(image!).catchError((onError) => showErrorDialog!(onError));
+          NetworkManager.instance.photoUpload(image!).catchError((onError) => showErrorDialog?.call(onError));
         }
         if (pudoModel != null) {
-          NetworkManager.instance.addPudoFavorite(pudoModel.pudoId.toString()).catchError((onError) => showErrorDialog!(onError));
+          NetworkManager.instance.addPudoFavorite(pudoModel.pudoId.toString()).catchError((onError) => showErrorDialog?.call(onError));
         }
         Navigator.of(context).pushReplacementNamed(Routes.registrationComplete, arguments: pudoModel);
-      }).catchError((onError) => showErrorDialog!(onError));
-    }).catchError((onError) => showErrorDialog!(onError));
+      }).catchError((onError) => showErrorDialog?.call(onError));
+    }).catchError((onError) => showErrorDialog?.call(onError));
   }
 
   // ************ Location *******
@@ -119,7 +119,7 @@ class PersonalDataControllerViewModel extends ChangeNotifier {
         File file = File(result.files.first.path ?? "");
         image = file;
       } catch (e) {
-        showErrorDialog!(e.toString());
+        showErrorDialog?.call(e.toString());
         safePrint(e.toString());
       }
     } else {

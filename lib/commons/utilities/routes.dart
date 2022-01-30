@@ -98,15 +98,15 @@ dynamic routeWithSetting(RouteSettings settings) {
       );
     case Routes.personalData:
       return CupertinoPageRoute(
-        builder: (context) => PersonalDataController(pudoDataModel: settings.arguments == null ? null : settings.arguments as PudoProfile),
+        builder: (context) => PersonalDataController(pudoDataModel: settings.arguments as PudoProfile?),
       );
     case Routes.registrationComplete:
       return CupertinoPageRoute(
-        builder: (context) => RegistrationCompleteController(pudoDataModel: settings.arguments == null ? null : settings.arguments as PudoProfile),
+        builder: (context) => RegistrationCompleteController(pudoDataModel: settings.arguments as PudoProfile?),
       );
     case Routes.instruction:
       return CupertinoPageRoute(
-        builder: (context) => InstructionController(pudoDataModel: settings.arguments == null ? PudoProfile(businessName: "Nome Pudo") : settings.arguments as PudoProfile),
+        builder: (context) => InstructionController(pudoDataModel: settings.arguments as PudoProfile?),
       );
     case Routes.thanks:
       return CupertinoPageRoute(

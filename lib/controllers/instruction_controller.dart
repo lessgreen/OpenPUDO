@@ -29,8 +29,8 @@ import 'package:qui_green/resources/res.dart';
 import 'package:qui_green/singletons/current_user.dart';
 
 class InstructionController extends StatefulWidget {
-  const InstructionController({Key? key, this.pudoDataModel}) : super(key: key);
   final PudoProfile? pudoDataModel;
+  const InstructionController({Key? key, this.pudoDataModel}) : super(key: key);
 
   @override
   _InstructionControllerState createState() => _InstructionControllerState();
@@ -41,6 +41,7 @@ class _InstructionControllerState extends State<InstructionController> {
   int _currentPage = 0;
 
   //TODO Once api in place structure this widget
+
   Widget _buildFirstPageWidget(String userId) => Column(
         children: [
           Container(
@@ -55,19 +56,19 @@ class _InstructionControllerState extends State<InstructionController> {
                 Container(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      '${widget.pudoDataModel?.businessName} AC$userId',
+                      '${widget.pudoDataModel?.businessName ?? "n/a"} AC$userId',
                       style: const TextStyle(fontSize: 16),
                     )),
                 Container(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      "${widget.pudoDataModel?.address?.street ?? " "} ${widget.pudoDataModel?.address?.streetNum ?? " "}",
+                      "${widget.pudoDataModel?.address?.street ?? "n/a"} ${widget.pudoDataModel?.address?.streetNum ?? "n/a"}",
                       style: const TextStyle(fontSize: 16),
                     )),
                 Container(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      "${widget.pudoDataModel?.address?.zipCode ?? " "} ${widget.pudoDataModel?.address?.city ?? " "}",
+                      "${widget.pudoDataModel?.address?.zipCode ?? "n/a"} ${widget.pudoDataModel?.address?.city ?? "n/a"}",
                       style: const TextStyle(fontSize: 16),
                     )),
                 const SizedBox(height: 30)

@@ -35,6 +35,7 @@ class MapsControllerViewModel extends ChangeNotifier {
   var currentLongitude = 9.1900;
   var currentZoomLevel = 8;
   MapController? mapController;
+  Function(String)? showErrorDialog;
 
   List<GeoMarker> _pudos = [];
   List<GeoMarker> get pudos => _pudos;
@@ -56,13 +57,11 @@ class MapsControllerViewModel extends ChangeNotifier {
         if (response is PudoProfile) {
           Navigator.of(context).pushNamed(Routes.pudoDetail, arguments: PudoDetailControllerDataModel(position, response));
         } else {
-          showErrorDialog!("Qualcosa e' andato storto");
+          showErrorDialog?.call("Qualcosa e' andato storto");
         }
       },
-    ).catchError((onError) => showErrorDialog!(onError));
+    ).catchError((onError) => showErrorDialog?.call(onError));
   }
-
-  Function(String)? showErrorDialog;
 
   onMapCreate(MapController mapController, LatLng center) {
     this.mapController = mapController;
@@ -102,8 +101,8 @@ class MapsControllerViewModel extends ChangeNotifier {
           pudos = response;
           mapController?.move(LatLng(currentLatitude, currentLongitude), currentZoomLevel.toDouble());
         }
-      }).catchError((onError) => showErrorDialog!(onError));
-    }).catchError((onError) => showErrorDialog!(onError));
+      }).catchError((onError) => showErrorDialog?.call(onError));
+    }).catchError((onError) => showErrorDialog?.call(onError));
   }
 
   selectPudo(BuildContext context, int? pudoId) {
@@ -116,6 +115,6 @@ class MapsControllerViewModel extends ChangeNotifier {
           pudoProfile = response;
         }
       },
-    ).catchError((onError) => showErrorDialog!(onError));
+    ).catchError((onError) => showErrorDialog?.call(onError));
   }
 }
