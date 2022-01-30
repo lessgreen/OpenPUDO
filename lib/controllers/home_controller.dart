@@ -26,7 +26,6 @@ import 'package:provider/provider.dart';
 import 'package:qui_green/widgets/package_card.dart';
 import 'package:qui_green/controllers/home_pudo_controller.dart';
 import 'package:qui_green/controllers/profile_controller.dart';
-import 'package:qui_green/commons/page_type.dart';
 import 'package:qui_green/resources/res.dart';
 import 'package:qui_green/resources/routes_enum.dart';
 

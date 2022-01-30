@@ -28,7 +28,6 @@ import 'package:qui_green/singletons/network/network_manager.dart';
 import 'package:qui_green/widgets/package_card.dart';
 import 'package:qui_green/controllers/home_pudo_controller.dart';
 import 'package:qui_green/controllers/profile_controller.dart';
-import 'package:qui_green/commons/page_type.dart';
 import 'package:qui_green/resources/res.dart';
 import 'package:qui_green/resources/routes_enum.dart';
 
@@ -61,10 +60,7 @@ class _PudoHomeControllerState extends State<PudoHomeController> {
                         backgroundColor: AppColors.primaryColorDark,
                         middle: Text(
                           'Il tuo profilo',
-                          style: Theme.of(context)
-                              .textTheme
-                              .headline6
-                              ?.copyWith(color: Colors.white),
+                          style: Theme.of(context).textTheme.headline6?.copyWith(color: Colors.white),
                         ),
                       ),
                       child: const HomePudoController(),
@@ -81,10 +77,7 @@ class _PudoHomeControllerState extends State<PudoHomeController> {
                           backgroundColor: AppColors.primaryColorDark,
                           middle: Text(
                             'HomePudo',
-                            style: Theme.of(context)
-                                .textTheme
-                                .headline6
-                                ?.copyWith(color: Colors.white),
+                            style: Theme.of(context).textTheme.headline6?.copyWith(color: Colors.white),
                           ),
                         ),
                         child: Center(
@@ -92,8 +85,7 @@ class _PudoHomeControllerState extends State<PudoHomeController> {
                             onPressed: () {
                               Navigator.pop(context);
                               NetworkManager.instance.setAccessToken(null);
-                              Provider.of<CurrentUser>(context, listen: false)
-                                  .refresh();
+                              Provider.of<CurrentUser>(context, listen: false).refresh();
                             },
                             child: const Text("Logout"),
                           ),

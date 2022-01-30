@@ -43,16 +43,20 @@ void mainCommon({required String host, required bool isProd}) async {
   AppConfig appConfig = AppConfig(isProd: isProd, host: host, appInfo: info, sharedPreferencesInstance: sharedPreferences);
   NetworkManager(config: appConfig);
   await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge, overlays: [SystemUiOverlay.bottom]);
-  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-    statusBarColor: Colors.transparent,
-    systemNavigationBarColor: ThemeData.light().scaffoldBackgroundColor,
-    systemNavigationBarDividerColor: Colors.transparent,
-    systemNavigationBarIconBrightness: Brightness.dark,
-  ));
+  SystemChrome.setSystemUIOverlayStyle(
+    SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      systemNavigationBarColor: ThemeData.light().scaffoldBackgroundColor,
+      systemNavigationBarDividerColor: Colors.transparent,
+      systemNavigationBarIconBrightness: Brightness.dark,
+    ),
+  );
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-  runApp(App(
-    config: appConfig,
-  ));
+  runApp(
+    App(
+      config: appConfig,
+    ),
+  );
 }
 
 class App extends StatelessWidget {

@@ -57,13 +57,14 @@ class _ThanksControllerState extends State<ThanksController> {
               const SizedBox(
                 height: 10,
               ),
-              SizedBox(
-                  width: MediaQuery.of(context).size.width / 3 * 2,
-                  child: Text(
-                    'Divendando un PUDO QuiGreen potrai fornire un servizio a tutti gli utenti che vorranno ricevere un pacco, ricevendolo tu per loro.',
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.subtitle1?.copyWith(fontWeight: FontWeight.w400),
-                  )),
+              Padding(
+                padding: const EdgeInsets.only(left: Dimension.padding, right: Dimension.padding),
+                child: Text(
+                  'Divendando un PUDO QuiGreen potrai fornire un servizio a tutti gli utenti che vorranno ricevere un pacco, ricevendolo tu per loro.',
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.subtitle1?.copyWith(fontWeight: FontWeight.w400),
+                ),
+              ),
               const Spacer(),
               SvgPicture.asset(ImageSrc.aboutYouArt, semanticsLabel: 'Art Background'),
               const Spacer(),

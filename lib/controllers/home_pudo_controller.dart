@@ -23,7 +23,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:qui_green/widgets/pudo_map_card.dart';
-import 'package:qui_green/commons/page_type.dart';
 import 'package:qui_green/resources/routes_enum.dart';
 
 class HomePudoController extends StatefulWidget {
