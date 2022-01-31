@@ -22,9 +22,6 @@ part of 'network_shared.dart';
 
 mixin NetworkManagerNotification on NetworkGeneral {
   Future<dynamic> getNotificationsCount() async {
-    if(networkStatus == ConnectivityResult.none){
-      return Future.value(null);
-    }
     if (_accessToken != null) {
       _headers['Authorization'] = 'Bearer $_accessToken';
     }
@@ -65,9 +62,6 @@ mixin NetworkManagerNotification on NetworkGeneral {
   }
 
   Future<dynamic> markNotificationAsRead({required int notificationId}) async {
-    if(networkStatus == ConnectivityResult.none){
-      return Future.value(null);
-    }
     if (_accessToken != null) {
       _headers['Authorization'] = 'Bearer $_accessToken';
     }
@@ -104,9 +98,6 @@ mixin NetworkManagerNotification on NetworkGeneral {
   }
 
   Future<dynamic> readAllMyNotifications() async {
-    if(networkStatus == ConnectivityResult.none){
-      return Future.value(null);
-    }
     if (_accessToken != null) {
       _headers['Authorization'] = 'Bearer $_accessToken';
     }
@@ -143,9 +134,6 @@ mixin NetworkManagerNotification on NetworkGeneral {
   }
 
   Future<dynamic> getMyNotifications({int limit = 20, int offset = 0}) async {
-    if(networkStatus == ConnectivityResult.none){
-      return Future.value(null);
-    }
     if (_accessToken != null) {
       _headers['Authorization'] = 'Bearer $_accessToken';
     }

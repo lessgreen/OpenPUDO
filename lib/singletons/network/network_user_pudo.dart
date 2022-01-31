@@ -73,9 +73,6 @@ mixin NetworkManagerUserPudo on NetworkGeneral {
   }
 
   Future<dynamic> getMyPudoUsers() async {
-    if(networkStatus == ConnectivityResult.none){
-      return Future.value(null);
-    }
     if (_accessToken != null) {
       _headers['Authorization'] = 'Bearer $_accessToken';
     }
@@ -120,9 +117,6 @@ mixin NetworkManagerUserPudo on NetworkGeneral {
   }
 
   Future<dynamic> setMyPudoAddress(AddressMarker address) async {
-    if(networkStatus == ConnectivityResult.none){
-      return Future.value(null);
-    }
     if (_accessToken != null) {
       _headers['Authorization'] = 'Bearer $_accessToken';
     }
@@ -164,9 +158,6 @@ mixin NetworkManagerUserPudo on NetworkGeneral {
   }
 
   Future<dynamic> setMyPudoProfile(PudoProfile profile) async {
-    if(networkStatus == ConnectivityResult.none){
-      return Future.value(null);
-    }
     if (_accessToken != null) {
       _headers['Authorization'] = 'Bearer $_accessToken';
     }
@@ -208,9 +199,6 @@ mixin NetworkManagerUserPudo on NetworkGeneral {
   }
 
   Future<dynamic> getMyPudoProfile() async {
-    if(networkStatus == ConnectivityResult.none){
-      return Future.value(null);
-    }
     if (_accessToken != null) {
       _headers['Authorization'] = 'Bearer $_accessToken';
     }

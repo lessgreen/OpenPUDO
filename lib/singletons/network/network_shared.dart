@@ -18,11 +18,12 @@
  If not, see <https://github.com/lessgreen/OpenPUDO>.
 */
 
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:connectivity/connectivity.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart';
@@ -45,6 +46,7 @@ import 'package:qui_green/models/user_profile.dart';
 import 'package:path/path.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:qui_green/resources/app_config.dart';
+import 'package:retry/retry.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 part 'network_user.dart';
@@ -59,7 +61,6 @@ part 'network_pudo.dart';
 
 mixin NetworkGeneral {
   late AppConfig config;
-  ConnectivityResult networkStatus = ConnectivityResult.mobile;
   String? _accessToken;
   final int _timeout = 30;
   int _refreshTokenRetryCounter = 0;
@@ -67,6 +68,13 @@ mixin NetworkGeneral {
   late ValueNotifier _networkActivity;
   late SharedPreferences _sharedPreferences;
   AccessTokenData? _accessTokenData;
+  bool _isOnline = true;
+  bool get isOnline => _isOnline;
+  set isOnline(bool newValue) {
+    _isOnline = newValue;
+  }
+
+  RetryOptions r = const RetryOptions(maxAttempts: 3);
 
   set sharedPreferences(SharedPreferences newVal) {
     _sharedPreferences = newVal;
@@ -107,9 +115,6 @@ mixin NetworkGeneral {
   //
 
   Future<dynamic> renewToken({required String accessToken}) async {
-    if(networkStatus == ConnectivityResult.none){
-      return Future.value(null);
-    }
     if (_accessToken != null) {
       _headers['Authorization'] = 'Bearer $_accessToken';
     }
@@ -184,9 +189,6 @@ mixin NetworkGeneral {
   }
 
   Future<dynamic> getAddresses({double? lat, double? lon, required String text}) async {
-    if(networkStatus == ConnectivityResult.none){
-      return Future.value(null);
-    }
     var queryString = "?text=$text";
     if (lat != null && lon != null) {
       queryString += "&lat=$lat&lon=$lon";
@@ -234,9 +236,6 @@ mixin NetworkGeneral {
   }
 
   Future<dynamic> photoUpload(File anImage, {bool? isPudo = false}) async {
-    if(networkStatus == ConnectivityResult.none){
-      return Future.value(null);
-    }
     if (_accessToken != null) {
       _headers['Authorization'] = 'Bearer $_accessToken';
     }
@@ -290,9 +289,6 @@ mixin NetworkGeneral {
   }
 
   Future<dynamic> setDeviceInfo({required DeviceInfoModel infoRequest}) async {
-    if(networkStatus == ConnectivityResult.none){
-      return Future.value(null);
-    }
     if (_accessToken != null) {
       _headers['Authorization'] = 'Bearer $_accessToken';
     }

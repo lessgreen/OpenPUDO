@@ -18,6 +18,9 @@
  If not, see <https://github.com/lessgreen/OpenPUDO>.
 */
 
+import 'dart:async';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:html_unescape/html_unescape_small.dart';
 import 'package:qui_green/commons/utilities/localization.dart';
@@ -36,16 +39,13 @@ class SAAlertDialog extends StatelessWidget {
     required this.actions,
   }) : super(key: key);
 
-  static displayAlertWithButtons(BuildContext context, String title,
-      String description, List<MaterialButton> actions,
-      {bool barrierDismissible = true}) {
+  static displayAlertWithButtons(BuildContext context, String title, String description, List<MaterialButton> actions) {
     if (isAlreadyShown) {
       return;
     }
     isAlreadyShown = true;
 
     showDialog(
-            barrierDismissible: barrierDismissible,
             builder: (subContext) {
               List<MaterialButton> modifiedActions = actions
                   .asMap()
@@ -67,10 +67,7 @@ class SAAlertDialog extends StatelessWidget {
                   })
                   .values
                   .toList();
-              return SAAlertDialog(
-                  title: title,
-                  description: HtmlUnescape().convert(description),
-                  actions: modifiedActions);
+              return SAAlertDialog(title: title, description: HtmlUnescape().convert(description), actions: modifiedActions);
             },
             context: context)
         .then((value) {
@@ -78,8 +75,7 @@ class SAAlertDialog extends StatelessWidget {
     });
   }
 
-  static displayAlertWithClose(
-      BuildContext context, String title, dynamic description) {
+  static displayAlertWithClose(BuildContext context, String title, dynamic description) {
     if (isAlreadyShown) {
       return;
     }
@@ -89,14 +85,18 @@ class SAAlertDialog extends StatelessWidget {
               return SAAlertDialog(
                   title: title,
                   description: (description is OPBaseResponse)
-                      ? HtmlUnescape()
-                          .convert(description.message ?? "General error")
+                      ? HtmlUnescape().convert(description.message ?? "General error")
                       : (description is Error)
                           ? HtmlUnescape().convert(description.toString())
                           : (description is ErrorDescription)
-                              ? HtmlUnescape()
-                                  .convert(description.value.first.toString())
-                              : HtmlUnescape().convert(description),
+                              ? HtmlUnescape().convert(description.value.first.toString())
+                              : (description is SocketException)
+                                  ? HtmlUnescape().convert(description.message)
+                                  : (description is TimeoutException)
+                                      ? HtmlUnescape().convert(description.message ?? "Timeout exception")
+                                      : (description is String)
+                                          ? HtmlUnescape().convert(description)
+                                          : 'Unknown error occurred. Please try again',
                   actions: <Widget>[
                     MaterialButton(
                       elevation: 0,

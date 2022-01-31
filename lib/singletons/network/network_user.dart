@@ -24,20 +24,23 @@ mixin NetworkManagerUser on NetworkGeneral {
   //TODO: implement API calls (user related)
 
   Future<dynamic> login({required String login, required String password}) async {
-    LoginRequest aRequest = LoginRequest(
-      phoneNumber: login,
-      otp: password,
-    );
-    if(networkStatus == ConnectivityResult.none){
-      return Future.value(null);
-    }
-    var url = _baseURL + '/api/v2/auth/login/confirm';
-    var body = jsonEncode(aRequest.toJson());
     try {
+      if (!isOnline) {
+        throw ("Network is offline");
+      }
+      LoginRequest aRequest = LoginRequest(
+        phoneNumber: login,
+        otp: password,
+      );
+      var url = _baseURL + '/api/v2/auth/login/confirm';
+      var body = jsonEncode(aRequest.toJson());
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
-      Response response = await post(Uri.parse(url), body: body, headers: _headers).timeout(Duration(seconds: _timeout));
+      Response response = await r.retry(
+        () => post(Uri.parse(url), body: body, headers: _headers).timeout(Duration(seconds: _timeout)),
+        retryIf: (e) => e is SocketException || e is TimeoutException,
+      );
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = false;
       });
@@ -51,7 +54,7 @@ mixin NetworkManagerUser on NetworkGeneral {
         setAccessToken(accessTokenData.accessToken);
       }
       return baseResponse;
-    } on Error catch (e) {
+    } catch (e) {
       safePrint('ERROR - login: $e');
       _refreshTokenRetryCounter = 0;
       return e;
@@ -59,24 +62,23 @@ mixin NetworkManagerUser on NetworkGeneral {
   }
 
   Future<dynamic> sendPhoneAuth({required String phoneNumber}) async {
-    /*UserProfile userProfile = UserProfile(
-      firstName: firstName,
-      lastName: lastName,
-      ssn: ssn,
-    );*/
-    if(networkStatus == ConnectivityResult.none){
-      return Future.value(null);
-    }
-    RegistrationRequest aRequest = RegistrationRequest(
-      phoneNumber: phoneNumber,
-    );
-    var url = _baseURL + '/api/v2/auth/login/send';
-    var body = jsonEncode(aRequest.toJson());
     try {
+      if (!isOnline) {
+        throw ("Network is offline");
+      }
+      RegistrationRequest aRequest = RegistrationRequest(
+        phoneNumber: phoneNumber,
+      );
+      var url = _baseURL + '/api/v2/auth/login/send';
+      var body = jsonEncode(aRequest.toJson());
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
-      Response response = await post(Uri.parse(url), body: body, headers: _headers).timeout(Duration(seconds: _timeout));
+      Response response = await r.retry(
+        () => post(Uri.parse(url), body: body, headers: _headers).timeout(Duration(seconds: _timeout)),
+        retryIf: (e) => e is SocketException || e is TimeoutException,
+      );
+
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = false;
       });
@@ -86,17 +88,17 @@ mixin NetworkManagerUser on NetworkGeneral {
       var json = jsonDecode(decodedUTF8);
       var baseResponse = OPBaseResponse.fromJson(json);
       return baseResponse;
-    } on Error catch (e) {
+    } catch (e) {
       safePrint('ERROR - registerUser: $e');
+      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+        _networkActivity.value = false;
+      });
       _refreshTokenRetryCounter = 0;
       return e;
     }
   }
 
   Future<dynamic> registerUser({required String name, required String surname}) async {
-    if(networkStatus == ConnectivityResult.none){
-      return Future.value(null);
-    }
     var url = _baseURL + '/api/v2/auth/register/customer';
     var body = jsonEncode({
       "user": {"firstName": name, "lastName": surname}
@@ -127,9 +129,6 @@ mixin NetworkManagerUser on NetworkGeneral {
   }
 
   Future<dynamic> getMyProfile() async {
-    if(networkStatus == ConnectivityResult.none){
-      return Future.value(null);
-    }
     if (_accessToken != null) {
       _headers['Authorization'] = 'Bearer $_accessToken';
     }
@@ -168,9 +167,6 @@ mixin NetworkManagerUser on NetworkGeneral {
   }
 
   Future<dynamic> setMyProfile(UserProfile profile) async {
-    if(networkStatus == ConnectivityResult.none){
-      return Future.value(null);
-    }
     if (_accessToken != null) {
       _headers['Authorization'] = 'Bearer $_accessToken';
     }
@@ -211,9 +207,6 @@ mixin NetworkManagerUser on NetworkGeneral {
   }
 
   Future<dynamic> deleteProfilePic({bool? isPudo = false}) async {
-    if(networkStatus == ConnectivityResult.none){
-      return Future.value(null);
-    }
     if (_accessToken != null) {
       _headers['Authorization'] = 'Bearer $_accessToken';
     }
@@ -254,10 +247,7 @@ mixin NetworkManagerUser on NetworkGeneral {
     }
   }
 
-  Future<Uint8List?> profilePic(String id) async {
-    if(networkStatus == ConnectivityResult.none){
-      return null;
-    }
+  Future<Uint8List> profilePic(String id) async {
     if (_accessToken != null) {
       _headers['Authorization'] = 'Bearer $_accessToken';
     }
@@ -283,9 +273,6 @@ mixin NetworkManagerUser on NetworkGeneral {
   }
 
   Future<dynamic> getPublicProfile(String userId) async {
-    if(networkStatus == ConnectivityResult.none){
-      return Future.value(null);
-    }
     if (_accessToken != null) {
       _headers['Authorization'] = 'Bearer $_accessToken';
     }
@@ -326,9 +313,6 @@ mixin NetworkManagerUser on NetworkGeneral {
   }
 
   Future<dynamic> addPudoFavorite(String pudoId) async {
-    if(networkStatus == ConnectivityResult.none){
-      return Future.value(null);
-    }
     if (_accessToken != null) {
       _headers['Authorization'] = 'Bearer $_accessToken';
     }
@@ -373,9 +357,6 @@ mixin NetworkManagerUser on NetworkGeneral {
   }
 
   Future<dynamic> removePudoFavorite(String pudoId) async {
-    if(networkStatus == ConnectivityResult.none){
-      return Future.value(null);
-    }
     if (_accessToken != null) {
       _headers['Authorization'] = 'Bearer $_accessToken';
     }
@@ -420,9 +401,6 @@ mixin NetworkManagerUser on NetworkGeneral {
   }
 
   Future<dynamic> getMyPudos() async {
-    if(networkStatus == ConnectivityResult.none){
-      return Future.value(null);
-    }
     if (_accessToken != null) {
       _headers['Authorization'] = 'Bearer $_accessToken';
     }
@@ -467,9 +445,6 @@ mixin NetworkManagerUser on NetworkGeneral {
   }
 
   Future<dynamic> updateUserPreferences({required bool showNumber}) async {
-    if(networkStatus == ConnectivityResult.none){
-      return Future.value(null);
-    }
     if (_accessToken != null) {
       _headers['Authorization'] = 'Bearer $_accessToken';
     }

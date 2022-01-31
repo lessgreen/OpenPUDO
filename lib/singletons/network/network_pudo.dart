@@ -23,9 +23,6 @@ part of 'network_shared.dart';
 mixin NetworkManagerPudo on NetworkGeneral {
   //TODO: implement API calls (pudo related)
   Future<dynamic> getSuggestedZoom({required double lat, required double lon}) async {
-    if(networkStatus == ConnectivityResult.none){
-      return Future.value(null);
-    }
     if (_accessToken != null) {
       _headers['Authorization'] = 'Bearer $_accessToken';
     }
@@ -69,9 +66,6 @@ mixin NetworkManagerPudo on NetworkGeneral {
   }
 
   Future<dynamic> getPudoDetails({required String pudoId}) async {
-    if(networkStatus == ConnectivityResult.none){
-      return Future.value(null);
-    }
     if (_accessToken != null) {
       _headers['Authorization'] = 'Bearer $_accessToken';
     }
@@ -112,9 +106,6 @@ mixin NetworkManagerPudo on NetworkGeneral {
   }
 
   Future<dynamic> getPudos({double? lat, double? lon, int? zoom, String? text}) async {
-    if(networkStatus == ConnectivityResult.none){
-      return Future.value(null);
-    }
     var queryString = "";
     if (lat != null && lon != null && zoom != null) {
       queryString = "?lat=$lat&lon=$lon&zoom=$zoom";
