@@ -27,8 +27,7 @@ import 'package:qui_green/resources/routes_enum.dart';
 import 'package:qui_green/resources/res.dart';
 
 class PudoDetailController extends StatefulWidget {
-  const PudoDetailController({Key? key, required this.dataModel})
-      : super(key: key);
+  const PudoDetailController({Key? key, required this.dataModel}) : super(key: key);
   final PudoDetailControllerDataModel dataModel;
 
   @override
@@ -51,9 +50,7 @@ class _PudoDetailControllerState extends State<PudoDetailController> {
               ),
               Row(
                 children: List<Widget>.generate(
-                  (widget.dataModel.pudoProfile.ratingModel?.stars ?? 0) > 5
-                      ? 5
-                      : widget.dataModel.pudoProfile.ratingModel?.stars ?? 0,
+                  (widget.dataModel.pudoProfile.ratingModel?.stars ?? 0) > 5 ? 5 : widget.dataModel.pudoProfile.ratingModel?.stars ?? 0,
                   (index) => Icon(
                     Icons.star_rounded,
                     color: Colors.yellow.shade700,
@@ -81,13 +78,11 @@ class _PudoDetailControllerState extends State<PudoDetailController> {
                     width: Dimension.paddingS,
                   ),
                 ),
-                TextSpan(
-                    text: widget.dataModel.pudoProfile.address!.label ?? ""),
+                TextSpan(text: widget.dataModel.pudoProfile.address!.label ?? ""),
               ],
             ),
           ),
-          if (widget.dataModel.pudoProfile.publicPhoneNumber != null)
-            const SizedBox(height: Dimension.paddingS),
+          if (widget.dataModel.pudoProfile.publicPhoneNumber != null) const SizedBox(height: Dimension.paddingS),
           if (widget.dataModel.pudoProfile.publicPhoneNumber != null)
             RichText(
               textAlign: TextAlign.start,
@@ -107,9 +102,7 @@ class _PudoDetailControllerState extends State<PudoDetailController> {
                       width: Dimension.paddingS,
                     ),
                   ),
-                  TextSpan(
-                      text:
-                          widget.dataModel.pudoProfile.publicPhoneNumber ?? ""),
+                  TextSpan(text: widget.dataModel.pudoProfile.publicPhoneNumber ?? ""),
                 ],
               ),
             ),
@@ -133,12 +126,10 @@ class _PudoDetailControllerState extends State<PudoDetailController> {
                   ),
                 ),
                 TextSpan(
-                    text: (widget.dataModel.pudoProfile.customerCount ?? 0)
-                        .toString(),
-                    style: const TextStyle(fontWeight: FontWeight.w500)),
-                const TextSpan(
-                    text:
-                        ' persone hanno già scelto quest’attività come punto di ritiro QuiGreen.'),
+                  text: (widget.dataModel.pudoProfile.customerCount ?? 0).toString(),
+                  style: const TextStyle(fontWeight: FontWeight.w500),
+                ),
+                const TextSpan(text: ' persone hanno già scelto quest’attività come punto di ritiro QuiGreen.'),
               ],
             ),
           ),
@@ -157,7 +148,10 @@ class _PudoDetailControllerState extends State<PudoDetailController> {
           title: Text(
             widget.dataModel.pudoProfile.businessName,
             style: Theme.of(context).textTheme.headline6?.copyWith(
-                color: Colors.black, fontSize: 16, fontWeight: FontWeight.w500),
+                  color: Colors.black,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                ),
           ),
           centerTitle: true,
           leading: GestureDetector(
@@ -171,8 +165,10 @@ class _PudoDetailControllerState extends State<PudoDetailController> {
             TextFieldButton(
               text: "Scegli",
               onPressed: () => Navigator.of(context).pushNamedAndRemoveUntil(
-                  Routes.personalData, ModalRoute.withName('/'),
-                  arguments: widget.dataModel.pudoProfile),
+                Routes.personalData,
+                ModalRoute.withName('/'),
+                arguments: widget.dataModel.pudoProfile,
+              ),
             )
           ],
         ),
@@ -210,8 +206,9 @@ class _PudoDetailControllerState extends State<PudoDetailController> {
                       Text(
                         'Per utilizzare QuiGreen in questo locale è richiesto:',
                         style: Theme.of(context).textTheme.caption?.copyWith(
-                            fontStyle: FontStyle.italic,
-                            fontWeight: FontWeight.w300),
+                              fontStyle: FontStyle.italic,
+                              fontWeight: FontWeight.w300,
+                            ),
                       ),
                     ],
                   ),
@@ -221,9 +218,10 @@ class _PudoDetailControllerState extends State<PudoDetailController> {
                     child: Text(
                       '“${widget.dataModel.pudoProfile.rewardMessage ?? ""}”',
                       style: Theme.of(context).textTheme.subtitle1?.copyWith(
-                          height: 2,
-                          fontStyle: FontStyle.italic,
-                          fontWeight: FontWeight.w300),
+                            height: 2,
+                            fontStyle: FontStyle.italic,
+                            fontWeight: FontWeight.w300,
+                          ),
                       textAlign: TextAlign.center,
                     ),
                   ),
