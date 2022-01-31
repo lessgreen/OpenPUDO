@@ -24,7 +24,7 @@ mixin NetworkManagerPackages on NetworkGeneral {
   //TODO: implement API calls (package related)
   Future<dynamic> getPackageDetails({required int packageId}) async {
     if(networkStatus == ConnectivityResult.none){
-      return;
+      return Future.value(null);
     }
     if (_accessToken != null) {
       _headers['Authorization'] = 'Bearer $_accessToken';
@@ -69,7 +69,7 @@ mixin NetworkManagerPackages on NetworkGeneral {
 
   Future<dynamic> changePackageStatus({required int packageId, required PudoPackageStatus newStatus, String? notes}) async {
     if(networkStatus == ConnectivityResult.none){
-      return;
+      return Future.value(null);
     }
     if (_accessToken != null) {
       _headers['Authorization'] = 'Bearer $_accessToken';
@@ -137,7 +137,7 @@ mixin NetworkManagerPackages on NetworkGeneral {
     required String externalFileId,
   }) async {
     if(networkStatus == ConnectivityResult.none){
-      return;
+      return Future.value(null);
     }
     if (_accessToken != null) {
       _headers['Authorization'] = 'Bearer $_accessToken';
@@ -202,7 +202,7 @@ mixin NetworkManagerPackages on NetworkGeneral {
     String? packagePicId,
   }) async {
     if(networkStatus == ConnectivityResult.none){
-      return;
+      return Future.value(null);
     }
     if (request != null) {
     } else if (userId != null) {
@@ -254,7 +254,7 @@ mixin NetworkManagerPackages on NetworkGeneral {
 
   Future<dynamic> getMyPackages({bool history = false, int limit = 20, int offset = 0}) async {
     if(networkStatus == ConnectivityResult.none){
-      return;
+      return Future.value(null);
     }
     if (_accessToken != null) {
       _headers['Authorization'] = 'Bearer $_accessToken';

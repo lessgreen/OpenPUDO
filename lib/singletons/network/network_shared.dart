@@ -108,7 +108,7 @@ mixin NetworkGeneral {
 
   Future<dynamic> renewToken({required String accessToken}) async {
     if(networkStatus == ConnectivityResult.none){
-      return;
+      return Future.value(null);
     }
     if (_accessToken != null) {
       _headers['Authorization'] = 'Bearer $_accessToken';
@@ -184,6 +184,9 @@ mixin NetworkGeneral {
   }
 
   Future<dynamic> getAddresses({double? lat, double? lon, required String text}) async {
+    if(networkStatus == ConnectivityResult.none){
+      return Future.value(null);
+    }
     var queryString = "?text=$text";
     if (lat != null && lon != null) {
       queryString += "&lat=$lat&lon=$lon";
@@ -231,6 +234,9 @@ mixin NetworkGeneral {
   }
 
   Future<dynamic> photoUpload(File anImage, {bool? isPudo = false}) async {
+    if(networkStatus == ConnectivityResult.none){
+      return Future.value(null);
+    }
     if (_accessToken != null) {
       _headers['Authorization'] = 'Bearer $_accessToken';
     }
@@ -284,6 +290,9 @@ mixin NetworkGeneral {
   }
 
   Future<dynamic> setDeviceInfo({required DeviceInfoModel infoRequest}) async {
+    if(networkStatus == ConnectivityResult.none){
+      return Future.value(null);
+    }
     if (_accessToken != null) {
       _headers['Authorization'] = 'Bearer $_accessToken';
     }
