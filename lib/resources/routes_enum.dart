@@ -39,4 +39,7 @@ class Routes {
   static const profile = '/profile';
   static const pudoList = '/pudoList';
   static const pudoHome = "/pudoHome";
+
+  //IN APP HOME ONBOARDING ROUTES
+
 }

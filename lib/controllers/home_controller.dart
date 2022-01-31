@@ -22,12 +22,26 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
+import 'package:qui_green/controllers/about_you_controller.dart';
+import 'package:qui_green/controllers/home_onboarding/instruction_controller.dart';
+import 'package:qui_green/controllers/home_onboarding/maps_controller.dart';
+import 'package:qui_green/controllers/home_onboarding/pudo_detail_controller.dart';
+import 'package:qui_green/controllers/home_onboarding/registration_complete_controller.dart';
+import 'package:qui_green/controllers/onboarding/insert_address_controller.dart';
+import 'package:qui_green/controllers/onboarding/maps_controller.dart';
+import 'package:qui_green/controllers/home_onboarding/user_position_controller.dart';
+import 'package:qui_green/controllers/pudo_detail_controller.dart';
+import 'package:qui_green/models/pudo_detail_controller_data_model.dart';
+import 'package:qui_green/models/pudo_profile.dart';
 import 'package:qui_green/widgets/package_card.dart';
 import 'package:qui_green/controllers/home_pudo_controller.dart';
 import 'package:qui_green/controllers/profile_controller.dart';
 import 'package:qui_green/resources/res.dart';
 import 'package:qui_green/resources/routes_enum.dart';
+
+import 'home_onboarding/insert_address_controller.dart';
 
 class HomeController extends StatefulWidget {
   const HomeController({Key? key}) : super(key: key);
@@ -51,21 +65,43 @@ class _HomeControllerState extends State<HomeController> {
           switch (index) {
             case 1:
               return CupertinoTabView(
-                routes: {
-                  '/': (context) {
-                    return CupertinoPageScaffold(
-                      navigationBar: CupertinoNavigationBar(
-                        padding: const EdgeInsetsDirectional.all(0),
-                        brightness: Brightness.dark,
-                        backgroundColor: AppColors.primaryColorDark,
-                        middle: Text(
-                          'Pudo',
-                          style: Theme.of(context).textTheme.headline6?.copyWith(color: Colors.white),
-                        ),
-                      ),
-                      child: const HomePudoController(),
-                    );
-                  },
+                onGenerateRoute: (RouteSettings settings) {
+                  switch (settings.name) {
+                    case Routes.userPosition:
+                      return CupertinoPageRoute(
+                          builder: (_) => const HomeUserPositionController(
+                              // dataModel: settings.arguments
+                              //     as PudoDetailControllerDataModel,
+                              ));
+                    case Routes.insertAddress:
+                      return CupertinoPageRoute(
+                          builder: (_) => const HomeInsertAddressController());
+                    case Routes.maps:
+                      return CupertinoPageRoute(
+                          builder: (_) => HomeMapsController(
+                              initialPosition: settings.arguments as LatLng));
+                    case Routes.pudoDetail:
+                      return CupertinoPageRoute(
+                          builder: (_) => HomePudoDetailController(
+                              dataModel: settings.arguments
+                                  as PudoDetailControllerDataModel));
+                    case Routes.registrationComplete:
+                      return CupertinoPageRoute(
+                          builder: (_) => HomeRegistrationCompleteController(
+                              pudoDataModel:
+                                  settings.arguments as PudoProfile));
+                    case Routes.instruction:
+                      return CupertinoPageRoute(
+                          builder: (_) => HomeInstructionController(
+                              pudoDataModel:
+                                  settings.arguments as PudoProfile));
+                    case "/":
+                      return CupertinoPageRoute(
+                          builder: (_) => const HomePudoController());
+                    default:
+                      return CupertinoPageRoute(
+                          builder: (_) => const HomePudoController());
+                  }
                 },
               );
             default:
@@ -79,14 +115,18 @@ class _HomeControllerState extends State<HomeController> {
                           backgroundColor: AppColors.primaryColorDark,
                           middle: Text(
                             'Home',
-                            style: Theme.of(context).textTheme.headline6?.copyWith(color: Colors.white),
+                            style: Theme.of(context)
+                                .textTheme
+                                .headline6
+                                ?.copyWith(color: Colors.white),
                           ),
                           trailing: IconButton(
                             icon: const Icon(
                               Icons.account_circle_rounded,
                               color: Colors.white,
                             ),
-                            onPressed: () => Navigator.of(context).pushNamed(Routes.profile),
+                            onPressed: () =>
+                                Navigator.of(context).pushNamed(Routes.profile),
                           ),
                         ),
                         child: Column(
@@ -101,7 +141,8 @@ class _HomeControllerState extends State<HomeController> {
                             ),
                             const SizedBox(height: 20),
                             Container(
-                                padding: const EdgeInsets.only(left: Dimension.padding),
+                                padding: const EdgeInsets.only(
+                                    left: Dimension.padding),
                                 alignment: Alignment.centerLeft,
                                 child: Text(
                                   'I tuoi pacchi:',
@@ -113,7 +154,8 @@ class _HomeControllerState extends State<HomeController> {
                             Expanded(
                               child: ListView.builder(
                                   itemCount: 1,
-                                  itemBuilder: (BuildContext context, int index) {
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
                                     return PackageCard(
                                       name: "Bar - La pinta",
                                       address: "Via ippolito, 8",
@@ -121,14 +163,15 @@ class _HomeControllerState extends State<HomeController> {
                                       onTap: () => null,
                                       isRead: false,
                                       deliveryDate: '12/12/2021',
-                                      image: 'https://i0.wp.com/www.dailycal.org/assets/uploads/2021/04/package_gusler_cc-900x580.jpg',
+                                      image:
+                                          'https://i0.wp.com/www.dailycal.org/assets/uploads/2021/04/package_gusler_cc-900x580.jpg',
                                     );
                                   }),
                             ),
                           ],
                         ));
                   },
-                  '/profile': (context) {
+                  Routes.profile: (context) {
                     return const ProfileController();
                   },
                 },

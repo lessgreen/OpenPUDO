@@ -20,8 +20,11 @@
 
 // ignore_for_file: unused_import
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:qui_green/resources/res.dart';
+import 'package:qui_green/widgets/main_button.dart';
 import 'package:qui_green/widgets/pudo_map_card.dart';
 import 'package:qui_green/resources/routes_enum.dart';
 
@@ -35,11 +38,33 @@ class HomePudoController extends StatefulWidget {
 class _HomePudoControllerState extends State<HomePudoController> {
   @override
   Widget build(BuildContext context) {
-    return Center(
-        child: Text(
-      'Non hai ancora aggiunto un pudo per le tue consegne!',
-      textAlign: TextAlign.center,
-      style: TextStyle(color: Colors.grey.shade600),
-    ));
+    return CupertinoPageScaffold(
+      navigationBar: CupertinoNavigationBar(
+        padding: const EdgeInsetsDirectional.all(0),
+        brightness: Brightness.dark,
+        backgroundColor: AppColors.primaryColorDark,
+        middle: Text(
+          'Pudo',
+          style: Theme.of(context)
+              .textTheme
+              .headline6
+              ?.copyWith(color: Colors.white),
+        ),
+      ),
+      child: Center(
+          child: Column(
+        children: [
+          Text(
+            'Non hai ancora aggiunto un pudo per le tue consegne!',
+            textAlign: TextAlign.center,
+            style: TextStyle(color: Colors.grey.shade600),
+          ),
+          MainButton(
+              text: 'Vai',
+              onPressed: () =>
+                  Navigator.of(context).pushNamed(Routes.userPosition))
+        ],
+      )),
+    );
   }
 }
