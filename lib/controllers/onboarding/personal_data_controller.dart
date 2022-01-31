@@ -55,13 +55,13 @@ class _PersonalDataControllerState extends State<PersonalDataController> {
               onWillPop: () async => false,
               child: SAScaffold(
                 isLoading: NetworkManager.instance.networkActivity,
-                resizeToAvoidBottomInset: false,
+                resizeToAvoidBottomInset: true,
                 appBar: AppBar(
                   backgroundColor: Colors.transparent,
                   systemOverlayStyle: SystemUiOverlayStyle.dark,
                   leading: const SizedBox(),
                 ),
-                body: Column(
+                body: ListView(
                   children: [
                     Center(
                       child: Text(
@@ -125,18 +125,18 @@ class _PersonalDataControllerState extends State<PersonalDataController> {
                         style: TextStyle(fontSize: 12),
                       ),
                     ),
-                    const Spacer(),
-                    AnimatedCrossFade(
-                      crossFadeState: isKeyboardVisible ? CrossFadeState.showSecond : CrossFadeState.showFirst,
-                      secondChild: const SizedBox(),
-                      firstChild: MainButton(
-                        enabled: viewModel.isValid,
-                        onPressed: () => viewModel.onSendClick(context, widget.pudoDataModel),
-                        text: 'Invia',
-                      ),
-                      duration: const Duration(milliseconds: 150),
-                    ),
+                    //const Spacer(),
                   ],
+                ),
+                bottomSheet: AnimatedCrossFade(
+                  crossFadeState: isKeyboardVisible ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+                  secondChild: const SizedBox(width: double.infinity,),
+                  firstChild: MainButton(
+                    enabled: viewModel.isValid,
+                    onPressed: () => viewModel.onSendClick(context, widget.pudoDataModel),
+                    text: 'Invia',
+                  ),
+                  duration: const Duration(milliseconds: 150),
                 ),
               ),
             );
