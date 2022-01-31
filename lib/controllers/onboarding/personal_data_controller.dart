@@ -130,7 +130,9 @@ class _PersonalDataControllerState extends State<PersonalDataController> {
                 ),
                 bottomSheet: AnimatedCrossFade(
                   crossFadeState: isKeyboardVisible ? CrossFadeState.showSecond : CrossFadeState.showFirst,
-                  secondChild: const SizedBox(width: double.infinity,),
+                  secondChild: const SizedBox(
+                    width: double.infinity,
+                  ),
                   firstChild: MainButton(
                     enabled: viewModel.isValid,
                     onPressed: () => viewModel.onSendClick(context, widget.pudoDataModel),

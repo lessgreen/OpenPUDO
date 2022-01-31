@@ -31,9 +31,9 @@ class ProfilePicBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Row(
-    mainAxisAlignment: MainAxisAlignment.center,
-    children: [
-      InkWell(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          InkWell(
             borderRadius: const BorderRadius.all(Radius.circular(Dimension.borderRadius)),
             onTap: onTap,
             child: Container(
@@ -65,6 +65,6 @@ class ProfilePicBox extends StatelessWidget {
                     ),
             ),
           ),
-    ],
-  );
+        ],
+      );
 }
