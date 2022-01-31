@@ -125,7 +125,10 @@ class _PudoDetailControllerState extends State<PudoDetailController> {
                     width: Dimension.paddingS,
                   ),
                 ),
-                TextSpan(text: (widget.dataModel.pudoProfile.customerCount ?? 0).toString(), style: const TextStyle(fontWeight: FontWeight.w500)),
+                TextSpan(
+                  text: (widget.dataModel.pudoProfile.customerCount ?? 0).toString(),
+                  style: const TextStyle(fontWeight: FontWeight.w500),
+                ),
                 const TextSpan(text: ' persone hanno già scelto quest’attività come punto di ritiro QuiGreen.'),
               ],
             ),
@@ -144,7 +147,11 @@ class _PudoDetailControllerState extends State<PudoDetailController> {
           systemOverlayStyle: SystemUiOverlayStyle.dark,
           title: Text(
             widget.dataModel.pudoProfile.businessName,
-            style: Theme.of(context).textTheme.headline6?.copyWith(color: Colors.black, fontSize: 16, fontWeight: FontWeight.w500),
+            style: Theme.of(context).textTheme.headline6?.copyWith(
+                  color: Colors.black,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                ),
           ),
           centerTitle: true,
           leading: GestureDetector(
@@ -157,19 +164,27 @@ class _PudoDetailControllerState extends State<PudoDetailController> {
           actions: [
             TextFieldButton(
               text: "Scegli",
-              onPressed: () => Navigator.of(context).pushNamedAndRemoveUntil(Routes.personalData, ModalRoute.withName('/'), arguments: widget.dataModel.pudoProfile),
+              onPressed: () => Navigator.of(context).pushNamedAndRemoveUntil(
+                Routes.personalData,
+                ModalRoute.withName('/'),
+                arguments: widget.dataModel.pudoProfile,
+              ),
             )
           ],
         ),
-        body: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+        body: ListView(
           children: [
             Container(
               padding: const EdgeInsets.only(bottom: Dimension.padding),
               alignment: Alignment.center,
               child: Column(
                 children: [
-                  CustomNetworkImage(url: widget.dataModel.pudoProfile.pudoPicId),
+                  AspectRatio(
+                      aspectRatio: 18 / 9,
+                      child: CustomNetworkImage(
+                        url: widget.dataModel.pudoProfile.pudoPicId,
+                        fit: BoxFit.cover,
+                      )),
                   _buildPudoDetail(),
                   const SizedBox(height: Dimension.padding),
                   Container(
@@ -190,7 +205,10 @@ class _PudoDetailControllerState extends State<PudoDetailController> {
                       ),
                       Text(
                         'Per utilizzare QuiGreen in questo locale è richiesto:',
-                        style: Theme.of(context).textTheme.caption?.copyWith(fontStyle: FontStyle.italic, fontWeight: FontWeight.w300),
+                        style: Theme.of(context).textTheme.caption?.copyWith(
+                              fontStyle: FontStyle.italic,
+                              fontWeight: FontWeight.w300,
+                            ),
                       ),
                     ],
                   ),
@@ -199,7 +217,11 @@ class _PudoDetailControllerState extends State<PudoDetailController> {
                     width: MediaQuery.of(context).size.width / 3 * 2,
                     child: Text(
                       '“${widget.dataModel.pudoProfile.rewardMessage ?? ""}”',
-                      style: Theme.of(context).textTheme.subtitle1?.copyWith(height: 2, fontStyle: FontStyle.italic, fontWeight: FontWeight.w300),
+                      style: Theme.of(context).textTheme.subtitle1?.copyWith(
+                            height: 2,
+                            fontStyle: FontStyle.italic,
+                            fontWeight: FontWeight.w300,
+                          ),
                       textAlign: TextAlign.center,
                     ),
                   ),
