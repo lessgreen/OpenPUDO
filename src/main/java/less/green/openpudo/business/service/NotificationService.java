@@ -56,8 +56,7 @@ public class NotificationService {
 
     public void sendPushNotifications(Long userId, String titleTemplate, String[] titleParams, String messageTemplate, String[] messageParams, Map<String, String> data) {
         List<TbDeviceToken> deviceTokens = deviceTokenDao.getDeviceTokensByUserId(userId);
-        if (deviceTokens != null && !deviceTokens.isEmpty()) {
-            Date now = new Date();
+        if (!deviceTokens.isEmpty()) {
             for (TbDeviceToken row : deviceTokens) {
                 String title;
                 if (titleParams == null || titleParams.length == 0) {
@@ -73,6 +72,7 @@ public class NotificationService {
                 }
                 String messageId = firebaseMessagingService.sendNotification(row.getDeviceToken(), title, message, data);
 
+                Date now = new Date();
                 row.setUpdateTms(now);
                 if (messageId != null) {
                     row.setLastSuccessTms(now);
