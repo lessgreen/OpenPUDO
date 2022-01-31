@@ -51,7 +51,9 @@ class RegistrationCompleteControllerViewModel extends ChangeNotifier {
   onGoHomeClick(BuildContext context) async {
     await NetworkManager.instance.updateUserPreferences(showNumber: _showNumber).then(
       (value) {
-        Provider.of<CurrentUser>(context, listen: false).refresh();
+        if(value!=null) {
+          Provider.of<CurrentUser>(context, listen: false).refresh();
+        }
       },
     ).catchError(
       (onError) => SAAlertDialog.displayAlertWithClose(context, "Error", onError),

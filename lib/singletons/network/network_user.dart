@@ -28,6 +28,9 @@ mixin NetworkManagerUser on NetworkGeneral {
       phoneNumber: login,
       otp: password,
     );
+    if(networkStatus == ConnectivityResult.none){
+      return;
+    }
     var url = _baseURL + '/api/v2/auth/login/confirm';
     var body = jsonEncode(aRequest.toJson());
     try {
@@ -61,6 +64,9 @@ mixin NetworkManagerUser on NetworkGeneral {
       lastName: lastName,
       ssn: ssn,
     );*/
+    if(networkStatus == ConnectivityResult.none){
+      return;
+    }
     RegistrationRequest aRequest = RegistrationRequest(
       phoneNumber: phoneNumber,
     );
@@ -88,6 +94,9 @@ mixin NetworkManagerUser on NetworkGeneral {
   }
 
   Future<dynamic> registerUser({required String name, required String surname}) async {
+    if(networkStatus == ConnectivityResult.none){
+      return;
+    }
     var url = _baseURL + '/api/v2/auth/register/customer';
     var body = jsonEncode({
       "user": {"firstName": name, "lastName": surname}
@@ -118,6 +127,9 @@ mixin NetworkManagerUser on NetworkGeneral {
   }
 
   Future<dynamic> getMyProfile() async {
+    if(networkStatus == ConnectivityResult.none){
+      return;
+    }
     if (_accessToken != null) {
       _headers['Authorization'] = 'Bearer $_accessToken';
     }
@@ -156,6 +168,9 @@ mixin NetworkManagerUser on NetworkGeneral {
   }
 
   Future<dynamic> setMyProfile(UserProfile profile) async {
+    if(networkStatus == ConnectivityResult.none){
+      return;
+    }
     if (_accessToken != null) {
       _headers['Authorization'] = 'Bearer $_accessToken';
     }
@@ -196,6 +211,9 @@ mixin NetworkManagerUser on NetworkGeneral {
   }
 
   Future<dynamic> deleteProfilePic({bool? isPudo = false}) async {
+    if(networkStatus == ConnectivityResult.none){
+      return;
+    }
     if (_accessToken != null) {
       _headers['Authorization'] = 'Bearer $_accessToken';
     }
@@ -236,7 +254,10 @@ mixin NetworkManagerUser on NetworkGeneral {
     }
   }
 
-  Future<Uint8List> profilePic(String id) async {
+  Future<Uint8List?> profilePic(String id) async {
+    if(networkStatus == ConnectivityResult.none){
+      return null;
+    }
     if (_accessToken != null) {
       _headers['Authorization'] = 'Bearer $_accessToken';
     }
@@ -262,6 +283,9 @@ mixin NetworkManagerUser on NetworkGeneral {
   }
 
   Future<dynamic> getPublicProfile(String userId) async {
+    if(networkStatus == ConnectivityResult.none){
+      return;
+    }
     if (_accessToken != null) {
       _headers['Authorization'] = 'Bearer $_accessToken';
     }
@@ -302,6 +326,9 @@ mixin NetworkManagerUser on NetworkGeneral {
   }
 
   Future<dynamic> addPudoFavorite(String pudoId) async {
+    if(networkStatus == ConnectivityResult.none){
+      return;
+    }
     if (_accessToken != null) {
       _headers['Authorization'] = 'Bearer $_accessToken';
     }
@@ -346,6 +373,9 @@ mixin NetworkManagerUser on NetworkGeneral {
   }
 
   Future<dynamic> removePudoFavorite(String pudoId) async {
+    if(networkStatus == ConnectivityResult.none){
+      return;
+    }
     if (_accessToken != null) {
       _headers['Authorization'] = 'Bearer $_accessToken';
     }
@@ -390,6 +420,9 @@ mixin NetworkManagerUser on NetworkGeneral {
   }
 
   Future<dynamic> getMyPudos() async {
+    if(networkStatus == ConnectivityResult.none){
+      return;
+    }
     if (_accessToken != null) {
       _headers['Authorization'] = 'Bearer $_accessToken';
     }
@@ -434,6 +467,9 @@ mixin NetworkManagerUser on NetworkGeneral {
   }
 
   Future<dynamic> updateUserPreferences({required bool showNumber}) async {
+    if(networkStatus == ConnectivityResult.none){
+      return;
+    }
     if (_accessToken != null) {
       _headers['Authorization'] = 'Bearer $_accessToken';
     }

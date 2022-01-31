@@ -18,6 +18,8 @@
  If not, see <https://github.com/lessgreen/OpenPUDO>.
 */
 
+import 'dart:async';
+
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:qui_green/commons/utilities/print_helper.dart';
@@ -34,17 +36,42 @@ class CurrentUser with ChangeNotifier {
   PudoProfile? _pudo;
   SharedPreferences? sharedPreferences;
   Function(String) pushPage;
+  Function(String, String, Function()) connectionErrorDialog;
+  StreamSubscription<ConnectivityResult>? networkSubscription;
 
-  CurrentUser(this.sharedPreferences, {required this.pushPage}) {
-    Connectivity().onConnectivityChanged.listen((result) {
+  CurrentUser(this.sharedPreferences,
+      {required this.pushPage, required this.connectionErrorDialog}) {
+    //Check Preventivo
+    checkNetwork();
+    //Check continuo
+    networkSubscription = Connectivity().onConnectivityChanged.listen((result) {
       switch (result) {
         case ConnectivityResult.none:
+          WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+            connectionErrorDialog(
+                "Attenzione", "Nessuna connessione disponibile", checkNetwork);
+          });
           break;
         default:
-          _refreshToken();
+          if(!firstNavigationDone) {
+            _refreshToken();
+            firstNavigationDone = true;
+          }
+          break;
       }
     });
     _refreshToken();
+  }
+
+  void checkNetwork() {
+    Connectivity().checkConnectivity().then((value) {
+      if (value == ConnectivityResult.none) {
+        WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+          connectionErrorDialog(
+              "Attenzione", "Nessuna connessione disponibile", checkNetwork);
+        });
+      }
+    });
   }
 
   void refresh() {
@@ -55,12 +82,16 @@ class CurrentUser with ChangeNotifier {
   _refreshToken() {
     if (sharedPreferences?.getString('accessToken') != null) {
       var oldToken = sharedPreferences?.getString('accessToken');
-      NetworkManager.instance.renewToken(accessToken: oldToken!).then((response) {
+      NetworkManager.instance
+          .renewToken(accessToken: oldToken!)
+          .then((response) {
         switch (NetworkManager.instance.accessTokenAccess) {
           case "customer":
             NetworkManager.instance.getMyProfile().then((profile) {
-              user = profile;
-              pushPage(Routes.home);
+              if(profile!=null) {
+                user = profile;
+                pushPage(Routes.home);
+              }
             }).catchError((onError) {
               user = null;
               pushPage(Routes.login);
@@ -69,10 +100,12 @@ class CurrentUser with ChangeNotifier {
             break;
           case "pudo":
             NetworkManager.instance.getMyPudoProfile().then((profile) {
-              pudoProfile = profile;
-              pushPage(Routes.pudoHome);
+              if(profile!=null) {
+                pudoProfile = profile;
+                pushPage(Routes.pudoHome);
+              }
             }).catchError((onError) {
-              user = null;
+              pudoProfile = null;
               pushPage(Routes.login);
               safePrint(onError);
             });

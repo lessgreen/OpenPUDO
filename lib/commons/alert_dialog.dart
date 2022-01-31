@@ -36,13 +36,16 @@ class SAAlertDialog extends StatelessWidget {
     required this.actions,
   }) : super(key: key);
 
-  static displayAlertWithButtons(BuildContext context, String title, String description, List<MaterialButton> actions) {
+  static displayAlertWithButtons(BuildContext context, String title,
+      String description, List<MaterialButton> actions,
+      {bool barrierDismissible = true}) {
     if (isAlreadyShown) {
       return;
     }
     isAlreadyShown = true;
 
     showDialog(
+            barrierDismissible: barrierDismissible,
             builder: (subContext) {
               List<MaterialButton> modifiedActions = actions
                   .asMap()
@@ -64,7 +67,10 @@ class SAAlertDialog extends StatelessWidget {
                   })
                   .values
                   .toList();
-              return SAAlertDialog(title: title, description: HtmlUnescape().convert(description), actions: modifiedActions);
+              return SAAlertDialog(
+                  title: title,
+                  description: HtmlUnescape().convert(description),
+                  actions: modifiedActions);
             },
             context: context)
         .then((value) {
@@ -72,7 +78,8 @@ class SAAlertDialog extends StatelessWidget {
     });
   }
 
-  static displayAlertWithClose(BuildContext context, String title, dynamic description) {
+  static displayAlertWithClose(
+      BuildContext context, String title, dynamic description) {
     if (isAlreadyShown) {
       return;
     }
@@ -82,11 +89,13 @@ class SAAlertDialog extends StatelessWidget {
               return SAAlertDialog(
                   title: title,
                   description: (description is OPBaseResponse)
-                      ? HtmlUnescape().convert(description.message ?? "General error")
+                      ? HtmlUnescape()
+                          .convert(description.message ?? "General error")
                       : (description is Error)
                           ? HtmlUnescape().convert(description.toString())
                           : (description is ErrorDescription)
-                              ? HtmlUnescape().convert(description.value.first.toString())
+                              ? HtmlUnescape()
+                                  .convert(description.value.first.toString())
                               : HtmlUnescape().convert(description),
                   actions: <Widget>[
                     MaterialButton(

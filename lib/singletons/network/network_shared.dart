@@ -107,6 +107,9 @@ mixin NetworkGeneral {
   //
 
   Future<dynamic> renewToken({required String accessToken}) async {
+    if(networkStatus == ConnectivityResult.none){
+      return;
+    }
     if (_accessToken != null) {
       _headers['Authorization'] = 'Bearer $_accessToken';
     }

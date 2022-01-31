@@ -55,7 +55,7 @@ class _CustomNetworkImageState extends State<CustomNetworkImage> {
       return;
     }
     NetworkManager.instance.profilePic(pictureId).then((value) {
-      decodeImageFromList(value).then(
+      decodeImageFromList(value!).then(
         (image) {
           setState(() {
             _buffer = value;

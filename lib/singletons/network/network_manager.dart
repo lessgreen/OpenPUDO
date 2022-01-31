@@ -52,6 +52,7 @@ class NetworkManager with NetworkGeneral, NetworkManagerUser, NetworkManagerNoti
     };
     _inst.sharedPreferences = config.sharedPreferencesInstance!;
     _inst.accessToken = config.sharedPreferencesInstance!.getString('accessToken') ?? "";
+    Connectivity().checkConnectivity().then((value) => _inst.networkStatus=value);
     Connectivity().onConnectivityChanged.listen(
       (result) {
         _inst.networkStatus = result;

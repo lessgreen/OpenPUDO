@@ -26,6 +26,7 @@ import 'package:location/location.dart';
 import 'package:provider/provider.dart';
 import 'package:qui_green/commons/utilities/print_helper.dart';
 import 'package:qui_green/models/pudo_profile.dart';
+import 'package:qui_green/models/user_profile.dart';
 import 'package:qui_green/resources/routes_enum.dart';
 import 'package:qui_green/singletons/current_user.dart';
 import 'package:qui_green/singletons/network/network_manager.dart';
@@ -34,21 +35,27 @@ class PersonalDataControllerViewModel extends ChangeNotifier {
   Function(String)? showErrorDialog;
 
   String _name = "";
+
   String get name => _name;
+
   set name(String newVal) {
     _name = newVal;
     notifyListeners();
   }
 
   String _surname = "";
+
   String get surname => _surname;
+
   set surname(String newVal) {
     _surname = newVal;
     notifyListeners();
   }
 
   File? _image;
+
   File? get image => _image;
+
   set image(File? newVal) {
     _image = newVal;
     notifyListeners();
@@ -69,17 +76,33 @@ class PersonalDataControllerViewModel extends ChangeNotifier {
 
   // ************ Navigation *****
   onSendClick(BuildContext context, PudoProfile? pudoModel) {
-    NetworkManager.instance.registerUser(name: name, surname: surname).then((value) {
-      NetworkManager.instance.getMyProfile().then((user) {
-        Provider.of<CurrentUser>(context, listen: false).user = user;
-        if (image != null) {
-          NetworkManager.instance.photoUpload(image!).catchError((onError) => showErrorDialog?.call(onError));
-        }
-        if (pudoModel != null) {
-          NetworkManager.instance.addPudoFavorite(pudoModel.pudoId.toString()).catchError((onError) => showErrorDialog?.call(onError));
-        }
-        Navigator.of(context).pushReplacementNamed(Routes.registrationComplete, arguments: pudoModel);
-      }).catchError((onError) => showErrorDialog?.call(onError));
+    NetworkManager.instance
+        .registerUser(name: name, surname: surname)
+        .then((value) {
+      if (value != null) {
+        NetworkManager.instance.getMyProfile().then((user) {
+          if (user is UserProfile) {
+            Provider.of<CurrentUser>(context, listen: false).user = user;
+            if (image != null) {
+              NetworkManager.instance
+                  .photoUpload(image!)
+                  .catchError((onError) => showErrorDialog?.call(onError));
+            }
+            if (pudoModel != null) {
+              NetworkManager.instance
+                  .addPudoFavorite(pudoModel.pudoId.toString())
+                  .catchError((onError) => showErrorDialog?.call(onError));
+            }
+            Navigator.of(context).pushReplacementNamed(
+                Routes.registrationComplete,
+                arguments: pudoModel);
+          } else {
+            showErrorDialog?.call("Qualcosa è andato storto");
+          }
+        }).catchError((onError) => showErrorDialog?.call(onError));
+      } else {
+        showErrorDialog?.call("Qualcosa è andato storto");
+      }
     }).catchError((onError) => showErrorDialog?.call(onError));
   }
 
@@ -113,7 +136,8 @@ class PersonalDataControllerViewModel extends ChangeNotifier {
   }
 
   pickFile() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles(allowMultiple: false, type: FileType.media);
+    FilePickerResult? result = await FilePicker.platform
+        .pickFiles(allowMultiple: false, type: FileType.media);
     if (result != null) {
       try {
         File file = File(result.files.first.path ?? "");
