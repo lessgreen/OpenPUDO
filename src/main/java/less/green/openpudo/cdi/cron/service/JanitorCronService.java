@@ -19,7 +19,7 @@ public class JanitorCronService extends BaseCronService {
     @Inject
     JanitorService janitorService;
 
-    @Scheduled(cron = "0 * * * * ?", concurrentExecution = Scheduled.ConcurrentExecution.SKIP)
+    @Scheduled(cron = "0 0 * * * ?", concurrentExecution = Scheduled.ConcurrentExecution.SKIP)
     void removeExpiredOtpRequests() {
         final UUID executionId = UUID.randomUUID();
         if (!acquireLock(executionId, JANITOR_OTP_REQUEST_LOCK)) {

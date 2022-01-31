@@ -273,14 +273,14 @@ CREATE TABLE IF NOT EXISTS tb_notification_package (
 );
 
 
-DROP TABLE IF EXISTS tb_notification_relation CASCADE;
-CREATE TABLE IF NOT EXISTS tb_notification_relation (
+DROP TABLE IF EXISTS tb_notification_favourite CASCADE;
+CREATE TABLE IF NOT EXISTS tb_notification_favourite (
 	notification_id BIGINT PRIMARY KEY REFERENCES tb_notification(notification_id),
 	customer_user_id BIGINT NOT NULL REFERENCES tb_user(user_id),
 	pudo_id BIGINT NOT NULL REFERENCES tb_pudo(pudo_id)
 );
-CREATE INDEX tb_notification_customer_user_id_idx ON tb_notification_relation(customer_user_id);
-CREATE INDEX tb_notification_pudo_id_idx ON tb_notification_relation(pudo_id);
+CREATE INDEX tb_notification_favourite_customer_user_id_idx ON tb_notification_favourite(customer_user_id);
+CREATE INDEX tb_notification_favourite_pudo_id_idx ON tb_notification_favourite(pudo_id);
 
 
 -- maintenance

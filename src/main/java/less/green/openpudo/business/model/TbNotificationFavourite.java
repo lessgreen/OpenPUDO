@@ -10,11 +10,11 @@ import javax.persistence.Table;
 import java.io.Serializable;
 
 @Entity
-@Table(name = "tb_notification_relation")
+@Table(name = "tb_notification_favourite")
 @Getter
 @Setter
 @ToString(callSuper = true)
-public class TbNotificationRelation extends TbNotification implements Serializable {
+public class TbNotificationFavourite extends TbNotification implements Serializable {
 
     @Column(name = "customer_user_id")
     private Long customerUserId;
