@@ -38,7 +38,7 @@ class PudoHomeController extends StatefulWidget {
   _PudoHomeControllerState createState() => _PudoHomeControllerState();
 }
 
-class _PudoHomeControllerState extends State<PudoHomeController> {
+class _PudoHomeControllerState extends State<PudoHomeController> with ConnectionAware{
   @override
   Widget build(BuildContext context) {
     return Material(

@@ -23,6 +23,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:qui_green/singletons/network/network_manager.dart';
 import 'package:qui_green/widgets/package_card.dart';
 import 'package:qui_green/controllers/home_pudo_controller.dart';
 import 'package:qui_green/controllers/profile_controller.dart';
@@ -36,7 +37,7 @@ class HomeController extends StatefulWidget {
   _HomeControllerState createState() => _HomeControllerState();
 }
 
-class _HomeControllerState extends State<HomeController> {
+class _HomeControllerState extends State<HomeController> with ConnectionAware{
   @override
   Widget build(BuildContext context) {
     return Material(

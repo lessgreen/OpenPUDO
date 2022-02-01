@@ -26,6 +26,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:qui_green/commons/utilities/keyboard_visibility.dart';
+import 'package:qui_green/singletons/network/network_manager.dart';
 import 'package:qui_green/widgets/main_button.dart';
 import 'package:qui_green/view_models/insert_address_controller_viewmodel.dart';
 import 'package:qui_green/widgets/address_field.dart';
@@ -38,7 +39,7 @@ class InsertAddressController extends StatefulWidget {
   _InsertAddressControllerState createState() => _InsertAddressControllerState();
 }
 
-class _InsertAddressControllerState extends State<InsertAddressController> {
+class _InsertAddressControllerState extends State<InsertAddressController> with ConnectionAware{
   final FocusNode _address = FocusNode();
 
   @override

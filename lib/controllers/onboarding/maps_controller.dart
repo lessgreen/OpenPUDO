@@ -44,7 +44,7 @@ class MapsController extends StatefulWidget {
   _MapsControllerState createState() => _MapsControllerState();
 }
 
-class _MapsControllerState extends State<MapsController> {
+class _MapsControllerState extends State<MapsController> with ConnectionAware{
   void _showErrorDialog(BuildContext context, String val) => SAAlertDialog.displayAlertWithClose(context, "Error", val);
 
   @override

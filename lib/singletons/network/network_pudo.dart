@@ -23,15 +23,17 @@ part of 'network_shared.dart';
 mixin NetworkManagerPudo on NetworkGeneral {
   //TODO: implement API calls (pudo related)
   Future<dynamic> getSuggestedZoom({required double lat, required double lon}) async {
-    if (_accessToken != null) {
-      _headers['Authorization'] = 'Bearer $_accessToken';
-    }
-
-    var queryString = "?lat=$lat&lon=$lon";
-
-    var url = _baseURL + '/api/v2/map/suggested-zoom$queryString';
-
     try {
+      if (!isOnline) {
+        throw ("Network is offline");
+      }
+      if (_accessToken != null) {
+        _headers['Authorization'] = 'Bearer $_accessToken';
+      }
+
+      var queryString = "?lat=$lat&lon=$lon";
+
+      var url = _baseURL + '/api/v2/map/suggested-zoom$queryString';
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
@@ -66,13 +68,15 @@ mixin NetworkManagerPudo on NetworkGeneral {
   }
 
   Future<dynamic> getPudoDetails({required String pudoId}) async {
-    if (_accessToken != null) {
-      _headers['Authorization'] = 'Bearer $_accessToken';
-    }
-
-    var url = _baseURL + '/api/v2/pudo/$pudoId';
-
     try {
+      if (!isOnline) {
+        throw ("Network is offline");
+      }
+      if (_accessToken != null) {
+        _headers['Authorization'] = 'Bearer $_accessToken';
+      }
+
+      var url = _baseURL + '/api/v2/pudo/$pudoId';
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
@@ -106,19 +110,21 @@ mixin NetworkManagerPudo on NetworkGeneral {
   }
 
   Future<dynamic> getPudos({double? lat, double? lon, int? zoom, String? text}) async {
-    var queryString = "";
-    if (lat != null && lon != null && zoom != null) {
-      queryString = "?lat=$lat&lon=$lon&zoom=$zoom";
-    } else if (text != null) {
-      queryString = "?text=$text";
-    }
-    if (_accessToken != null) {
-      _headers['Authorization'] = 'Bearer $_accessToken';
-    }
-
-    var url = _baseURL + '/api/v2/map/pudos$queryString';
-
     try {
+      if (!isOnline) {
+        throw ("Network is offline");
+      }
+      var queryString = "";
+      if (lat != null && lon != null && zoom != null) {
+        queryString = "?lat=$lat&lon=$lon&zoom=$zoom";
+      } else if (text != null) {
+        queryString = "?text=$text";
+      }
+      if (_accessToken != null) {
+        _headers['Authorization'] = 'Bearer $_accessToken';
+      }
+
+      var url = _baseURL + '/api/v2/map/pudos$queryString';
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });

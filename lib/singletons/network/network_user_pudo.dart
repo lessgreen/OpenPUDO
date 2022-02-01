@@ -73,17 +73,20 @@ mixin NetworkManagerUserPudo on NetworkGeneral {
   }
 
   Future<dynamic> getMyPudoUsers() async {
-    if (_accessToken != null) {
-      _headers['Authorization'] = 'Bearer $_accessToken';
-    }
-
-    var url = _baseURL + '/api/v1/pudos/me/users';
-
     try {
+      if (!isOnline) {
+        throw ("Network is offline");
+      }
+      if (_accessToken != null) {
+        _headers['Authorization'] = 'Bearer $_accessToken';
+      }
+
+      var url = _baseURL + '/api/v1/pudos/me/users';
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
-      Response response = await get(Uri.parse(url), headers: _headers).timeout(Duration(seconds: _timeout));
+      Response response = await get(Uri.parse(url), headers: _headers)
+          .timeout(Duration(seconds: _timeout));
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = false;
       });
@@ -100,13 +103,16 @@ mixin NetworkManagerUserPudo on NetworkGeneral {
         },
       );
       if (needHandleTokenRefresh == false) {
-        if (baseResponse.returnCode == 0 && baseResponse.payload != null && baseResponse.payload is List) {
+        if (baseResponse.returnCode == 0 &&
+            baseResponse.payload != null &&
+            baseResponse.payload is List) {
           for (dynamic aRow in baseResponse.payload) {
             myUsers.add(UserProfile.fromJson(aRow));
           }
           return myUsers;
         } else {
-          throw ErrorDescription('Error ${baseResponse.returnCode}: ${baseResponse.message}');
+          throw ErrorDescription(
+              'Error ${baseResponse.returnCode}: ${baseResponse.message}');
         }
       }
     } on Error catch (e) {
@@ -117,18 +123,21 @@ mixin NetworkManagerUserPudo on NetworkGeneral {
   }
 
   Future<dynamic> setMyPudoAddress(AddressMarker address) async {
-    if (_accessToken != null) {
-      _headers['Authorization'] = 'Bearer $_accessToken';
-    }
-
-    var url = _baseURL + '/api/v1/pudos/me/address';
-    var body = jsonEncode(address.toJson());
-
     try {
+      if (!isOnline) {
+        throw ("Network is offline");
+      }
+      if (_accessToken != null) {
+        _headers['Authorization'] = 'Bearer $_accessToken';
+      }
+      var url = _baseURL + '/api/v1/pudos/me/address';
+      var body = jsonEncode(address.toJson());
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
-      Response response = await put(Uri.parse(url), body: body, headers: _headers).timeout(Duration(seconds: _timeout));
+      Response response =
+          await put(Uri.parse(url), body: body, headers: _headers)
+              .timeout(Duration(seconds: _timeout));
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = false;
       });
@@ -144,10 +153,13 @@ mixin NetworkManagerUserPudo on NetworkGeneral {
         },
       );
       if (needHandleTokenRefresh == false) {
-        if (baseResponse.returnCode == 0 && baseResponse.payload != null && baseResponse.payload is Map) {
+        if (baseResponse.returnCode == 0 &&
+            baseResponse.payload != null &&
+            baseResponse.payload is Map) {
           return PudoProfile.fromJson(baseResponse.payload);
         } else {
-          throw ErrorDescription('Error ${baseResponse.returnCode}: ${baseResponse.message}');
+          throw ErrorDescription(
+              'Error ${baseResponse.returnCode}: ${baseResponse.message}');
         }
       }
     } on Error catch (e) {
@@ -158,18 +170,23 @@ mixin NetworkManagerUserPudo on NetworkGeneral {
   }
 
   Future<dynamic> setMyPudoProfile(PudoProfile profile) async {
-    if (_accessToken != null) {
-      _headers['Authorization'] = 'Bearer $_accessToken';
-    }
-
-    var url = _baseURL + '/api/v1/pudos/me';
-    var body = jsonEncode(profile.toJson());
-
     try {
+      if (!isOnline) {
+        throw ("Network is offline");
+      }
+      if (_accessToken != null) {
+        _headers['Authorization'] = 'Bearer $_accessToken';
+      }
+
+      var url = _baseURL + '/api/v1/pudos/me';
+      var body = jsonEncode(profile.toJson());
+
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
-      Response response = await put(Uri.parse(url), body: body, headers: _headers).timeout(Duration(seconds: _timeout));
+      Response response =
+          await put(Uri.parse(url), body: body, headers: _headers)
+              .timeout(Duration(seconds: _timeout));
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = false;
       });
@@ -185,10 +202,13 @@ mixin NetworkManagerUserPudo on NetworkGeneral {
         },
       );
       if (needHandleTokenRefresh == false) {
-        if (baseResponse.returnCode == 0 && baseResponse.payload != null && baseResponse.payload is Map) {
+        if (baseResponse.returnCode == 0 &&
+            baseResponse.payload != null &&
+            baseResponse.payload is Map) {
           return PudoProfile.fromJson(baseResponse.payload);
         } else {
-          throw ErrorDescription('Error ${baseResponse.returnCode}: ${baseResponse.message}');
+          throw ErrorDescription(
+              'Error ${baseResponse.returnCode}: ${baseResponse.message}');
         }
       }
     } on Error catch (e) {
@@ -199,17 +219,20 @@ mixin NetworkManagerUserPudo on NetworkGeneral {
   }
 
   Future<dynamic> getMyPudoProfile() async {
-    if (_accessToken != null) {
-      _headers['Authorization'] = 'Bearer $_accessToken';
-    }
-
-    var url = _baseURL + '/api/v2/pudo/me';
-
     try {
+      if (!isOnline) {
+        throw ("Network is offline");
+      }
+      if (_accessToken != null) {
+        _headers['Authorization'] = 'Bearer $_accessToken';
+      }
+
+      var url = _baseURL + '/api/v2/pudo/me';
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
-      Response response = await get(Uri.parse(url), headers: _headers).timeout(Duration(seconds: _timeout));
+      Response response = await get(Uri.parse(url), headers: _headers)
+          .timeout(Duration(seconds: _timeout));
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = false;
       });
@@ -225,10 +248,13 @@ mixin NetworkManagerUserPudo on NetworkGeneral {
         },
       );
       if (needHandleTokenRefresh == false) {
-        if (baseResponse.returnCode == 0 && baseResponse.payload != null && baseResponse.payload is Map) {
+        if (baseResponse.returnCode == 0 &&
+            baseResponse.payload != null &&
+            baseResponse.payload is Map) {
           return PudoProfile.fromJson(baseResponse.payload);
         } else {
-          throw ErrorDescription('Error ${baseResponse.returnCode}: ${baseResponse.message}');
+          throw ErrorDescription(
+              'Error ${baseResponse.returnCode}: ${baseResponse.message}');
         }
       }
     } on Error catch (e) {

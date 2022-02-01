@@ -99,11 +99,14 @@ mixin NetworkManagerUser on NetworkGeneral {
   }
 
   Future<dynamic> registerUser({required String name, required String surname}) async {
-    var url = _baseURL + '/api/v2/auth/register/customer';
-    var body = jsonEncode({
-      "user": {"firstName": name, "lastName": surname}
-    });
     try {
+      if (!isOnline) {
+        throw ("Network is offline");
+      }
+      var url = _baseURL + '/api/v2/auth/register/customer';
+      var body = jsonEncode({
+        "user": {"firstName": name, "lastName": surname}
+      });
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
@@ -129,11 +132,14 @@ mixin NetworkManagerUser on NetworkGeneral {
   }
 
   Future<dynamic> getMyProfile() async {
-    if (_accessToken != null) {
-      _headers['Authorization'] = 'Bearer $_accessToken';
-    }
-    var url = _baseURL + '/api/v2/user/me';
     try {
+      if (!isOnline) {
+        throw ("Network is offline");
+      }
+      if (_accessToken != null) {
+        _headers['Authorization'] = 'Bearer $_accessToken';
+      }
+      var url = _baseURL + '/api/v2/user/me';
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
@@ -167,13 +173,15 @@ mixin NetworkManagerUser on NetworkGeneral {
   }
 
   Future<dynamic> setMyProfile(UserProfile profile) async {
-    if (_accessToken != null) {
-      _headers['Authorization'] = 'Bearer $_accessToken';
-    }
-    var url = _baseURL + '/api/v2/user/me';
-    var body = jsonEncode({"firstName": profile.firstName, "lastName": profile.lastName});
-
     try {
+      if (!isOnline) {
+        throw ("Network is offline");
+      }
+      if (_accessToken != null) {
+        _headers['Authorization'] = 'Bearer $_accessToken';
+      }
+      var url = _baseURL + '/api/v2/user/me';
+      var body = jsonEncode({"firstName": profile.firstName, "lastName": profile.lastName});
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
@@ -207,13 +215,15 @@ mixin NetworkManagerUser on NetworkGeneral {
   }
 
   Future<dynamic> deleteProfilePic({bool? isPudo = false}) async {
-    if (_accessToken != null) {
-      _headers['Authorization'] = 'Bearer $_accessToken';
-    }
-
-    var url = _baseURL + ((isPudo != null && isPudo == true) ? '/api/v1/pudos/me/profile-pic' : '/api/v1/users/me/profile-pic');
-
     try {
+      if (!isOnline) {
+        throw ("Network is offline");
+      }
+      if (_accessToken != null) {
+        _headers['Authorization'] = 'Bearer $_accessToken';
+      }
+
+      var url = _baseURL + ((isPudo != null && isPudo == true) ? '/api/v1/pudos/me/profile-pic' : '/api/v1/users/me/profile-pic');
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
@@ -248,11 +258,14 @@ mixin NetworkManagerUser on NetworkGeneral {
   }
 
   Future<Uint8List> profilePic(String id) async {
-    if (_accessToken != null) {
-      _headers['Authorization'] = 'Bearer $_accessToken';
-    }
-    var url = _baseURL + '/api/v2/file/$id';
     try {
+      if (!isOnline) {
+        throw ("Network is offline");
+      }
+      if (_accessToken != null) {
+        _headers['Authorization'] = 'Bearer $_accessToken';
+      }
+      var url = _baseURL + '/api/v2/file/$id';
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
@@ -273,13 +286,15 @@ mixin NetworkManagerUser on NetworkGeneral {
   }
 
   Future<dynamic> getPublicProfile(String userId) async {
-    if (_accessToken != null) {
-      _headers['Authorization'] = 'Bearer $_accessToken';
-    }
-
-    var url = _baseURL + '/api/v1/users/$userId';
-
     try {
+      if (!isOnline) {
+        throw ("Network is offline");
+      }
+      if (_accessToken != null) {
+        _headers['Authorization'] = 'Bearer $_accessToken';
+      }
+
+      var url = _baseURL + '/api/v1/users/$userId';
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
@@ -313,13 +328,15 @@ mixin NetworkManagerUser on NetworkGeneral {
   }
 
   Future<dynamic> addPudoFavorite(String pudoId) async {
-    if (_accessToken != null) {
-      _headers['Authorization'] = 'Bearer $_accessToken';
-    }
-
-    var url = _baseURL + '/api/v2/user/me/pudos/$pudoId';
-
     try {
+      if (!isOnline) {
+        throw ("Network is offline");
+      }
+      if (_accessToken != null) {
+        _headers['Authorization'] = 'Bearer $_accessToken';
+      }
+
+      var url = _baseURL + '/api/v2/user/me/pudos/$pudoId';
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
@@ -357,13 +374,15 @@ mixin NetworkManagerUser on NetworkGeneral {
   }
 
   Future<dynamic> removePudoFavorite(String pudoId) async {
-    if (_accessToken != null) {
-      _headers['Authorization'] = 'Bearer $_accessToken';
-    }
-
-    var url = _baseURL + '/api/v1/users/me/pudos/$pudoId';
-
     try {
+      if (!isOnline) {
+        throw ("Network is offline");
+      }
+      if (_accessToken != null) {
+        _headers['Authorization'] = 'Bearer $_accessToken';
+      }
+
+      var url = _baseURL + '/api/v1/users/me/pudos/$pudoId';
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
@@ -401,13 +420,15 @@ mixin NetworkManagerUser on NetworkGeneral {
   }
 
   Future<dynamic> getMyPudos() async {
-    if (_accessToken != null) {
-      _headers['Authorization'] = 'Bearer $_accessToken';
-    }
-
-    var url = _baseURL + '/api/v1/users/me/pudos';
-
     try {
+      if (!isOnline) {
+        throw ("Network is offline");
+      }
+      if (_accessToken != null) {
+        _headers['Authorization'] = 'Bearer $_accessToken';
+      }
+
+      var url = _baseURL + '/api/v1/users/me/pudos';
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
@@ -445,13 +466,15 @@ mixin NetworkManagerUser on NetworkGeneral {
   }
 
   Future<dynamic> updateUserPreferences({required bool showNumber}) async {
-    if (_accessToken != null) {
-      _headers['Authorization'] = 'Bearer $_accessToken';
-    }
-    var url = _baseURL + '/api/v2/user/me/preferences';
-    var body = jsonEncode({"showPhoneNumber": showNumber});
-
     try {
+      if (!isOnline) {
+        throw ("Network is offline");
+      }
+      if (_accessToken != null) {
+        _headers['Authorization'] = 'Bearer $_accessToken';
+      }
+      var url = _baseURL + '/api/v2/user/me/preferences';
+      var body = jsonEncode({"showPhoneNumber": showNumber});
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });

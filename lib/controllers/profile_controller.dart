@@ -34,7 +34,7 @@ class ProfileController extends StatefulWidget {
   _ProfileControllerState createState() => _ProfileControllerState();
 }
 
-class _ProfileControllerState extends State<ProfileController> {
+class _ProfileControllerState extends State<ProfileController> with ConnectionAware{
   @override
   Widget build(BuildContext context) {
     return Consumer<CurrentUser>(builder: (_, currentUser, __) {

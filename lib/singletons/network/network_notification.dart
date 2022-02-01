@@ -22,13 +22,15 @@ part of 'network_shared.dart';
 
 mixin NetworkManagerNotification on NetworkGeneral {
   Future<dynamic> getNotificationsCount() async {
-    if (_accessToken != null) {
-      _headers['Authorization'] = 'Bearer $_accessToken';
-    }
-
-    var url = _baseURL + '/api/v1/notifications/count';
-
     try {
+      if (!isOnline) {
+        throw ("Network is offline");
+      }
+      if (_accessToken != null) {
+        _headers['Authorization'] = 'Bearer $_accessToken';
+      }
+
+      var url = _baseURL + '/api/v1/notifications/count';
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
@@ -62,13 +64,15 @@ mixin NetworkManagerNotification on NetworkGeneral {
   }
 
   Future<dynamic> markNotificationAsRead({required int notificationId}) async {
-    if (_accessToken != null) {
-      _headers['Authorization'] = 'Bearer $_accessToken';
-    }
-
-    var url = _baseURL + '/api/v1/notifications/$notificationId/mark-as-read';
-
     try {
+      if (!isOnline) {
+        throw ("Network is offline");
+      }
+      if (_accessToken != null) {
+        _headers['Authorization'] = 'Bearer $_accessToken';
+      }
+
+      var url = _baseURL + '/api/v1/notifications/$notificationId/mark-as-read';
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
@@ -98,13 +102,16 @@ mixin NetworkManagerNotification on NetworkGeneral {
   }
 
   Future<dynamic> readAllMyNotifications() async {
-    if (_accessToken != null) {
-      _headers['Authorization'] = 'Bearer $_accessToken';
-    }
-
-    var url = _baseURL + '/api/v1/notifications/mark-as-read';
-
     try {
+      if (!isOnline) {
+        throw ("Network is offline");
+      }
+      if (_accessToken != null) {
+        _headers['Authorization'] = 'Bearer $_accessToken';
+      }
+
+      var url = _baseURL + '/api/v1/notifications/mark-as-read';
+
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
@@ -134,15 +141,19 @@ mixin NetworkManagerNotification on NetworkGeneral {
   }
 
   Future<dynamic> getMyNotifications({int limit = 20, int offset = 0}) async {
-    if (_accessToken != null) {
-      _headers['Authorization'] = 'Bearer $_accessToken';
-    }
-
-    var queryString = "?limit=$limit&offset=$offset";
-
-    var url = _baseURL + '/api/v1/notifications$queryString';
-
     try {
+      if (!isOnline) {
+        throw ("Network is offline");
+      }
+      if (_accessToken != null) {
+        _headers['Authorization'] = 'Bearer $_accessToken';
+      }
+
+      var queryString = "?limit=$limit&offset=$offset";
+
+      var url = _baseURL + '/api/v1/notifications$queryString';
+
+
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
