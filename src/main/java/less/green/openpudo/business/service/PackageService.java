@@ -118,14 +118,15 @@ public class PackageService {
         pack.setPackagePicId(null);
         packageDao.persist(pack);
         packageDao.flush();
-        TbPackageEvent event = new TbPackageEvent();
-        event.setPackageId(pack.getPackageId());
-        event.setCreateTms(now);
-        event.setPackageStatus(PackageStatus.DELIVERED);
-        event.setAutoFlag(false);
-        event.setNotes(sanitizeString(req.getNotes()));
-        packageEventDao.persist(event);
+        TbPackageEvent packageEvent = new TbPackageEvent();
+        packageEvent.setPackageId(pack.getPackageId());
+        packageEvent.setCreateTms(now);
+        packageEvent.setPackageStatus(PackageStatus.DELIVERED);
+        packageEvent.setAutoFlag(false);
+        packageEvent.setNotes(sanitizeString(req.getNotes()));
+        packageEventDao.persist(packageEvent);
         packageEventDao.flush();
+        log.info("[{}] Package: {} -> {}", context.getExecutionId(), pack.getPackagePicId(), packageEvent.getPackageStatus());
         return getPackage(pack.getPackageId());
     }
 
