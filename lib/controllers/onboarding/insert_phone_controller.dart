@@ -40,7 +40,7 @@ class InsertPhoneController extends StatefulWidget {
   _InsertPhoneControllerState createState() => _InsertPhoneControllerState();
 }
 
-class _InsertPhoneControllerState extends State<InsertPhoneController> {
+class _InsertPhoneControllerState extends State<InsertPhoneController> with ConnectionAware {
   final FocusNode _phoneNumber = FocusNode();
   String _phoneNumberValue = "";
 

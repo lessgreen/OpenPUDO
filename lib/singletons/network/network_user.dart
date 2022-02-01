@@ -24,17 +24,23 @@ mixin NetworkManagerUser on NetworkGeneral {
   //TODO: implement API calls (user related)
 
   Future<dynamic> login({required String login, required String password}) async {
-    LoginRequest aRequest = LoginRequest(
-      phoneNumber: login,
-      otp: password,
-    );
-    var url = _baseURL + '/api/v2/auth/login/confirm';
-    var body = jsonEncode(aRequest.toJson());
     try {
+      if (!isOnline) {
+        throw ("Network is offline");
+      }
+      LoginRequest aRequest = LoginRequest(
+        phoneNumber: login,
+        otp: password,
+      );
+      var url = _baseURL + '/api/v2/auth/login/confirm';
+      var body = jsonEncode(aRequest.toJson());
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
-      Response response = await post(Uri.parse(url), body: body, headers: _headers).timeout(Duration(seconds: _timeout));
+      Response response = await r.retry(
+        () => post(Uri.parse(url), body: body, headers: _headers).timeout(Duration(seconds: _timeout)),
+        retryIf: (e) => e is SocketException || e is TimeoutException,
+      );
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = false;
       });
@@ -48,29 +54,33 @@ mixin NetworkManagerUser on NetworkGeneral {
         setAccessToken(accessTokenData.accessToken);
       }
       return baseResponse;
-    } on Error catch (e) {
+    } catch (e) {
       safePrint('ERROR - login: $e');
       _refreshTokenRetryCounter = 0;
+      _networkActivity.value = false;
+      _networkActivity.value = false;
       return e;
     }
   }
 
   Future<dynamic> sendPhoneAuth({required String phoneNumber}) async {
-    /*UserProfile userProfile = UserProfile(
-      firstName: firstName,
-      lastName: lastName,
-      ssn: ssn,
-    );*/
-    RegistrationRequest aRequest = RegistrationRequest(
-      phoneNumber: phoneNumber,
-    );
-    var url = _baseURL + '/api/v2/auth/login/send';
-    var body = jsonEncode(aRequest.toJson());
     try {
+      if (!isOnline) {
+        throw ("Network is offline");
+      }
+      RegistrationRequest aRequest = RegistrationRequest(
+        phoneNumber: phoneNumber,
+      );
+      var url = _baseURL + '/api/v2/auth/login/send';
+      var body = jsonEncode(aRequest.toJson());
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
-      Response response = await post(Uri.parse(url), body: body, headers: _headers).timeout(Duration(seconds: _timeout));
+      Response response = await r.retry(
+        () => post(Uri.parse(url), body: body, headers: _headers).timeout(Duration(seconds: _timeout)),
+        retryIf: (e) => e is SocketException || e is TimeoutException,
+      );
+
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = false;
       });
@@ -80,23 +90,33 @@ mixin NetworkManagerUser on NetworkGeneral {
       var json = jsonDecode(decodedUTF8);
       var baseResponse = OPBaseResponse.fromJson(json);
       return baseResponse;
-    } on Error catch (e) {
+    } catch (e) {
       safePrint('ERROR - registerUser: $e');
+      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+        _networkActivity.value = false;
+      });
       _refreshTokenRetryCounter = 0;
+      _networkActivity.value = false;
       return e;
     }
   }
 
   Future<dynamic> registerUser({required String name, required String surname}) async {
-    var url = _baseURL + '/api/v2/auth/register/customer';
-    var body = jsonEncode({
-      "user": {"firstName": name, "lastName": surname}
-    });
     try {
+      if (!isOnline) {
+        throw ("Network is offline");
+      }
+      var url = _baseURL + '/api/v2/auth/register/customer';
+      var body = jsonEncode({
+        "user": {"firstName": name, "lastName": surname}
+      });
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
-      Response response = await post(Uri.parse(url), body: body, headers: _headers).timeout(Duration(seconds: _timeout));
+      Response response = await r.retry(
+        () => post(Uri.parse(url), body: body, headers: _headers).timeout(Duration(seconds: _timeout)),
+        retryIf: (e) => e is SocketException || e is TimeoutException,
+      );
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = false;
       });
@@ -110,23 +130,30 @@ mixin NetworkManagerUser on NetworkGeneral {
         setAccessToken(accessTokenData.accessToken);
       }
       return baseResponse;
-    } on Error catch (e) {
+    } catch (e) {
       safePrint('ERROR - registerUser: $e');
       _refreshTokenRetryCounter = 0;
+      _networkActivity.value = false;
       return e;
     }
   }
 
   Future<dynamic> getMyProfile() async {
-    if (_accessToken != null) {
-      _headers['Authorization'] = 'Bearer $_accessToken';
-    }
-    var url = _baseURL + '/api/v2/user/me';
     try {
+      if (!isOnline) {
+        throw ("Network is offline");
+      }
+      if (_accessToken != null) {
+        _headers['Authorization'] = 'Bearer $_accessToken';
+      }
+      var url = _baseURL + '/api/v2/user/me';
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
-      Response response = await get(Uri.parse(url), headers: _headers).timeout(Duration(seconds: _timeout));
+      Response response = await r.retry(
+        () => get(Uri.parse(url), headers: _headers).timeout(Duration(seconds: _timeout)),
+        retryIf: (e) => e is SocketException || e is TimeoutException,
+      );
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = false;
       });
@@ -156,17 +183,22 @@ mixin NetworkManagerUser on NetworkGeneral {
   }
 
   Future<dynamic> setMyProfile(UserProfile profile) async {
-    if (_accessToken != null) {
-      _headers['Authorization'] = 'Bearer $_accessToken';
-    }
-    var url = _baseURL + '/api/v2/user/me';
-    var body = jsonEncode({"firstName": profile.firstName, "lastName": profile.lastName});
-
     try {
+      if (!isOnline) {
+        throw ("Network is offline");
+      }
+      if (_accessToken != null) {
+        _headers['Authorization'] = 'Bearer $_accessToken';
+      }
+      var url = _baseURL + '/api/v2/user/me';
+      var body = jsonEncode({"firstName": profile.firstName, "lastName": profile.lastName});
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
-      Response response = await put(Uri.parse(url), body: body, headers: _headers).timeout(Duration(seconds: _timeout));
+      Response response = await r.retry(
+        () => put(Uri.parse(url), body: body, headers: _headers).timeout(Duration(seconds: _timeout)),
+        retryIf: (e) => e is SocketException || e is TimeoutException,
+      );
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = false;
       });
@@ -188,21 +220,24 @@ mixin NetworkManagerUser on NetworkGeneral {
           throw ErrorDescription('Error ${baseResponse.returnCode}: ${baseResponse.message}');
         }
       }
-    } on Error catch (e) {
+    } catch (e) {
       safePrint('ERROR - setMyProfile: $e');
       _refreshTokenRetryCounter = 0;
+      _networkActivity.value = false;
       return e;
     }
   }
 
   Future<dynamic> deleteProfilePic({bool? isPudo = false}) async {
-    if (_accessToken != null) {
-      _headers['Authorization'] = 'Bearer $_accessToken';
-    }
-
-    var url = _baseURL + ((isPudo != null && isPudo == true) ? '/api/v1/pudos/me/profile-pic' : '/api/v1/users/me/profile-pic');
-
     try {
+      if (!isOnline) {
+        throw ("Network is offline");
+      }
+      if (_accessToken != null) {
+        _headers['Authorization'] = 'Bearer $_accessToken';
+      }
+
+      var url = _baseURL + ((isPudo != null && isPudo == true) ? '/api/v1/pudos/me/profile-pic' : '/api/v1/users/me/profile-pic');
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
@@ -229,23 +264,30 @@ mixin NetworkManagerUser on NetworkGeneral {
           throw ErrorDescription('Error ${baseResponse.returnCode}: ${baseResponse.message}');
         }
       }
-    } on Error catch (e) {
+    } catch (e) {
       safePrint('ERROR - deleteProfilePic: $e');
       _refreshTokenRetryCounter = 0;
+      _networkActivity.value = false;
       return e;
     }
   }
 
   Future<Uint8List> profilePic(String id) async {
-    if (_accessToken != null) {
-      _headers['Authorization'] = 'Bearer $_accessToken';
-    }
-    var url = _baseURL + '/api/v2/file/$id';
     try {
+      if (!isOnline) {
+        throw ("Network is offline");
+      }
+      if (_accessToken != null) {
+        _headers['Authorization'] = 'Bearer $_accessToken';
+      }
+      var url = _baseURL + '/api/v2/file/$id';
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
-      Response response = await get(Uri.parse(url), headers: _headers).timeout(Duration(seconds: _timeout));
+      Response response = await r.retry(
+        () => get(Uri.parse(url), headers: _headers).timeout(Duration(seconds: _timeout)),
+        retryIf: (e) => e is SocketException || e is TimeoutException,
+      );
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = false;
       });
@@ -253,7 +295,7 @@ mixin NetworkManagerUser on NetworkGeneral {
         return response.bodyBytes;
       }
       throw ErrorDescription('Error ${response.statusCode}: ${response.body}');
-    } on Error catch (e) {
+    } catch (e) {
       safePrint('ERROR - deleteProfilePic: $e');
       _refreshTokenRetryCounter = 0;
       var data = await rootBundle.load('assets/placeholderImage.jpg');
@@ -262,17 +304,22 @@ mixin NetworkManagerUser on NetworkGeneral {
   }
 
   Future<dynamic> getPublicProfile(String userId) async {
-    if (_accessToken != null) {
-      _headers['Authorization'] = 'Bearer $_accessToken';
-    }
-
-    var url = _baseURL + '/api/v1/users/$userId';
-
     try {
+      if (!isOnline) {
+        throw ("Network is offline");
+      }
+      if (_accessToken != null) {
+        _headers['Authorization'] = 'Bearer $_accessToken';
+      }
+
+      var url = _baseURL + '/api/v1/users/$userId';
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
-      Response response = await get(Uri.parse(url), headers: _headers).timeout(Duration(seconds: _timeout));
+      Response response = await r.retry(
+        () => get(Uri.parse(url), headers: _headers).timeout(Duration(seconds: _timeout)),
+        retryIf: (e) => e is SocketException || e is TimeoutException,
+      );
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = false;
       });
@@ -294,25 +341,31 @@ mixin NetworkManagerUser on NetworkGeneral {
           throw ErrorDescription('Error ${baseResponse.returnCode}: ${baseResponse.message}');
         }
       }
-    } on Error catch (e) {
+    } catch (e) {
       safePrint('ERROR - getPublicProfile: $e');
       _refreshTokenRetryCounter = 0;
+      _networkActivity.value = false;
       return e;
     }
   }
 
   Future<dynamic> addPudoFavorite(String pudoId) async {
-    if (_accessToken != null) {
-      _headers['Authorization'] = 'Bearer $_accessToken';
-    }
-
-    var url = _baseURL + '/api/v2/user/me/pudos/$pudoId';
-
     try {
+      if (!isOnline) {
+        throw ("Network is offline");
+      }
+      if (_accessToken != null) {
+        _headers['Authorization'] = 'Bearer $_accessToken';
+      }
+
+      var url = _baseURL + '/api/v2/user/me/pudos/$pudoId';
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
-      Response response = await post(Uri.parse(url), headers: _headers).timeout(Duration(seconds: _timeout));
+      Response response = await r.retry(
+        () => post(Uri.parse(url), headers: _headers).timeout(Duration(seconds: _timeout)),
+        retryIf: (e) => e is SocketException || e is TimeoutException,
+      );
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = false;
       });
@@ -338,21 +391,24 @@ mixin NetworkManagerUser on NetworkGeneral {
           throw ErrorDescription('Error ${baseResponse.returnCode}: ${baseResponse.message}');
         }
       }
-    } on Error catch (e) {
+    } catch (e) {
       safePrint('ERROR - addPudoFavorite: $e');
       _refreshTokenRetryCounter = 0;
+      _networkActivity.value = false;
       return e;
     }
   }
 
   Future<dynamic> removePudoFavorite(String pudoId) async {
-    if (_accessToken != null) {
-      _headers['Authorization'] = 'Bearer $_accessToken';
-    }
-
-    var url = _baseURL + '/api/v1/users/me/pudos/$pudoId';
-
     try {
+      if (!isOnline) {
+        throw ("Network is offline");
+      }
+      if (_accessToken != null) {
+        _headers['Authorization'] = 'Bearer $_accessToken';
+      }
+
+      var url = _baseURL + '/api/v1/users/me/pudos/$pudoId';
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
@@ -382,25 +438,31 @@ mixin NetworkManagerUser on NetworkGeneral {
           throw ErrorDescription('Error ${baseResponse.returnCode}: ${baseResponse.message}');
         }
       }
-    } on Error catch (e) {
+    } catch (e) {
       safePrint('ERROR - removePudoFavorite: $e');
       _refreshTokenRetryCounter = 0;
+      _networkActivity.value = false;
       return e;
     }
   }
 
   Future<dynamic> getMyPudos() async {
-    if (_accessToken != null) {
-      _headers['Authorization'] = 'Bearer $_accessToken';
-    }
-
-    var url = _baseURL + '/api/v1/users/me/pudos';
-
     try {
+      if (!isOnline) {
+        throw ("Network is offline");
+      }
+      if (_accessToken != null) {
+        _headers['Authorization'] = 'Bearer $_accessToken';
+      }
+
+      var url = _baseURL + '/api/v1/users/me/pudos';
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
-      Response response = await get(Uri.parse(url), headers: _headers).timeout(Duration(seconds: _timeout));
+      Response response = await r.retry(
+        () => get(Uri.parse(url), headers: _headers).timeout(Duration(seconds: _timeout)),
+        retryIf: (e) => e is SocketException || e is TimeoutException,
+      );
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = false;
       });
@@ -426,25 +488,31 @@ mixin NetworkManagerUser on NetworkGeneral {
           throw ErrorDescription('Error ${baseResponse.returnCode}: ${baseResponse.message}');
         }
       }
-    } on Error catch (e) {
+    } catch (e) {
       safePrint('ERROR - getMyPudos: $e');
       _refreshTokenRetryCounter = 0;
+      _networkActivity.value = false;
       return e;
     }
   }
 
   Future<dynamic> updateUserPreferences({required bool showNumber}) async {
-    if (_accessToken != null) {
-      _headers['Authorization'] = 'Bearer $_accessToken';
-    }
-    var url = _baseURL + '/api/v2/user/me/preferences';
-    var body = jsonEncode({"showPhoneNumber": showNumber});
-
     try {
+      if (!isOnline) {
+        throw ("Network is offline");
+      }
+      if (_accessToken != null) {
+        _headers['Authorization'] = 'Bearer $_accessToken';
+      }
+      var url = _baseURL + '/api/v2/user/me/preferences';
+      var body = jsonEncode({"showPhoneNumber": showNumber});
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
-      Response response = await put(Uri.parse(url), body: body, headers: _headers).timeout(Duration(seconds: _timeout));
+      Response response = await r.retry(
+        () => put(Uri.parse(url), body: body, headers: _headers).timeout(Duration(seconds: _timeout)),
+        retryIf: (e) => e is SocketException || e is TimeoutException,
+      );
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = false;
       });
@@ -466,9 +534,10 @@ mixin NetworkManagerUser on NetworkGeneral {
           throw ErrorDescription('Error ${baseResponse.returnCode}: ${baseResponse.message}');
         }
       }
-    } on Error catch (e) {
+    } catch (e) {
       safePrint('ERROR - updateUserPreferences: $e');
       _refreshTokenRetryCounter = 0;
+      _networkActivity.value = false;
       return e;
     }
   }

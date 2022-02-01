@@ -18,11 +18,11 @@
  If not, see <https://github.com/lessgreen/OpenPUDO>.
 */
 
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart';
@@ -45,6 +45,7 @@ import 'package:qui_green/models/user_profile.dart';
 import 'package:path/path.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:qui_green/resources/app_config.dart';
+import 'package:retry/retry.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 part 'network_user.dart';
@@ -59,7 +60,6 @@ part 'network_pudo.dart';
 
 mixin NetworkGeneral {
   late AppConfig config;
-  ConnectivityResult networkStatus = ConnectivityResult.mobile;
   String? _accessToken;
   final int _timeout = 30;
   int _refreshTokenRetryCounter = 0;
@@ -67,6 +67,13 @@ mixin NetworkGeneral {
   late ValueNotifier _networkActivity;
   late SharedPreferences _sharedPreferences;
   AccessTokenData? _accessTokenData;
+  bool _isOnline = true;
+  bool get isOnline => _isOnline;
+  set isOnline(bool newValue) {
+    _isOnline = newValue;
+  }
+
+  RetryOptions r = const RetryOptions(maxAttempts: 3);
 
   set sharedPreferences(SharedPreferences newVal) {
     _sharedPreferences = newVal;
@@ -115,7 +122,10 @@ mixin NetworkGeneral {
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
-      Response response = await post(Uri.parse(url), headers: _headers).timeout(Duration(seconds: _timeout));
+      Response response = await r.retry(
+        () => post(Uri.parse(url), headers: _headers).timeout(Duration(seconds: _timeout)),
+        retryIf: (e) => e is SocketException || e is TimeoutException,
+      );
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = false;
       });
@@ -133,9 +143,10 @@ mixin NetworkGeneral {
         _refreshTokenRetryCounter++;
         throw ErrorDescription('Error ${baseResponse.returnCode}: ${baseResponse.message}');
       }
-    } on Error catch (e) {
+    } catch (e) {
       _refreshTokenRetryCounter++;
       safePrint('ERROR - checkUser: $e');
+      _networkActivity.value = false;
       return e;
     }
   }
@@ -195,7 +206,10 @@ mixin NetworkGeneral {
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
-      Response response = await get(Uri.parse(url), headers: _headers).timeout(Duration(seconds: _timeout));
+      Response response = await r.retry(
+        () => get(Uri.parse(url), headers: _headers).timeout(Duration(seconds: _timeout)),
+        retryIf: (e) => e is SocketException || e is TimeoutException,
+      );
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = false;
       });
@@ -220,9 +234,10 @@ mixin NetworkGeneral {
           throw ErrorDescription('Error ${baseResponse.returnCode}: ${baseResponse.message}');
         }
       }
-    } on Error catch (e) {
+    } catch (e) {
       safePrint('ERROR - getAddress: $e');
       _refreshTokenRetryCounter = 0;
+      _networkActivity.value = false;
       return e;
     }
   }
@@ -273,9 +288,10 @@ mixin NetworkGeneral {
           throw ErrorDescription('Error ${baseResponse.returnCode}: ${baseResponse.message}');
         }
       }
-    } on Error catch (e) {
+    } catch (e) {
       safePrint('ERROR - photoupload: $e');
       _refreshTokenRetryCounter = 0;
+      _networkActivity.value = false;
       return e;
     }
   }
@@ -292,7 +308,10 @@ mixin NetworkGeneral {
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
-      Response response = await post(Uri.parse(url), body: body, headers: _headers).timeout(Duration(seconds: _timeout));
+      Response response = await r.retry(
+        () => post(Uri.parse(url), body: body, headers: _headers).timeout(Duration(seconds: _timeout)),
+        retryIf: (e) => e is SocketException || e is TimeoutException,
+      );
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = false;
       });
@@ -314,9 +333,10 @@ mixin NetworkGeneral {
           throw ErrorDescription('Error ${baseResponse.returnCode}: ${baseResponse.message}');
         }
       }
-    } on Error catch (e) {
+    } catch (e) {
       safePrint('ERROR - setDeviceInfo: $e');
       _refreshTokenRetryCounter = 0;
+      _networkActivity.value = false;
       return e;
     }
   }

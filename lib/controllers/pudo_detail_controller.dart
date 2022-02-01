@@ -21,6 +21,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:qui_green/commons/ui/custom_network_image.dart';
+import 'package:qui_green/singletons/network/network_manager.dart';
 import 'package:qui_green/widgets/text_field_button.dart';
 import 'package:qui_green/models/pudo_detail_controller_data_model.dart';
 import 'package:qui_green/resources/routes_enum.dart';
@@ -34,7 +35,7 @@ class PudoDetailController extends StatefulWidget {
   _PudoDetailControllerState createState() => _PudoDetailControllerState();
 }
 
-class _PudoDetailControllerState extends State<PudoDetailController> {
+class _PudoDetailControllerState extends State<PudoDetailController> with ConnectionAware{
   Widget _buildPudoDetail() => Padding(
         padding: const EdgeInsets.symmetric(horizontal: Dimension.padding),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [

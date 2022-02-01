@@ -18,7 +18,6 @@
  If not, see <https://github.com/lessgreen/OpenPUDO>.
 */
 
-import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:qui_green/commons/utilities/print_helper.dart';
 import 'package:qui_green/models/pudo_profile.dart';
@@ -36,14 +35,6 @@ class CurrentUser with ChangeNotifier {
   Function(String) pushPage;
 
   CurrentUser(this.sharedPreferences, {required this.pushPage}) {
-    Connectivity().onConnectivityChanged.listen((result) {
-      switch (result) {
-        case ConnectivityResult.none:
-          break;
-        default:
-          _refreshToken();
-      }
-    });
     _refreshToken();
   }
 
@@ -59,8 +50,10 @@ class CurrentUser with ChangeNotifier {
         switch (NetworkManager.instance.accessTokenAccess) {
           case "customer":
             NetworkManager.instance.getMyProfile().then((profile) {
-              user = profile;
-              pushPage(Routes.home);
+              if (profile != null) {
+                user = profile;
+                pushPage(Routes.home);
+              }
             }).catchError((onError) {
               user = null;
               pushPage(Routes.login);
@@ -69,10 +62,12 @@ class CurrentUser with ChangeNotifier {
             break;
           case "pudo":
             NetworkManager.instance.getMyPudoProfile().then((profile) {
-              pudoProfile = profile;
-              pushPage(Routes.pudoHome);
+              if (profile != null) {
+                pudoProfile = profile;
+                pushPage(Routes.pudoHome);
+              }
             }).catchError((onError) {
-              user = null;
+              pudoProfile = null;
               pushPage(Routes.login);
               safePrint(onError);
             });

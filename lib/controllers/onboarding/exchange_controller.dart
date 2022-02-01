@@ -36,7 +36,6 @@ class ExchangeController extends StatefulWidget {
 }
 
 class _ExchangeControllerState extends State<ExchangeController> {
-  bool checkAssociati = false;
 
   @override
   Widget build(BuildContext context) {

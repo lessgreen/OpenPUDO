@@ -23,17 +23,22 @@ part of 'network_shared.dart';
 mixin NetworkManagerPackages on NetworkGeneral {
   //TODO: implement API calls (package related)
   Future<dynamic> getPackageDetails({required int packageId}) async {
-    if (_accessToken != null) {
-      _headers['Authorization'] = 'Bearer $_accessToken';
-    }
-
-    var url = _baseURL + '/api/v1/packages/$packageId';
-
     try {
+      if (!isOnline) {
+        throw ("Network is offline");
+      }
+      if (_accessToken != null) {
+        _headers['Authorization'] = 'Bearer $_accessToken';
+      }
+
+      var url = _baseURL + '/api/v1/packages/$packageId';
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
-      Response response = await get(Uri.parse(url), headers: _headers).timeout(Duration(seconds: _timeout));
+      Response response = await r.retry(
+        () => get(Uri.parse(url), headers: _headers).timeout(Duration(seconds: _timeout)),
+        retryIf: (e) => e is SocketException || e is TimeoutException,
+      );
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = false;
       });
@@ -57,43 +62,49 @@ mixin NetworkManagerPackages on NetworkGeneral {
           throw ErrorDescription('Error ${baseResponse.returnCode}: ${baseResponse.message}');
         }
       }
-    } on Error catch (e) {
+    } catch (e) {
       safePrint('ERROR - getPackageDetails : $e');
       _refreshTokenRetryCounter = 0;
+      _networkActivity.value = false;
       return e;
     }
   }
 
   Future<dynamic> changePackageStatus({required int packageId, required PudoPackageStatus newStatus, String? notes}) async {
-    if (_accessToken != null) {
-      _headers['Authorization'] = 'Bearer $_accessToken';
-    }
-
-    var url = _baseURL;
-
-    if (newStatus == PudoPackageStatus.ACCEPTED) {
-      url = _baseURL + '/api/v1/packages/$packageId/accepted';
-    } else if (newStatus == PudoPackageStatus.COLLECTED) {
-      url = _baseURL + '/api/v1/packages/$packageId/collected';
-    } else if (newStatus == PudoPackageStatus.NOTIFIED) {
-      url = _baseURL + '/api/v1/packages/$packageId/notified';
-    } else if (newStatus == PudoPackageStatus.NOTIFY_SENT) {
-      url = _baseURL + '/api/v1/packages/$packageId/notified';
-    } else {
-      return ErrorDescription('Error Unsupported PackageStatus specified.');
-    }
-
-    String? body;
-    if (notes != null) {
-      var request = ChangePackageStatusRequest(notes: notes);
-      body = jsonEncode(request.toJson());
-    }
-
     try {
+      if (!isOnline) {
+        throw ("Network is offline");
+      }
+      if (_accessToken != null) {
+        _headers['Authorization'] = 'Bearer $_accessToken';
+      }
+
+      var url = _baseURL;
+
+      if (newStatus == PudoPackageStatus.ACCEPTED) {
+        url = _baseURL + '/api/v1/packages/$packageId/accepted';
+      } else if (newStatus == PudoPackageStatus.COLLECTED) {
+        url = _baseURL + '/api/v1/packages/$packageId/collected';
+      } else if (newStatus == PudoPackageStatus.NOTIFIED) {
+        url = _baseURL + '/api/v1/packages/$packageId/notified';
+      } else if (newStatus == PudoPackageStatus.NOTIFY_SENT) {
+        url = _baseURL + '/api/v1/packages/$packageId/notified';
+      } else {
+        return ErrorDescription('Error Unsupported PackageStatus specified.');
+      }
+
+      String? body;
+      if (notes != null) {
+        var request = ChangePackageStatusRequest(notes: notes);
+        body = jsonEncode(request.toJson());
+      }
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
-      Response response = await post(Uri.parse(url), body: body, headers: _headers).timeout(Duration(seconds: _timeout));
+      Response response = await r.retry(
+        () => post(Uri.parse(url), body: body, headers: _headers).timeout(Duration(seconds: _timeout)),
+        retryIf: (e) => e is SocketException || e is TimeoutException,
+      );
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = false;
       });
@@ -119,9 +130,10 @@ mixin NetworkManagerPackages on NetworkGeneral {
           throw ErrorDescription('Error ${baseResponse.returnCode}: ${baseResponse.message}');
         }
       }
-    } on Error catch (e) {
+    } catch (e) {
       safePrint('ERROR - changePackageStatus : $e');
       _refreshTokenRetryCounter = 0;
+      _networkActivity.value = false;
       return e;
     }
   }
@@ -130,29 +142,31 @@ mixin NetworkManagerPackages on NetworkGeneral {
     required File anImage,
     required String externalFileId,
   }) async {
-    if (_accessToken != null) {
-      _headers['Authorization'] = 'Bearer $_accessToken';
-    }
-
-    var url = _baseURL + '/api/v1/packages/picture/$externalFileId';
-    var uri = Uri.parse(url);
-
-    // create multipart request
-    var request = MultipartRequest("PUT", uri);
-    var multipartFileSign = MultipartFile(
-      'attachment',
-      anImage.readAsBytes().asStream(),
-      anImage.lengthSync(),
-      filename: basename(anImage.path),
-      contentType: MediaType("image", "jpeg"),
-    );
-
-    request.files.add(multipartFileSign);
-    _headers.forEach((k, v) {
-      request.headers[k] = v;
-    });
-
     try {
+      if (!isOnline) {
+        throw ("Network is offline");
+      }
+      if (_accessToken != null) {
+        _headers['Authorization'] = 'Bearer $_accessToken';
+      }
+
+      var url = _baseURL + '/api/v1/packages/picture/$externalFileId';
+      var uri = Uri.parse(url);
+
+      // create multipart request
+      var request = MultipartRequest("PUT", uri);
+      var multipartFileSign = MultipartFile(
+        'attachment',
+        anImage.readAsBytes().asStream(),
+        anImage.lengthSync(),
+        filename: basename(anImage.path),
+        contentType: MediaType("image", "jpeg"),
+      );
+
+      request.files.add(multipartFileSign);
+      _headers.forEach((k, v) {
+        request.headers[k] = v;
+      });
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
@@ -179,9 +193,10 @@ mixin NetworkManagerPackages on NetworkGeneral {
           throw ErrorDescription('Error ${baseResponse.returnCode}: ${baseResponse.message}');
         }
       }
-    } on Error catch (e) {
+    } catch (e) {
       safePrint('ERROR - deliveryPictureUpload: $e');
       _refreshTokenRetryCounter = 0;
+      _networkActivity.value = false;
       return e;
     }
   }
@@ -192,21 +207,27 @@ mixin NetworkManagerPackages on NetworkGeneral {
     String? notes,
     String? packagePicId,
   }) async {
-    if (request != null) {
-    } else if (userId != null) {
-      request = DeliveryPackageRequest(userId: userId, notes: notes, packagePicId: packagePicId);
-    } else {
-      return ErrorDescription('Error missing parameters.');
-    }
-
-    var url = _baseURL + '/api/v1/packages';
-    var body = jsonEncode(request.toJson());
-
     try {
+      if (!isOnline) {
+        throw ("Network is offline");
+      }
+      if (request != null) {
+      } else if (userId != null) {
+        request = DeliveryPackageRequest(userId: userId, notes: notes, packagePicId: packagePicId);
+      } else {
+        return ErrorDescription('Error missing parameters.');
+      }
+
+      var url = _baseURL + '/api/v1/packages';
+      var body = jsonEncode(request.toJson());
+
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
-      Response response = await post(Uri.parse(url), body: body, headers: _headers).timeout(Duration(seconds: _timeout));
+      Response response = await r.retry(
+        () => post(Uri.parse(url), body: body, headers: _headers).timeout(Duration(seconds: _timeout)),
+        retryIf: (e) => e is SocketException || e is TimeoutException,
+      );
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = false;
       });
@@ -233,27 +254,34 @@ mixin NetworkManagerPackages on NetworkGeneral {
           throw ErrorDescription('Error ${baseResponse.returnCode}: ${baseResponse.message}');
         }
       }
-    } on Error catch (e) {
+    } catch (e) {
       safePrint('ERROR - setupDelivery: $e');
       _refreshTokenRetryCounter = 0;
+      _networkActivity.value = false;
       return e;
     }
   }
 
   Future<dynamic> getMyPackages({bool history = false, int limit = 20, int offset = 0}) async {
-    if (_accessToken != null) {
-      _headers['Authorization'] = 'Bearer $_accessToken';
-    }
-
-    var queryString = "?history=$history&limit=$limit&offset=$offset";
-
-    var url = _baseURL + '/api/v1/packages$queryString';
-
     try {
+      if (!isOnline) {
+        throw ("Network is offline");
+      }
+      if (_accessToken != null) {
+        _headers['Authorization'] = 'Bearer $_accessToken';
+      }
+
+      var queryString = "?history=$history&limit=$limit&offset=$offset";
+
+      var url = _baseURL + '/api/v1/packages$queryString';
+
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
-      Response response = await get(Uri.parse(url), headers: _headers).timeout(Duration(seconds: _timeout));
+      Response response = await r.retry(
+        () => get(Uri.parse(url), headers: _headers).timeout(Duration(seconds: _timeout)),
+        retryIf: (e) => e is SocketException || e is TimeoutException,
+      );
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = false;
       });
@@ -283,9 +311,10 @@ mixin NetworkManagerPackages on NetworkGeneral {
           throw ErrorDescription('Error ${baseResponse.returnCode}: ${baseResponse.message}');
         }
       }
-    } on Error catch (e) {
+    } catch (e) {
       safePrint('ERROR - getMyPackages: $e');
       _refreshTokenRetryCounter = 0;
+      _networkActivity.value = false;
       return e;
     }
   }
