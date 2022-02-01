@@ -9,7 +9,7 @@ import less.green.openpudo.cdi.service.LocalizationService;
 import less.green.openpudo.cdi.service.StorageService;
 import less.green.openpudo.common.ApiReturnCodes;
 import less.green.openpudo.common.dto.tuple.Quartet;
-import less.green.openpudo.common.dto.tuple.Triplet;
+import less.green.openpudo.common.dto.tuple.Septet;
 import less.green.openpudo.rest.config.exception.ApiException;
 import less.green.openpudo.rest.dto.DtoMapper;
 import less.green.openpudo.rest.dto.pudo.Pudo;
@@ -61,19 +61,20 @@ public class PudoService {
         if (rs == null) {
             return null;
         }
-        Pudo ret = dtoMapper.mapPudoEntityToDto(new Triplet<>(rs.getValue0(), rs.getValue1(), rs.getValue2()));
-        ret.setRewardMessage(createPolicyMessage(rs.getValue3()));
-        ret.setCustomerCount(userPudoRelationDao.getActiveCustomerCountByPudoId(pudoId));
-        ret.setPackageCount(packageDao.getPackageCountByPudoId(pudoId));
+        String rewardMessage = createPolicyMessage(rs.getValue3());
+        Long customerCount = userPudoRelationDao.getActiveCustomerCountByPudoId(pudoId);
+        Long packageCount = packageDao.getPackageCountByPudoId(pudoId);
+        String customizedAddress = null;
         // customized address must be populated only if the caller is a pudo customer, of if it is the pudo owner (with a fake example suffix)
         if (context.getUserId() != null) {
             TbUserPudoRelation userPudoRelation = userPudoRelationDao.getUserPudoActiveRelation(pudoId, context.getUserId());
             if (userPudoRelation != null && userPudoRelation.getRelationType() == RelationType.CUSTOMER) {
-                ret.setCustomizedAddress(createCustomizedAddress(rs.getValue0(), rs.getValue1(), userPudoRelation.getCustomerSuffix()));
+                customizedAddress = createCustomizedAddress(rs.getValue0(), rs.getValue1(), userPudoRelation.getCustomerSuffix());
             } else if (userPudoRelation != null && userPudoRelation.getRelationType() == RelationType.OWNER) {
-                ret.setCustomizedAddress(createCustomizedAddress(rs.getValue0(), rs.getValue1(), "AB123"));
+                customizedAddress = createCustomizedAddress(rs.getValue0(), rs.getValue1(), "AB123");
             }
         }
+        Pudo ret = dtoMapper.mapPudoEntityToDto(new Septet<>(rs.getValue0(), rs.getValue1(), rs.getValue2(), rewardMessage, customerCount, packageCount, customizedAddress));
         return ret;
     }
 
@@ -352,7 +353,7 @@ public class PudoService {
         return getCurrentPudoRewardPolicy();
     }
 
-    private Long getCurrentPudoId() {
+    protected Long getCurrentPudoId() {
         TbUser user = userDao.get(context.getUserId());
         if (user.getAccountType() != AccountType.PUDO) {
             throw new ApiException(ApiReturnCodes.FORBIDDEN, localizationService.getMessage(context.getLanguage(), "error.forbidden.wrong_account_type"));
