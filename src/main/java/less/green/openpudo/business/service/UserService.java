@@ -266,6 +266,7 @@ public class UserService {
         // queue notification to pudo owner
         Long ownerUserId = userPudoRelationDao.getOwnerUserIdByPudoId(pudoId);
         TbNotificationFavourite notification = new TbNotificationFavourite();
+        notification.setUserId(ownerUserId);
         notification.setCreateTms(now);
         notification.setQueuedFlag(true);
         notification.setDueTms(CalendarUtils.getDateWithOffset(now, Calendar.MINUTE, 10));
@@ -274,7 +275,6 @@ public class UserService {
         notification.setTitleParams(null);
         notification.setMessage("notification.relation.favourite.message");
         notification.setMessageParams(new String[]{customerSuffix});
-        notification.setUserId(ownerUserId);
         notification.setCustomerUserId(context.getUserId());
         notification.setPudoId(pudoId);
         notificationDao.persist(notification);

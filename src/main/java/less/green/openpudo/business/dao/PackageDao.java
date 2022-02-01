@@ -11,6 +11,7 @@ import javax.enterprise.context.RequestScoped;
 import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -49,10 +50,11 @@ public class PackageDao extends BaseEntityDao<TbPackage, Long> {
     }
 
     public List<Sextet<TbPackage, TbPackageEvent, TbPudo, TbAddress, TbUserProfile, TbUserPudoRelation>> getPackages(AccountType accountType, Long referenceId, List<PackageStatus> packageStatuses, boolean history, int limit, int offset) {
-        String qs = "Select t1, t2, t3, t4, t5, t6 " +
+        String qs = "SELECT t1, t2, t3, t4, t5, t6 " +
                 "FROM TbPackage t1, TbPackageEvent t2, TbPudo t3, TbAddress t4, TbUserProfile t5, TbUserPudoRelation t6 " +
                 // join with event, select the latest
-                "WHERE t2.packageId = t1.packageId AND t2.createTms = (SELECT MAX(st2.createTms) FROM TbPackageEvent st2 WHERE st2.packageId = t2.packageId) " +
+                "WHERE t2.packageId = t1.packageId " +
+                "AND t2.createTms = (SELECT MAX(st2.createTms) FROM TbPackageEvent st2 WHERE st2.packageId = t2.packageId) " +
                 // join with pudo and address
                 "AND t3.pudoId = t1.pudoId " +
                 "AND t4.pudoId = t1.pudoId " +
@@ -84,6 +86,21 @@ public class PackageDao extends BaseEntityDao<TbPackage, Long> {
         }
         List<Object[]> rs = q.getResultList();
         return rs.isEmpty() ? Collections.emptyList() : rs.stream().map(row -> new Sextet<>((TbPackage) row[0], (TbPackageEvent) row[1], (TbPudo) row[2], (TbAddress) row[3], (TbUserProfile) row[4], (TbUserPudoRelation) row[5])).collect(Collectors.toList());
+    }
+
+    public List<Long> getPackageIdsToNotifySent(Date timeThreshold) {
+        String qs = "SELECT t1.packageId " +
+                "FROM TbPackage t1, TbPackageEvent t2 " +
+                "WHERE t2.packageId = t1.packageId " +
+                "AND t2.createTms = (SELECT MAX(st2.createTms) FROM TbPackageEvent st2 WHERE st2.packageId = t2.packageId) " +
+                "AND t2.createTms < :timeThreshold " +
+                "AND t2.packageStatus = :packageStatus " +
+                "ORDER BY t2.createTms";
+        TypedQuery<Long> q = em.createQuery(qs, Long.class);
+        q.setParameter("packageStatus", PackageStatus.DELIVERED);
+        q.setParameter("timeThreshold", timeThreshold);
+        List<Long> rs = q.getResultList();
+        return rs.isEmpty() ? Collections.emptyList() : rs;
     }
 
 }

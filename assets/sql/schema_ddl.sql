@@ -221,6 +221,7 @@ CREATE TABLE IF NOT EXISTS tb_package_event (
 	notes TEXT
 );
 CREATE UNIQUE INDEX tb_package_event_package_id_idx ON tb_package_event(package_id, create_tms);
+CREATE INDEX tb_package_event_package_status_idx ON tb_package_event(package_status);
 
 
 DROP TABLE IF EXISTS tb_review CASCADE;

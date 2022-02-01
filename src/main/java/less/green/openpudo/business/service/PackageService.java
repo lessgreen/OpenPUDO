@@ -1,9 +1,6 @@
 package less.green.openpudo.business.service;
 
-import less.green.openpudo.business.dao.PackageDao;
-import less.green.openpudo.business.dao.PackageEventDao;
-import less.green.openpudo.business.dao.UserDao;
-import less.green.openpudo.business.dao.UserPudoRelationDao;
+import less.green.openpudo.business.dao.*;
 import less.green.openpudo.business.model.*;
 import less.green.openpudo.business.model.usertype.AccountType;
 import less.green.openpudo.business.model.usertype.PackageStatus;
@@ -11,6 +8,7 @@ import less.green.openpudo.cdi.ExecutionContext;
 import less.green.openpudo.cdi.service.CryptoService;
 import less.green.openpudo.cdi.service.LocalizationService;
 import less.green.openpudo.common.ApiReturnCodes;
+import less.green.openpudo.common.CalendarUtils;
 import less.green.openpudo.common.dto.tuple.Pair;
 import less.green.openpudo.common.dto.tuple.Septet;
 import less.green.openpudo.common.dto.tuple.Sextet;
@@ -24,10 +22,7 @@ import lombok.extern.log4j.Log4j2;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import static less.green.openpudo.common.StringUtils.sanitizeString;
 
@@ -46,8 +41,12 @@ public class PackageService {
     CryptoService cryptoService;
 
     @Inject
+    NotificationService notificationService;
+    @Inject
     PudoService pudoService;
 
+    @Inject
+    NotificationDao notificationDao;
     @Inject
     PackageDao packageDao;
     @Inject
@@ -56,6 +55,8 @@ public class PackageService {
     UserDao userDao;
     @Inject
     UserPudoRelationDao userPudoRelationDao;
+    @Inject
+    PudoDao pudoDao;
 
     @Inject
     DtoMapper dtoMapper;
@@ -126,6 +127,46 @@ public class PackageService {
         packageEventDao.persist(event);
         packageEventDao.flush();
         return getPackage(pack.getPackageId());
+    }
+
+    public List<Long> getPackageIdsToNotifySent() {
+        // get packages in delivered status for more than 5 minutes
+        Date timeThreshold = CalendarUtils.getDateWithOffset(new Date(), Calendar.MINUTE, -5);
+        return packageDao.getPackageIdsToNotifySent(timeThreshold);
+    }
+
+    public TbPackageEvent notifySentPackage(Long packageId) {
+        Date now = new Date();
+        Pair<TbPackage, List<TbPackageEvent>> rs = packageDao.getPackage(packageId);
+        rs.getValue0().setUpdateTms(now);
+        TbPackageEvent packageEvent = new TbPackageEvent();
+        packageEvent.setPackageId(rs.getValue0().getPackageId());
+        packageEvent.setCreateTms(now);
+        packageEvent.setPackageStatus(PackageStatus.NOTIFY_SENT);
+        packageEvent.setAutoFlag(true);
+        packageEvent.setNotes(null);
+        packageEventDao.persist(packageEvent);
+        packageEventDao.flush();
+        // send notification to user
+        TbPudo pudo = pudoDao.get(rs.getValue0().getPudoId());
+        String titleTemplate = "notification.package.delivered.title";
+        String messageTemplate = "notification.package.delivered.message";
+        String[] messageParams = {cryptoService.hashidEncode(rs.getValue0().getPackageId()), pudo.getBusinessName()};
+        TbNotificationPackage notification = new TbNotificationPackage();
+        notification.setUserId(rs.getValue0().getUserId());
+        notification.setCreateTms(now);
+        notification.setQueuedFlag(false);
+        notification.setDueTms(now);
+        notification.setReadTms(null);
+        notification.setTitle(titleTemplate);
+        notification.setTitleParams(null);
+        notification.setMessage(messageTemplate);
+        notification.setMessageParams(messageParams);
+        notification.setPackageId(rs.getValue0().getPackageId());
+        notificationDao.persist(notification);
+        notificationDao.flush();
+        notificationService.sendPushNotifications(rs.getValue0().getUserId(), titleTemplate, null, messageTemplate, messageParams, Map.of("packageId", rs.getValue0().getPackageId().toString()));
+        return packageEvent;
     }
 
 
