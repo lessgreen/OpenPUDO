@@ -59,7 +59,7 @@ mixin NetworkManagerPackages on NetworkGeneral {
           throw ErrorDescription('Error ${baseResponse.returnCode}: ${baseResponse.message}');
         }
       }
-    } on Error catch (e) {
+    } catch (e) {
       safePrint('ERROR - getPackageDetails : $e');
       _refreshTokenRetryCounter = 0;
       _networkActivity.value = false;
@@ -124,7 +124,7 @@ mixin NetworkManagerPackages on NetworkGeneral {
           throw ErrorDescription('Error ${baseResponse.returnCode}: ${baseResponse.message}');
         }
       }
-    } on Error catch (e) {
+    } catch (e) {
       safePrint('ERROR - changePackageStatus : $e');
       _refreshTokenRetryCounter = 0;
       _networkActivity.value = false;
@@ -187,7 +187,7 @@ mixin NetworkManagerPackages on NetworkGeneral {
           throw ErrorDescription('Error ${baseResponse.returnCode}: ${baseResponse.message}');
         }
       }
-    } on Error catch (e) {
+    } catch (e) {
       safePrint('ERROR - deliveryPictureUpload: $e');
       _refreshTokenRetryCounter = 0;
       _networkActivity.value = false;
@@ -245,7 +245,7 @@ mixin NetworkManagerPackages on NetworkGeneral {
           throw ErrorDescription('Error ${baseResponse.returnCode}: ${baseResponse.message}');
         }
       }
-    } on Error catch (e) {
+    } catch (e) {
       safePrint('ERROR - setupDelivery: $e');
       _refreshTokenRetryCounter = 0;
       _networkActivity.value = false;
@@ -300,7 +300,7 @@ mixin NetworkManagerPackages on NetworkGeneral {
           throw ErrorDescription('Error ${baseResponse.returnCode}: ${baseResponse.message}');
         }
       }
-    } on Error catch (e) {
+    } catch (e) {
       safePrint('ERROR - getMyPackages: $e');
       _refreshTokenRetryCounter = 0;
       _networkActivity.value = false;

@@ -127,7 +127,7 @@ mixin NetworkManagerUser on NetworkGeneral {
         setAccessToken(accessTokenData.accessToken);
       }
       return baseResponse;
-    } on Error catch (e) {
+    } catch (e) {
       safePrint('ERROR - registerUser: $e');
       _refreshTokenRetryCounter = 0;
       _networkActivity.value = false;
@@ -211,7 +211,7 @@ mixin NetworkManagerUser on NetworkGeneral {
           throw ErrorDescription('Error ${baseResponse.returnCode}: ${baseResponse.message}');
         }
       }
-    } on Error catch (e) {
+    } catch (e) {
       safePrint('ERROR - setMyProfile: $e');
       _refreshTokenRetryCounter = 0;
       _networkActivity.value = false;
@@ -255,7 +255,7 @@ mixin NetworkManagerUser on NetworkGeneral {
           throw ErrorDescription('Error ${baseResponse.returnCode}: ${baseResponse.message}');
         }
       }
-    } on Error catch (e) {
+    } catch (e) {
       safePrint('ERROR - deleteProfilePic: $e');
       _refreshTokenRetryCounter = 0;
       _networkActivity.value = false;
@@ -283,7 +283,7 @@ mixin NetworkManagerUser on NetworkGeneral {
         return response.bodyBytes;
       }
       throw ErrorDescription('Error ${response.statusCode}: ${response.body}');
-    } on Error catch (e) {
+    } catch (e) {
       safePrint('ERROR - deleteProfilePic: $e');
       _refreshTokenRetryCounter = 0;
       var data = await rootBundle.load('assets/placeholderImage.jpg');
@@ -326,7 +326,7 @@ mixin NetworkManagerUser on NetworkGeneral {
           throw ErrorDescription('Error ${baseResponse.returnCode}: ${baseResponse.message}');
         }
       }
-    } on Error catch (e) {
+    } catch (e) {
       safePrint('ERROR - getPublicProfile: $e');
       _refreshTokenRetryCounter = 0;
       _networkActivity.value = false;
@@ -373,7 +373,7 @@ mixin NetworkManagerUser on NetworkGeneral {
           throw ErrorDescription('Error ${baseResponse.returnCode}: ${baseResponse.message}');
         }
       }
-    } on Error catch (e) {
+    } catch (e) {
       safePrint('ERROR - addPudoFavorite: $e');
       _refreshTokenRetryCounter = 0;
       _networkActivity.value = false;
@@ -420,7 +420,7 @@ mixin NetworkManagerUser on NetworkGeneral {
           throw ErrorDescription('Error ${baseResponse.returnCode}: ${baseResponse.message}');
         }
       }
-    } on Error catch (e) {
+    } catch (e) {
       safePrint('ERROR - removePudoFavorite: $e');
       _refreshTokenRetryCounter = 0;
       _networkActivity.value = false;
@@ -467,7 +467,7 @@ mixin NetworkManagerUser on NetworkGeneral {
           throw ErrorDescription('Error ${baseResponse.returnCode}: ${baseResponse.message}');
         }
       }
-    } on Error catch (e) {
+    } catch (e) {
       safePrint('ERROR - getMyPudos: $e');
       _refreshTokenRetryCounter = 0;
       _networkActivity.value = false;
@@ -510,7 +510,7 @@ mixin NetworkManagerUser on NetworkGeneral {
           throw ErrorDescription('Error ${baseResponse.returnCode}: ${baseResponse.message}');
         }
       }
-    } on Error catch (e) {
+    } catch (e) {
       safePrint('ERROR - updateUserPreferences: $e');
       _refreshTokenRetryCounter = 0;
       _networkActivity.value = false;

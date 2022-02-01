@@ -140,7 +140,7 @@ mixin NetworkGeneral {
         _refreshTokenRetryCounter++;
         throw ErrorDescription('Error ${baseResponse.returnCode}: ${baseResponse.message}');
       }
-    } on Error catch (e) {
+    } catch (e) {
       _refreshTokenRetryCounter++;
       safePrint('ERROR - checkUser: $e');
       _networkActivity.value = false;
@@ -228,7 +228,7 @@ mixin NetworkGeneral {
           throw ErrorDescription('Error ${baseResponse.returnCode}: ${baseResponse.message}');
         }
       }
-    } on Error catch (e) {
+    } catch (e) {
       safePrint('ERROR - getAddress: $e');
       _refreshTokenRetryCounter = 0;
       _networkActivity.value = false;
@@ -282,7 +282,7 @@ mixin NetworkGeneral {
           throw ErrorDescription('Error ${baseResponse.returnCode}: ${baseResponse.message}');
         }
       }
-    } on Error catch (e) {
+    } catch (e) {
       safePrint('ERROR - photoupload: $e');
       _refreshTokenRetryCounter = 0;
       _networkActivity.value = false;
@@ -324,7 +324,7 @@ mixin NetworkGeneral {
           throw ErrorDescription('Error ${baseResponse.returnCode}: ${baseResponse.message}');
         }
       }
-    } on Error catch (e) {
+    } catch (e) {
       safePrint('ERROR - setDeviceInfo: $e');
       _refreshTokenRetryCounter = 0;
       _networkActivity.value = false;

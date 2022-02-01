@@ -60,7 +60,7 @@ mixin NetworkManagerPudo on NetworkGeneral {
           throw ErrorDescription('Error ${baseResponse.returnCode}: ${baseResponse.message}');
         }
       }
-    } on Error catch (e) {
+    } catch (e) {
       safePrint('ERROR - getSuggestedZoom: $e');
       _refreshTokenRetryCounter = 0;
       _networkActivity.value = false;
@@ -103,7 +103,7 @@ mixin NetworkManagerPudo on NetworkGeneral {
           throw ErrorDescription('Error ${baseResponse.returnCode}: ${baseResponse.message}');
         }
       }
-    } on Error catch (e) {
+    } catch (e) {
       safePrint('ERROR - getPudoDetails: $e');
       _refreshTokenRetryCounter = 0;
       _networkActivity.value = false;
@@ -156,7 +156,7 @@ mixin NetworkManagerPudo on NetworkGeneral {
           throw ErrorDescription('Error ${baseResponse.returnCode}: ${baseResponse.message}');
         }
       }
-    } on Error catch (e) {
+    } catch (e) {
       safePrint('ERROR - getPudos: $e');
       _refreshTokenRetryCounter = 0;
       _networkActivity.value = false;

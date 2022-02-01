@@ -65,7 +65,7 @@ mixin NetworkManagerUserPudo on NetworkGeneral {
       var json = jsonDecode(decodedUTF8);
       var baseResponse = OPBaseResponse.fromJson(json);
       return baseResponse;
-    } on Error catch (e) {
+    } catch (e) {
       safePrint('ERROR - registerPudo: $e');
       _refreshTokenRetryCounter = 0;
       _networkActivity.value = false;
@@ -116,7 +116,7 @@ mixin NetworkManagerUserPudo on NetworkGeneral {
               'Error ${baseResponse.returnCode}: ${baseResponse.message}');
         }
       }
-    } on Error catch (e) {
+    } catch (e) {
       safePrint('ERROR - getMyPudoUsers: $e');
       _refreshTokenRetryCounter = 0;
       _networkActivity.value = false;
@@ -164,7 +164,7 @@ mixin NetworkManagerUserPudo on NetworkGeneral {
               'Error ${baseResponse.returnCode}: ${baseResponse.message}');
         }
       }
-    } on Error catch (e) {
+    } catch (e) {
       safePrint('ERROR - setMyPudoAddress: $e');
       _refreshTokenRetryCounter = 0;
       _networkActivity.value = false;
@@ -214,7 +214,7 @@ mixin NetworkManagerUserPudo on NetworkGeneral {
               'Error ${baseResponse.returnCode}: ${baseResponse.message}');
         }
       }
-    } on Error catch (e) {
+    } catch (e) {
       safePrint('ERROR - setMyPudoProfile: $e');
       _refreshTokenRetryCounter = 0;
       _networkActivity.value = false;
@@ -261,7 +261,7 @@ mixin NetworkManagerUserPudo on NetworkGeneral {
               'Error ${baseResponse.returnCode}: ${baseResponse.message}');
         }
       }
-    } on Error catch (e) {
+    } catch (e) {
       safePrint('ERROR - getMyPudoProfile: $e');
       _refreshTokenRetryCounter = 0;
       _networkActivity.value = false;

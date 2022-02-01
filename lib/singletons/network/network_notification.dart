@@ -56,7 +56,7 @@ mixin NetworkManagerNotification on NetworkGeneral {
           throw ErrorDescription('Error ${baseResponse.returnCode}: ${baseResponse.message}');
         }
       }
-    } on Error catch (e) {
+    } catch (e) {
       safePrint('ERROR - getNotificationsCount : $e');
       _refreshTokenRetryCounter = 0;
       _networkActivity.value = false;
@@ -95,7 +95,7 @@ mixin NetworkManagerNotification on NetworkGeneral {
       if (needHandleTokenRefresh == false) {
         return baseResponse;
       }
-    } on Error catch (e) {
+    } catch (e) {
       safePrint('ERROR - markNotificationAsRead: $e');
       _refreshTokenRetryCounter = 0;
       _networkActivity.value = false;
@@ -135,7 +135,7 @@ mixin NetworkManagerNotification on NetworkGeneral {
       if (needHandleTokenRefresh == false) {
         return baseResponse;
       }
-    } on Error catch (e) {
+    } catch (e) {
       safePrint('ERROR - readAllMyNotifications: $e');
       _refreshTokenRetryCounter = 0;
       _networkActivity.value = false;
@@ -187,7 +187,7 @@ mixin NetworkManagerNotification on NetworkGeneral {
           throw ErrorDescription('Error ${baseResponse.returnCode}: ${baseResponse.message}');
         }
       }
-    } on Error catch (e) {
+    } catch (e) {
       safePrint('ERROR - getMyNotifications: $e');
       _refreshTokenRetryCounter = 0;
       _networkActivity.value = false;
