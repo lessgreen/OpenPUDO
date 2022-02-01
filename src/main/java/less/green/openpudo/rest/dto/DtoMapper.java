@@ -12,6 +12,7 @@ import less.green.openpudo.rest.dto.map.AddressSearchResult;
 import less.green.openpudo.rest.dto.map.PudoMarker;
 import less.green.openpudo.rest.dto.pack.Package;
 import less.green.openpudo.rest.dto.pack.PackageEvent;
+import less.green.openpudo.rest.dto.pack.PackageSummary;
 import less.green.openpudo.rest.dto.pudo.Address;
 import less.green.openpudo.rest.dto.pudo.Pudo;
 import less.green.openpudo.rest.dto.pudo.PudoSummary;
@@ -51,20 +52,34 @@ public interface DtoMapper {
     @Mapping(target = "updateTms", ignore = true)
     TbAddress mapAddressSearchResultToAddressEntity(AddressSearchResult dto);
 
-    @Mapping(source = "values.value0", target = "pudoId")
-    @Mapping(source = "values.value1", target = "businessName")
-    @Mapping(source = "values.value2", target = "pudoPicId")
-    @Mapping(source = "values.value3", target = "label")
-    @Mapping(source = "values.value4", target = "rating")
-    PudoSummary mapProjectionToPudoSummary(Quintet<Long, String, UUID, String, TbRating> values);
+    @Mapping(source = "val.value0", target = "pudoId")
+    @Mapping(source = "val.value1", target = "businessName")
+    @Mapping(source = "val.value2", target = "pudoPicId")
+    @Mapping(source = "val.value3", target = "label")
+    @Mapping(source = "val.value4", target = "rating")
+    PudoSummary mapProjectionToPudoSummary(Quintet<Long, String, UUID, String, TbRating> val);
 
-    List<PudoSummary> mapProjectionListToPudoSummaryList(List<Quintet<Long, String, UUID, String, TbRating>> values);
+    List<PudoSummary> mapProjectionListToPudoSummaryList(List<Quintet<Long, String, UUID, String, TbRating>> val);
 
     @Mapping(source = "ent.value0", target = ".")
     @Mapping(source = "ent.value1", target = "events")
     Package mapPackageEntityToDto(Pair<TbPackage, List<TbPackageEvent>> ent);
 
     PackageEvent mapPackageEventEntityToDto(TbPackageEvent ent);
+
+    @Mapping(source = "val.value0.packageId", target = "packageId")
+    @Mapping(source = "val.value0.createTms", target = "createTms")
+    @Mapping(source = "val.value0.packagePicId", target = "packagePicId")
+    @Mapping(source = "val.value6", target = "packageName")
+    @Mapping(source = "val.value1.packageStatus", target = "packageStatus")
+    @Mapping(source = "val.value2.pudoId", target = "pudoId")
+    @Mapping(source = "val.value2.businessName", target = "businessName")
+    @Mapping(source = "val.value3.label", target = "label")
+    @Mapping(source = "val.value4.userId", target = "userId")
+    @Mapping(source = "val.value4.firstName", target = "firstName")
+    @Mapping(source = "val.value4.lastName", target = "lastName")
+    @Mapping(source = "val.value5.customerSuffix", target = "customerSuffix")
+    PackageSummary mapProjectionToPackageSummary(Septet<TbPackage, TbPackageEvent, TbPudo, TbAddress, TbUserProfile, TbUserPudoRelation, String> val);
 
     @Mapping(source = "values.value0", target = "pudo")
     @Mapping(source = "values.value1", target = "lat")

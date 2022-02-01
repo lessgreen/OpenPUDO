@@ -1,25 +1,31 @@
 package less.green.openpudo.business.service;
 
-import less.green.openpudo.business.dao.*;
-import less.green.openpudo.business.model.TbPackage;
-import less.green.openpudo.business.model.TbPackageEvent;
-import less.green.openpudo.business.model.TbUser;
-import less.green.openpudo.business.model.TbUserPudoRelation;
+import less.green.openpudo.business.dao.PackageDao;
+import less.green.openpudo.business.dao.PackageEventDao;
+import less.green.openpudo.business.dao.UserDao;
+import less.green.openpudo.business.dao.UserPudoRelationDao;
+import less.green.openpudo.business.model.*;
 import less.green.openpudo.business.model.usertype.AccountType;
 import less.green.openpudo.business.model.usertype.PackageStatus;
 import less.green.openpudo.cdi.ExecutionContext;
+import less.green.openpudo.cdi.service.CryptoService;
 import less.green.openpudo.cdi.service.LocalizationService;
 import less.green.openpudo.common.ApiReturnCodes;
 import less.green.openpudo.common.dto.tuple.Pair;
+import less.green.openpudo.common.dto.tuple.Septet;
+import less.green.openpudo.common.dto.tuple.Sextet;
 import less.green.openpudo.rest.config.exception.ApiException;
 import less.green.openpudo.rest.dto.DtoMapper;
 import less.green.openpudo.rest.dto.pack.DeliveredPackageRequest;
 import less.green.openpudo.rest.dto.pack.Package;
+import less.green.openpudo.rest.dto.pack.PackageSummary;
 import lombok.extern.log4j.Log4j2;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -37,24 +43,17 @@ public class PackageService {
     LocalizationService localizationService;
 
     @Inject
-    PudoService pudoService;
+    CryptoService cryptoService;
 
     @Inject
-    ExternalFileDao externalFileDao;
-    @Inject
-    NotificationDao notificationDao;
-    @Inject
-    PudoDao pudoDao;
+    PudoService pudoService;
+
     @Inject
     PackageDao packageDao;
     @Inject
     PackageEventDao packageEventDao;
     @Inject
     UserDao userDao;
-    @Inject
-    UserPreferencesDao userPreferencesDao;
-    @Inject
-    UserProfileDao userProfileDao;
     @Inject
     UserPudoRelationDao userPudoRelationDao;
 
@@ -81,6 +80,23 @@ public class PackageService {
             throw new AssertionError("Unsupported AccountType: " + caller.getAccountType());
         }
         return dtoMapper.mapPackageEntityToDto(rs);
+    }
+
+    protected List<PackageSummary> getPackages(AccountType accountType, Long referenceId, boolean history, int limit, int offset) {
+        List<PackageStatus> packageStatuses;
+        if (accountType == AccountType.CUSTOMER) {
+            packageStatuses = history ? null : Arrays.asList(PackageStatus.NOTIFY_SENT, PackageStatus.NOTIFIED, PackageStatus.COLLECTED);
+        } else if (accountType == AccountType.PUDO) {
+            packageStatuses = history ? null : Arrays.asList(PackageStatus.DELIVERED, PackageStatus.NOTIFY_SENT, PackageStatus.NOTIFIED);
+        } else {
+            throw new AssertionError("Unsupported AccountType: " + accountType);
+        }
+        List<Sextet<TbPackage, TbPackageEvent, TbPudo, TbAddress, TbUserProfile, TbUserPudoRelation>> rs = packageDao.getPackages(accountType, referenceId, packageStatuses, history, limit, offset);
+        List<PackageSummary> ret = new ArrayList<>(rs.size());
+        for (var row : rs) {
+            ret.add(dtoMapper.mapProjectionToPackageSummary(new Septet<>(row.getValue0(), row.getValue1(), row.getValue2(), row.getValue3(), row.getValue4(), row.getValue5(), cryptoService.hashidEncode(row.getValue0().getPackageId()))));
+        }
+        return ret;
     }
 
     public Package deliveredPackage(DeliveredPackageRequest req) {
@@ -111,5 +127,6 @@ public class PackageService {
         packageEventDao.flush();
         return getPackage(pack.getPackageId());
     }
+
 
 }

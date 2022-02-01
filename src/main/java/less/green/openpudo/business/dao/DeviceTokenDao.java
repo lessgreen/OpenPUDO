@@ -17,7 +17,7 @@ public class DeviceTokenDao extends BaseEntityDao<TbDeviceToken, String> {
         super(TbDeviceToken.class, "deviceToken");
     }
 
-    public List<TbDeviceToken> getDeviceTokensByUserId(Long userId) {
+    public List<TbDeviceToken> getDeviceTokens(Long userId) {
         String qs = "SELECT t FROM TbDeviceToken t WHERE t.userId = :userId";
         TypedQuery<TbDeviceToken> q = em.createQuery(qs, TbDeviceToken.class);
         q.setParameter("userId", userId);

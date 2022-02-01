@@ -37,7 +37,7 @@ public class PackageResource {
     @Path("/{packageId}")
     @SecurityRequirement(name = "JWT")
     @Operation(summary = "Get info and event log for package with provided packageId")
-    public PackageResponse getPackageById(@PathParam(value = "packageId") Long packageId) {
+    public PackageResponse getPackage(@PathParam(value = "packageId") Long packageId) {
         Package ret = packageService.getPackage(packageId);
         return new PackageResponse(context.getExecutionId(), ApiReturnCodes.OK, ret);
     }

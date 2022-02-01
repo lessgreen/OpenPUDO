@@ -11,6 +11,7 @@ import java.util.UUID;
 @Data
 public class PackageSummary {
 
+    // from package
     @Schema(readOnly = true)
     private Long packageId;
 
@@ -19,23 +20,27 @@ public class PackageSummary {
     private Date createTms;
 
     @Schema(readOnly = true)
-    private PackageStatus packageStatus;
-
-    @Schema(readOnly = true)
     private UUID packagePicId;
 
     @Schema(readOnly = true)
     private String packageName;
 
+    // from the latest package event
+    @Schema(readOnly = true)
+    private PackageStatus packageStatus;
+
+    // from pudo
     @Schema(readOnly = true)
     private Long pudoId;
 
     @Schema(readOnly = true)
     private String businessName;
 
+    // from pudo address
     @Schema(readOnly = true)
     private String label;
 
+    // from user profile
     @Schema(readOnly = true)
     private Long userId;
 
@@ -45,6 +50,7 @@ public class PackageSummary {
     @Schema(readOnly = true)
     private String lastName;
 
+    // from relation
     @Schema(readOnly = true)
     private String customerSuffix;
 

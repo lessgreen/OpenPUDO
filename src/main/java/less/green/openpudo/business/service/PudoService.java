@@ -12,6 +12,7 @@ import less.green.openpudo.common.dto.tuple.Quartet;
 import less.green.openpudo.common.dto.tuple.Septet;
 import less.green.openpudo.rest.config.exception.ApiException;
 import less.green.openpudo.rest.dto.DtoMapper;
+import less.green.openpudo.rest.dto.pack.PackageSummary;
 import less.green.openpudo.rest.dto.pudo.Pudo;
 import less.green.openpudo.rest.dto.pudo.reward.*;
 import lombok.extern.log4j.Log4j2;
@@ -41,6 +42,9 @@ public class PudoService {
     StorageService storageService;
 
     @Inject
+    PackageService packageService;
+
+    @Inject
     ExternalFileDao externalFileDao;
     @Inject
     PackageDao packageDao;
@@ -57,7 +61,7 @@ public class PudoService {
     DtoMapper dtoMapper;
 
     public Pudo getPudo(Long pudoId) {
-        Quartet<TbPudo, TbAddress, TbRating, TbRewardPolicy> rs = pudoDao.getPudoDeep(pudoId);
+        Quartet<TbPudo, TbAddress, TbRating, TbRewardPolicy> rs = pudoDao.getPudo(pudoId);
         if (rs == null) {
             return null;
         }
@@ -74,8 +78,7 @@ public class PudoService {
                 customizedAddress = createCustomizedAddress(rs.getValue0(), rs.getValue1(), "AB123");
             }
         }
-        Pudo ret = dtoMapper.mapPudoEntityToDto(new Septet<>(rs.getValue0(), rs.getValue1(), rs.getValue2(), rewardMessage, customerCount, packageCount, customizedAddress));
-        return ret;
+        return dtoMapper.mapPudoEntityToDto(new Septet<>(rs.getValue0(), rs.getValue1(), rs.getValue2(), rewardMessage, customerCount, packageCount, customizedAddress));
     }
 
     public Pudo getCurrentPudo() {
@@ -351,6 +354,11 @@ public class PudoService {
         rewardPolicyDao.flush();
         log.info("[{}] Updated reward policy for PUDO: {}", context.getExecutionId(), pudoId);
         return getCurrentPudoRewardPolicy();
+    }
+
+    public List<PackageSummary> getCurrentPudoPackages(boolean history, int limit, int offset) {
+        Long pudoId = getCurrentPudoId();
+        return packageService.getPackages(AccountType.PUDO, pudoId, history, limit, offset);
     }
 
     protected Long getCurrentPudoId() {

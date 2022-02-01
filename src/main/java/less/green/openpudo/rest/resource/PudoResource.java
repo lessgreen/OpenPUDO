@@ -9,6 +9,8 @@ import less.green.openpudo.common.dto.tuple.Pair;
 import less.green.openpudo.rest.config.annotation.BinaryAPI;
 import less.green.openpudo.rest.config.annotation.ProtectedAPI;
 import less.green.openpudo.rest.config.exception.ApiException;
+import less.green.openpudo.rest.dto.pack.PackageSummary;
+import less.green.openpudo.rest.dto.pack.PackageSummaryListResponse;
 import less.green.openpudo.rest.dto.pudo.Pudo;
 import less.green.openpudo.rest.dto.pudo.PudoResponse;
 import less.green.openpudo.rest.dto.pudo.reward.RewardOption;
@@ -16,6 +18,7 @@ import less.green.openpudo.rest.dto.pudo.reward.RewardOptionListResponse;
 import less.green.openpudo.rest.dto.scalar.UUIDResponse;
 import lombok.extern.log4j.Log4j2;
 import org.eclipse.microprofile.openapi.annotations.Operation;
+import org.eclipse.microprofile.openapi.annotations.parameters.Parameter;
 import org.eclipse.microprofile.openapi.annotations.security.SecurityRequirement;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
@@ -122,6 +125,28 @@ public class PudoResource {
     public RewardOptionListResponse updateCurrentPudoRewardPolicy(List<RewardOption> rewardPolicy) {
         List<RewardOption> ret = pudoService.updateCurrentPudoRewardPolicy(rewardPolicy);
         return new RewardOptionListResponse(context.getExecutionId(), ApiReturnCodes.OK, ret);
+    }
+
+    @GET
+    @Path("/me/packages")
+    @SecurityRequirement(name = "JWT")
+    @Operation(summary = "Get package list for current PUDO, with optional query parameters",
+            description = "If called without parameters, this API return the summary of all packages in \"open\" state for the current PUDO.\n\n" +
+                    "Parameters can be used to perform an historical search, and pagination will be used only in this mode.")
+    public PackageSummaryListResponse getCurrentPudoPackages(
+            @Parameter(description = "Historical search") @DefaultValue("false") @QueryParam("history") boolean history,
+            @Parameter(description = "Pagination limit, used only in historical search") @DefaultValue("20") @QueryParam("limit") int limit,
+            @Parameter(description = "Pagination offset, used only in historical search") @DefaultValue("0") @QueryParam("offset") int offset) {
+        // sanitize input
+        if (limit < 1) {
+            throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.invalid_field", "limit"));
+        }
+        if (offset < 0) {
+            throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.invalid_field", "offset"));
+        }
+
+        List<PackageSummary> ret = pudoService.getCurrentPudoPackages(history, limit, offset);
+        return new PackageSummaryListResponse(context.getExecutionId(), ApiReturnCodes.OK, ret);
     }
 
 }

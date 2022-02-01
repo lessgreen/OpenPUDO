@@ -3,7 +3,9 @@ package less.green.openpudo.cdi.service;
 import less.green.openpudo.common.Encoders;
 import lombok.extern.log4j.Log4j2;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.hashids.Hashids;
 
+import javax.annotation.PostConstruct;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import javax.enterprise.context.ApplicationScoped;
@@ -16,9 +18,17 @@ import java.security.NoSuchAlgorithmException;
 public class CryptoService {
 
     private static final String MAC_ALGORITHM = "HmacSHA512";
+    private static final String HASHIDS_ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
     @ConfigProperty(name = "app.secret")
     String appSecret;
+
+    private Hashids hashids;
+
+    @PostConstruct
+    void init() {
+        hashids = new Hashids(appSecret, 6, HASHIDS_ALPHABET);
+    }
 
     public Mac createMac() {
         Mac mac;
@@ -48,6 +58,14 @@ public class CryptoService {
     public boolean isValidSignature(Object obj, String candidateSignature) {
         String signature = signObject(obj);
         return signature.equals(candidateSignature);
+    }
+
+    public String hashidEncode(Long l) {
+        return hashids.encode(l);
+    }
+
+    public long hashidDecode(String s) {
+        return hashids.decode(s)[0];
     }
 
 }

@@ -29,7 +29,7 @@ public class PudoDao extends BaseEntityDao<TbPudo, Long> {
         super(TbPudo.class, "pudoId");
     }
 
-    public Quartet<TbPudo, TbAddress, TbRating, TbRewardPolicy> getPudoDeep(Long pudoId) {
+    public Quartet<TbPudo, TbAddress, TbRating, TbRewardPolicy> getPudo(Long pudoId) {
         String qs = "SELECT t1, t2, t3, t4 " +
                 "FROM TbPudo t1, TbAddress t2, TbRating t3, TbRewardPolicy t4 " +
                 "WHERE t1.pudoId = :pudoId AND t1.pudoId = t2.pudoId AND t1.pudoId = t3.pudoId AND t1.pudoId = t4.pudoId and t4.deleteTms IS NULL";
@@ -59,7 +59,7 @@ public class PudoDao extends BaseEntityDao<TbPudo, Long> {
         return rs.isEmpty() ? Collections.emptyList() : rs.stream().map(row -> new Septet<>((Long) row[0], (String) row[1], (UUID) row[2], (String) row[3], (TbRating) row[4], (BigDecimal) row[5], (BigDecimal) row[6])).collect(Collectors.toList());
     }
 
-    public List<Quintet<Long, String, UUID, String, TbRating>> getCurrentUserPudos(Long userId) {
+    public List<Quintet<Long, String, UUID, String, TbRating>> getUserPudos(Long userId) {
         String qs = "SELECT t1.pudoId, t1.businessName, t1.pudoPicId, t2.label, t4 " +
                 "FROM TbPudo t1, TbAddress t2, TbUserPudoRelation t3, TbRating t4 " +
                 "WHERE t1.pudoId = t2.pudoId AND t1.pudoId = t3.pudoId AND t1.pudoId = t4.pudoId " +

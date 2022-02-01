@@ -12,6 +12,7 @@ import less.green.openpudo.common.CalendarUtils;
 import less.green.openpudo.common.dto.tuple.Quintet;
 import less.green.openpudo.rest.config.exception.ApiException;
 import less.green.openpudo.rest.dto.DtoMapper;
+import less.green.openpudo.rest.dto.pack.PackageSummary;
 import less.green.openpudo.rest.dto.pudo.PudoSummary;
 import less.green.openpudo.rest.dto.user.DeviceToken;
 import less.green.openpudo.rest.dto.user.User;
@@ -40,6 +41,9 @@ public class UserService {
 
     @Inject
     StorageService storageService;
+
+    @Inject
+    PackageService packageService;
 
     @Inject
     DeviceTokenDao deviceTokenDao;
@@ -214,7 +218,7 @@ public class UserService {
         if (user.getAccountType() != AccountType.CUSTOMER) {
             throw new ApiException(ApiReturnCodes.FORBIDDEN, localizationService.getMessage(context.getLanguage(), "error.forbidden.wrong_account_type"));
         }
-        List<Quintet<Long, String, UUID, String, TbRating>> rs = pudoDao.getCurrentUserPudos(context.getUserId());
+        List<Quintet<Long, String, UUID, String, TbRating>> rs = pudoDao.getUserPudos(context.getUserId());
         return dtoMapper.mapProjectionListToPudoSummaryList(rs);
     }
 
@@ -298,6 +302,14 @@ public class UserService {
         notificationDao.removeQueuedNotificationFavourite(context.getUserId(), pudo.getPudoId());
         log.info("[{}] Removed PUDO: {} from user: {} favourites", context.getExecutionId(), pudoId, context.getUserId());
         return getCurrentUserPudos();
+    }
+
+    public List<PackageSummary> getCurrentUserPackages(boolean history, int limit, int offset) {
+        TbUser user = userDao.get(context.getUserId());
+        if (user.getAccountType() != AccountType.CUSTOMER) {
+            throw new ApiException(ApiReturnCodes.FORBIDDEN, localizationService.getMessage(context.getLanguage(), "error.forbidden.wrong_account_type"));
+        }
+        return packageService.getPackages(AccountType.CUSTOMER, context.getUserId(), history, limit, offset);
     }
 
     private boolean isUserProfileComplete(TbUserProfile userProfile) {

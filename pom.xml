@@ -21,6 +21,7 @@
         <libphonenumber.version>8.12.42</libphonenumber.version>
         <unirest.version>3.13.6</unirest.version>
         <firebase.version>8.1.0</firebase.version>
+        <hashids.version>1.0.3</hashids.version>
     </properties>
 
     <dependencyManagement>
@@ -99,6 +100,11 @@
             <groupId>com.google.firebase</groupId>
             <artifactId>firebase-admin</artifactId>
             <version>${firebase.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hashids</groupId>
+            <artifactId>hashids</artifactId>
+            <version>${hashids.version}</version>
         </dependency>
     </dependencies>
 

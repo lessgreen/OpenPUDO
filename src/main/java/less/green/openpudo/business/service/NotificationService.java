@@ -55,7 +55,7 @@ public class NotificationService {
     }
 
     public void sendPushNotifications(Long userId, String titleTemplate, String[] titleParams, String messageTemplate, String[] messageParams, Map<String, String> data) {
-        List<TbDeviceToken> deviceTokens = deviceTokenDao.getDeviceTokensByUserId(userId);
+        List<TbDeviceToken> deviceTokens = deviceTokenDao.getDeviceTokens(userId);
         if (!deviceTokens.isEmpty()) {
             for (TbDeviceToken row : deviceTokens) {
                 String title;
