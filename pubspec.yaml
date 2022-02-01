@@ -41,6 +41,19 @@ flutter:
     - assets/
     - resources/
   fonts:
+    - family: Helvetica
+      fonts:
+        - asset: fonts/Helvetica.ttf
+        - asset: fonts/Helvetica-Italic.ttf
+          style: italic
+        - asset: fonts/Helvetica-Bold.ttf
+          weight: 700
+        - asset: fonts/Helvetica-Light.ttf
+          weight: 400
+        - asset: fonts/Helvetica.ttf
+          weight: 600
+        - asset: fonts/Helvetica-Thin.ttf
+          weight: 300
     - family: Roboto
       fonts:
         - asset: fonts/Roboto-Regular.ttf

@@ -35,6 +35,7 @@ import 'package:qui_green/controllers/home_onboarding/user_position_controller.d
 import 'package:qui_green/controllers/pudo_detail_controller.dart';
 import 'package:qui_green/models/pudo_detail_controller_data_model.dart';
 import 'package:qui_green/models/pudo_profile.dart';
+import 'package:qui_green/widgets/listview_header.dart';
 import 'package:qui_green/widgets/package_card.dart';
 import 'package:qui_green/controllers/home_pudo_controller.dart';
 import 'package:qui_green/controllers/profile_controller.dart';
@@ -129,46 +130,41 @@ class _HomeControllerState extends State<HomeController> {
                                 Navigator.of(context).pushNamed(Routes.profile),
                           ),
                         ),
-                        child: Column(
-                          children: [
-                            Container(
-                              width: double.infinity,
-                              padding: const EdgeInsets.all(Dimension.paddingS),
-                              decoration: BoxDecoration(
-                                color: Colors.orange.shade100,
+                        child: SafeArea(
+                          child: Column(
+                            children: [
+                              Container(
+                                width: double.infinity,
+                                padding:
+                                    const EdgeInsets.all(Dimension.paddingS),
+                                decoration: BoxDecoration(
+                                  color: Colors.orange.shade100,
+                                ),
+                                child: const Text('Hai dei ritiri in attesa!'),
                               ),
-                              child: const Text('Hai dei ritiri in attesa!'),
-                            ),
-                            const SizedBox(height: 20),
-                            Container(
-                                padding: const EdgeInsets.only(
-                                    left: Dimension.padding),
-                                alignment: Alignment.centerLeft,
-                                child: Text(
-                                  'I tuoi pacchi:',
-                                  style: TextStyle(color: Colors.grey.shade800),
-                                )),
-                            Container(
-                              height: 20,
-                            ),
-                            Expanded(
-                              child: ListView.builder(
-                                  itemCount: 1,
-                                  itemBuilder:
-                                      (BuildContext context, int index) {
-                                    return PackageCard(
-                                      name: "Bar - La pinta",
-                                      address: "Via ippolito, 8",
-                                      stars: 3,
-                                      onTap: () => null,
-                                      isRead: false,
-                                      deliveryDate: '12/12/2021',
-                                      image:
-                                          'https://i0.wp.com/www.dailycal.org/assets/uploads/2021/04/package_gusler_cc-900x580.jpg',
-                                    );
-                                  }),
-                            ),
-                          ],
+                              Expanded(
+                                child: ListViewHeader(
+                                    itemPadding: const EdgeInsets.only(
+                                        bottom: Dimension.paddingS),
+                                    title: 'I tuoi pacchi:',
+                                    shrinkWrap: true,
+                                    itemCount: 10,
+                                    itemBuilder:
+                                        (BuildContext context, int index) {
+                                      return PackageCard(
+                                        name: "Bar - La pinta",
+                                        address: "Via ippolito, 8",
+                                        stars: 3,
+                                        onTap: () => null,
+                                        isRead: false,
+                                        deliveryDate: '12/12/2021',
+                                        image:
+                                            'https://i0.wp.com/www.dailycal.org/assets/uploads/2021/04/package_gusler_cc-900x580.jpg',
+                                      );
+                                    }),
+                              ),
+                            ],
+                          ),
                         ));
                   },
                   Routes.profile: (context) {

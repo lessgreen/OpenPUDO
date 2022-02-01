@@ -40,9 +40,14 @@ void mainCommon({required String host, required bool isProd}) async {
   sharedPreferences.setString('languagePref', 'it');
   PackageInfo info = await PackageInfo.fromPlatform();
 
-  AppConfig appConfig = AppConfig(isProd: isProd, host: host, appInfo: info, sharedPreferencesInstance: sharedPreferences);
+  AppConfig appConfig = AppConfig(
+      isProd: isProd,
+      host: host,
+      appInfo: info,
+      sharedPreferencesInstance: sharedPreferences);
   NetworkManager(config: appConfig);
-  await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge, overlays: [SystemUiOverlay.bottom]);
+  await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge,
+      overlays: [SystemUiOverlay.bottom]);
   SystemChrome.setSystemUIOverlayStyle(
     SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
@@ -69,13 +74,16 @@ class App extends StatelessWidget {
   // if the user is logged navigates the app to the home route
   // if the user is not logged navigates the app to the login route
 
-  void pushPage(String route) => navigatorKey.currentState?.pushReplacementNamed(route);
+  void pushPage(String route) =>
+      navigatorKey.currentState?.pushReplacementNamed(route);
 
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => CurrentUser(config.sharedPreferencesInstance, pushPage: pushPage)),
+        ChangeNotifierProvider(
+            create: (_) => CurrentUser(config.sharedPreferencesInstance,
+                pushPage: pushPage)),
       ],
       child: Consumer<CurrentUser>(
         builder: (context, currentUser, _) {
@@ -83,7 +91,13 @@ class App extends StatelessWidget {
             navigatorKey: navigatorKey,
             debugShowCheckedModeBanner: false,
             title: 'Qui Green',
-            supportedLocales: const [Locale('en'), Locale('it'), Locale('de'), Locale('es'), Locale('fr')],
+            supportedLocales: const [
+              Locale('en'),
+              Locale('it'),
+              Locale('de'),
+              Locale('es'),
+              Locale('fr')
+            ],
             localizationsDelegates: [
               LocalizationManagerDelegate(config.sharedPreferencesInstance!),
               GlobalMaterialLocalizations.delegate,
@@ -91,8 +105,10 @@ class App extends StatelessWidget {
               GlobalWidgetsLocalizations.delegate
             ],
             theme: MyAppTheme.themeData(context),
-            darkTheme: MyAppTheme.darkThemeData(context),
-            initialRoute: NetworkManager.instance.accessToken.isEmpty ? Routes.login : "/",
+            darkTheme: MyAppTheme.themeData(context),
+            initialRoute: NetworkManager.instance.accessToken.isEmpty
+                ? Routes.login
+                : "/",
             onGenerateRoute: (settings) {
               return routeWithSetting(settings);
             },

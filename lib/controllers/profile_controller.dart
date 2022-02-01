@@ -20,6 +20,7 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:qui_green/commons/ui/custom_network_image.dart';
 import 'package:qui_green/resources/res.dart';
@@ -46,7 +47,10 @@ class _ProfileControllerState extends State<ProfileController> {
               backgroundColor: AppColors.primaryColorDark,
               middle: Text(
                 'Il tuo profilo',
-                style: Theme.of(context).textTheme.headline6?.copyWith(color: Colors.white),
+                style: Theme.of(context)
+                    .textTheme
+                    .headline6
+                    ?.copyWith(color: Colors.white),
               ),
               leading: CupertinoNavigationBarBackButton(
                 color: Colors.white,
@@ -59,7 +63,11 @@ class _ProfileControllerState extends State<ProfileController> {
                 Center(
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(100),
-                    child: CustomNetworkImage(height: 100, width: 100, fit: BoxFit.cover, url: currentUser.user?.profilePicId),
+                    child: CustomNetworkImage(
+                        height: 100,
+                        width: 100,
+                        fit: BoxFit.cover,
+                        url: currentUser.user?.profilePicId),
                   ),
                 ),
                 const SizedBox(
@@ -67,10 +75,11 @@ class _ProfileControllerState extends State<ProfileController> {
                 ),
                 Text(
                   "${currentUser.user?.firstName ?? " "} ${currentUser.user?.lastName ?? " "}",
-                  style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 17),
+                  style: const TextStyle(
+                      fontWeight: FontWeight.w500, fontSize: 17),
                 ),
                 Text(
-                  'Utente dal ${currentUser.user?.createTms ?? " "}',
+                  'Utente dal ${currentUser.user?.createTms != null ? DateFormat('dd/MM/yyyy').format(DateTime.parse(currentUser.user!.createTms!)) : " "}',
                   style: TextStyle(fontSize: 12, color: Colors.grey.shade500),
                 ),
                 const SizedBox(
@@ -83,10 +92,18 @@ class _ProfileControllerState extends State<ProfileController> {
                     style: Theme.of(context).textTheme.bodyText2,
                     children: const [
                       TextSpan(text: "Hai usato il servizio di QuiGreen "),
-                      TextSpan(text: "123", style: TextStyle(color: AppColors.accentColor, fontWeight: FontWeight.w500)),
+                      TextSpan(
+                          text: "123",
+                          style: TextStyle(
+                              color: AppColors.accentColor,
+                              fontWeight: FontWeight.w500)),
                       TextSpan(text: " volte,"),
                       TextSpan(text: " contribuendo a ridurre di "),
-                      TextSpan(text: "456kg", style: TextStyle(color: AppColors.accentColor, fontWeight: FontWeight.w500)),
+                      TextSpan(
+                          text: "456kg",
+                          style: TextStyle(
+                              color: AppColors.accentColor,
+                              fontWeight: FontWeight.w500)),
                       TextSpan(text: " le emissioni di CO2")
                     ],
                   ),
@@ -96,7 +113,8 @@ class _ProfileControllerState extends State<ProfileController> {
                 ),
                 const Divider(color: Colors.grey),
                 GestureDetector(
-                  onTap: () => Navigator.of(context).pushReplacementNamed(Routes.pudoList),
+                  onTap: () => Navigator.of(context)
+                      .pushReplacementNamed(Routes.pudoList),
                   child: Row(
                     children: const [
                       SizedBox(width: 10),

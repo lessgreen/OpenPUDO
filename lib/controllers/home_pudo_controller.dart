@@ -44,15 +44,15 @@ class _HomePudoControllerState extends State<HomePudoController> {
         brightness: Brightness.dark,
         backgroundColor: AppColors.primaryColorDark,
         middle: Text(
-          'Pudo',
+          'I tuoi Pudo',
           style: Theme.of(context)
               .textTheme
               .headline6
               ?.copyWith(color: Colors.white),
         ),
       ),
-      child: Center(
-          child: Column(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
             'Non hai ancora aggiunto un pudo per le tue consegne!',
@@ -64,7 +64,7 @@ class _HomePudoControllerState extends State<HomePudoController> {
               onPressed: () =>
                   Navigator.of(context).pushNamed(Routes.userPosition))
         ],
-      )),
+      ),
     );
   }
 }

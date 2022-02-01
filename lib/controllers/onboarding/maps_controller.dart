@@ -37,7 +37,8 @@ import 'package:qui_green/resources/routes_enum.dart';
 import 'package:qui_green/singletons/network/network_manager.dart';
 
 class MapsController extends StatefulWidget {
-  const MapsController({Key? key, required this.initialPosition}) : super(key: key);
+  const MapsController({Key? key, required this.initialPosition})
+      : super(key: key);
   final LatLng initialPosition;
 
   @override
@@ -45,7 +46,8 @@ class MapsController extends StatefulWidget {
 }
 
 class _MapsControllerState extends State<MapsController> {
-  void _showErrorDialog(BuildContext context, String val) => SAAlertDialog.displayAlertWithClose(context, "Error", val);
+  void _showErrorDialog(BuildContext context, String val) =>
+      SAAlertDialog.displayAlertWithClose(context, "Error", val);
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +55,8 @@ class _MapsControllerState extends State<MapsController> {
       create: (context) => MapsControllerViewModel(),
       child: Consumer<MapsControllerViewModel?>(
         builder: (_, viewModel, __) {
-          viewModel?.showErrorDialog = (String val) => _showErrorDialog(context, val);
+          viewModel?.showErrorDialog =
+              (String val) => _showErrorDialog(context, val);
           return WillPopScope(
             onWillPop: () async => false,
             child: SAScaffold(
@@ -74,10 +77,12 @@ class _MapsControllerState extends State<MapsController> {
                     options: MapOptions(
                       center: widget.initialPosition,
                       onMapCreated: (controller) {
-                        viewModel.onMapCreate(controller, widget.initialPosition);
+                        viewModel.onMapCreate(
+                            controller, widget.initialPosition);
                         viewModel.loadPudos(requireZoomLevelRefresh: true);
                       },
-                      interactiveFlags: InteractiveFlag.pinchZoom | InteractiveFlag.drag,
+                      interactiveFlags:
+                          InteractiveFlag.pinchZoom | InteractiveFlag.drag,
                       onPositionChanged: (mapPosition, boolValue) {
                         var mapVisibleMaxDistance = Geolocator.distanceBetween(
                           mapPosition.bounds!.northEast!.latitude,
@@ -85,13 +90,21 @@ class _MapsControllerState extends State<MapsController> {
                           mapPosition.bounds!.southWest!.latitude,
                           mapPosition.bounds!.southWest!.longitude,
                         );
-                        var visibleChangeDelta = mapVisibleMaxDistance - (mapVisibleMaxDistance * 50 / 100);
-                        var distance = Geolocator.distanceBetween(viewModel.lastTriggeredLatitude, viewModel.lastTriggeredLongitude, mapPosition.center!.latitude, mapPosition.center!.longitude);
+                        var visibleChangeDelta = mapVisibleMaxDistance -
+                            (mapVisibleMaxDistance * 50 / 100);
+                        var distance = Geolocator.distanceBetween(
+                            viewModel.lastTriggeredLatitude,
+                            viewModel.lastTriggeredLongitude,
+                            mapPosition.center!.latitude,
+                            mapPosition.center!.longitude);
 
-                        if (mapPosition.center != null && mapPosition.zoom != null) {
+                        if (mapPosition.center != null &&
+                            mapPosition.zoom != null) {
                           viewModel.updateCurrentMapPosition(mapPosition);
                         }
-                        if (distance > visibleChangeDelta || viewModel.lastTriggeredZoom != viewModel.currentZoomLevel) {
+                        if (distance > visibleChangeDelta ||
+                            viewModel.lastTriggeredZoom !=
+                                viewModel.currentZoomLevel) {
                           viewModel.updateLastMapPosition(mapPosition);
                           viewModel.loadPudos();
                         }
@@ -105,7 +118,8 @@ class _MapsControllerState extends State<MapsController> {
                     ),
                     layers: [
                       TileLayerOptions(
-                        urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                        urlTemplate:
+                            "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
                         subdomains: ['a', 'b', 'c'],
                       ),
                       MarkerClusterLayerOptions(
@@ -123,7 +137,11 @@ class _MapsControllerState extends State<MapsController> {
                         ),
                         builder: (context, markers) {
                           return FloatingActionButton(
-                            child: Text(markers.length.toString(), style: Theme.of(context).textTheme.caption?.copyWith(color: Colors.white)),
+                            child: Text(markers.length.toString(),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .caption
+                                    ?.copyWith(color: Colors.white)),
                             onPressed: null,
                           );
                         },
@@ -136,26 +154,40 @@ class _MapsControllerState extends State<MapsController> {
                       children: [
                         Container(
                           color: Colors.white.withOpacity(0.8),
-                          padding: const EdgeInsets.only(bottom: Dimension.padding),
+                          padding:
+                              const EdgeInsets.only(bottom: Dimension.padding),
                           alignment: Alignment.center,
                           child: Column(
                             children: [
                               Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: Dimension.paddingS),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: Dimension.paddingS),
                                 child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
-                                    CupertinoNavigationBarBackButton(color: AppColors.primaryColorDark, onPressed: () => Navigator.pop(context)),
+                                    CupertinoNavigationBarBackButton(
+                                        color: AppColors.primaryColorDark,
+                                        onPressed: () =>
+                                            Navigator.pop(context)),
                                     TextFieldButton(
                                       text: "Salta",
-                                      onPressed: () => Navigator.of(context).pushNamedAndRemoveUntil(Routes.personalData, ModalRoute.withName('/')),
+                                      onPressed: () => Navigator.of(context)
+                                          .pushNamedAndRemoveUntil(
+                                              Routes.personalData,
+                                              ModalRoute.withName('/')),
                                     ),
                                   ],
                                 ),
                               ),
                               Text(
                                 "Ecco i punti di ritiro vicino a te",
-                                style: Theme.of(context).textTheme.headline6?.copyWith(color: Colors.black, fontWeight: FontWeight.w400),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headline6
+                                    ?.copyWith(
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.w400),
                               ),
                             ],
                           ),
@@ -163,20 +195,33 @@ class _MapsControllerState extends State<MapsController> {
                         const Spacer(),
                         AnimatedCrossFade(
                           secondChild: Padding(
-                            padding: const EdgeInsets.only(top: Dimension.paddingM, left: Dimension.paddingXS, right: Dimension.paddingXS, bottom: Dimension.paddingM),
+                            padding: const EdgeInsets.only(
+                                top: Dimension.paddingM,
+                                left: Dimension.paddingXS,
+                                right: Dimension.paddingXS,
+                                bottom: Dimension.paddingM),
                             child: PudoMapCard(
                                 name: viewModel.pudoProfile?.businessName ?? "",
-                                address: viewModel.pudoProfile?.address?.label ?? "",
-                                stars: viewModel.pudoProfile?.ratingModel?.stars ?? 0,
+                                address:
+                                    viewModel.pudoProfile?.address?.label ?? "",
+                                stars:
+                                    viewModel.pudoProfile?.ratingModel?.stars ??
+                                        0,
                                 hasShadow: true,
                                 onTap: () {
-                                  viewModel.onPudoClick(context, viewModel.pudoProfile!, widget.initialPosition);
+                                  viewModel.onPudoClick(
+                                      context,
+                                      viewModel.pudoProfile!,
+                                      widget.initialPosition);
                                 },
                                 image: viewModel.pudoProfile?.pudoPicId),
                           ),
-                          crossFadeState: viewModel.pudoProfile == null ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+                          crossFadeState: viewModel.pudoProfile == null
+                              ? CrossFadeState.showFirst
+                              : CrossFadeState.showSecond,
                           duration: const Duration(milliseconds: 100),
-                          firstChild: SizedBox(width: MediaQuery.of(context).size.width),
+                          firstChild: SizedBox(
+                              width: MediaQuery.of(context).size.width),
                         )
                       ],
                     ),
