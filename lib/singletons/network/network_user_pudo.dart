@@ -87,7 +87,7 @@ mixin NetworkManagerUserPudo on NetworkGeneral {
         _networkActivity.value = true;
       });
       Response response = await r.retry(
-            () => get(Uri.parse(url), headers: _headers).timeout(Duration(seconds: _timeout)),
+        () => get(Uri.parse(url), headers: _headers).timeout(Duration(seconds: _timeout)),
         retryIf: (e) => e is SocketException || e is TimeoutException,
       );
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
@@ -106,16 +106,13 @@ mixin NetworkManagerUserPudo on NetworkGeneral {
         },
       );
       if (needHandleTokenRefresh == false) {
-        if (baseResponse.returnCode == 0 &&
-            baseResponse.payload != null &&
-            baseResponse.payload is List) {
+        if (baseResponse.returnCode == 0 && baseResponse.payload != null && baseResponse.payload is List) {
           for (dynamic aRow in baseResponse.payload) {
             myUsers.add(UserProfile.fromJson(aRow));
           }
           return myUsers;
         } else {
-          throw ErrorDescription(
-              'Error ${baseResponse.returnCode}: ${baseResponse.message}');
+          throw ErrorDescription('Error ${baseResponse.returnCode}: ${baseResponse.message}');
         }
       }
     } catch (e) {
@@ -140,7 +137,7 @@ mixin NetworkManagerUserPudo on NetworkGeneral {
         _networkActivity.value = true;
       });
       Response response = await r.retry(
-            () => put(Uri.parse(url), body: body, headers: _headers).timeout(Duration(seconds: _timeout)),
+        () => put(Uri.parse(url), body: body, headers: _headers).timeout(Duration(seconds: _timeout)),
         retryIf: (e) => e is SocketException || e is TimeoutException,
       );
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
@@ -158,13 +155,10 @@ mixin NetworkManagerUserPudo on NetworkGeneral {
         },
       );
       if (needHandleTokenRefresh == false) {
-        if (baseResponse.returnCode == 0 &&
-            baseResponse.payload != null &&
-            baseResponse.payload is Map) {
+        if (baseResponse.returnCode == 0 && baseResponse.payload != null && baseResponse.payload is Map) {
           return PudoProfile.fromJson(baseResponse.payload);
         } else {
-          throw ErrorDescription(
-              'Error ${baseResponse.returnCode}: ${baseResponse.message}');
+          throw ErrorDescription('Error ${baseResponse.returnCode}: ${baseResponse.message}');
         }
       }
     } catch (e) {
@@ -191,7 +185,7 @@ mixin NetworkManagerUserPudo on NetworkGeneral {
         _networkActivity.value = true;
       });
       Response response = await r.retry(
-            () => put(Uri.parse(url), body: body, headers: _headers).timeout(Duration(seconds: _timeout)),
+        () => put(Uri.parse(url), body: body, headers: _headers).timeout(Duration(seconds: _timeout)),
         retryIf: (e) => e is SocketException || e is TimeoutException,
       );
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
@@ -209,13 +203,10 @@ mixin NetworkManagerUserPudo on NetworkGeneral {
         },
       );
       if (needHandleTokenRefresh == false) {
-        if (baseResponse.returnCode == 0 &&
-            baseResponse.payload != null &&
-            baseResponse.payload is Map) {
+        if (baseResponse.returnCode == 0 && baseResponse.payload != null && baseResponse.payload is Map) {
           return PudoProfile.fromJson(baseResponse.payload);
         } else {
-          throw ErrorDescription(
-              'Error ${baseResponse.returnCode}: ${baseResponse.message}');
+          throw ErrorDescription('Error ${baseResponse.returnCode}: ${baseResponse.message}');
         }
       }
     } catch (e) {
@@ -240,7 +231,7 @@ mixin NetworkManagerUserPudo on NetworkGeneral {
         _networkActivity.value = true;
       });
       Response response = await r.retry(
-            () => get(Uri.parse(url), headers: _headers).timeout(Duration(seconds: _timeout)),
+        () => get(Uri.parse(url), headers: _headers).timeout(Duration(seconds: _timeout)),
         retryIf: (e) => e is SocketException || e is TimeoutException,
       );
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
@@ -258,13 +249,10 @@ mixin NetworkManagerUserPudo on NetworkGeneral {
         },
       );
       if (needHandleTokenRefresh == false) {
-        if (baseResponse.returnCode == 0 &&
-            baseResponse.payload != null &&
-            baseResponse.payload is Map) {
+        if (baseResponse.returnCode == 0 && baseResponse.payload != null && baseResponse.payload is Map) {
           return PudoProfile.fromJson(baseResponse.payload);
         } else {
-          throw ErrorDescription(
-              'Error ${baseResponse.returnCode}: ${baseResponse.message}');
+          throw ErrorDescription('Error ${baseResponse.returnCode}: ${baseResponse.message}');
         }
       }
     } catch (e) {

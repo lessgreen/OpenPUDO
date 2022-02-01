@@ -38,7 +38,7 @@ mixin NetworkManagerPudo on NetworkGeneral {
         _networkActivity.value = true;
       });
       Response response = await r.retry(
-            () => get(Uri.parse(url), headers: _headers).timeout(Duration(seconds: _timeout)),
+        () => get(Uri.parse(url), headers: _headers).timeout(Duration(seconds: _timeout)),
         retryIf: (e) => e is SocketException || e is TimeoutException,
       );
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
@@ -85,7 +85,7 @@ mixin NetworkManagerPudo on NetworkGeneral {
         _networkActivity.value = true;
       });
       Response response = await r.retry(
-            () => get(Uri.parse(url), headers: _headers).timeout(Duration(seconds: _timeout)),
+        () => get(Uri.parse(url), headers: _headers).timeout(Duration(seconds: _timeout)),
         retryIf: (e) => e is SocketException || e is TimeoutException,
       );
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
@@ -137,7 +137,7 @@ mixin NetworkManagerPudo on NetworkGeneral {
         _networkActivity.value = true;
       });
       Response response = await r.retry(
-            () => get(Uri.parse(url), headers: _headers).timeout(Duration(seconds: _timeout)),
+        () => get(Uri.parse(url), headers: _headers).timeout(Duration(seconds: _timeout)),
         retryIf: (e) => e is SocketException || e is TimeoutException,
       );
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {

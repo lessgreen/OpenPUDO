@@ -36,7 +36,7 @@ mixin NetworkManagerNotification on NetworkGeneral {
       });
 
       Response response = await r.retry(
-            () => get(Uri.parse(url), headers: _headers).timeout(Duration(seconds: _timeout)),
+        () => get(Uri.parse(url), headers: _headers).timeout(Duration(seconds: _timeout)),
         retryIf: (e) => e is SocketException || e is TimeoutException,
       );
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
@@ -57,8 +57,7 @@ mixin NetworkManagerNotification on NetworkGeneral {
         if (baseResponse.returnCode == 0 && baseResponse.payload != null) {
           return baseResponse;
         } else {
-          throw ErrorDescription(
-              'Error ${baseResponse.returnCode}: ${baseResponse.message}');
+          throw ErrorDescription('Error ${baseResponse.returnCode}: ${baseResponse.message}');
         }
       }
     } catch (e) {
@@ -83,8 +82,7 @@ mixin NetworkManagerNotification on NetworkGeneral {
         _networkActivity.value = true;
       });
       Response response = await r.retry(
-        () => post(Uri.parse(url), headers: _headers)
-            .timeout(Duration(seconds: _timeout)),
+        () => post(Uri.parse(url), headers: _headers).timeout(Duration(seconds: _timeout)),
         retryIf: (e) => e is SocketException || e is TimeoutException,
       );
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
@@ -98,8 +96,7 @@ mixin NetworkManagerNotification on NetworkGeneral {
       var needHandleTokenRefresh = _handleTokenRefresh(
         baseResponse,
         () {
-          markNotificationAsRead(notificationId: notificationId)
-              .catchError((onError) => throw onError);
+          markNotificationAsRead(notificationId: notificationId).catchError((onError) => throw onError);
         },
       );
       if (needHandleTokenRefresh == false) {
@@ -128,8 +125,7 @@ mixin NetworkManagerNotification on NetworkGeneral {
         _networkActivity.value = true;
       });
       Response response = await r.retry(
-        () => post(Uri.parse(url), headers: _headers)
-            .timeout(Duration(seconds: _timeout)),
+        () => post(Uri.parse(url), headers: _headers).timeout(Duration(seconds: _timeout)),
         retryIf: (e) => e is SocketException || e is TimeoutException,
       );
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
@@ -174,7 +170,7 @@ mixin NetworkManagerNotification on NetworkGeneral {
         _networkActivity.value = true;
       });
       Response response = await r.retry(
-            () => get(Uri.parse(url), headers: _headers).timeout(Duration(seconds: _timeout)),
+        () => get(Uri.parse(url), headers: _headers).timeout(Duration(seconds: _timeout)),
         retryIf: (e) => e is SocketException || e is TimeoutException,
       );
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
@@ -194,16 +190,13 @@ mixin NetworkManagerNotification on NetworkGeneral {
         },
       );
       if (needHandleTokenRefresh == false) {
-        if (baseResponse.returnCode == 0 &&
-            baseResponse.payload != null &&
-            baseResponse.payload is List) {
+        if (baseResponse.returnCode == 0 && baseResponse.payload != null && baseResponse.payload is List) {
           for (dynamic aRow in baseResponse.payload) {
             myNotifications.add(PudoNotification.fromJson(aRow));
           }
           return myNotifications;
         } else {
-          throw ErrorDescription(
-              'Error ${baseResponse.returnCode}: ${baseResponse.message}');
+          throw ErrorDescription('Error ${baseResponse.returnCode}: ${baseResponse.message}');
         }
       }
     } catch (e) {
