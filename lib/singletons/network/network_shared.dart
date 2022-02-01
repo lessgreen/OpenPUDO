@@ -143,6 +143,7 @@ mixin NetworkGeneral {
     } on Error catch (e) {
       _refreshTokenRetryCounter++;
       safePrint('ERROR - checkUser: $e');
+      _networkActivity.value = false;
       return e;
     }
   }
@@ -230,6 +231,7 @@ mixin NetworkGeneral {
     } on Error catch (e) {
       safePrint('ERROR - getAddress: $e');
       _refreshTokenRetryCounter = 0;
+      _networkActivity.value = false;
       return e;
     }
   }
@@ -283,6 +285,7 @@ mixin NetworkGeneral {
     } on Error catch (e) {
       safePrint('ERROR - photoupload: $e');
       _refreshTokenRetryCounter = 0;
+      _networkActivity.value = false;
       return e;
     }
   }
@@ -324,6 +327,7 @@ mixin NetworkGeneral {
     } on Error catch (e) {
       safePrint('ERROR - setDeviceInfo: $e');
       _refreshTokenRetryCounter = 0;
+      _networkActivity.value = false;
       return e;
     }
   }

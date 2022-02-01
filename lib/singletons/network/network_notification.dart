@@ -59,6 +59,7 @@ mixin NetworkManagerNotification on NetworkGeneral {
     } on Error catch (e) {
       safePrint('ERROR - getNotificationsCount : $e');
       _refreshTokenRetryCounter = 0;
+      _networkActivity.value = false;
       return e;
     }
   }
@@ -97,6 +98,7 @@ mixin NetworkManagerNotification on NetworkGeneral {
     } on Error catch (e) {
       safePrint('ERROR - markNotificationAsRead: $e');
       _refreshTokenRetryCounter = 0;
+      _networkActivity.value = false;
       return e;
     }
   }
@@ -136,6 +138,7 @@ mixin NetworkManagerNotification on NetworkGeneral {
     } on Error catch (e) {
       safePrint('ERROR - readAllMyNotifications: $e');
       _refreshTokenRetryCounter = 0;
+      _networkActivity.value = false;
       return e;
     }
   }
@@ -187,6 +190,7 @@ mixin NetworkManagerNotification on NetworkGeneral {
     } on Error catch (e) {
       safePrint('ERROR - getMyNotifications: $e');
       _refreshTokenRetryCounter = 0;
+      _networkActivity.value = false;
       return e;
     }
   }

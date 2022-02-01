@@ -68,6 +68,7 @@ mixin NetworkManagerUserPudo on NetworkGeneral {
     } on Error catch (e) {
       safePrint('ERROR - registerPudo: $e');
       _refreshTokenRetryCounter = 0;
+      _networkActivity.value = false;
       return e;
     }*/
   }
@@ -118,6 +119,7 @@ mixin NetworkManagerUserPudo on NetworkGeneral {
     } on Error catch (e) {
       safePrint('ERROR - getMyPudoUsers: $e');
       _refreshTokenRetryCounter = 0;
+      _networkActivity.value = false;
       return e;
     }
   }
@@ -165,6 +167,7 @@ mixin NetworkManagerUserPudo on NetworkGeneral {
     } on Error catch (e) {
       safePrint('ERROR - setMyPudoAddress: $e');
       _refreshTokenRetryCounter = 0;
+      _networkActivity.value = false;
       return e;
     }
   }
@@ -214,6 +217,7 @@ mixin NetworkManagerUserPudo on NetworkGeneral {
     } on Error catch (e) {
       safePrint('ERROR - setMyPudoProfile: $e');
       _refreshTokenRetryCounter = 0;
+      _networkActivity.value = false;
       return e;
     }
   }
@@ -260,6 +264,7 @@ mixin NetworkManagerUserPudo on NetworkGeneral {
     } on Error catch (e) {
       safePrint('ERROR - getMyPudoProfile: $e');
       _refreshTokenRetryCounter = 0;
+      _networkActivity.value = false;
       return e;
     }
   }

@@ -62,6 +62,7 @@ mixin NetworkManagerPackages on NetworkGeneral {
     } on Error catch (e) {
       safePrint('ERROR - getPackageDetails : $e');
       _refreshTokenRetryCounter = 0;
+      _networkActivity.value = false;
       return e;
     }
   }
@@ -126,6 +127,7 @@ mixin NetworkManagerPackages on NetworkGeneral {
     } on Error catch (e) {
       safePrint('ERROR - changePackageStatus : $e');
       _refreshTokenRetryCounter = 0;
+      _networkActivity.value = false;
       return e;
     }
   }
@@ -188,6 +190,7 @@ mixin NetworkManagerPackages on NetworkGeneral {
     } on Error catch (e) {
       safePrint('ERROR - deliveryPictureUpload: $e');
       _refreshTokenRetryCounter = 0;
+      _networkActivity.value = false;
       return e;
     }
   }
@@ -245,6 +248,7 @@ mixin NetworkManagerPackages on NetworkGeneral {
     } on Error catch (e) {
       safePrint('ERROR - setupDelivery: $e');
       _refreshTokenRetryCounter = 0;
+      _networkActivity.value = false;
       return e;
     }
   }
@@ -299,6 +303,7 @@ mixin NetworkManagerPackages on NetworkGeneral {
     } on Error catch (e) {
       safePrint('ERROR - getMyPackages: $e');
       _refreshTokenRetryCounter = 0;
+      _networkActivity.value = false;
       return e;
     }
   }

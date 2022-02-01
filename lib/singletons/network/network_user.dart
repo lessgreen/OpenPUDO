@@ -57,6 +57,8 @@ mixin NetworkManagerUser on NetworkGeneral {
     } catch (e) {
       safePrint('ERROR - login: $e');
       _refreshTokenRetryCounter = 0;
+      _networkActivity.value = false;
+      _networkActivity.value = false;
       return e;
     }
   }
@@ -94,6 +96,7 @@ mixin NetworkManagerUser on NetworkGeneral {
         _networkActivity.value = false;
       });
       _refreshTokenRetryCounter = 0;
+      _networkActivity.value = false;
       return e;
     }
   }
@@ -127,6 +130,7 @@ mixin NetworkManagerUser on NetworkGeneral {
     } on Error catch (e) {
       safePrint('ERROR - registerUser: $e');
       _refreshTokenRetryCounter = 0;
+      _networkActivity.value = false;
       return e;
     }
   }
@@ -210,6 +214,7 @@ mixin NetworkManagerUser on NetworkGeneral {
     } on Error catch (e) {
       safePrint('ERROR - setMyProfile: $e');
       _refreshTokenRetryCounter = 0;
+      _networkActivity.value = false;
       return e;
     }
   }
@@ -253,6 +258,7 @@ mixin NetworkManagerUser on NetworkGeneral {
     } on Error catch (e) {
       safePrint('ERROR - deleteProfilePic: $e');
       _refreshTokenRetryCounter = 0;
+      _networkActivity.value = false;
       return e;
     }
   }
@@ -323,6 +329,7 @@ mixin NetworkManagerUser on NetworkGeneral {
     } on Error catch (e) {
       safePrint('ERROR - getPublicProfile: $e');
       _refreshTokenRetryCounter = 0;
+      _networkActivity.value = false;
       return e;
     }
   }
@@ -369,6 +376,7 @@ mixin NetworkManagerUser on NetworkGeneral {
     } on Error catch (e) {
       safePrint('ERROR - addPudoFavorite: $e');
       _refreshTokenRetryCounter = 0;
+      _networkActivity.value = false;
       return e;
     }
   }
@@ -415,6 +423,7 @@ mixin NetworkManagerUser on NetworkGeneral {
     } on Error catch (e) {
       safePrint('ERROR - removePudoFavorite: $e');
       _refreshTokenRetryCounter = 0;
+      _networkActivity.value = false;
       return e;
     }
   }
@@ -461,6 +470,7 @@ mixin NetworkManagerUser on NetworkGeneral {
     } on Error catch (e) {
       safePrint('ERROR - getMyPudos: $e');
       _refreshTokenRetryCounter = 0;
+      _networkActivity.value = false;
       return e;
     }
   }
@@ -503,6 +513,7 @@ mixin NetworkManagerUser on NetworkGeneral {
     } on Error catch (e) {
       safePrint('ERROR - updateUserPreferences: $e');
       _refreshTokenRetryCounter = 0;
+      _networkActivity.value = false;
       return e;
     }
   }
