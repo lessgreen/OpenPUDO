@@ -41,11 +41,10 @@ void mainCommon({required String host, required bool isProd}) async {
   PackageInfo info = await PackageInfo.fromPlatform();
 
   AppConfig appConfig = AppConfig(
-    isProd: isProd,
-    host: host,
-    appInfo: info,
-    sharedPreferencesInstance: sharedPreferences,
-  );
+      isProd: isProd,
+      host: host,
+      appInfo: info,
+      sharedPreferencesInstance: sharedPreferences);
   NetworkManager(config: appConfig);
   await SystemChrome.setEnabledSystemUIMode(
     SystemUiMode.edgeToEdge,
@@ -77,15 +76,16 @@ class App extends StatelessWidget {
   // if the user is logged navigates the app to the home route
   // if the user is not logged navigates the app to the login route
 
-  void pushPage(String route) => navigatorKey.currentState?.pushReplacementNamed(route);
+  void pushPage(String route) =>
+      navigatorKey.currentState?.pushReplacementNamed(route);
 
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
-          create: (_) => CurrentUser(config.sharedPreferencesInstance, pushPage: pushPage),
-        ),
+            create: (_) => CurrentUser(config.sharedPreferencesInstance,
+                pushPage: pushPage)),
       ],
       child: Consumer<CurrentUser>(
         builder: (context, currentUser, _) {
@@ -107,8 +107,10 @@ class App extends StatelessWidget {
               GlobalWidgetsLocalizations.delegate
             ],
             theme: MyAppTheme.themeData(context),
-            darkTheme: MyAppTheme.darkThemeData(context),
-            initialRoute: NetworkManager.instance.accessToken.isEmpty ? Routes.login : "/",
+            darkTheme: MyAppTheme.themeData(context),
+            initialRoute: NetworkManager.instance.accessToken.isEmpty
+                ? Routes.login
+                : "/",
             onGenerateRoute: (settings) {
               return routeWithSetting(settings);
             },

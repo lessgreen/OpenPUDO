@@ -44,7 +44,7 @@ class MapsController extends StatefulWidget {
   _MapsControllerState createState() => _MapsControllerState();
 }
 
-class _MapsControllerState extends State<MapsController> with ConnectionAware{
+class _MapsControllerState extends State<MapsController> with ConnectionAware {
   void _showErrorDialog(BuildContext context, String val) => SAAlertDialog.displayAlertWithClose(context, "Error", val);
 
   @override
@@ -117,7 +117,7 @@ class _MapsControllerState extends State<MapsController> with ConnectionAware{
                         ),
                         markers: viewModel.pudos.markers(
                           (marker) {
-                            viewModel.selectPudo(context, marker.pudo?.pudoId);
+                            viewModel.selectPudo(context, marker);
                           },
                           tintColor: AppColors.primaryColorDark,
                         ),
@@ -165,16 +165,16 @@ class _MapsControllerState extends State<MapsController> with ConnectionAware{
                           secondChild: Padding(
                             padding: const EdgeInsets.only(top: Dimension.paddingM, left: Dimension.paddingXS, right: Dimension.paddingXS, bottom: Dimension.paddingM),
                             child: PudoMapCard(
-                                name: viewModel.pudoProfile?.businessName ?? "",
-                                address: viewModel.pudoProfile?.address?.label ?? "",
-                                stars: viewModel.pudoProfile?.ratingModel?.stars ?? 0,
+                                name: viewModel.selectedMarker?.pudo?.businessName ?? "",
+                                address: viewModel.selectedMarker?.address?.label ?? "",
+                                stars: viewModel.selectedMarker?.pudo?.rating?.stars ?? 0,
                                 hasShadow: true,
                                 onTap: () {
-                                  viewModel.onPudoClick(context, viewModel.pudoProfile!, widget.initialPosition);
+                                  viewModel.onPudoClick(context, viewModel.selectedMarker!.pudo!, widget.initialPosition);
                                 },
-                                image: viewModel.pudoProfile?.pudoPicId),
+                                image: viewModel.selectedMarker?.pudo!.pudoPicId),
                           ),
-                          crossFadeState: viewModel.pudoProfile == null ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+                          crossFadeState: viewModel.selectedMarker == null ? CrossFadeState.showFirst : CrossFadeState.showSecond,
                           duration: const Duration(milliseconds: 100),
                           firstChild: SizedBox(width: MediaQuery.of(context).size.width),
                         )

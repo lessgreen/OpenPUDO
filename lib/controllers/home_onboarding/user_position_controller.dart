@@ -18,38 +18,55 @@
  If not, see <https://github.com/lessgreen/OpenPUDO>.
 */
 
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
-import 'package:qui_green/widgets/main_button.dart';
 import 'package:qui_green/view_models/user_position_controller_viewmodel.dart';
+import 'package:qui_green/widgets/main_button.dart';
 import 'package:qui_green/resources/res.dart';
 
-class UserPositionController extends StatefulWidget {
-  const UserPositionController({Key? key}) : super(key: key);
+class HomeUserPositionController extends StatefulWidget {
+  const HomeUserPositionController({Key? key}) : super(key: key);
 
   @override
-  _UserPositionControllerState createState() => _UserPositionControllerState();
+  _HomeUserPositionControllerState createState() =>
+      _HomeUserPositionControllerState();
 }
 
-class _UserPositionControllerState extends State<UserPositionController> {
+class _HomeUserPositionControllerState
+    extends State<HomeUserPositionController> {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
         create: (context) => UserPositionControllerViewModel(),
-        child: Consumer<UserPositionControllerViewModel?>(builder: (_, viewModel, __) {
-          return WillPopScope(
-            onWillPop: () async => false,
-            child: Scaffold(
-              resizeToAvoidBottomInset: true,
-              appBar: AppBar(
-                backgroundColor: Colors.transparent,
-                systemOverlayStyle: SystemUiOverlayStyle.dark,
-                leading: const SizedBox(),
+        child: Consumer<UserPositionControllerViewModel?>(
+            builder: (_, viewModel, __) {
+          return CupertinoPageScaffold(
+            navigationBar: CupertinoNavigationBar(
+              padding: const EdgeInsetsDirectional.all(0),
+              brightness: Brightness.dark,
+              backgroundColor: AppColors.primaryColorDark,
+              middle: Text(
+                '',
+                style: Theme.of(context)
+                    .textTheme
+                    .headline6
+                    ?.copyWith(color: Colors.white),
               ),
-              body: Column(
+              leading: IconButton(
+                onPressed: () => Navigator.of(context).pop(),
+                icon: const Icon(
+                  Icons.arrow_back_ios_rounded,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+            child: SafeArea(
+              child: Column(
                 children: [
+                  const SizedBox(height: 20),
                   Center(
                     child: Text(
                       'Vediamo dove ti trovi',
@@ -67,10 +84,12 @@ class _UserPositionControllerState extends State<UserPositionController> {
                     ),
                   ),
                   const Spacer(),
-                  SvgPicture.asset(ImageSrc.userPositionArt, semanticsLabel: 'Art Background'),
+                  SvgPicture.asset(ImageSrc.userPositionArt,
+                      semanticsLabel: 'Art Background'),
                   const Spacer(),
                   MainButton(
-                    padding: const EdgeInsets.symmetric(horizontal: Dimension.padding),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: Dimension.padding),
                     onPressed: () async {
                       viewModel?.tryGetUserLocation().then((value) {
                         if (value != null) {

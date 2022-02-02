@@ -30,7 +30,15 @@ class PackageCard extends StatelessWidget {
   final String deliveryDate;
   final bool isRead;
 
-  const PackageCard({Key? key, required this.onTap, required this.image, required this.name, required this.address, required this.stars, required this.deliveryDate, required this.isRead})
+  const PackageCard(
+      {Key? key,
+      required this.onTap,
+      required this.image,
+      required this.name,
+      required this.address,
+      required this.stars,
+      required this.deliveryDate,
+      required this.isRead})
       : super(key: key);
 
   @override
@@ -43,12 +51,15 @@ class PackageCard extends StatelessWidget {
               height: 100,
               decoration: const BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.all(Radius.circular(Dimension.borderRadiusS)),
+                borderRadius:
+                    BorderRadius.all(Radius.circular(Dimension.borderRadiusS)),
               ),
               child: Row(
                 children: [
                   ClipRRect(
-                    borderRadius: const BorderRadius.only(topLeft: Radius.circular(Dimension.borderRadiusS), bottomLeft: Radius.circular(Dimension.borderRadiusS)),
+                    borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(Dimension.borderRadiusS),
+                        bottomLeft: Radius.circular(Dimension.borderRadiusS)),
                     child: Image.network(
                       image,
                       width: 110,
@@ -95,7 +106,9 @@ class PackageCard extends StatelessWidget {
             if (!isRead)
               Positioned(
                   child: Container(
-                    decoration: const BoxDecoration(color: Colors.red, borderRadius: BorderRadius.all(Radius.circular(20))),
+                    decoration: const BoxDecoration(
+                        color: Colors.red,
+                        borderRadius: BorderRadius.all(Radius.circular(20))),
                     height: 30,
                     width: 30,
                     child: const Icon(

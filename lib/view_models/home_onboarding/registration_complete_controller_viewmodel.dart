@@ -27,15 +27,15 @@ import 'package:qui_green/resources/routes_enum.dart';
 import 'package:qui_green/singletons/current_user.dart';
 import 'package:qui_green/singletons/network/network_manager.dart';
 
-class RegistrationCompleteControllerViewModel extends ChangeNotifier {
+class HomeRegistrationCompleteControllerViewModel extends ChangeNotifier {
   Function(dynamic)? showErrorDialog;
   bool _showNumber = true;
+
   bool get showNumber => _showNumber;
 
   updateShowNumberPreference(bool newValue) {
     _showNumber = newValue;
     notifyListeners();
-
     NetworkManager.instance.updateUserPreferences(showNumber: newValue).then(
       (value) {
         if (value is UserPreferences) {
@@ -49,18 +49,19 @@ class RegistrationCompleteControllerViewModel extends ChangeNotifier {
   }
 
   onGoHomeClick(BuildContext context) async {
-    await NetworkManager.instance.updateUserPreferences(showNumber: _showNumber).then(
+    await NetworkManager.instance
+        .updateUserPreferences(showNumber: _showNumber)
+        .then(
       (value) {
-        if (value != null) {
-          Provider.of<CurrentUser>(context, listen: false).refresh();
-        }
+        Provider.of<CurrentUser>(context, listen: false).refresh();
       },
     ).catchError(
-      (onError) => SAAlertDialog.displayAlertWithClose(context, "Error", onError),
+      (onError) =>
+          SAAlertDialog.displayAlertWithClose(context, "Error", onError),
     );
   }
 
   onInstructionsClick(BuildContext context, PudoProfile? pudoModel) {
-    Navigator.of(context).pushReplacementNamed(Routes.instruction, arguments: pudoModel);
+    Navigator.of(context).pushNamed(Routes.instruction, arguments: pudoModel);
   }
 }

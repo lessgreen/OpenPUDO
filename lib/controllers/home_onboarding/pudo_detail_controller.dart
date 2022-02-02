@@ -18,24 +18,26 @@
  If not, see <https://github.com/lessgreen/OpenPUDO>.
 */
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:qui_green/commons/alert_dialog.dart';
 import 'package:qui_green/commons/ui/custom_network_image.dart';
-import 'package:qui_green/singletons/network/network_manager.dart';
-import 'package:qui_green/widgets/text_field_button.dart';
 import 'package:qui_green/models/pudo_detail_controller_data_model.dart';
 import 'package:qui_green/resources/routes_enum.dart';
 import 'package:qui_green/resources/res.dart';
+import 'package:qui_green/singletons/network/network_manager.dart';
 
-class PudoDetailController extends StatefulWidget {
-  const PudoDetailController({Key? key, required this.dataModel}) : super(key: key);
+class HomePudoDetailController extends StatefulWidget {
+  const HomePudoDetailController({Key? key, required this.dataModel})
+      : super(key: key);
   final PudoDetailControllerDataModel dataModel;
 
   @override
-  _PudoDetailControllerState createState() => _PudoDetailControllerState();
+  _HomePudoDetailControllerState createState() =>
+      _HomePudoDetailControllerState();
 }
 
-class _PudoDetailControllerState extends State<PudoDetailController> with ConnectionAware {
+class _HomePudoDetailControllerState extends State<HomePudoDetailController> {
   Widget _buildPudoDetail() => Padding(
         padding: const EdgeInsets.symmetric(horizontal: Dimension.padding),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -51,7 +53,9 @@ class _PudoDetailControllerState extends State<PudoDetailController> with Connec
               ),
               Row(
                 children: List<Widget>.generate(
-                  (widget.dataModel.pudoProfile.ratingModel?.stars ?? 0) > 5 ? 5 : widget.dataModel.pudoProfile.ratingModel?.stars ?? 0,
+                  (widget.dataModel.pudoProfile.ratingModel?.stars ?? 0) > 5
+                      ? 5
+                      : widget.dataModel.pudoProfile.ratingModel?.stars ?? 0,
                   (index) => Icon(
                     Icons.star_rounded,
                     color: Colors.yellow.shade700,
@@ -79,11 +83,13 @@ class _PudoDetailControllerState extends State<PudoDetailController> with Connec
                     width: Dimension.paddingS,
                   ),
                 ),
-                TextSpan(text: widget.dataModel.pudoProfile.address!.label ?? ""),
+                TextSpan(
+                    text: widget.dataModel.pudoProfile.address!.label ?? ""),
               ],
             ),
           ),
-          if (widget.dataModel.pudoProfile.publicPhoneNumber != null) const SizedBox(height: Dimension.paddingS),
+          if (widget.dataModel.pudoProfile.publicPhoneNumber != null)
+            const SizedBox(height: Dimension.paddingS),
           if (widget.dataModel.pudoProfile.publicPhoneNumber != null)
             RichText(
               textAlign: TextAlign.start,
@@ -103,7 +109,9 @@ class _PudoDetailControllerState extends State<PudoDetailController> with Connec
                       width: Dimension.paddingS,
                     ),
                   ),
-                  TextSpan(text: widget.dataModel.pudoProfile.publicPhoneNumber ?? ""),
+                  TextSpan(
+                      text:
+                          widget.dataModel.pudoProfile.publicPhoneNumber ?? ""),
                 ],
               ),
             ),
@@ -127,10 +135,13 @@ class _PudoDetailControllerState extends State<PudoDetailController> with Connec
                   ),
                 ),
                 TextSpan(
-                  text: (widget.dataModel.pudoProfile.customerCount ?? 0).toString(),
+                  text: (widget.dataModel.pudoProfile.customerCount ?? 0)
+                      .toString(),
                   style: const TextStyle(fontWeight: FontWeight.w500),
                 ),
-                const TextSpan(text: ' persone hanno già scelto quest’attività come punto di ritiro QuiGreen.'),
+                const TextSpan(
+                    text:
+                        ' persone hanno già scelto quest’attività come punto di ritiro QuiGreen.'),
               ],
             ),
           ),
@@ -139,41 +150,38 @@ class _PudoDetailControllerState extends State<PudoDetailController> with Connec
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async => true,
-      child: Scaffold(
-        resizeToAvoidBottomInset: true,
-        appBar: AppBar(
-          backgroundColor: ThemeData.light().scaffoldBackgroundColor,
-          systemOverlayStyle: SystemUiOverlayStyle.dark,
-          title: Text(
-            widget.dataModel.pudoProfile.businessName,
-            style: Theme.of(context).textTheme.headline6?.copyWith(
-                  color: Colors.black,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                ),
+    return CupertinoPageScaffold(
+      navigationBar: CupertinoNavigationBar(
+        padding: const EdgeInsetsDirectional.all(0),
+        brightness: Brightness.dark,
+        backgroundColor: AppColors.primaryColorDark,
+        middle: Text(
+          '',
+          style: Theme.of(context)
+              .textTheme
+              .headline6
+              ?.copyWith(color: Colors.white),
+        ),
+        leading: IconButton(
+          onPressed: () => Navigator.of(context).pop(),
+          icon: const Icon(
+            Icons.arrow_back_ios_rounded,
+            color: Colors.white,
           ),
-          centerTitle: true,
-          leading: GestureDetector(
-            onTap: () => Navigator.of(context).pop(),
-            child: const Icon(
-              Icons.arrow_back_ios_rounded,
-              color: AppColors.primaryColorDark,
+        ),
+        trailing: InkWell(
+          onTap: goToRegistration,
+          child: const Padding(
+            padding: EdgeInsets.only(right: Dimension.padding),
+            child: Text(
+              'Scegli',
+              style: TextStyle(color: Colors.white),
             ),
           ),
-          actions: [
-            TextFieldButton(
-              text: "Scegli",
-              onPressed: () => Navigator.of(context).pushNamedAndRemoveUntil(
-                Routes.personalData,
-                ModalRoute.withName('/'),
-                arguments: widget.dataModel.pudoProfile,
-              ),
-            )
-          ],
         ),
-        body: ListView(
+      ),
+      child: SafeArea(
+        child: ListView(
           children: [
             Container(
               padding: const EdgeInsets.only(bottom: Dimension.padding),
@@ -233,5 +241,16 @@ class _PudoDetailControllerState extends State<PudoDetailController> with Connec
         ),
       ),
     );
+  }
+
+  void goToRegistration() {
+    NetworkManager.instance
+        .addPudoFavorite(widget.dataModel.pudoProfile.pudoId.toString())
+        .then((value) => Navigator.of(context).pushNamed(
+              Routes.registrationComplete,
+              arguments: widget.dataModel.pudoProfile,
+            ))
+        .catchError((onError) =>
+            SAAlertDialog.displayAlertWithClose(context, "Error", onError));
   }
 }

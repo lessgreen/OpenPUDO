@@ -14,32 +14,28 @@
  GNU Affero General Public License version 3 for more details.
 
  You should have received a copy of the GNU Affero General Public License
- version 3 published by the Copyright Owner along with OpenPUDO.  
+ version 3 published by the Copyright Owner along with OpenPUDO.
  If not, see <https://github.com/lessgreen/OpenPUDO>.
 */
 
-// ignore_for_file: unused_import
+import 'dart:developer';
 
-import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:qui_green/widgets/pudo_map_card.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:qui_green/app.dart';
+import 'package:qui_green/controllers/home_user_packages.dart';
+import 'package:qui_green/controllers/profile_controller.dart';
 import 'package:qui_green/resources/routes_enum.dart';
 
-class HomePudoController extends StatefulWidget {
-  const HomePudoController({Key? key}) : super(key: key);
-
-  @override
-  _HomePudoControllerState createState() => _HomePudoControllerState();
-}
-
-class _HomePudoControllerState extends State<HomePudoController> {
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-        child: Text(
-      'Non hai ancora aggiunto un pudo per le tue consegne!',
-      textAlign: TextAlign.center,
-      style: TextStyle(color: Colors.grey.shade600),
-    ));
+dynamic routeHomeUserPackagesSectionWithSetting(RouteSettings settings) {
+  log("current route name: ${settings.name}");
+  currentRouteName.value = settings.name ?? '/main';
+  switch (settings.name) {
+    case Routes.profile:
+      return CupertinoPageRoute(
+          builder: (context) => const ProfileController());
+    default:
+      return CupertinoPageRoute(
+        builder: (context) => const HomeUserPackages(),
+      );
   }
 }

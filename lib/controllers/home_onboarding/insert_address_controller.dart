@@ -18,26 +18,27 @@
  If not, see <https://github.com/lessgreen/OpenPUDO>.
 */
 
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:qui_green/commons/utilities/keyboard_visibility.dart';
-import 'package:qui_green/singletons/network/network_manager.dart';
 import 'package:qui_green/widgets/main_button.dart';
 import 'package:qui_green/view_models/insert_address_controller_viewmodel.dart';
 import 'package:qui_green/widgets/address_field.dart';
 import 'package:qui_green/resources/res.dart';
 
-class InsertAddressController extends StatefulWidget {
-  const InsertAddressController({Key? key}) : super(key: key);
+class HomeInsertAddressController extends StatefulWidget {
+  const HomeInsertAddressController({Key? key}) : super(key: key);
 
   @override
-  _InsertAddressControllerState createState() => _InsertAddressControllerState();
+  _HomeInsertAddressControllerState createState() =>
+      _HomeInsertAddressControllerState();
 }
 
-class _InsertAddressControllerState extends State<InsertAddressController> with ConnectionAware {
+class _HomeInsertAddressControllerState
+    extends State<HomeInsertAddressController> {
   final FocusNode _address = FocusNode();
 
   @override
@@ -52,22 +53,34 @@ class _InsertAddressControllerState extends State<InsertAddressController> with 
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
         create: (context) => InsertAddressControllerViewModel(),
-        child: Consumer<InsertAddressControllerViewModel?>(builder: (_, viewModel, __) {
-          return KeyboardVisibilityBuilder(builder: (context, child, isKeyboardVisible) {
-            return WillPopScope(
-              onWillPop: () async => false,
-              child: Scaffold(
-                resizeToAvoidBottomInset: false,
-                appBar: AppBar(
-                  backgroundColor: Colors.transparent,
-                  systemOverlayStyle: SystemUiOverlayStyle.dark,
-                  leading: CupertinoNavigationBarBackButton(
-                    color: AppColors.primaryColorDark,
-                    onPressed: () => Navigator.of(context).pop(),
+        child: Consumer<InsertAddressControllerViewModel?>(
+            builder: (_, viewModel, __) {
+          return KeyboardVisibilityBuilder(
+              builder: (context, child, isKeyboardVisible) {
+            return CupertinoPageScaffold(
+              navigationBar: CupertinoNavigationBar(
+                padding: const EdgeInsetsDirectional.all(0),
+                brightness: Brightness.dark,
+                backgroundColor: AppColors.primaryColorDark,
+                middle: Text(
+                  '',
+                  style: Theme.of(context)
+                      .textTheme
+                      .headline6
+                      ?.copyWith(color: Colors.white),
+                ),
+                leading: IconButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  icon: const Icon(
+                    Icons.arrow_back_ios_rounded,
+                    color: Colors.white,
                   ),
                 ),
-                body: Column(
+              ),
+              child: SafeArea(
+                child: Column(
                   children: [
+                    const SizedBox(height: Dimension.padding),
                     Center(
                       child: Text(
                         'Inserisci il tuo indirizzo',
@@ -81,7 +94,8 @@ class _InsertAddressControllerState extends State<InsertAddressController> with 
                           node: _address,
                         )),
                     const Spacer(),
-                    SvgPicture.asset(ImageSrc.userPositionArt, semanticsLabel: 'Art Background'),
+                    SvgPicture.asset(ImageSrc.userPositionArt,
+                        semanticsLabel: 'Art Background'),
                     const Spacer(),
                     const SizedBox(height: Dimension.padding),
                     AnimatedCrossFade(
