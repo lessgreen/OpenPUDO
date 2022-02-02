@@ -51,7 +51,7 @@ class RegistrationCompleteControllerViewModel extends ChangeNotifier {
   onGoHomeClick(BuildContext context) async {
     await NetworkManager.instance.updateUserPreferences(showNumber: _showNumber).then(
       (value) {
-        if(value!=null) {
+        if (value != null) {
           Provider.of<CurrentUser>(context, listen: false).refresh();
         }
       },

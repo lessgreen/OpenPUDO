@@ -37,7 +37,7 @@ class InstructionController extends StatefulWidget {
   _InstructionControllerState createState() => _InstructionControllerState();
 }
 
-class _InstructionControllerState extends State<InstructionController> with ConnectionAware{
+class _InstructionControllerState extends State<InstructionController> with ConnectionAware {
   final PageController _pageController = PageController(initialPage: 0);
   int _currentPage = 0;
 

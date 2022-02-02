@@ -18,7 +18,6 @@
  If not, see <https://github.com/lessgreen/OpenPUDO>.
 */
 
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -33,7 +32,7 @@ class PudoHomeController extends StatefulWidget {
   _PudoHomeControllerState createState() => _PudoHomeControllerState();
 }
 
-class _PudoHomeControllerState extends State<PudoHomeController> with ConnectionAware{
+class _PudoHomeControllerState extends State<PudoHomeController> with ConnectionAware {
   @override
   Widget build(BuildContext context) {
     return Material(

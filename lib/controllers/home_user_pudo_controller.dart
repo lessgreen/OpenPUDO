@@ -41,10 +41,7 @@ class _HomeUserPudoControllerState extends State<HomeUserPudoController> {
         backgroundColor: AppColors.primaryColorDark,
         middle: Text(
           'I tuoi Pudo',
-          style: Theme.of(context)
-              .textTheme
-              .headline6
-              ?.copyWith(color: Colors.white),
+          style: Theme.of(context).textTheme.headline6?.copyWith(color: Colors.white),
         ),
       ),
       child: Column(
@@ -58,10 +55,7 @@ class _HomeUserPudoControllerState extends State<HomeUserPudoController> {
           const SizedBox(
             height: Dimension.padding,
           ),
-          MainButton(
-              text: 'Vai',
-              onPressed: () =>
-                  Navigator.of(context).pushNamed(Routes.userPosition))
+          MainButton(text: 'Vai', onPressed: () => Navigator.of(context).pushNamed(Routes.userPosition))
         ],
       ),
     );

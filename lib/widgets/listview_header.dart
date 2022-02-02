@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:qui_green/resources/res.dart';
 
 class ListViewHeader extends StatelessWidget {
-  const ListViewHeader(
-      {Key? key,
-      required this.itemCount,
-      this.shrinkWrap = false,
-      required this.itemBuilder,
-      this.physics,
-      this.itemPadding = EdgeInsets.zero,
-      required this.title})
-      : super(key: key);
+  const ListViewHeader({
+    Key? key,
+    required this.itemCount,
+    this.shrinkWrap = false,
+    required this.itemBuilder,
+    this.physics,
+    this.itemPadding = EdgeInsets.zero,
+    required this.title,
+  }) : super(key: key);
 
   final int itemCount;
   final bool shrinkWrap;
@@ -25,8 +25,7 @@ class ListViewHeader extends StatelessWidget {
       itemBuilder: (context, index) {
         if (index == 0) {
           return Container(
-              padding: const EdgeInsets.symmetric(
-                  horizontal: Dimension.padding, vertical: Dimension.padding),
+              padding: const EdgeInsets.symmetric(horizontal: Dimension.padding, vertical: Dimension.padding),
               alignment: Alignment.centerLeft,
               child: Text(
                 title,

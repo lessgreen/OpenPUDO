@@ -35,7 +35,7 @@ class PudoDetailController extends StatefulWidget {
   _PudoDetailControllerState createState() => _PudoDetailControllerState();
 }
 
-class _PudoDetailControllerState extends State<PudoDetailController> with ConnectionAware{
+class _PudoDetailControllerState extends State<PudoDetailController> with ConnectionAware {
   Widget _buildPudoDetail() => Padding(
         padding: const EdgeInsets.symmetric(horizontal: Dimension.padding),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [

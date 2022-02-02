@@ -18,7 +18,6 @@
  If not, see <https://github.com/lessgreen/OpenPUDO>.
 */
 
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -38,7 +37,7 @@ class InsertAddressController extends StatefulWidget {
   _InsertAddressControllerState createState() => _InsertAddressControllerState();
 }
 
-class _InsertAddressControllerState extends State<InsertAddressController> with ConnectionAware{
+class _InsertAddressControllerState extends State<InsertAddressController> with ConnectionAware {
   final FocusNode _address = FocusNode();
 
   @override

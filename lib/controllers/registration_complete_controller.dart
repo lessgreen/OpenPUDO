@@ -40,7 +40,7 @@ class RegistrationCompleteController extends StatefulWidget {
   _RegistrationCompleteControllerState createState() => _RegistrationCompleteControllerState();
 }
 
-class _RegistrationCompleteControllerState extends State<RegistrationCompleteController> with ConnectionAware{
+class _RegistrationCompleteControllerState extends State<RegistrationCompleteController> with ConnectionAware {
   void _showErrorDialog(BuildContext context, dynamic val) => SAAlertDialog.displayAlertWithClose(context, "Error", val);
 
   @override
