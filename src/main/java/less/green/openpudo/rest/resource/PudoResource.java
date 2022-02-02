@@ -16,6 +16,8 @@ import less.green.openpudo.rest.dto.pudo.PudoResponse;
 import less.green.openpudo.rest.dto.pudo.reward.RewardOption;
 import less.green.openpudo.rest.dto.pudo.reward.RewardOptionListResponse;
 import less.green.openpudo.rest.dto.scalar.UUIDResponse;
+import less.green.openpudo.rest.dto.user.UserSummary;
+import less.green.openpudo.rest.dto.user.UserSummaryListResponse;
 import lombok.extern.log4j.Log4j2;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.parameters.Parameter;
@@ -147,6 +149,15 @@ public class PudoResource {
 
         List<PackageSummary> ret = pudoService.getCurrentPudoPackages(history, limit, offset);
         return new PackageSummaryListResponse(context.getExecutionId(), ApiReturnCodes.OK, ret);
+    }
+
+    @GET
+    @Path("/me/users")
+    @SecurityRequirement(name = "JWT")
+    @Operation(summary = "Get of users subscribed to current PUDO")
+    public UserSummaryListResponse getCurrentPudoUsers() {
+        List<UserSummary> ret = pudoService.getCurrentPudoUsers();
+        return new UserSummaryListResponse(context.getExecutionId(), ApiReturnCodes.OK, ret);
     }
 
 }

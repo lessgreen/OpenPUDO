@@ -9,12 +9,14 @@ import less.green.openpudo.cdi.service.LocalizationService;
 import less.green.openpudo.cdi.service.StorageService;
 import less.green.openpudo.common.ApiReturnCodes;
 import less.green.openpudo.common.dto.tuple.Quartet;
+import less.green.openpudo.common.dto.tuple.Quintet;
 import less.green.openpudo.common.dto.tuple.Septet;
 import less.green.openpudo.rest.config.exception.ApiException;
 import less.green.openpudo.rest.dto.DtoMapper;
 import less.green.openpudo.rest.dto.pack.PackageSummary;
 import less.green.openpudo.rest.dto.pudo.Pudo;
 import less.green.openpudo.rest.dto.pudo.reward.*;
+import less.green.openpudo.rest.dto.user.UserSummary;
 import lombok.extern.log4j.Log4j2;
 
 import javax.enterprise.context.RequestScoped;
@@ -359,6 +361,12 @@ public class PudoService {
     public List<PackageSummary> getCurrentPudoPackages(boolean history, int limit, int offset) {
         Long pudoId = getCurrentPudoId();
         return packageService.getPackages(AccountType.PUDO, pudoId, history, limit, offset);
+    }
+
+    public List<UserSummary> getCurrentPudoUsers() {
+        Long pudoId = getCurrentPudoId();
+        List<Quintet<Long, String, String, UUID, String>> rs = userPudoRelationDao.getActiveCustomersByPudoId(pudoId);
+        return dtoMapper.mapProjectionListToUserSummaryList(rs);
     }
 
     protected Long getCurrentPudoId() {

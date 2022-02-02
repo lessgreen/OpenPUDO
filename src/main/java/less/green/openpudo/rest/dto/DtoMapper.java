@@ -19,6 +19,7 @@ import less.green.openpudo.rest.dto.pudo.PudoSummary;
 import less.green.openpudo.rest.dto.pudo.Rating;
 import less.green.openpudo.rest.dto.user.User;
 import less.green.openpudo.rest.dto.user.UserPreferences;
+import less.green.openpudo.rest.dto.user.UserSummary;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -33,6 +34,15 @@ public interface DtoMapper {
     User mapUserProfileEntityToDto(TbUserProfile ent, String phoneNumber, Long packageCount, String customerSuffix);
 
     UserPreferences mapUserPreferencesEntityToDto(TbUserPreferences ent);
+
+    @Mapping(source = "val.value0", target = "userId")
+    @Mapping(source = "val.value1", target = "firstName")
+    @Mapping(source = "val.value2", target = "lastName")
+    @Mapping(source = "val.value3", target = "profilePicId")
+    @Mapping(source = "val.value4", target = "customerSuffix")
+    UserSummary mapProjectionToUserSummary(Quintet<Long, String, String, UUID, String> val);
+
+    List<UserSummary> mapProjectionListToUserSummaryList(List<Quintet<Long, String, String, UUID, String>> val);
 
     @Mapping(source = "ent.value0", target = ".")
     @Mapping(source = "ent.value1", target = "address")

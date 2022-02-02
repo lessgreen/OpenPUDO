@@ -2,16 +2,15 @@ package less.green.openpudo.business.dao;
 
 import less.green.openpudo.business.model.TbUserPudoRelation;
 import less.green.openpudo.business.model.usertype.RelationType;
+import less.green.openpudo.common.dto.tuple.Quintet;
 import lombok.extern.log4j.Log4j2;
 
 import javax.enterprise.context.RequestScoped;
 import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @RequestScoped
 @Transactional(Transactional.TxType.MANDATORY)
@@ -99,6 +98,21 @@ public class UserPudoRelationDao extends BaseEntityDao<TbUserPudoRelation, Long>
         q.setParameter("pudoId", pudoId);
         q.setParameter("relationType", RelationType.CUSTOMER);
         return q.getSingleResult();
+    }
+
+    public List<Quintet<Long, String, String, UUID, String>> getActiveCustomersByPudoId(Long pudoId) {
+        String qs = "SELECT t1.userId, t1.firstName, t1.lastName, t1.profilePicId, t2.customerSuffix " +
+                "FROM TbUserProfile t1, TbUserPudoRelation t2 " +
+                "WHERE t2.pudoId = :pudoId " +
+                "AND t2.userId = t1.userId " +
+                "AND t2.relationType = :relationType " +
+                "AND t2.deleteTms IS NULL " +
+                "ORDER BY t1.firstName, t1.lastName, t2.customerSuffix";
+        TypedQuery<Object[]> q = em.createQuery(qs, Object[].class);
+        q.setParameter("pudoId", pudoId);
+        q.setParameter("relationType", RelationType.CUSTOMER);
+        List<Object[]> rs = q.getResultList();
+        return rs.isEmpty() ? Collections.emptyList() : rs.stream().map(row -> new Quintet<>((Long) row[0], (String) row[1], (String) row[2], (UUID) row[3], (String) row[4])).collect(Collectors.toList());
     }
 
 }
