@@ -18,6 +18,8 @@
  If not, see <https://github.com/lessgreen/OpenPUDO>.
 */
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
@@ -34,6 +36,8 @@ class MapsControllerViewModel extends ChangeNotifier {
   var currentLatitude = 45.4642;
   var currentLongitude = 9.1900;
   var currentZoomLevel = 8;
+  PageController pageController =
+      PageController(viewportFraction: 0.95, initialPage: 0);
   MapController? mapController;
   Function(String)? showErrorDialog;
 
@@ -44,18 +48,21 @@ class MapsControllerViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  PudoProfile? _pudoProfile;
-  PudoProfile? get pudoProfile => _pudoProfile;
-  set pudoProfile(PudoProfile? newVal) {
+  GeoMarker? _pudoProfile;
+  GeoMarker? get pudoProfile => _pudoProfile;
+  set pudoProfile(GeoMarker? newVal) {
     _pudoProfile = newVal;
     notifyListeners();
   }
 
-  onPudoClick(BuildContext context, PudoProfile pudo, LatLng position) {
-    NetworkManager.instance.getPudoDetails(pudoId: pudo.pudoId.toString()).then(
+  onPudoClick(BuildContext context, GeoMarker marker, LatLng position) {
+    NetworkManager.instance
+        .getPudoDetails(pudoId: marker.pudo!.pudoId.toString())
+        .then(
       (response) {
         if (response is PudoProfile) {
-          Navigator.of(context).pushNamed(Routes.pudoDetail, arguments: PudoDetailControllerDataModel(position, response));
+          Navigator.of(context).pushNamed(Routes.pudoDetail,
+              arguments: PudoDetailControllerDataModel(position, response));
         } else {
           showErrorDialog?.call("Qualcosa e' andato storto");
         }
@@ -65,12 +72,22 @@ class MapsControllerViewModel extends ChangeNotifier {
 
   onMapCreate(MapController mapController, LatLng center) {
     this.mapController = mapController;
-    NetworkManager.instance.getSuggestedZoom(lat: center.latitude, lon: center.longitude).then((value) {
+    NetworkManager.instance
+        .getSuggestedZoom(lat: center.latitude, lon: center.longitude)
+        .then((value) {
       if (value is int) {
         WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
           mapController.move(center, value.toDouble());
         });
       }
+    });
+  }
+
+  Timer _debounce = Timer(const Duration(days: 1), () {});
+  onMapChange({bool requireZoomLevelRefresh = false}) {
+    if (_debounce.isActive) _debounce.cancel();
+    _debounce = Timer(const Duration(milliseconds: 800), () {
+      loadPudos(requireZoomLevelRefresh: requireZoomLevelRefresh);
     });
   }
 
@@ -87,34 +104,67 @@ class MapsControllerViewModel extends ChangeNotifier {
   }
 
   loadPudos({bool requireZoomLevelRefresh = false}) {
-    NetworkManager.instance.getSuggestedZoom(lat: currentLatitude, lon: currentLongitude).then((value) {
+    NetworkManager.instance
+        .getSuggestedZoom(lat: currentLatitude, lon: currentLongitude)
+        .then((value) {
       if (value is int && requireZoomLevelRefresh) {
         currentZoomLevel = value;
         lastTriggeredZoom = currentZoomLevel;
       }
-      NetworkManager.instance.getPudos(lat: currentLatitude, lon: currentLongitude, zoom: currentZoomLevel).then((response) {
+      NetworkManager.instance
+          .getPudos(
+              lat: currentLatitude,
+              lon: currentLongitude,
+              zoom: currentZoomLevel)
+          .then((response) {
         if (response is List<GeoMarker>) {
           if (_pudos.isNotEmpty && response.isEmpty) {
-            mapController?.move(LatLng(currentLatitude, currentLongitude), currentZoomLevel.toDouble());
+            mapController?.move(LatLng(currentLatitude, currentLongitude),
+                currentZoomLevel.toDouble());
             return;
           }
+
+          int newIndex = 0;
+          int? oldIndex = 0;
+
+          if (pudos.isNotEmpty) {
+            oldIndex = pageController.page?.toInt();
+            GeoMarker oldMarker = pudos[oldIndex!];
+            if (response.contains((GeoMarker element) =>
+                element.pudo?.pudoId == oldMarker.pudo?.pudoId)) {
+              newIndex = (response as List<GeoMarker>).indexWhere(
+                  (GeoMarker element) =>
+                      element.pudo?.pudoId == oldMarker.pudo?.pudoId);
+            }
+          }
+
           pudos = response;
-          mapController?.move(LatLng(currentLatitude, currentLongitude), currentZoomLevel.toDouble());
+          if (oldIndex != newIndex) {
+            pageController.animateToPage(newIndex,
+                duration: Duration(milliseconds: 150), curve: Curves.easeIn);
+          }
+          mapController?.move(LatLng(currentLatitude, currentLongitude),
+              currentZoomLevel.toDouble());
         }
       }).catchError((onError) => showErrorDialog?.call(onError));
     }).catchError((onError) => showErrorDialog?.call(onError));
+  }
+
+  onPageControllerChange(int index) {
+    mapController?.move(
+        LatLng(pudos[index].lat ?? 0, pudos[index].lon ?? 0), 16);
   }
 
   selectPudo(BuildContext context, int? pudoId) {
     if (pudoId == null) {
       return;
     }
-    NetworkManager.instance.getPudoDetails(pudoId: pudoId.toString()).then(
-      (response) {
-        if (response is PudoProfile) {
-          pudoProfile = response;
-        }
-      },
-    ).catchError((onError) => showErrorDialog?.call(onError));
+    for (var i = 0; i < pudos.length; i++) {
+      if (pudos[i].pudo?.pudoId == pudoId) {
+        pageController.animateToPage(i,
+            duration: Duration(milliseconds: 150), curve: Curves.easeIn);
+        return;
+      }
+    }
   }
 }

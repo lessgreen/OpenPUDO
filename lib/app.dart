@@ -60,6 +60,7 @@ void mainCommon({required String host, required bool isProd}) async {
     ),
   );
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+  NetworkManager.instance.login(login: '+39328000096', password: '12345');
   runApp(
     App(
       config: appConfig,
@@ -77,14 +78,16 @@ class App extends StatelessWidget {
   // if the user is logged navigates the app to the home route
   // if the user is not logged navigates the app to the login route
 
-  void pushPage(String route) => navigatorKey.currentState?.pushReplacementNamed(route);
+  void pushPage(String route) =>
+      navigatorKey.currentState?.pushReplacementNamed(route);
 
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
-          create: (_) => CurrentUser(config.sharedPreferencesInstance, pushPage: pushPage),
+          create: (_) =>
+              CurrentUser(config.sharedPreferencesInstance, pushPage: pushPage),
         ),
       ],
       child: Consumer<CurrentUser>(
@@ -108,7 +111,9 @@ class App extends StatelessWidget {
             ],
             theme: MyAppTheme.themeData(context),
             darkTheme: MyAppTheme.darkThemeData(context),
-            initialRoute: NetworkManager.instance.accessToken.isEmpty ? Routes.login : "/",
+            initialRoute: NetworkManager.instance.accessToken.isEmpty
+                ? Routes.insertAddress
+                : "/",
             onGenerateRoute: (settings) {
               return routeWithSetting(settings);
             },
