@@ -8,6 +8,7 @@ import less.green.openpudo.common.MultipartUtils;
 import less.green.openpudo.common.dto.tuple.Pair;
 import less.green.openpudo.rest.config.annotation.BinaryAPI;
 import less.green.openpudo.rest.config.exception.ApiException;
+import less.green.openpudo.rest.dto.pack.ChangePackageStatusRequest;
 import less.green.openpudo.rest.dto.pack.DeliveredPackageRequest;
 import less.green.openpudo.rest.dto.pack.Package;
 import less.green.openpudo.rest.dto.pack.PackageResponse;
@@ -97,6 +98,40 @@ public class PackageResource {
 
         UUID ret = packageService.updatePackagePicture(packageId, uploadedFile.getValue0(), uploadedFile.getValue1());
         return new UUIDResponse(context.getExecutionId(), ApiReturnCodes.OK, ret);
+    }
+
+    @POST
+    @Path("/{packageId}/notified")
+    @Operation(summary = "Signal that the user has received the delivery notification of a package")
+    public PackageResponse notifiedPackage(@PathParam(value = "packageId") Long packageId) {
+        Package ret = packageService.notifiedPackage(packageId);
+        return new PackageResponse(context.getExecutionId(), ApiReturnCodes.OK, ret);
+    }
+
+    @POST
+    @Path("/{packageId}/collected")
+    @Operation(summary = "Signal that the user has collected the package")
+    public PackageResponse collectedPackage(@PathParam(value = "packageId") Long packageId, ChangePackageStatusRequest req) {
+        // sanitize input
+        if (req == null) {
+            throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.empty_request"));
+        }
+
+        Package ret = packageService.collectedPackage(packageId, req);
+        return new PackageResponse(context.getExecutionId(), ApiReturnCodes.OK, ret);
+    }
+
+    @POST
+    @Path("/{packageId}/accepted")
+    @Operation(summary = "Signal that the user confirms the package collection")
+    public PackageResponse acceptedPackage(@PathParam(value = "packageId") Long packageId, ChangePackageStatusRequest req) {
+        // sanitize input
+        if (req == null) {
+            throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.empty_request"));
+        }
+
+        Package ret = packageService.acceptedPackage(packageId, req);
+        return new PackageResponse(context.getExecutionId(), ApiReturnCodes.OK, ret);
     }
 
 }

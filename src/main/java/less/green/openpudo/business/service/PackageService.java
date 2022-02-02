@@ -15,6 +15,7 @@ import less.green.openpudo.common.dto.tuple.Septet;
 import less.green.openpudo.common.dto.tuple.Sextet;
 import less.green.openpudo.rest.config.exception.ApiException;
 import less.green.openpudo.rest.dto.DtoMapper;
+import less.green.openpudo.rest.dto.pack.ChangePackageStatusRequest;
 import less.green.openpudo.rest.dto.pack.DeliveredPackageRequest;
 import less.green.openpudo.rest.dto.pack.Package;
 import less.green.openpudo.rest.dto.pack.PackageSummary;
@@ -131,6 +132,7 @@ public class PackageService {
         packageEvent.setNotes(sanitizeString(req.getNotes()));
         packageEventDao.persist(packageEvent);
         packageEventDao.flush();
+
         log.info("[{}] Package {}: {}", context.getExecutionId(), pack.getPackageId(), packageEvent.getPackageStatus());
         return getPackage(pack.getPackageId());
     }
@@ -141,23 +143,25 @@ public class PackageService {
         return packageDao.getPackageIdsToNotifySent(timeThreshold);
     }
 
-    public TbPackageEvent notifySentPackage(Long packageId) {
+    public void notifySentPackage(Long packageId) {
+        // we are coming from a cron job, so no need to check the existence of the package nor the grants to access it
         Date now = new Date();
         Pair<TbPackage, List<TbPackageEvent>> rs = packageDao.getPackage(packageId);
         rs.getValue0().setUpdateTms(now);
         TbPackageEvent packageEvent = new TbPackageEvent();
-        packageEvent.setPackageId(rs.getValue0().getPackageId());
+        packageEvent.setPackageId(packageId);
         packageEvent.setCreateTms(now);
         packageEvent.setPackageStatus(PackageStatus.NOTIFY_SENT);
         packageEvent.setAutoFlag(true);
         packageEvent.setNotes(null);
         packageEventDao.persist(packageEvent);
         packageEventDao.flush();
+
         // send notification to user
         TbPudo pudo = pudoDao.get(rs.getValue0().getPudoId());
         String titleTemplate = "notification.package.delivered.title";
         String messageTemplate = "notification.package.delivered.message";
-        String[] messageParams = {cryptoService.hashidEncode(rs.getValue0().getPackageId()), pudo.getBusinessName()};
+        String[] messageParams = {cryptoService.hashidEncode(packageId), pudo.getBusinessName()};
         TbNotificationPackage notification = new TbNotificationPackage();
         notification.setUserId(rs.getValue0().getUserId());
         notification.setCreateTms(now);
@@ -168,22 +172,22 @@ public class PackageService {
         notification.setTitleParams(null);
         notification.setMessage(messageTemplate);
         notification.setMessageParams(messageParams);
-        notification.setPackageId(rs.getValue0().getPackageId());
+        notification.setPackageId(packageId);
         notificationDao.persist(notification);
         notificationDao.flush();
-        notificationService.sendPushNotifications(rs.getValue0().getUserId(), titleTemplate, null, messageTemplate, messageParams, Map.of("packageId", rs.getValue0().getPackageId().toString()));
+        notificationService.sendPushNotifications(rs.getValue0().getUserId(), titleTemplate, null, messageTemplate, messageParams, Map.of("packageId", packageId.toString()));
+
         log.info("[{}] Package {}: {} -> {}", context.getExecutionId(), packageId, rs.getValue1().get(0).getPackageStatus(), packageEvent.getPackageStatus());
-        return packageEvent;
     }
 
     public UUID updatePackagePicture(Long packageId, String mimeType, byte[] bytes) {
-        // operation is allowed if the current user is the pudo owner of the right pudo
-        Long pudoId = pudoService.getCurrentPudoId();
         TbPackage pack = packageDao.get(packageId);
         if (pack == null) {
             throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.resource_not_exists"));
         }
-        if (!pudoId.equals(pack.getPudoId())) {
+        // operation is allowed if the current user is the package pudo owner
+        Long pudoId = pudoService.getCurrentPudoId();
+        if (!pack.getPudoId().equals(pudoId)) {
             throw new ApiException(ApiReturnCodes.FORBIDDEN, localizationService.getMessage(context.getLanguage(), "error.forbidden"));
         }
 
@@ -213,6 +217,142 @@ public class PackageService {
         externalFileDao.flush();
         log.info("[{}] Updated picture for package: {}", context.getExecutionId(), pack.getPackageId());
         return newId;
+    }
+
+    public Package notifiedPackage(Long packageId) {
+        Pair<TbPackage, List<TbPackageEvent>> rs = packageDao.getPackage(packageId);
+        if (rs == null) {
+            throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.resource_not_exists"));
+        }
+        // operation is allowed if the current user is the package recipient
+        if (!rs.getValue0().getUserId().equals(context.getUserId())) {
+            throw new ApiException(ApiReturnCodes.FORBIDDEN, localizationService.getMessage(context.getLanguage(), "error.forbidden"));
+        }
+
+        // since the user can react to push notification even much after
+        // if package is in expected states we make the transition, otherwise we silently skip it and return the current state
+        if (rs.getValue1().get(0).getPackageStatus() == PackageStatus.DELIVERED
+                || rs.getValue1().get(0).getPackageStatus() == PackageStatus.NOTIFY_SENT) {
+            Date now = new Date();
+            rs.getValue0().setUpdateTms(now);
+            TbPackageEvent packageEvent = new TbPackageEvent();
+            packageEvent.setPackageId(packageId);
+            packageEvent.setCreateTms(now);
+            packageEvent.setPackageStatus(PackageStatus.NOTIFIED);
+            packageEvent.setAutoFlag(false);
+            packageEvent.setNotes(null);
+            packageEventDao.persist(packageEvent);
+            packageEventDao.flush();
+            log.info("[{}] Package {}: {} -> {}", context.getExecutionId(), packageId, rs.getValue1().get(0).getPackageStatus(), packageEvent.getPackageStatus());
+        }
+
+        return getPackage(packageId);
+    }
+
+    public Package collectedPackage(Long packageId, ChangePackageStatusRequest req) {
+        Pair<TbPackage, List<TbPackageEvent>> rs = packageDao.getPackage(packageId);
+        if (rs == null) {
+            throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.resource_not_exists"));
+        }
+        // operation is allowed if the current user is the package pudo owner
+        Long pudoId = pudoService.getCurrentPudoId();
+        if (!rs.getValue0().getPudoId().equals(pudoId)) {
+            throw new ApiException(ApiReturnCodes.FORBIDDEN, localizationService.getMessage(context.getLanguage(), "error.forbidden"));
+        }
+
+        // operation is allowed if the package is in those states
+        if (rs.getValue1().get(0).getPackageStatus() != PackageStatus.DELIVERED
+                && rs.getValue1().get(0).getPackageStatus() != PackageStatus.NOTIFY_SENT
+                && rs.getValue1().get(0).getPackageStatus() != PackageStatus.NOTIFIED) {
+            throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.package.illegal_state"));
+        }
+
+        Date now = new Date();
+        rs.getValue0().setUpdateTms(now);
+        TbPackageEvent packageEvent = new TbPackageEvent();
+        packageEvent.setPackageId(packageId);
+        packageEvent.setCreateTms(now);
+        packageEvent.setPackageStatus(PackageStatus.COLLECTED);
+        packageEvent.setAutoFlag(false);
+        packageEvent.setNotes(sanitizeString(req.getNotes()));
+        packageEventDao.persist(packageEvent);
+        packageEventDao.flush();
+
+        // send notification to user
+        TbPudo pudo = pudoDao.get(rs.getValue0().getPudoId());
+        String titleTemplate = "notification.package.collected.title";
+        String messageTemplate = "notification.package.collected.message";
+        String[] messageParams = {pudo.getBusinessName(), cryptoService.hashidEncode(packageId)};
+        TbNotificationPackage notification = new TbNotificationPackage();
+        notification.setUserId(rs.getValue0().getUserId());
+        notification.setCreateTms(now);
+        notification.setQueuedFlag(false);
+        notification.setDueTms(now);
+        notification.setReadTms(null);
+        notification.setTitle(titleTemplate);
+        notification.setTitleParams(null);
+        notification.setMessage(messageTemplate);
+        notification.setMessageParams(messageParams);
+        notification.setPackageId(packageId);
+        notificationDao.persist(notification);
+        notificationDao.flush();
+        notificationService.sendPushNotifications(rs.getValue0().getUserId(), titleTemplate, null, messageTemplate, messageParams, Map.of("packageId", packageId.toString()));
+
+        log.info("[{}] Package {}: {} -> {}", context.getExecutionId(), packageId, rs.getValue1().get(0).getPackageStatus(), packageEvent.getPackageStatus());
+        return getPackage(packageId);
+    }
+
+    public Package acceptedPackage(Long packageId, ChangePackageStatusRequest req) {
+        Pair<TbPackage, List<TbPackageEvent>> rs = packageDao.getPackage(packageId);
+        if (rs == null) {
+            throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.resource_not_exists"));
+        }
+        // operation is allowed if the current user is the package recipient
+        if (!rs.getValue0().getUserId().equals(context.getUserId())) {
+            throw new ApiException(ApiReturnCodes.FORBIDDEN, localizationService.getMessage(context.getLanguage(), "error.forbidden"));
+        }
+
+        // operation is allowed if the package is in those states
+        if (rs.getValue1().get(0).getPackageStatus() != PackageStatus.DELIVERED
+                && rs.getValue1().get(0).getPackageStatus() != PackageStatus.NOTIFY_SENT
+                && rs.getValue1().get(0).getPackageStatus() != PackageStatus.NOTIFIED
+                && rs.getValue1().get(0).getPackageStatus() != PackageStatus.COLLECTED) {
+            throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.package.illegal_state"));
+        }
+
+        Date now = new Date();
+        rs.getValue0().setUpdateTms(now);
+        TbPackageEvent packageEvent = new TbPackageEvent();
+        packageEvent.setPackageId(packageId);
+        packageEvent.setCreateTms(now);
+        packageEvent.setPackageStatus(PackageStatus.ACCEPTED);
+        packageEvent.setAutoFlag(false);
+        packageEvent.setNotes(sanitizeString(req.getNotes()));
+        packageEventDao.persist(packageEvent);
+        packageEventDao.flush();
+
+        // send notification to pudo owner
+        Long ownerUserId = userPudoRelationDao.getOwnerUserIdByPudoId(rs.getValue0().getPudoId());
+        String titleTemplate = "notification.package.accepted.title";
+        String messageTemplate = "notification.package.accepted.message";
+        String[] messageParams = {cryptoService.hashidEncode(packageId)};
+        TbNotificationPackage notification = new TbNotificationPackage();
+        notification.setUserId(ownerUserId);
+        notification.setCreateTms(now);
+        notification.setQueuedFlag(false);
+        notification.setDueTms(now);
+        notification.setReadTms(null);
+        notification.setTitle(titleTemplate);
+        notification.setTitleParams(null);
+        notification.setMessage(messageTemplate);
+        notification.setMessageParams(messageParams);
+        notification.setPackageId(packageId);
+        notificationDao.persist(notification);
+        notificationDao.flush();
+        notificationService.sendPushNotifications(ownerUserId, titleTemplate, null, messageTemplate, messageParams, Map.of("packageId", packageId.toString()));
+
+        log.info("[{}] Package {}: {} -> {}", context.getExecutionId(), packageId, rs.getValue1().get(0).getPackageStatus(), packageEvent.getPackageStatus());
+        return getPackage(packageId);
     }
 
 }
