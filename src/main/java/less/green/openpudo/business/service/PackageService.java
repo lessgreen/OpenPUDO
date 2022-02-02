@@ -126,7 +126,7 @@ public class PackageService {
         packageEvent.setNotes(sanitizeString(req.getNotes()));
         packageEventDao.persist(packageEvent);
         packageEventDao.flush();
-        log.info("[{}] Package: {} -> {}", context.getExecutionId(), pack.getPackagePicId(), packageEvent.getPackageStatus());
+        log.info("[{}] Package {}: {}", context.getExecutionId(), pack.getPackageId(), packageEvent.getPackageStatus());
         return getPackage(pack.getPackageId());
     }
 
@@ -167,8 +167,8 @@ public class PackageService {
         notificationDao.persist(notification);
         notificationDao.flush();
         notificationService.sendPushNotifications(rs.getValue0().getUserId(), titleTemplate, null, messageTemplate, messageParams, Map.of("packageId", rs.getValue0().getPackageId().toString()));
+        log.info("[{}] Package {}: {} -> {}", context.getExecutionId(), packageId, rs.getValue1().get(0).getPackageStatus(), packageEvent.getPackageStatus());
         return packageEvent;
     }
-
 
 }
