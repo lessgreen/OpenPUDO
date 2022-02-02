@@ -18,7 +18,6 @@
  If not, see <https://github.com/lessgreen/OpenPUDO>.
 */
 
-// ignore_for_file: unused_import
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -27,7 +26,6 @@ import 'package:provider/provider.dart';
 import 'package:qui_green/widgets/main_button.dart';
 import 'package:qui_green/view_models/user_position_controller_viewmodel.dart';
 import 'package:qui_green/resources/res.dart';
-import 'package:qui_green/resources/routes_enum.dart';
 
 class UserPositionController extends StatefulWidget {
   const UserPositionController({Key? key}) : super(key: key);

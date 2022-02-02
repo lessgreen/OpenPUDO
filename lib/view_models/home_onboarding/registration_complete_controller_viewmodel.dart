@@ -30,12 +30,12 @@ import 'package:qui_green/singletons/network/network_manager.dart';
 class HomeRegistrationCompleteControllerViewModel extends ChangeNotifier {
   Function(dynamic)? showErrorDialog;
   bool _showNumber = true;
+
   bool get showNumber => _showNumber;
 
   updateShowNumberPreference(bool newValue) {
     _showNumber = newValue;
     notifyListeners();
-
     NetworkManager.instance.updateUserPreferences(showNumber: newValue).then(
       (value) {
         if (value is UserPreferences) {
@@ -62,7 +62,6 @@ class HomeRegistrationCompleteControllerViewModel extends ChangeNotifier {
   }
 
   onInstructionsClick(BuildContext context, PudoProfile? pudoModel) {
-    Navigator.of(context)
-        .pushReplacementNamed(Routes.instruction, arguments: pudoModel);
+    Navigator.of(context).pushNamed(Routes.instruction, arguments: pudoModel);
   }
 }

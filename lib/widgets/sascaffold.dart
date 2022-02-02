@@ -22,7 +22,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class SAScaffold extends StatelessWidget {
-  final PreferredSizeWidget appBar;
+  final PreferredSizeWidget? appBar;
   final Widget body;
   final Widget? floatingActionButton;
   final FloatingActionButtonLocation? floatingActionButtonLocation;
@@ -36,7 +36,7 @@ class SAScaffold extends StatelessWidget {
       {Key? key,
       this.backgroundColor,
       this.resizeToAvoidBottomInset,
-      required this.appBar,
+      this.appBar,
       required this.body,
       this.bottomSheet,
       this.floatingActionButton,

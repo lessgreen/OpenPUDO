@@ -18,17 +18,14 @@
  If not, see <https://github.com/lessgreen/OpenPUDO>.
 */
 
-// ignore_for_file: unused_import
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:qui_green/view_models/user_position_controller_viewmodel.dart';
 import 'package:qui_green/widgets/main_button.dart';
 import 'package:qui_green/resources/res.dart';
-import 'package:qui_green/resources/routes_enum.dart';
 
 class HomeUserPositionController extends StatefulWidget {
   const HomeUserPositionController({Key? key}) : super(key: key);
@@ -69,7 +66,7 @@ class _HomeUserPositionControllerState
             child: SafeArea(
               child: Column(
                 children: [
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   Center(
                     child: Text(
                       'Vediamo dove ti trovi',
@@ -86,10 +83,10 @@ class _HomeUserPositionControllerState
                       ),
                     ),
                   ),
-                  const SizedBox(height: 20),
+                  const Spacer(),
                   SvgPicture.asset(ImageSrc.userPositionArt,
                       semanticsLabel: 'Art Background'),
-                  const SizedBox(height: 40),
+                  const Spacer(),
                   MainButton(
                     padding: const EdgeInsets.symmetric(
                         horizontal: Dimension.padding),

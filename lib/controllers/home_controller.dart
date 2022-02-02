@@ -1,3 +1,5 @@
+// ignore_for_file: unused_import
+
 /*
  OpenPUDO - PUDO and Micro-delivery software for Last Mile Collaboration
  Copyright (C) 2020-2022 LESS SRL - https://less.green
@@ -18,31 +20,16 @@
  If not, see <https://github.com/lessgreen/OpenPUDO>.
 */
 
-// ignore_for_file: unused_import
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:latlong2/latlong.dart';
-import 'package:provider/provider.dart';
-import 'package:qui_green/controllers/about_you_controller.dart';
-import 'package:qui_green/controllers/home_onboarding/instruction_controller.dart';
-import 'package:qui_green/controllers/home_onboarding/maps_controller.dart';
-import 'package:qui_green/controllers/home_onboarding/pudo_detail_controller.dart';
-import 'package:qui_green/controllers/home_onboarding/registration_complete_controller.dart';
-import 'package:qui_green/controllers/onboarding/insert_address_controller.dart';
-import 'package:qui_green/controllers/onboarding/maps_controller.dart';
-import 'package:qui_green/controllers/home_onboarding/user_position_controller.dart';
-import 'package:qui_green/controllers/pudo_detail_controller.dart';
-import 'package:qui_green/models/pudo_detail_controller_data_model.dart';
-import 'package:qui_green/models/pudo_profile.dart';
+import 'package:qui_green/commons/utilities/home_user_packages_section_routes.dart';
+import 'package:qui_green/commons/utilities/home_user_pudo_section_routes.dart';
 import 'package:qui_green/widgets/listview_header.dart';
 import 'package:qui_green/singletons/network/network_manager.dart';
 import 'package:qui_green/widgets/package_card.dart';
-import 'package:qui_green/controllers/home_pudo_controller.dart';
 import 'package:qui_green/controllers/profile_controller.dart';
 import 'package:qui_green/resources/res.dart';
 import 'package:qui_green/resources/routes_enum.dart';
-import 'home_onboarding/insert_address_controller.dart';
 
 class HomeController extends StatefulWidget {
   const HomeController({Key? key}) : super(key: key);
@@ -51,12 +38,30 @@ class HomeController extends StatefulWidget {
   _HomeControllerState createState() => _HomeControllerState();
 }
 
-class _HomeControllerState extends State<HomeController> with ConnectionAware{
+class _HomeControllerState extends State<HomeController> with ConnectionAware {
+  int _oldIndex = 0;
+  final List<NavigatorObserver> _navigatorObservers = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _navigatorObservers.add(NavigatorObserver());
+    _navigatorObservers.add(NavigatorObserver());
+  }
+
   @override
   Widget build(BuildContext context) {
     return Material(
       child: CupertinoTabScaffold(
         tabBar: CupertinoTabBar(
+          onTap: (selectedIndex) {
+            if (selectedIndex == _oldIndex) {
+              _navigatorObservers[selectedIndex]
+                  .navigator
+                  ?.popUntil((Route<dynamic> route) => route.isFirst);
+            }
+            _oldIndex = selectedIndex;
+          },
           items: const [
             BottomNavigationBarItem(icon: Icon(Icons.home)),
             BottomNavigationBarItem(icon: Icon(Icons.map)),
@@ -66,48 +71,16 @@ class _HomeControllerState extends State<HomeController> with ConnectionAware{
           switch (index) {
             case 1:
               return CupertinoTabView(
-                onGenerateRoute: (RouteSettings settings) {
-                  switch (settings.name) {
-                    case Routes.userPosition:
-                      return CupertinoPageRoute(
-                          builder: (_) => const HomeUserPositionController(
-                              // dataModel: settings.arguments
-                              //     as PudoDetailControllerDataModel,
-                              ));
-                    case Routes.insertAddress:
-                      return CupertinoPageRoute(
-                          builder: (_) => const HomeInsertAddressController());
-                    case Routes.maps:
-                      return CupertinoPageRoute(
-                          builder: (_) => HomeMapsController(
-                              initialPosition: settings.arguments as LatLng));
-                    case Routes.pudoDetail:
-                      return CupertinoPageRoute(
-                          builder: (_) => HomePudoDetailController(
-                              dataModel: settings.arguments
-                                  as PudoDetailControllerDataModel));
-                    case Routes.registrationComplete:
-                      return CupertinoPageRoute(
-                          builder: (_) => HomeRegistrationCompleteController(
-                              pudoDataModel:
-                                  settings.arguments as PudoProfile));
-                    case Routes.instruction:
-                      return CupertinoPageRoute(
-                          builder: (_) => HomeInstructionController(
-                              pudoDataModel:
-                                  settings.arguments as PudoProfile));
-                    case "/":
-                      return CupertinoPageRoute(
-                          builder: (_) => const HomePudoController());
-                    default:
-                      return CupertinoPageRoute(
-                          builder: (_) => const HomePudoController());
-                  }
-                },
+                navigatorObservers: [_navigatorObservers[1]],
+                onGenerateRoute: (RouteSettings settings) =>
+                    routeHomeUserPudoSectionWithSetting(settings),
               );
             default:
               return CupertinoTabView(
-                routes: {
+                navigatorObservers: [_navigatorObservers[0]],
+                onGenerateRoute: (RouteSettings settings) =>
+                    routeHomeUserPackagesSectionWithSetting(settings),
+                /*routes: {
                   '/': (context) {
                     return CupertinoPageScaffold(
                         navigationBar: CupertinoNavigationBar(
@@ -170,7 +143,7 @@ class _HomeControllerState extends State<HomeController> with ConnectionAware{
                   Routes.profile: (context) {
                     return const ProfileController();
                   },
-                },
+                },*/
               );
           }
         },

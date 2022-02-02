@@ -18,24 +18,20 @@
  If not, see <https://github.com/lessgreen/OpenPUDO>.
 */
 
-// ignore_for_file: unused_import
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:qui_green/resources/res.dart';
 import 'package:qui_green/widgets/main_button.dart';
-import 'package:qui_green/widgets/pudo_map_card.dart';
 import 'package:qui_green/resources/routes_enum.dart';
 
-class HomePudoController extends StatefulWidget {
-  const HomePudoController({Key? key}) : super(key: key);
+class HomeUserPudoController extends StatefulWidget {
+  const HomeUserPudoController({Key? key}) : super(key: key);
 
   @override
-  _HomePudoControllerState createState() => _HomePudoControllerState();
+  _HomeUserPudoControllerState createState() => _HomeUserPudoControllerState();
 }
 
-class _HomePudoControllerState extends State<HomePudoController> {
+class _HomeUserPudoControllerState extends State<HomeUserPudoController> {
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
@@ -58,6 +54,9 @@ class _HomePudoControllerState extends State<HomePudoController> {
             'Non hai ancora aggiunto un pudo per le tue consegne!',
             textAlign: TextAlign.center,
             style: TextStyle(color: Colors.grey.shade600),
+          ),
+          const SizedBox(
+            height: Dimension.padding,
           ),
           MainButton(
               text: 'Vai',

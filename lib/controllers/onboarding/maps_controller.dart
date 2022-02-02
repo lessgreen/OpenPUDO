@@ -132,7 +132,7 @@ class _MapsControllerState extends State<MapsController> with ConnectionAware{
                         ),
                         markers: viewModel.pudos.markers(
                           (marker) {
-                            viewModel.selectPudo(context, marker.pudo?.pudoId);
+                            viewModel.selectPudo(context, marker);
                           },
                           tintColor: AppColors.primaryColorDark,
                         ),
@@ -202,22 +202,22 @@ class _MapsControllerState extends State<MapsController> with ConnectionAware{
                                 right: Dimension.paddingXS,
                                 bottom: Dimension.paddingM),
                             child: PudoMapCard(
-                                name: viewModel.pudoProfile?.businessName ?? "",
+                                name: viewModel.selectedMarker?.pudo?.businessName ?? "",
                                 address:
-                                    viewModel.pudoProfile?.address?.label ?? "",
+                                    viewModel.selectedMarker?.address?.label ?? "",
                                 stars:
-                                    viewModel.pudoProfile?.ratingModel?.stars ??
+                                    viewModel.selectedMarker?.pudo?.rating?.stars ??
                                         0,
                                 hasShadow: true,
                                 onTap: () {
                                   viewModel.onPudoClick(
                                       context,
-                                      viewModel.pudoProfile!,
+                                      viewModel.selectedMarker!.pudo!,
                                       widget.initialPosition);
                                 },
-                                image: viewModel.pudoProfile?.pudoPicId),
+                                image: viewModel.selectedMarker?.pudo!.pudoPicId),
                           ),
-                          crossFadeState: viewModel.pudoProfile == null
+                          crossFadeState: viewModel.selectedMarker == null
                               ? CrossFadeState.showFirst
                               : CrossFadeState.showSecond,
                           duration: const Duration(milliseconds: 100),

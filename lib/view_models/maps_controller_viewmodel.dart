@@ -23,6 +23,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:qui_green/models/pudo_detail_controller_data_model.dart';
 import 'package:qui_green/models/geo_marker.dart';
+import 'package:qui_green/models/pudo_model.dart';
 import 'package:qui_green/models/pudo_profile.dart';
 import 'package:qui_green/resources/routes_enum.dart';
 import 'package:qui_green/singletons/network/network_manager.dart';
@@ -44,14 +45,14 @@ class MapsControllerViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  PudoProfile? _pudoProfile;
-  PudoProfile? get pudoProfile => _pudoProfile;
-  set pudoProfile(PudoProfile? newVal) {
-    _pudoProfile = newVal;
+  GeoMarker? _selectedMarker;
+  GeoMarker? get selectedMarker => _selectedMarker;
+  set selectedMarker(GeoMarker? newVal) {
+    _selectedMarker = newVal;
     notifyListeners();
   }
 
-  onPudoClick(BuildContext context, PudoProfile pudo, LatLng position) {
+  onPudoClick(BuildContext context, PudoModel pudo, LatLng position) {
     NetworkManager.instance.getPudoDetails(pudoId: pudo.pudoId.toString()).then(
       (response) {
         if (response is PudoProfile) {
@@ -105,16 +106,7 @@ class MapsControllerViewModel extends ChangeNotifier {
     }).catchError((onError) => showErrorDialog?.call(onError));
   }
 
-  selectPudo(BuildContext context, int? pudoId) {
-    if (pudoId == null) {
-      return;
-    }
-    NetworkManager.instance.getPudoDetails(pudoId: pudoId.toString()).then(
-      (response) {
-        if (response is PudoProfile) {
-          pudoProfile = response;
-        }
-      },
-    ).catchError((onError) => showErrorDialog?.call(onError));
+  selectPudo(BuildContext context, GeoMarker geoMarker) {
+    selectedMarker = geoMarker;
   }
 }

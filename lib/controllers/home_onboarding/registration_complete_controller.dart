@@ -20,18 +20,14 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:qui_green/commons/alert_dialog.dart';
 import 'package:qui_green/commons/utilities/keyboard_visibility.dart';
-import 'package:qui_green/singletons/network/network_manager.dart';
 import 'package:qui_green/view_models/home_onboarding/registration_complete_controller_viewmodel.dart';
 import 'package:qui_green/widgets/main_button.dart';
 import 'package:qui_green/widgets/pudo_map_card.dart';
-import 'package:qui_green/view_models/registration_complete_controller_viewmodel.dart';
 import 'package:qui_green/models/pudo_profile.dart';
 import 'package:qui_green/resources/res.dart';
-import 'package:qui_green/widgets/sascaffold.dart';
 
 class HomeRegistrationCompleteController extends StatefulWidget {
   const HomeRegistrationCompleteController({Key? key, this.pudoDataModel})
@@ -81,7 +77,7 @@ class _HomeRegistrationCompleteControllerState
                 child: SafeArea(
                   child: Column(
                     children: [
-                      SizedBox(
+                      const SizedBox(
                         height: Dimension.padding,
                       ),
                       Center(

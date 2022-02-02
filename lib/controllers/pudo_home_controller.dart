@@ -18,18 +18,13 @@
  If not, see <https://github.com/lessgreen/OpenPUDO>.
 */
 
-// ignore_for_file: unused_import
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:qui_green/singletons/current_user.dart';
 import 'package:qui_green/singletons/network/network_manager.dart';
-import 'package:qui_green/widgets/package_card.dart';
-import 'package:qui_green/controllers/home_pudo_controller.dart';
-import 'package:qui_green/controllers/profile_controller.dart';
 import 'package:qui_green/resources/res.dart';
-import 'package:qui_green/resources/routes_enum.dart';
 
 class PudoHomeController extends StatefulWidget {
   const PudoHomeController({Key? key}) : super(key: key);
@@ -64,7 +59,7 @@ class _PudoHomeControllerState extends State<PudoHomeController> with Connection
                           style: Theme.of(context).textTheme.headline6?.copyWith(color: Colors.white),
                         ),
                       ),
-                      child: const HomePudoController(),
+                      child: Container(),
                     );
                   },
                 },

@@ -20,12 +20,12 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:qui_green/commons/alert_dialog.dart';
 import 'package:qui_green/commons/ui/custom_network_image.dart';
-import 'package:qui_green/widgets/text_field_button.dart';
 import 'package:qui_green/models/pudo_detail_controller_data_model.dart';
 import 'package:qui_green/resources/routes_enum.dart';
 import 'package:qui_green/resources/res.dart';
+import 'package:qui_green/singletons/network/network_manager.dart';
 
 class HomePudoDetailController extends StatefulWidget {
   const HomePudoDetailController({Key? key, required this.dataModel})
@@ -244,9 +244,13 @@ class _HomePudoDetailControllerState extends State<HomePudoDetailController> {
   }
 
   void goToRegistration() {
-    Navigator.of(context).pushReplacementNamed(
-      Routes.registrationComplete,
-      arguments: widget.dataModel.pudoProfile,
-    );
+    NetworkManager.instance
+        .addPudoFavorite(widget.dataModel.pudoProfile.pudoId.toString())
+        .then((value) => Navigator.of(context).pushNamed(
+              Routes.registrationComplete,
+              arguments: widget.dataModel.pudoProfile,
+            ))
+        .catchError((onError) =>
+            SAAlertDialog.displayAlertWithClose(context, "Error", onError));
   }
 }
