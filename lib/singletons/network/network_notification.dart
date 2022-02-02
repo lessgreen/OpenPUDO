@@ -22,17 +22,23 @@ part of 'network_shared.dart';
 
 mixin NetworkManagerNotification on NetworkGeneral {
   Future<dynamic> getNotificationsCount() async {
-    if (_accessToken != null) {
-      _headers['Authorization'] = 'Bearer $_accessToken';
-    }
-
-    var url = _baseURL + '/api/v1/notifications/count';
-
     try {
+      if (!isOnline) {
+        throw ("Network is offline");
+      }
+      if (_accessToken != null) {
+        _headers['Authorization'] = 'Bearer $_accessToken';
+      }
+
+      var url = _baseURL + '/api/v1/notifications/count';
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
-      Response response = await get(Uri.parse(url), headers: _headers).timeout(Duration(seconds: _timeout));
+
+      Response response = await r.retry(
+        () => get(Uri.parse(url), headers: _headers).timeout(Duration(seconds: _timeout)),
+        retryIf: (e) => e is SocketException || e is TimeoutException,
+      );
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = false;
       });
@@ -54,25 +60,31 @@ mixin NetworkManagerNotification on NetworkGeneral {
           throw ErrorDescription('Error ${baseResponse.returnCode}: ${baseResponse.message}');
         }
       }
-    } on Error catch (e) {
+    } catch (e) {
       safePrint('ERROR - getNotificationsCount : $e');
       _refreshTokenRetryCounter = 0;
+      _networkActivity.value = false;
       return e;
     }
   }
 
   Future<dynamic> markNotificationAsRead({required int notificationId}) async {
-    if (_accessToken != null) {
-      _headers['Authorization'] = 'Bearer $_accessToken';
-    }
-
-    var url = _baseURL + '/api/v1/notifications/$notificationId/mark-as-read';
-
     try {
+      if (!isOnline) {
+        throw ("Network is offline");
+      }
+      if (_accessToken != null) {
+        _headers['Authorization'] = 'Bearer $_accessToken';
+      }
+
+      var url = _baseURL + '/api/v1/notifications/$notificationId/mark-as-read';
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
-      Response response = await post(Uri.parse(url), headers: _headers).timeout(Duration(seconds: _timeout));
+      Response response = await r.retry(
+        () => post(Uri.parse(url), headers: _headers).timeout(Duration(seconds: _timeout)),
+        retryIf: (e) => e is SocketException || e is TimeoutException,
+      );
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = false;
       });
@@ -90,25 +102,32 @@ mixin NetworkManagerNotification on NetworkGeneral {
       if (needHandleTokenRefresh == false) {
         return baseResponse;
       }
-    } on Error catch (e) {
+    } catch (e) {
       safePrint('ERROR - markNotificationAsRead: $e');
       _refreshTokenRetryCounter = 0;
+      _networkActivity.value = false;
       return e;
     }
   }
 
   Future<dynamic> readAllMyNotifications() async {
-    if (_accessToken != null) {
-      _headers['Authorization'] = 'Bearer $_accessToken';
-    }
-
-    var url = _baseURL + '/api/v1/notifications/mark-as-read';
-
     try {
+      if (!isOnline) {
+        throw ("Network is offline");
+      }
+      if (_accessToken != null) {
+        _headers['Authorization'] = 'Bearer $_accessToken';
+      }
+
+      var url = _baseURL + '/api/v1/notifications/mark-as-read';
+
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
-      Response response = await post(Uri.parse(url), headers: _headers).timeout(Duration(seconds: _timeout));
+      Response response = await r.retry(
+        () => post(Uri.parse(url), headers: _headers).timeout(Duration(seconds: _timeout)),
+        retryIf: (e) => e is SocketException || e is TimeoutException,
+      );
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = false;
       });
@@ -126,27 +145,34 @@ mixin NetworkManagerNotification on NetworkGeneral {
       if (needHandleTokenRefresh == false) {
         return baseResponse;
       }
-    } on Error catch (e) {
+    } catch (e) {
       safePrint('ERROR - readAllMyNotifications: $e');
       _refreshTokenRetryCounter = 0;
+      _networkActivity.value = false;
       return e;
     }
   }
 
   Future<dynamic> getMyNotifications({int limit = 20, int offset = 0}) async {
-    if (_accessToken != null) {
-      _headers['Authorization'] = 'Bearer $_accessToken';
-    }
-
-    var queryString = "?limit=$limit&offset=$offset";
-
-    var url = _baseURL + '/api/v1/notifications$queryString';
-
     try {
+      if (!isOnline) {
+        throw ("Network is offline");
+      }
+      if (_accessToken != null) {
+        _headers['Authorization'] = 'Bearer $_accessToken';
+      }
+
+      var queryString = "?limit=$limit&offset=$offset";
+
+      var url = _baseURL + '/api/v1/notifications$queryString';
+
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
-      Response response = await get(Uri.parse(url), headers: _headers).timeout(Duration(seconds: _timeout));
+      Response response = await r.retry(
+        () => get(Uri.parse(url), headers: _headers).timeout(Duration(seconds: _timeout)),
+        retryIf: (e) => e is SocketException || e is TimeoutException,
+      );
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = false;
       });
@@ -173,9 +199,10 @@ mixin NetworkManagerNotification on NetworkGeneral {
           throw ErrorDescription('Error ${baseResponse.returnCode}: ${baseResponse.message}');
         }
       }
-    } on Error catch (e) {
+    } catch (e) {
       safePrint('ERROR - getMyNotifications: $e');
       _refreshTokenRetryCounter = 0;
+      _networkActivity.value = false;
       return e;
     }
   }

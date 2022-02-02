@@ -18,6 +18,9 @@
  If not, see <https://github.com/lessgreen/OpenPUDO>.
 */
 
+import 'dart:async';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:html_unescape/html_unescape_small.dart';
 import 'package:qui_green/commons/utilities/localization.dart';
@@ -87,7 +90,13 @@ class SAAlertDialog extends StatelessWidget {
                           ? HtmlUnescape().convert(description.toString())
                           : (description is ErrorDescription)
                               ? HtmlUnescape().convert(description.value.first.toString())
-                              : HtmlUnescape().convert(description),
+                              : (description is SocketException)
+                                  ? HtmlUnescape().convert(description.message)
+                                  : (description is TimeoutException)
+                                      ? HtmlUnescape().convert(description.message ?? "Timeout exception")
+                                      : (description is String)
+                                          ? HtmlUnescape().convert(description)
+                                          : 'Unknown error occurred. Please try again',
                   actions: <Widget>[
                     MaterialButton(
                       elevation: 0,

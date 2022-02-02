@@ -23,19 +23,24 @@ part of 'network_shared.dart';
 mixin NetworkManagerPudo on NetworkGeneral {
   //TODO: implement API calls (pudo related)
   Future<dynamic> getSuggestedZoom({required double lat, required double lon}) async {
-    if (_accessToken != null) {
-      _headers['Authorization'] = 'Bearer $_accessToken';
-    }
-
-    var queryString = "?lat=$lat&lon=$lon";
-
-    var url = _baseURL + '/api/v2/map/suggested-zoom$queryString';
-
     try {
+      if (!isOnline) {
+        throw ("Network is offline");
+      }
+      if (_accessToken != null) {
+        _headers['Authorization'] = 'Bearer $_accessToken';
+      }
+
+      var queryString = "?lat=$lat&lon=$lon";
+
+      var url = _baseURL + '/api/v2/map/suggested-zoom$queryString';
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
-      Response response = await get(Uri.parse(url), headers: _headers).timeout(Duration(seconds: _timeout));
+      Response response = await r.retry(
+        () => get(Uri.parse(url), headers: _headers).timeout(Duration(seconds: _timeout)),
+        retryIf: (e) => e is SocketException || e is TimeoutException,
+      );
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = false;
       });
@@ -58,25 +63,31 @@ mixin NetworkManagerPudo on NetworkGeneral {
           throw ErrorDescription('Error ${baseResponse.returnCode}: ${baseResponse.message}');
         }
       }
-    } on Error catch (e) {
+    } catch (e) {
       safePrint('ERROR - getSuggestedZoom: $e');
       _refreshTokenRetryCounter = 0;
+      _networkActivity.value = false;
       return e;
     }
   }
 
   Future<dynamic> getPudoDetails({required String pudoId}) async {
-    if (_accessToken != null) {
-      _headers['Authorization'] = 'Bearer $_accessToken';
-    }
-
-    var url = _baseURL + '/api/v2/pudo/$pudoId';
-
     try {
+      if (!isOnline) {
+        throw ("Network is offline");
+      }
+      if (_accessToken != null) {
+        _headers['Authorization'] = 'Bearer $_accessToken';
+      }
+
+      var url = _baseURL + '/api/v2/pudo/$pudoId';
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
-      Response response = await get(Uri.parse(url), headers: _headers).timeout(Duration(seconds: _timeout));
+      Response response = await r.retry(
+        () => get(Uri.parse(url), headers: _headers).timeout(Duration(seconds: _timeout)),
+        retryIf: (e) => e is SocketException || e is TimeoutException,
+      );
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = false;
       });
@@ -98,31 +109,37 @@ mixin NetworkManagerPudo on NetworkGeneral {
           throw ErrorDescription('Error ${baseResponse.returnCode}: ${baseResponse.message}');
         }
       }
-    } on Error catch (e) {
+    } catch (e) {
       safePrint('ERROR - getPudoDetails: $e');
       _refreshTokenRetryCounter = 0;
+      _networkActivity.value = false;
       return e;
     }
   }
 
   Future<dynamic> getPudos({double? lat, double? lon, int? zoom, String? text}) async {
-    var queryString = "";
-    if (lat != null && lon != null && zoom != null) {
-      queryString = "?lat=$lat&lon=$lon&zoom=$zoom";
-    } else if (text != null) {
-      queryString = "?text=$text";
-    }
-    if (_accessToken != null) {
-      _headers['Authorization'] = 'Bearer $_accessToken';
-    }
-
-    var url = _baseURL + '/api/v2/map/pudos$queryString';
-
     try {
+      if (!isOnline) {
+        throw ("Network is offline");
+      }
+      var queryString = "";
+      if (lat != null && lon != null && zoom != null) {
+        queryString = "?lat=$lat&lon=$lon&zoom=$zoom";
+      } else if (text != null) {
+        queryString = "?text=$text";
+      }
+      if (_accessToken != null) {
+        _headers['Authorization'] = 'Bearer $_accessToken';
+      }
+
+      var url = _baseURL + '/api/v2/map/pudos$queryString';
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
-      Response response = await get(Uri.parse(url), headers: _headers).timeout(Duration(seconds: _timeout));
+      Response response = await r.retry(
+        () => get(Uri.parse(url), headers: _headers).timeout(Duration(seconds: _timeout)),
+        retryIf: (e) => e is SocketException || e is TimeoutException,
+      );
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = false;
       });
@@ -148,9 +165,10 @@ mixin NetworkManagerPudo on NetworkGeneral {
           throw ErrorDescription('Error ${baseResponse.returnCode}: ${baseResponse.message}');
         }
       }
-    } on Error catch (e) {
+    } catch (e) {
       safePrint('ERROR - getPudos: $e');
       _refreshTokenRetryCounter = 0;
+      _networkActivity.value = false;
       return e;
     }
   }

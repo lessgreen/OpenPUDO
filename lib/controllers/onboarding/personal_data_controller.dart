@@ -40,7 +40,7 @@ class PersonalDataController extends StatefulWidget {
   _PersonalDataControllerState createState() => _PersonalDataControllerState();
 }
 
-class _PersonalDataControllerState extends State<PersonalDataController> {
+class _PersonalDataControllerState extends State<PersonalDataController> with ConnectionAware{
   void _showErrorDialog(BuildContext context, String val) => SAAlertDialog.displayAlertWithClose(context, "Error", val);
 
   @override

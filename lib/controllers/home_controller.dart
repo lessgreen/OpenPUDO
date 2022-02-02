@@ -36,12 +36,12 @@ import 'package:qui_green/controllers/pudo_detail_controller.dart';
 import 'package:qui_green/models/pudo_detail_controller_data_model.dart';
 import 'package:qui_green/models/pudo_profile.dart';
 import 'package:qui_green/widgets/listview_header.dart';
+import 'package:qui_green/singletons/network/network_manager.dart';
 import 'package:qui_green/widgets/package_card.dart';
 import 'package:qui_green/controllers/home_pudo_controller.dart';
 import 'package:qui_green/controllers/profile_controller.dart';
 import 'package:qui_green/resources/res.dart';
 import 'package:qui_green/resources/routes_enum.dart';
-
 import 'home_onboarding/insert_address_controller.dart';
 
 class HomeController extends StatefulWidget {
@@ -51,7 +51,7 @@ class HomeController extends StatefulWidget {
   _HomeControllerState createState() => _HomeControllerState();
 }
 
-class _HomeControllerState extends State<HomeController> {
+class _HomeControllerState extends State<HomeController> with ConnectionAware{
   @override
   Widget build(BuildContext context) {
     return Material(

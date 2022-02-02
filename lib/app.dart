@@ -46,8 +46,10 @@ void mainCommon({required String host, required bool isProd}) async {
       appInfo: info,
       sharedPreferencesInstance: sharedPreferences);
   NetworkManager(config: appConfig);
-  await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge,
-      overlays: [SystemUiOverlay.bottom]);
+  await SystemChrome.setEnabledSystemUIMode(
+    SystemUiMode.edgeToEdge,
+    overlays: [SystemUiOverlay.bottom],
+  );
   SystemChrome.setSystemUIOverlayStyle(
     SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
@@ -96,7 +98,7 @@ class App extends StatelessWidget {
               Locale('it'),
               Locale('de'),
               Locale('es'),
-              Locale('fr')
+              Locale('fr'),
             ],
             localizationsDelegates: [
               LocalizationManagerDelegate(config.sharedPreferencesInstance!),

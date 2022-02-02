@@ -41,7 +41,7 @@ class ConfirmPhoneController extends StatefulWidget {
   _ConfirmPhoneControllerState createState() => _ConfirmPhoneControllerState();
 }
 
-class _ConfirmPhoneControllerState extends State<ConfirmPhoneController> {
+class _ConfirmPhoneControllerState extends State<ConfirmPhoneController> with ConnectionAware {
   final FocusNode _confirmValueFocus = FocusNode();
   String _confirmValue = "";
 
@@ -74,7 +74,9 @@ class _ConfirmPhoneControllerState extends State<ConfirmPhoneController> {
           SAAlertDialog.displayAlertWithClose(context, "Error", "Qualcosa è andato storto");
           break;
       }
-    }).catchError((onError) => SAAlertDialog.displayAlertWithClose(context, "Error", onError));
+    }).catchError((onError) {
+      SAAlertDialog.displayAlertWithClose(context, "Error", onError);
+    });
   }
 
   @override

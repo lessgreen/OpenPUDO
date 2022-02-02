@@ -23,6 +23,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:qui_green/resources/res.dart';
 import 'package:qui_green/resources/routes_enum.dart';
+import 'package:qui_green/singletons/network/network_manager.dart';
 
 class LoginController extends StatefulWidget {
   const LoginController({Key? key}) : super(key: key);
@@ -31,7 +32,7 @@ class LoginController extends StatefulWidget {
   _LoginControllerState createState() => _LoginControllerState();
 }
 
-class _LoginControllerState extends State<LoginController> {
+class _LoginControllerState extends State<LoginController> with ConnectionAware {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
