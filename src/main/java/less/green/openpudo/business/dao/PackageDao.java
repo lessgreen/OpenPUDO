@@ -10,6 +10,7 @@ import less.green.openpudo.common.dto.tuple.Sextet;
 import javax.enterprise.context.RequestScoped;
 import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -34,6 +35,21 @@ public class PackageDao extends BaseEntityDao<TbPackage, Long> {
         String qs = "SELECT COUNT(*) FROM TbPackage t WHERE t.pudoId = :pudoId ";
         TypedQuery<Long> q = em.createQuery(qs, Long.class);
         q.setParameter("pudoId", pudoId);
+        return q.getSingleResult();
+    }
+
+    public long getActivePackageCount(Long pudoId, Long userId) {
+        String qs = "SELECT COUNT(*) "
+                + "FROM TbPackage t1, TbPackageEvent t2 "
+                + "WHERE t1.packageId = t2.packageId "
+                + "AND t2.createTms = (SELECT MAX(st2.createTms) FROM TbPackageEvent st2 WHERE st2.packageId = t2.packageId) "
+                + "AND t1.pudoId = :pudoId "
+                + "AND t1.userId = :userId "
+                + "AND t2.packageStatus IN :packageStatusList";
+        TypedQuery<Long> q = em.createQuery(qs, Long.class);
+        q.setParameter("pudoId", pudoId);
+        q.setParameter("userId", userId);
+        q.setParameter("packageStatusList", Arrays.asList(PackageStatus.DELIVERED, PackageStatus.NOTIFY_SENT, PackageStatus.NOTIFIED, PackageStatus.COLLECTED));
         return q.getSingleResult();
     }
 

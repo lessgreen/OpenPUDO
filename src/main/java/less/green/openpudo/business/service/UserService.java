@@ -296,7 +296,11 @@ public class UserService {
         if (userPudoRelation == null) {
             throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.forbidden.pudo_not_favourite"));
         }
-        // TODO: prevent removal when there are packages in transit
+        // prevent removal if there are packages in transit
+        if (packageDao.getActivePackageCount(pudoId, context.getUserId()) > 0) {
+            throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.forbidden.package_in_transit"));
+        }
+
         userPudoRelation.setDeleteTms(new Date());
         userPudoRelationDao.flush();
         notificationDao.removeQueuedNotificationFavourite(context.getUserId(), pudo.getPudoId());
