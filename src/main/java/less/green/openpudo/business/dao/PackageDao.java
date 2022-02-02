@@ -95,7 +95,7 @@ public class PackageDao extends BaseEntityDao<TbPackage, Long> {
                 "AND t2.createTms = (SELECT MAX(st2.createTms) FROM TbPackageEvent st2 WHERE st2.packageId = t2.packageId) " +
                 "AND t2.createTms < :timeThreshold " +
                 "AND t2.packageStatus = :packageStatus " +
-                "ORDER BY t2.createTms";
+                "ORDER BY t1.createTms";
         TypedQuery<Long> q = em.createQuery(qs, Long.class);
         q.setParameter("packageStatus", PackageStatus.DELIVERED);
         q.setParameter("timeThreshold", timeThreshold);
