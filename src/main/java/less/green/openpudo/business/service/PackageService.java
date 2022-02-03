@@ -11,6 +11,7 @@ import less.green.openpudo.cdi.service.StorageService;
 import less.green.openpudo.common.ApiReturnCodes;
 import less.green.openpudo.common.CalendarUtils;
 import less.green.openpudo.common.dto.tuple.Pair;
+import less.green.openpudo.common.dto.tuple.Quartet;
 import less.green.openpudo.common.dto.tuple.Septet;
 import less.green.openpudo.common.dto.tuple.Sextet;
 import less.green.openpudo.rest.config.exception.ApiException;
@@ -86,7 +87,7 @@ public class PackageService {
         } else {
             throw new AssertionError("Unsupported AccountType: " + caller.getAccountType());
         }
-        return dtoMapper.mapPackageEntityToDto(rs);
+        return dtoMapper.mapPackageEntityToDto(new Quartet<>(rs.getValue0(), rs.getValue1(), cryptoService.hashidEncodeShort(packageId), cryptoService.hashidEncodeLong(packageId)));
     }
 
     protected List<PackageSummary> getPackages(AccountType accountType, Long referenceId, boolean history, int limit, int offset) {
@@ -101,7 +102,7 @@ public class PackageService {
         List<Sextet<TbPackage, TbPackageEvent, TbPudo, TbAddress, TbUserProfile, TbUserPudoRelation>> rs = packageDao.getPackages(accountType, referenceId, packageStatuses, history, limit, offset);
         List<PackageSummary> ret = new ArrayList<>(rs.size());
         for (var row : rs) {
-            ret.add(dtoMapper.mapProjectionToPackageSummary(new Septet<>(row.getValue0(), row.getValue1(), row.getValue2(), row.getValue3(), row.getValue4(), row.getValue5(), cryptoService.hashidEncode(row.getValue0().getPackageId()))));
+            ret.add(dtoMapper.mapProjectionToPackageSummary(new Septet<>(row.getValue0(), row.getValue1(), row.getValue2(), row.getValue3(), row.getValue4(), row.getValue5(), cryptoService.hashidEncodeShort(row.getValue0().getPackageId()))));
         }
         return ret;
     }
@@ -161,7 +162,7 @@ public class PackageService {
         TbPudo pudo = pudoDao.get(rs.getValue0().getPudoId());
         String titleTemplate = "notification.package.delivered.title";
         String messageTemplate = "notification.package.delivered.message";
-        String[] messageParams = {cryptoService.hashidEncode(packageId), pudo.getBusinessName()};
+        String[] messageParams = {cryptoService.hashidEncodeShort(packageId), pudo.getBusinessName()};
         TbNotificationPackage notification = new TbNotificationPackage();
         notification.setUserId(rs.getValue0().getUserId());
         notification.setCreateTms(now);
@@ -282,7 +283,7 @@ public class PackageService {
         TbPudo pudo = pudoDao.get(rs.getValue0().getPudoId());
         String titleTemplate = "notification.package.collected.title";
         String messageTemplate = "notification.package.collected.message";
-        String[] messageParams = {pudo.getBusinessName(), cryptoService.hashidEncode(packageId)};
+        String[] messageParams = {pudo.getBusinessName(), cryptoService.hashidEncodeShort(packageId)};
         TbNotificationPackage notification = new TbNotificationPackage();
         notification.setUserId(rs.getValue0().getUserId());
         notification.setCreateTms(now);
@@ -335,7 +336,7 @@ public class PackageService {
         Long ownerUserId = userPudoRelationDao.getOwnerUserIdByPudoId(rs.getValue0().getPudoId());
         String titleTemplate = "notification.package.accepted.title";
         String messageTemplate = "notification.package.accepted.message";
-        String[] messageParams = {cryptoService.hashidEncode(packageId)};
+        String[] messageParams = {cryptoService.hashidEncodeShort(packageId)};
         TbNotificationPackage notification = new TbNotificationPackage();
         notification.setUserId(ownerUserId);
         notification.setCreateTms(now);

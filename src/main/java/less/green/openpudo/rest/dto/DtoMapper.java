@@ -3,7 +3,6 @@ package less.green.openpudo.rest.dto;
 import less.green.openpudo.business.model.*;
 import less.green.openpudo.common.dto.geojson.Feature;
 import less.green.openpudo.common.dto.geojson.Point;
-import less.green.openpudo.common.dto.tuple.Pair;
 import less.green.openpudo.common.dto.tuple.Quartet;
 import less.green.openpudo.common.dto.tuple.Quintet;
 import less.green.openpudo.common.dto.tuple.Septet;
@@ -73,7 +72,9 @@ public interface DtoMapper {
 
     @Mapping(source = "ent.value0", target = ".")
     @Mapping(source = "ent.value1", target = "events")
-    Package mapPackageEntityToDto(Pair<TbPackage, List<TbPackageEvent>> ent);
+    @Mapping(source = "ent.value2", target = "packageName")
+    @Mapping(source = "ent.value3", target = "shareLink")
+    Package mapPackageEntityToDto(Quartet<TbPackage, List<TbPackageEvent>, String, String> ent);
 
     PackageEvent mapPackageEventEntityToDto(TbPackageEvent ent);
 

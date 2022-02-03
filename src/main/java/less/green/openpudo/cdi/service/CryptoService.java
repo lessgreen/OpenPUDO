@@ -18,16 +18,19 @@ import java.security.NoSuchAlgorithmException;
 public class CryptoService {
 
     private static final String MAC_ALGORITHM = "HmacSHA512";
-    private static final String HASHIDS_ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    private static final String HASHIDS_ALPHABET_SHORT = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    private static final String HASHIDS_ALPHABET_LONG = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
     @ConfigProperty(name = "app.secret")
     String appSecret;
 
-    private Hashids hashids;
+    private Hashids hashidsShort;
+    private Hashids hashidsLong;
 
     @PostConstruct
     void init() {
-        hashids = new Hashids(appSecret, 6, HASHIDS_ALPHABET);
+        hashidsShort = new Hashids(appSecret, 6, HASHIDS_ALPHABET_SHORT);
+        hashidsLong = new Hashids(appSecret, 30, HASHIDS_ALPHABET_LONG);
     }
 
     public Mac createMac() {
@@ -60,12 +63,20 @@ public class CryptoService {
         return signature.equals(candidateSignature);
     }
 
-    public String hashidEncode(Long l) {
-        return hashids.encode(l);
+    public String hashidEncodeShort(Long l) {
+        return hashidsShort.encode(l);
     }
 
-    public long hashidDecode(String s) {
-        return hashids.decode(s)[0];
+    public String hashidEncodeLong(Long l) {
+        return hashidsLong.encode(l);
+    }
+
+    public Long hashidDecodeLong(String s) {
+        long[] decoded = hashidsLong.decode(s);
+        if (decoded.length == 0) {
+            return null;
+        }
+        return decoded[0];
     }
 
 }

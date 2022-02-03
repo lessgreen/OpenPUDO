@@ -22,6 +22,7 @@
         <unirest.version>3.13.6</unirest.version>
         <firebase.version>8.1.0</firebase.version>
         <hashids.version>1.0.3</hashids.version>
+        <zxing.version>3.4.1</zxing.version>
     </properties>
 
     <dependencyManagement>
@@ -105,6 +106,16 @@
             <groupId>org.hashids</groupId>
             <artifactId>hashids</artifactId>
             <version>${hashids.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.zxing</groupId>
+            <artifactId>core</artifactId>
+            <version>${zxing.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.zxing</groupId>
+            <artifactId>javase</artifactId>
+            <version>${zxing.version}</version>
         </dependency>
     </dependencies>
 

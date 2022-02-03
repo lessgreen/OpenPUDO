@@ -34,4 +34,10 @@ public class Package {
     @Schema(readOnly = true)
     private List<PackageEvent> events;
 
+    @Schema(readOnly = true)
+    private String packageName;
+
+    @Schema(readOnly = true)
+    private String shareLink;
+
 }
