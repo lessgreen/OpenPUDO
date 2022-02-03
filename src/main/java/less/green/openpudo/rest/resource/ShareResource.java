@@ -36,6 +36,15 @@ public class ShareResource {
     ShareService shareService;
 
     @GET
+    @Path("/{shareLink}")
+    @PublicAPI
+    @BinaryAPI
+    @Operation(summary = "Get package share html page, simulating a static resource served by an http server")
+    public Response getSharePage(@PathParam(value = "shareLink") String shareLink) throws IOException {
+        return shareService.getSharePage(shareLink);
+    }
+
+    @GET
     @Path("/qrcode/{shareLink}")
     @PublicAPI
     @BinaryAPI

@@ -34,6 +34,7 @@ public class Package {
     @Schema(readOnly = true)
     private List<PackageEvent> events;
 
+    // transient fields
     @Schema(readOnly = true)
     private String packageName;
 
