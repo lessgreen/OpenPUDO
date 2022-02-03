@@ -50,8 +50,8 @@ public class AuthResource {
     @PublicAPI
     @Operation(summary = "First phase of password-less authentication or registration",
             description = "The client calls this API to request an OTP to validate its credentials.\n\n" +
-                    "The phone number must start with international prefix, and will be internally normalized in E.164 standard format.\n\n" +
-                    "This is a public API and can be invoked without a valid access token.")
+                          "The phone number must start with international prefix, and will be internally normalized in E.164 standard format.\n\n" +
+                          "This is a public API and can be invoked without a valid access token.")
     public BaseResponse loginSend(LoginSendRequest req) {
         // sanitize input
         if (req == null) {
@@ -76,7 +76,7 @@ public class AuthResource {
     @PublicAPI
     @Operation(summary = "Second phase of password-less authentication or registration",
             description = "The client calls this API to confirm the OTP and validate its credentials.\n\n" +
-                    "This is a public API and can be invoked without a valid access token.")
+                          "This is a public API and can be invoked without a valid access token.")
     public LoginConfirmResponse loginConfirm(LoginConfirmRequest req) {
         // sanitize input
         if (req == null) {

@@ -48,8 +48,8 @@ public class MapResource {
     @SecurityRequirement(name = "JWT")
     @Operation(summary = "Address search feature based on user input autocompletion",
             description = "Text length must be greater than 3 characters, to provide meaningful results.\n\n"
-                    + "Coordinates parameters are optional, but the client should provide them to speed up queries and obtain more pertinent results.\n\n"
-                    + "This API should be throttled to prevent excessive load.")
+                          + "Coordinates parameters are optional, but the client should provide them to speed up queries and obtain more pertinent results.\n\n"
+                          + "This API should be throttled to prevent excessive load.")
     public AddressMarkerListResponse searchAddress(
             @Parameter(description = "Query text", required = true) @QueryParam("text") String text,
             @Parameter(description = "Latitude value of map center point") @QueryParam("lat") BigDecimal lat,

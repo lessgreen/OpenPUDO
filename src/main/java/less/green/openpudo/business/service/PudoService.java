@@ -496,14 +496,14 @@ public class PudoService {
             }
             ExtraInfoSelectItem customersExtraInfoValue = customersExtraInfo.getValue();
             if (!customersExtraInfoValue.getName().equals("1/day")
-                    && !customersExtraInfoValue.getName().equals("3/week")
-                    && !customersExtraInfoValue.getName().equals("1/week")
-                    && !customersExtraInfoValue.getName().equals("2/month")
-                    && !customersExtraInfoValue.getName().equals("1/month")
-                    && !customersExtraInfoValue.getName().equals("4/year")
-                    && !customersExtraInfoValue.getName().equals("2/year")
-                    && !customersExtraInfoValue.getName().equals("1/year")
-                    && !customersExtraInfoValue.getName().equals("other")) {
+                && !customersExtraInfoValue.getName().equals("3/week")
+                && !customersExtraInfoValue.getName().equals("1/week")
+                && !customersExtraInfoValue.getName().equals("2/month")
+                && !customersExtraInfoValue.getName().equals("1/month")
+                && !customersExtraInfoValue.getName().equals("4/year")
+                && !customersExtraInfoValue.getName().equals("2/year")
+                && !customersExtraInfoValue.getName().equals("1/year")
+                && !customersExtraInfoValue.getName().equals("other")) {
                 throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.invalid_field", "rewardPolicy"));
             }
             ret.setCustomerSelectitem(customersExtraInfoValue.getName());

@@ -30,9 +30,9 @@ public class PudoDao extends BaseEntityDao<TbPudo, Long> {
     }
 
     public Quartet<TbPudo, TbAddress, TbRating, TbRewardPolicy> getPudo(Long pudoId) {
-        String qs = "SELECT t1, t2, t3, t4 " +
-                "FROM TbPudo t1, TbAddress t2, TbRating t3, TbRewardPolicy t4 " +
-                "WHERE t1.pudoId = :pudoId AND t1.pudoId = t2.pudoId AND t1.pudoId = t3.pudoId AND t1.pudoId = t4.pudoId and t4.deleteTms IS NULL";
+        String qs = "SELECT t1, t2, t3, t4 "
+                    + "FROM TbPudo t1, TbAddress t2, TbRating t3, TbRewardPolicy t4 "
+                    + "WHERE t1.pudoId = :pudoId AND t1.pudoId = t2.pudoId AND t1.pudoId = t3.pudoId AND t1.pudoId = t4.pudoId and t4.deleteTms IS NULL";
         try {
             TypedQuery<Object[]> q = em.createQuery(qs, Object[].class);
             q.setParameter("pudoId", pudoId);
@@ -44,12 +44,12 @@ public class PudoDao extends BaseEntityDao<TbPudo, Long> {
     }
 
     public List<Septet<Long, String, UUID, String, TbRating, BigDecimal, BigDecimal>> getPudosOnMap(BigDecimal latMin, BigDecimal latMax, BigDecimal lonMin, BigDecimal lonMax) {
-        String qs = "SELECT t1.pudoId, t1.businessName, t1.pudoPicId, t2.label, t3, t2.lat, t2.lon " +
-                "FROM TbPudo t1, TbAddress t2, TbRating t3 " +
-                "WHERE t1.pudoId = t2.pudoId AND t1.pudoId = t3.pudoId " +
-                "AND t1.pudoPicId IS NOT NULL " +
-                "AND t2.lat >= :latMin AND t2.lat <= :latMax " +
-                "AND t2.lon >= :lonMin AND t2.lon <= :lonMax";
+        String qs = "SELECT t1.pudoId, t1.businessName, t1.pudoPicId, t2.label, t3, t2.lat, t2.lon "
+                    + "FROM TbPudo t1, TbAddress t2, TbRating t3 "
+                    + "WHERE t1.pudoId = t2.pudoId AND t1.pudoId = t3.pudoId "
+                    + "AND t1.pudoPicId IS NOT NULL "
+                    + "AND t2.lat >= :latMin AND t2.lat <= :latMax "
+                    + "AND t2.lon >= :lonMin AND t2.lon <= :lonMax";
         TypedQuery<Object[]> q = em.createQuery(qs, Object[].class);
         q.setParameter("latMin", latMin);
         q.setParameter("latMax", latMax);
@@ -60,11 +60,11 @@ public class PudoDao extends BaseEntityDao<TbPudo, Long> {
     }
 
     public List<Quintet<Long, String, UUID, String, TbRating>> getUserPudos(Long userId) {
-        String qs = "SELECT t1.pudoId, t1.businessName, t1.pudoPicId, t2.label, t4 " +
-                "FROM TbPudo t1, TbAddress t2, TbUserPudoRelation t3, TbRating t4 " +
-                "WHERE t1.pudoId = t2.pudoId AND t1.pudoId = t3.pudoId AND t1.pudoId = t4.pudoId " +
-                "AND t3.userId = :userId AND t3.relationType = :relationType AND t3.deleteTms IS NULL " +
-                "ORDER BY t3.createTms ASC";
+        String qs = "SELECT t1.pudoId, t1.businessName, t1.pudoPicId, t2.label, t4 "
+                    + "FROM TbPudo t1, TbAddress t2, TbUserPudoRelation t3, TbRating t4 "
+                    + "WHERE t1.pudoId = t2.pudoId AND t1.pudoId = t3.pudoId AND t1.pudoId = t4.pudoId "
+                    + "AND t3.userId = :userId AND t3.relationType = :relationType AND t3.deleteTms IS NULL "
+                    + "ORDER BY t3.createTms ASC";
         TypedQuery<Object[]> q = em.createQuery(qs, Object[].class);
         q.setParameter("userId", userId);
         q.setParameter("relationType", RelationType.CUSTOMER);

@@ -71,7 +71,8 @@ public class UserPudoRelationDao extends BaseEntityDao<TbUserPudoRelation, Long>
     }
 
     public String getPastCustomerSuffix(Long pudoId, Long userId) {
-        String qs = "SELECT DISTINCT(t.customerSuffix) FROM TbUserPudoRelation t WHERE t.userId = :userId AND t.pudoId = :pudoId AND t.relationType = :relationType AND t.deleteTms IS NOT NULL";
+        String qs = "SELECT DISTINCT(t.customerSuffix) FROM TbUserPudoRelation t "
+                    + "WHERE t.userId = :userId AND t.pudoId = :pudoId AND t.relationType = :relationType AND t.deleteTms IS NOT NULL";
         try {
             TypedQuery<String> q = em.createQuery(qs, String.class);
             q.setParameter("userId", userId);
@@ -101,13 +102,13 @@ public class UserPudoRelationDao extends BaseEntityDao<TbUserPudoRelation, Long>
     }
 
     public List<Quintet<Long, String, String, UUID, String>> getActiveCustomersByPudoId(Long pudoId) {
-        String qs = "SELECT t1.userId, t1.firstName, t1.lastName, t1.profilePicId, t2.customerSuffix " +
-                "FROM TbUserProfile t1, TbUserPudoRelation t2 " +
-                "WHERE t2.pudoId = :pudoId " +
-                "AND t2.userId = t1.userId " +
-                "AND t2.relationType = :relationType " +
-                "AND t2.deleteTms IS NULL " +
-                "ORDER BY t1.firstName, t1.lastName, t2.customerSuffix";
+        String qs = "SELECT t1.userId, t1.firstName, t1.lastName, t1.profilePicId, t2.customerSuffix "
+                    + "FROM TbUserProfile t1, TbUserPudoRelation t2 "
+                    + "WHERE t2.pudoId = :pudoId "
+                    + "AND t2.userId = t1.userId "
+                    + "AND t2.relationType = :relationType "
+                    + "AND t2.deleteTms IS NULL "
+                    + "ORDER BY t1.firstName, t1.lastName, t2.customerSuffix";
         TypedQuery<Object[]> q = em.createQuery(qs, Object[].class);
         q.setParameter("pudoId", pudoId);
         q.setParameter("relationType", RelationType.CUSTOMER);
