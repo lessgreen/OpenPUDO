@@ -61,8 +61,8 @@ class _HomeControllerState extends State<HomeController> with ConnectionAware {
             _oldIndex = selectedIndex;
           },
           items: const [
-            BottomNavigationBarItem(icon: Icon(Icons.home)),
-            BottomNavigationBarItem(icon: Icon(Icons.map)),
+            BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+            BottomNavigationBarItem(icon: Icon(Icons.map), label: 'Pudo'),
           ],
         ),
         tabBuilder: (innerContext, index) {
@@ -76,70 +76,6 @@ class _HomeControllerState extends State<HomeController> with ConnectionAware {
               return CupertinoTabView(
                 navigatorObservers: [_navigatorObservers[0]],
                 onGenerateRoute: (RouteSettings settings) => routeHomeUserPackagesSectionWithSetting(settings),
-                /*routes: {
-                  '/': (context) {
-                    return CupertinoPageScaffold(
-                        navigationBar: CupertinoNavigationBar(
-                          padding: const EdgeInsetsDirectional.all(0),
-                          brightness: Brightness.dark,
-                          backgroundColor: AppColors.primaryColorDark,
-                          middle: Text(
-                            'Home',
-                            style: Theme.of(context)
-                                .textTheme
-                                .headline6
-                                ?.copyWith(color: Colors.white),
-                          ),
-                          trailing: IconButton(
-                            icon: const Icon(
-                              Icons.account_circle_rounded,
-                              color: Colors.white,
-                            ),
-                            onPressed: () =>
-                                Navigator.of(context).pushNamed(Routes.profile),
-                          ),
-                        ),
-                        child: SafeArea(
-                          child: Column(
-                            children: [
-                              Container(
-                                width: double.infinity,
-                                padding:
-                                    const EdgeInsets.all(Dimension.paddingS),
-                                decoration: BoxDecoration(
-                                  color: Colors.orange.shade100,
-                                ),
-                                child: const Text('Hai dei ritiri in attesa!'),
-                              ),
-                              Expanded(
-                                child: ListViewHeader(
-                                    itemPadding: const EdgeInsets.only(
-                                        bottom: Dimension.paddingS),
-                                    title: 'I tuoi pacchi:',
-                                    shrinkWrap: true,
-                                    itemCount: 10,
-                                    itemBuilder:
-                                        (BuildContext context, int index) {
-                                      return PackageCard(
-                                        name: "Bar - La pinta",
-                                        address: "Via ippolito, 8",
-                                        stars: 3,
-                                        onTap: () => null,
-                                        isRead: false,
-                                        deliveryDate: '12/12/2021',
-                                        image:
-                                            'https://i0.wp.com/www.dailycal.org/assets/uploads/2021/04/package_gusler_cc-900x580.jpg',
-                                      );
-                                    }),
-                              ),
-                            ],
-                          ),
-                        ));
-                  },
-                  Routes.profile: (context) {
-                    return const ProfileController();
-                  },
-                },*/
               );
           }
         },
