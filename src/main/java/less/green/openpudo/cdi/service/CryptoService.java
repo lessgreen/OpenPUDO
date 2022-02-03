@@ -30,7 +30,7 @@ public class CryptoService {
     @PostConstruct
     void init() {
         hashidsShort = new Hashids(appSecret, 6, HASHIDS_ALPHABET_SHORT);
-        hashidsLong = new Hashids(appSecret, 30, HASHIDS_ALPHABET_LONG);
+        hashidsLong = new Hashids(appSecret, 20, HASHIDS_ALPHABET_LONG);
     }
 
     public Mac createMac() {
