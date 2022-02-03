@@ -56,13 +56,15 @@ class _HomeControllerState extends State<HomeController> with ConnectionAware {
         tabBar: CupertinoTabBar(
           onTap: (selectedIndex) {
             if (selectedIndex == _oldIndex) {
-              _navigatorObservers[selectedIndex].navigator?.popUntil((Route<dynamic> route) => route.isFirst);
+              _navigatorObservers[selectedIndex]
+                  .navigator
+                  ?.popUntil((Route<dynamic> route) => route.isFirst);
             }
             _oldIndex = selectedIndex;
           },
           items: const [
-            BottomNavigationBarItem(icon: Icon(Icons.home)),
-            BottomNavigationBarItem(icon: Icon(Icons.map)),
+            BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+            BottomNavigationBarItem(icon: Icon(Icons.map), label: 'Pudo'),
           ],
         ),
         tabBuilder: (innerContext, index) {
@@ -70,12 +72,14 @@ class _HomeControllerState extends State<HomeController> with ConnectionAware {
             case 1:
               return CupertinoTabView(
                 navigatorObservers: [_navigatorObservers[1]],
-                onGenerateRoute: (RouteSettings settings) => routeHomeUserPudoSectionWithSetting(settings),
+                onGenerateRoute: (RouteSettings settings) =>
+                    routeHomeUserPudoSectionWithSetting(settings),
               );
             default:
               return CupertinoTabView(
                 navigatorObservers: [_navigatorObservers[0]],
-                onGenerateRoute: (RouteSettings settings) => routeHomeUserPackagesSectionWithSetting(settings),
+                onGenerateRoute: (RouteSettings settings) =>
+                    routeHomeUserPackagesSectionWithSetting(settings),
                 /*routes: {
                   '/': (context) {
                     return CupertinoPageScaffold(
