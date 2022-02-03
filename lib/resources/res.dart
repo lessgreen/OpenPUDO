@@ -74,4 +74,6 @@ class AppColors {
   static const accentColor = Color(0xFFA0B92C);
   static const cardColor = Color(0xFFA0B92C);
   static const primaryColorDark = Color(0xFFA0B92C);
+  static const primaryTextColor = Color(0xFF363736);
+  static const colorGrey = Color(0xFF979797);
 }

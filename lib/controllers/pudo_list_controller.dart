@@ -41,7 +41,10 @@ class _PudoListControllerState extends State<PudoListController> {
           backgroundColor: AppColors.primaryColorDark,
           middle: Text(
             'Il tuoi pudo',
-            style: Theme.of(context).textTheme.headline6?.copyWith(color: Colors.white),
+            style: Theme.of(context)
+                .textTheme
+                .headline6
+                ?.copyWith(color: Colors.white, fontWeight: FontWeight.w400),
           ),
           leading: CupertinoNavigationBarBackButton(
             color: Colors.white,
@@ -65,7 +68,8 @@ class _PudoListControllerState extends State<PudoListController> {
             ),
             const SizedBox(height: 10),
             Padding(
-              padding: const EdgeInsets.only(left: Dimension.padding, right: Dimension.padding),
+              padding: const EdgeInsets.only(
+                  left: Dimension.padding, right: Dimension.padding),
               child: PudoMapCard(
                 name: "Bar - La pinta",
                 address: "Via ippolito, 8",

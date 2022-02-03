@@ -35,7 +35,8 @@ class HomeUserPackages extends StatefulWidget {
   _HomeUserPackagesState createState() => _HomeUserPackagesState();
 }
 
-class _HomeUserPackagesState extends State<HomeUserPackages> with ConnectionAware {
+class _HomeUserPackagesState extends State<HomeUserPackages>
+    with ConnectionAware {
   @override
   Widget build(BuildContext context) {
     return Consumer<CurrentUser>(builder: (_, currentUser, __) {
@@ -47,14 +48,16 @@ class _HomeUserPackagesState extends State<HomeUserPackages> with ConnectionAwar
                 backgroundColor: AppColors.primaryColorDark,
                 middle: Text(
                   'Home',
-                  style: Theme.of(context).textTheme.headline6?.copyWith(color: Colors.white),
+                  style: Theme.of(context).textTheme.headline6?.copyWith(
+                      color: Colors.white, fontWeight: FontWeight.w400),
                 ),
                 trailing: IconButton(
                   icon: const Icon(
                     Icons.account_circle_rounded,
                     color: Colors.white,
                   ),
-                  onPressed: () => Navigator.of(context).pushNamed(Routes.profile),
+                  onPressed: () =>
+                      Navigator.of(context).pushNamed(Routes.profile),
                 ),
               ),
               child: SafeArea(
@@ -70,7 +73,8 @@ class _HomeUserPackagesState extends State<HomeUserPackages> with ConnectionAwar
                     ),
                     Expanded(
                       child: ListViewHeader(
-                          itemPadding: const EdgeInsets.only(bottom: Dimension.paddingS),
+                          itemPadding:
+                              const EdgeInsets.only(bottom: Dimension.paddingS),
                           title: 'I tuoi pacchi:',
                           shrinkWrap: true,
                           itemCount: 10,
@@ -82,7 +86,8 @@ class _HomeUserPackagesState extends State<HomeUserPackages> with ConnectionAwar
                               onTap: () => null,
                               isRead: false,
                               deliveryDate: '12/12/2021',
-                              image: 'https://i0.wp.com/www.dailycal.org/assets/uploads/2021/04/package_gusler_cc-900x580.jpg',
+                              image:
+                                  'https://i0.wp.com/www.dailycal.org/assets/uploads/2021/04/package_gusler_cc-900x580.jpg',
                             );
                           }),
                     ),

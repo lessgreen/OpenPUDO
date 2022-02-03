@@ -32,7 +32,8 @@ class PudoHomeController extends StatefulWidget {
   _PudoHomeControllerState createState() => _PudoHomeControllerState();
 }
 
-class _PudoHomeControllerState extends State<PudoHomeController> with ConnectionAware {
+class _PudoHomeControllerState extends State<PudoHomeController>
+    with ConnectionAware {
   @override
   Widget build(BuildContext context) {
     return Material(
@@ -55,7 +56,12 @@ class _PudoHomeControllerState extends State<PudoHomeController> with Connection
                         backgroundColor: AppColors.primaryColorDark,
                         middle: Text(
                           'Il tuo profilo',
-                          style: Theme.of(context).textTheme.headline6?.copyWith(color: Colors.white),
+                          style: Theme.of(context)
+                              .textTheme
+                              .headline6
+                              ?.copyWith(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w400),
                         ),
                       ),
                       child: Container(),
@@ -74,7 +80,12 @@ class _PudoHomeControllerState extends State<PudoHomeController> with Connection
                           backgroundColor: AppColors.primaryColorDark,
                           middle: Text(
                             'HomePudo',
-                            style: Theme.of(context).textTheme.headline6?.copyWith(color: Colors.white),
+                            style: Theme.of(context)
+                                .textTheme
+                                .headline6
+                                ?.copyWith(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w400),
                           ),
                         ),
                         child: Center(
@@ -82,7 +93,8 @@ class _PudoHomeControllerState extends State<PudoHomeController> with Connection
                             onPressed: () {
                               Navigator.pop(context);
                               NetworkManager.instance.setAccessToken(null);
-                              Provider.of<CurrentUser>(context, listen: false).refresh();
+                              Provider.of<CurrentUser>(context, listen: false)
+                                  .refresh();
                             },
                             child: const Text("Logout"),
                           ),

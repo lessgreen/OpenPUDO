@@ -19,6 +19,7 @@
 */
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -35,7 +36,8 @@ class ProfileController extends StatefulWidget {
   _ProfileControllerState createState() => _ProfileControllerState();
 }
 
-class _ProfileControllerState extends State<ProfileController> with ConnectionAware{
+class _ProfileControllerState extends State<ProfileController>
+    with ConnectionAware {
   @override
   Widget build(BuildContext context) {
     return Consumer<CurrentUser>(builder: (_, currentUser, __) {
@@ -47,10 +49,8 @@ class _ProfileControllerState extends State<ProfileController> with ConnectionAw
               backgroundColor: AppColors.primaryColorDark,
               middle: Text(
                 'Il tuo profilo',
-                style: Theme.of(context)
-                    .textTheme
-                    .headline6
-                    ?.copyWith(color: Colors.white),
+                style: Theme.of(context).textTheme.headline6?.copyWith(
+                    color: Colors.white, fontWeight: FontWeight.w400),
               ),
               leading: CupertinoNavigationBarBackButton(
                 color: Colors.white,
@@ -64,8 +64,8 @@ class _ProfileControllerState extends State<ProfileController> with ConnectionAw
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(100),
                     child: CustomNetworkImage(
-                        height: 100,
-                        width: 100,
+                        height: 150,
+                        width: 150,
                         fit: BoxFit.cover,
                         url: currentUser.user?.profilePicId),
                   ),
@@ -76,80 +76,109 @@ class _ProfileControllerState extends State<ProfileController> with ConnectionAw
                 Text(
                   "${currentUser.user?.firstName ?? " "} ${currentUser.user?.lastName ?? " "}",
                   style: const TextStyle(
-                      fontWeight: FontWeight.w500, fontSize: 17),
+                      fontWeight: FontWeight.w600, fontSize: 20),
                 ),
+                SizedBox(height: 6),
                 Text(
                   'Utente dal ${currentUser.user?.createTms != null ? DateFormat('dd/MM/yyyy').format(DateTime.parse(currentUser.user!.createTms!)) : " "}',
-                  style: TextStyle(fontSize: 12, color: Colors.grey.shade500),
+                  style: TextStyle(
+                      fontWeight: FontWeight.w300,
+                      fontSize: 14,
+                      color: AppColors.primaryTextColor),
                 ),
                 const SizedBox(
                   height: 20,
                 ),
-                RichText(
-                  textAlign: TextAlign.center,
-                  text: TextSpan(
-                    text: '',
-                    style: Theme.of(context).textTheme.bodyText2,
-                    children: const [
-                      TextSpan(text: "Hai usato il servizio di QuiGreen "),
-                      TextSpan(
-                          text: "123",
-                          style: TextStyle(
-                              color: AppColors.accentColor,
-                              fontWeight: FontWeight.w500)),
-                      TextSpan(text: " volte,"),
-                      TextSpan(text: " contribuendo a ridurre di "),
-                      TextSpan(
-                          text: "456kg",
-                          style: TextStyle(
-                              color: AppColors.accentColor,
-                              fontWeight: FontWeight.w500)),
-                      TextSpan(text: " le emissioni di CO2")
-                    ],
+                Padding(
+                  padding: const EdgeInsets.only(
+                      left: Dimension.padding, right: Dimension.padding),
+                  child: RichText(
+                    textAlign: TextAlign.left,
+                    text: TextSpan(
+                      text: '',
+                      style: Theme.of(context).textTheme.bodyText2?.copyWith(
+                          fontWeight: FontWeight.w300,
+                          color: AppColors.primaryTextColor,
+                          fontSize: 16),
+                      children: const [
+                        TextSpan(text: "Hai usato il servizio di QuiGreen "),
+                        TextSpan(
+                            text: "123",
+                            style: TextStyle(
+                                color: AppColors.accentColor,
+                                fontWeight: FontWeight.w500,
+                                fontStyle: FontStyle.italic)),
+                        TextSpan(text: " volte,"),
+                        TextSpan(text: " contribuendo a ridurre di "),
+                        TextSpan(
+                            text: "456kg",
+                            style: TextStyle(
+                                color: AppColors.accentColor,
+                                fontWeight: FontWeight.w500,
+                                fontStyle: FontStyle.italic)),
+                        TextSpan(text: " le emissioni di CO2"),
+                        WidgetSpan(
+                            child: Icon(Icons.eco,
+                                color: AppColors.primaryColorDark)),
+                        TextSpan(
+                            text: "Condividi",
+                            style: TextStyle(
+                                color: AppColors.accentColor,
+                                fontWeight: FontWeight.w500)),
+                      ],
+                    ),
                   ),
                 ),
                 const SizedBox(
                   height: 20,
                 ),
-                const Divider(color: Colors.grey),
+                const Divider(color: AppColors.colorGrey),
                 GestureDetector(
                   onTap: () => Navigator.of(context)
                       .pushReplacementNamed(Routes.pudoList),
                   child: Row(
                     children: const [
-                      SizedBox(width: 10),
+                      SizedBox(width: 20),
                       Icon(
                         Icons.person_pin_circle,
                         color: AppColors.cardColor,
                       ),
                       SizedBox(width: 10),
-                      Text("I tuoi pudo"),
+                      Text(
+                        "I tuoi pudo",
+                        style: TextStyle(
+                            fontSize: 18, color: AppColors.primaryTextColor),
+                      ),
                       Spacer(),
                       Icon(
                         Icons.keyboard_arrow_right,
-                        color: AppColors.cardColor,
+                        size: 40,
+                        color: AppColors.colorGrey,
                       ),
                     ],
                   ),
                 ),
-                const Divider(color: Colors.grey),
+                const Divider(color: AppColors.colorGrey),
                 Row(
                   children: const [
-                    SizedBox(width: 10),
+                    SizedBox(width: 20),
                     Icon(
                       Icons.new_label,
                       color: AppColors.cardColor,
                     ),
                     SizedBox(width: 10),
-                    Text("Le tue spedizioni"),
+                    Text("Le tue spedizioni",
+                        style: TextStyle(
+                            fontSize: 18, color: AppColors.primaryTextColor)),
                     Spacer(),
                     Icon(
                       Icons.keyboard_arrow_right,
-                      color: AppColors.cardColor,
+                      size: 40,
+                      color: AppColors.colorGrey,
                     ),
                   ],
                 ),
-                const Divider(color: Colors.grey),
+                const Divider(color: AppColors.colorGrey),
                 Material(
                   child: InkWell(
                     onTap: () {
@@ -159,23 +188,27 @@ class _ProfileControllerState extends State<ProfileController> with ConnectionAw
                     },
                     child: Row(
                       children: const [
-                        SizedBox(width: 10),
+                        SizedBox(width: 20),
                         Icon(
                           Icons.logout,
                           color: AppColors.cardColor,
                         ),
                         SizedBox(width: 10),
-                        Text("Logout"),
+                        Text("Logout",
+                            style: TextStyle(
+                                fontSize: 18,
+                                color: AppColors.primaryTextColor)),
                         Spacer(),
                         Icon(
                           Icons.keyboard_arrow_right,
-                          color: AppColors.cardColor,
+                          size: 40,
+                          color: AppColors.colorGrey,
                         ),
                       ],
                     ),
                   ),
                 ),
-                const Divider(color: Colors.grey),
+                const Divider(color: AppColors.colorGrey),
               ],
             )),
       );
