@@ -102,6 +102,7 @@ public class PackageResource {
 
     @POST
     @Path("/{packageId}/notified")
+    @SecurityRequirement(name = "JWT")
     @Operation(summary = "Signal that the user has received the delivery notification of a package")
     public PackageResponse notifiedPackage(@PathParam(value = "packageId") Long packageId) {
         Package ret = packageService.notifiedPackage(packageId);
@@ -110,6 +111,7 @@ public class PackageResource {
 
     @POST
     @Path("/{packageId}/collected")
+    @SecurityRequirement(name = "JWT")
     @Operation(summary = "Signal that the user has collected the package")
     public PackageResponse collectedPackage(@PathParam(value = "packageId") Long packageId, ChangePackageStatusRequest req) {
         // sanitize input
@@ -123,6 +125,7 @@ public class PackageResource {
 
     @POST
     @Path("/{packageId}/accepted")
+    @SecurityRequirement(name = "JWT")
     @Operation(summary = "Signal that the user confirms the package collection")
     public PackageResponse acceptedPackage(@PathParam(value = "packageId") Long packageId, ChangePackageStatusRequest req) {
         // sanitize input
