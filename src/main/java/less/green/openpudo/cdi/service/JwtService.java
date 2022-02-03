@@ -76,5 +76,4 @@ public class JwtService {
         return OBJECT_MAPPER.readValue(payloadJson, JwtPayload.class);
     }
 
-
 }
