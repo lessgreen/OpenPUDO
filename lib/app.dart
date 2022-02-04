@@ -60,7 +60,6 @@ void mainCommon({required String host, required bool isProd}) async {
     ),
   );
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-  NetworkManager.instance.login(login: '+39328000096', password: '12345');
   runApp(
     App(
       config: appConfig,
@@ -112,7 +111,7 @@ class App extends StatelessWidget {
             theme: MyAppTheme.themeData(context),
             darkTheme: MyAppTheme.darkThemeData(context),
             initialRoute: NetworkManager.instance.accessToken.isEmpty
-                ? Routes.insertAddress
+                ? Routes.login
                 : "/",
             onGenerateRoute: (settings) {
               return routeWithSetting(settings);
