@@ -32,7 +32,14 @@ class CustomNetworkImage extends StatefulWidget {
   final BoxFit? fit;
   final bool useSVGPlaceholder;
 
-  const CustomNetworkImage({Key? key, required this.url, this.width, this.height, this.fit, this.useSVGPlaceholder = true}) : super(key: key);
+  const CustomNetworkImage(
+      {Key? key,
+      required this.url,
+      this.width,
+      this.height,
+      this.fit,
+      this.useSVGPlaceholder = true})
+      : super(key: key);
 
   @override
   _CustomNetworkImageState createState() => _CustomNetworkImageState();
@@ -40,6 +47,14 @@ class CustomNetworkImage extends StatefulWidget {
 
 class _CustomNetworkImageState extends State<CustomNetworkImage> {
   Uint8List? _buffer;
+
+  set buffer(Uint8List? val) {
+    if (mounted) {
+      setState(() {
+        _buffer = val;
+      });
+    }
+  }
 
   @override
   void initState() {
@@ -49,28 +64,20 @@ class _CustomNetworkImageState extends State<CustomNetworkImage> {
 
   _refreshData(String? pictureId) {
     if (pictureId == null) {
-      setState(() {
-        _buffer = null;
-      });
+      buffer = null;
       return;
     }
     NetworkManager.instance.profilePic(pictureId).then((value) {
       decodeImageFromList(value).then(
         (image) {
-          setState(() {
-            _buffer = value;
-          });
+          buffer = value;
         },
       ).catchError((onError) {
-        setState(() {
-          _buffer = null;
-        });
+        buffer = null;
       });
     }).catchError(
       (onError) {
-        setState(() {
-          _buffer = null;
-        });
+        buffer = null;
       },
     );
   }
