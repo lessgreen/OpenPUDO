@@ -52,6 +52,15 @@ public class PackageResource {
         return new PackageResponse(context.getExecutionId(), ApiReturnCodes.OK, ret);
     }
 
+    @GET
+    @Path("/by-qrcode/{shareLink}")
+    @SecurityRequirement(name = "JWT")
+    @Operation(summary = "Get info and event log for package by generated QRCode")
+    public PackageResponse getPackageByShareLink(@PathParam(value = "shareLink") String shareLink) {
+        Package ret = packageService.getPackageByShareLink(shareLink);
+        return new PackageResponse(context.getExecutionId(), ApiReturnCodes.OK, ret);
+    }
+
     @POST
     @Path("/")
     @SecurityRequirement(name = "JWT")

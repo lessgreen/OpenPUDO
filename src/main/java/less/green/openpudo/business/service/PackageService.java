@@ -90,6 +90,14 @@ public class PackageService {
         return dtoMapper.mapPackageEntityToDto(new Quartet<>(rs.getValue0(), rs.getValue1(), cryptoService.hashidEncodeShort(packageId), cryptoService.hashidEncodeLong(packageId)));
     }
 
+    public Package getPackageByShareLink(String shareLink) {
+        Long packageId = cryptoService.hashidDecodeLong(shareLink);
+        if (packageId == null) {
+            return null;
+        }
+        return getPackage(packageId);
+    }
+
     protected List<PackageSummary> getPackages(AccountType accountType, Long referenceId, boolean history, int limit, int offset) {
         List<PackageStatus> packageStatuses;
         if (accountType == AccountType.CUSTOMER) {
