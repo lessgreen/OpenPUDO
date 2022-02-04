@@ -27,14 +27,14 @@ import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
 import 'package:qui_green/commons/alert_dialog.dart';
-import 'package:qui_green/widgets/sascaffold.dart';
-import 'package:qui_green/widgets/text_field_button.dart';
-import 'package:qui_green/view_models/maps_controller_viewmodel.dart';
-import 'package:qui_green/widgets/pudo_map_card.dart';
 import 'package:qui_green/models/geo_marker.dart';
 import 'package:qui_green/resources/res.dart';
 import 'package:qui_green/resources/routes_enum.dart';
 import 'package:qui_green/singletons/network/network_manager.dart';
+import 'package:qui_green/view_models/maps_controller_viewmodel.dart';
+import 'package:qui_green/widgets/pudo_map_card.dart';
+import 'package:qui_green/widgets/sascaffold.dart';
+import 'package:qui_green/widgets/text_field_button.dart';
 
 class MapsController extends StatefulWidget {
   const MapsController({Key? key, required this.initialPosition})
@@ -45,9 +45,42 @@ class MapsController extends StatefulWidget {
   _MapsControllerState createState() => _MapsControllerState();
 }
 
-class _MapsControllerState extends State<MapsController> with ConnectionAware {
+class _MapsControllerState extends State<MapsController>
+    with ConnectionAware, TickerProviderStateMixin {
   void _showErrorDialog(BuildContext context, String val) =>
       SAAlertDialog.displayAlertWithClose(context, "Error", val);
+
+  void onPageControllerChange(MapsControllerViewModel viewModel, int index) {
+    final _latTween = Tween<double>(
+        begin: viewModel.mapController?.center.latitude,
+        end: viewModel.pudos[index].lat);
+    final _lngTween = Tween<double>(
+        begin: viewModel.mapController?.center.longitude,
+        end: viewModel.pudos[index].lon);
+    final _zoomTween =
+        Tween<double>(begin: viewModel.mapController?.zoom, end: 16);
+
+    var controller = AnimationController(
+        duration: const Duration(milliseconds: 500), vsync: this);
+    Animation<double> animation =
+        CurvedAnimation(parent: controller, curve: Curves.fastOutSlowIn);
+
+    controller.addListener(() {
+      viewModel.mapController?.move(
+          LatLng(_latTween.evaluate(animation), _lngTween.evaluate(animation)),
+          _zoomTween.evaluate(animation));
+    });
+
+    animation.addStatusListener((status) {
+      if (status == AnimationStatus.completed) {
+        controller.dispose();
+      } else if (status == AnimationStatus.dismissed) {
+        controller.dispose();
+      }
+    });
+
+    controller.forward();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -193,13 +226,16 @@ class _MapsControllerState extends State<MapsController> with ConnectionAware {
                           ),
                         ),
                         const Spacer(),
-                        Container(
+                        SizedBox(
                           height: 180,
                           child: PageView.builder(
                               itemCount: viewModel.pudos.length,
                               controller: viewModel.pageController,
-                              onPageChanged: (value) {
-                                viewModel.onPageControllerChange(value);
+                              onPageChanged: (value) async {
+                                //Check if is fetching something (image not included)
+                                if (!viewModel.isReloadingPudos) {
+                                  onPageControllerChange(viewModel, value);
+                                }
                               },
                               itemBuilder: (context, index) =>
                                   AnimatedCrossFade(

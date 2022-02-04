@@ -23,8 +23,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:qui_green/models/pudo_detail_controller_data_model.dart';
 import 'package:qui_green/models/geo_marker.dart';
+import 'package:qui_green/models/pudo_detail_controller_data_model.dart';
 import 'package:qui_green/models/pudo_profile.dart';
 import 'package:qui_green/resources/routes_enum.dart';
 import 'package:qui_green/singletons/network/network_manager.dart';
@@ -41,15 +41,28 @@ class MapsControllerViewModel extends ChangeNotifier {
   MapController? mapController;
   Function(String)? showErrorDialog;
 
+  bool _isReloadingPudos =  false;
+
+  bool get isReloadingPudos => _isReloadingPudos;
+
+  set isReloadingPudos(bool newVal) {
+    _isReloadingPudos = newVal;
+    notifyListeners();
+  }
+
   List<GeoMarker> _pudos = [];
+
   List<GeoMarker> get pudos => _pudos;
+
   set pudos(List<GeoMarker> newVal) {
     _pudos = newVal;
     notifyListeners();
   }
 
   GeoMarker? _pudoProfile;
+
   GeoMarker? get pudoProfile => _pudoProfile;
+
   set pudoProfile(GeoMarker? newVal) {
     _pudoProfile = newVal;
     notifyListeners();
@@ -84,6 +97,7 @@ class MapsControllerViewModel extends ChangeNotifier {
   }
 
   Timer _debounce = Timer(const Duration(days: 1), () {});
+
   onMapChange({bool requireZoomLevelRefresh = false}) {
     if (_debounce.isActive) _debounce.cancel();
     _debounce = Timer(const Duration(milliseconds: 800), () {
@@ -123,36 +137,31 @@ class MapsControllerViewModel extends ChangeNotifier {
                 currentZoomLevel.toDouble());
             return;
           }
-
           int newIndex = 0;
           int? oldIndex = 0;
-
           if (pudos.isNotEmpty) {
             oldIndex = pageController.page?.toInt();
             GeoMarker oldMarker = pudos[oldIndex!];
-            if (response.contains((GeoMarker element) =>
-                element.pudo?.pudoId == oldMarker.pudo?.pudoId)) {
-              newIndex = (response as List<GeoMarker>).indexWhere(
-                  (GeoMarker element) =>
-                      element.pudo?.pudoId == oldMarker.pudo?.pudoId);
+            // ignore: iterable_contains_unrelated_type
+            if (response.contains(
+                (element) => element.pudo?.pudoId == oldMarker.pudo?.pudoId)) {
+              newIndex = response.indexWhere((GeoMarker element) =>
+                  element.pudo?.pudoId == oldMarker.pudo?.pudoId);
             }
           }
-
           pudos = response;
           if (oldIndex != newIndex) {
+            //isRealodingPudos is used to avoid to trigger the onPageChanged in the list of pudos
+            isReloadingPudos = true;
             pageController.animateToPage(newIndex,
-                duration: Duration(milliseconds: 150), curve: Curves.easeIn);
+                duration: const Duration(milliseconds: 150),
+                curve: Curves.easeIn).then((value) => isReloadingPudos = false);
           }
           mapController?.move(LatLng(currentLatitude, currentLongitude),
               currentZoomLevel.toDouble());
         }
       }).catchError((onError) => showErrorDialog?.call(onError));
     }).catchError((onError) => showErrorDialog?.call(onError));
-  }
-
-  onPageControllerChange(int index) {
-    mapController?.move(
-        LatLng(pudos[index].lat ?? 0, pudos[index].lon ?? 0), 16);
   }
 
   selectPudo(BuildContext context, int? pudoId) {
@@ -162,7 +171,7 @@ class MapsControllerViewModel extends ChangeNotifier {
     for (var i = 0; i < pudos.length; i++) {
       if (pudos[i].pudo?.pudoId == pudoId) {
         pageController.animateToPage(i,
-            duration: Duration(milliseconds: 150), curve: Curves.easeIn);
+            duration: const Duration(milliseconds: 150), curve: Curves.easeIn);
         return;
       }
     }
