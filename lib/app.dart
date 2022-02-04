@@ -41,11 +41,10 @@ void mainCommon({required String host, required bool isProd}) async {
   PackageInfo info = await PackageInfo.fromPlatform();
 
   AppConfig appConfig = AppConfig(
-    isProd: isProd,
-    host: host,
-    appInfo: info,
-    sharedPreferencesInstance: sharedPreferences,
-  );
+      isProd: isProd,
+      host: host,
+      appInfo: info,
+      sharedPreferencesInstance: sharedPreferences);
   NetworkManager(config: appConfig);
   await SystemChrome.setEnabledSystemUIMode(
     SystemUiMode.edgeToEdge,
@@ -85,9 +84,8 @@ class App extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
-          create: (_) =>
-              CurrentUser(config.sharedPreferencesInstance, pushPage: pushPage),
-        ),
+            create: (_) => CurrentUser(config.sharedPreferencesInstance,
+                pushPage: pushPage)),
       ],
       child: Consumer<CurrentUser>(
         builder: (context, currentUser, _) {

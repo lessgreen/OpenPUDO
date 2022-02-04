@@ -91,7 +91,6 @@ class CurrentUser with ChangeNotifier {
         WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
           pushPage(Routes.login);
         });
-        //safePrint(onError);
       });
     } else {
       user = null;
