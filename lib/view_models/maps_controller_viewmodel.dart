@@ -41,7 +41,7 @@ class MapsControllerViewModel extends ChangeNotifier {
   MapController? mapController;
   Function(String)? showErrorDialog;
 
-  bool _isReloadingPudos =  false;
+  bool _isReloadingPudos = false;
 
   bool get isReloadingPudos => _isReloadingPudos;
 
@@ -137,31 +137,35 @@ class MapsControllerViewModel extends ChangeNotifier {
                 currentZoomLevel.toDouble());
             return;
           }
-          int newIndex = 0;
-          int? oldIndex = 0;
-          if (pudos.isNotEmpty) {
-            oldIndex = pageController.page?.toInt();
-            GeoMarker oldMarker = pudos[oldIndex!];
-            // ignore: iterable_contains_unrelated_type
-            if (response.contains(
-                (element) => element.pudo?.pudoId == oldMarker.pudo?.pudoId)) {
-              newIndex = response.indexWhere((GeoMarker element) =>
-                  element.pudo?.pudoId == oldMarker.pudo?.pudoId);
-            }
-          }
-          pudos = response;
-          if (oldIndex != newIndex) {
-            //isRealodingPudos is used to avoid to trigger the onPageChanged in the list of pudos
-            isReloadingPudos = true;
-            pageController.animateToPage(newIndex,
-                duration: const Duration(milliseconds: 150),
-                curve: Curves.easeIn).then((value) => isReloadingPudos = false);
-          }
+          pudos = smartPlacement(response);
           mapController?.move(LatLng(currentLatitude, currentLongitude),
               currentZoomLevel.toDouble());
         }
       }).catchError((onError) => showErrorDialog?.call(onError));
     }).catchError((onError) => showErrorDialog?.call(onError));
+  }
+
+  ///
+  /// Experimental method it's going to be tweaked more in the future with more accuracy
+  /// Newest fetched pudos are always added at the end (only if the pudo doest already exists the list)
+  ///
+  /// _maxLoadedPudos To be set to 100 when enough pudos created
+  ///
+  final int _maxLoadedPudos = 20;
+  List<GeoMarker> smartPlacement(List<GeoMarker> newPudos) {
+    List<GeoMarker> oldPudos = List<GeoMarker>.from(pudos);
+
+    if (oldPudos.length >= _maxLoadedPudos) {
+      //removes oldest fetched pudos if oldPudos exceeds the maxLoaded
+      oldPudos.removeRange(0, newPudos.length>oldPudos.length?oldPudos.length-1:newPudos.length-1);
+    }
+    for (GeoMarker i in newPudos) {
+      //if never fetched add the newFetchedPudo
+      if (!oldPudos.any((element) => element.pudo?.pudoId == i.pudo?.pudoId)) {
+        oldPudos.add(i);
+      }
+    }
+    return oldPudos;
   }
 
   selectPudo(BuildContext context, int? pudoId) {

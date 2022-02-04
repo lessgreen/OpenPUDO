@@ -77,7 +77,10 @@ class App extends StatelessWidget {
   // if the user is not logged navigates the app to the login route
 
   void pushPage(String route) =>
-      navigatorKey.currentState?.pushReplacementNamed(route);
+      navigatorKey.currentState?.pushNamedAndRemoveUntil(
+        route,
+        ModalRoute.withName('/'),
+      );
 
   @override
   Widget build(BuildContext context) {
