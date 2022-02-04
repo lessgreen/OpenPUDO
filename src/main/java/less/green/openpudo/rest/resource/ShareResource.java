@@ -37,10 +37,11 @@ public class ShareResource {
 
     @GET
     @Path("/{shareLink}")
+    @Produces(MediaType.TEXT_HTML)
     @PublicAPI
     @BinaryAPI
     @Operation(summary = "Get package share html page, simulating a static resource served by an http server")
-    public Response getSharePage(@PathParam(value = "shareLink") String shareLink) throws IOException {
+    public Response getSharePage(@PathParam(value = "shareLink") String shareLink) {
         return shareService.getSharePage(shareLink);
     }
 
