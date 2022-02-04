@@ -18,10 +18,8 @@
  If not, see <https://github.com/lessgreen/OpenPUDO>.
 */
 
-// ignore_for_file: unused_import
 
 import 'package:flutter/material.dart';
-import 'package:location/location.dart';
 import 'package:qui_green/models/exchange_option_state_model.dart';
 import 'package:qui_green/models/exhange_option_model.dart';
 import 'package:qui_green/resources/routes_enum.dart';

@@ -109,7 +109,7 @@ class App extends StatelessWidget {
               GlobalWidgetsLocalizations.delegate
             ],
             theme: MyAppTheme.themeData(context),
-            darkTheme: MyAppTheme.darkThemeData(context),
+            darkTheme: MyAppTheme.themeData(context),
             initialRoute: NetworkManager.instance.accessToken.isEmpty
                 ? Routes.login
                 : "/",
