@@ -63,11 +63,11 @@ public class ShareService {
     public Response getQRCode(String shareLink, int size) throws WriterException, IOException {
         Long packageId = cryptoService.hashidDecodeLong(shareLink);
         if (packageId == null) {
-            return Response.status(Response.Status.NOT_FOUND).build();
+            return Response.status(Response.Status.NOT_FOUND).entity(Response.Status.NOT_FOUND.getReasonPhrase()).build();
         }
         TbPackage rs = packageDao.get(packageId);
         if (rs == null) {
-            return Response.status(Response.Status.NOT_FOUND).build();
+            return Response.status(Response.Status.NOT_FOUND).entity(Response.Status.NOT_FOUND.getReasonPhrase()).build();
         }
 
         QRCodeWriter writer = new QRCodeWriter();
@@ -75,7 +75,7 @@ public class ShareService {
         BufferedImage image = MatrixToImageWriter.toBufferedImage(bitMatrix);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ImageIO.write(image, "png", baos);
-        return Response.ok(baos.toByteArray()).header("Content-Type", "image/png").build();
+        return Response.ok(baos.toByteArray()).build();
     }
 
 }

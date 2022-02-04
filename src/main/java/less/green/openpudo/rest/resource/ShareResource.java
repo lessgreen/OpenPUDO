@@ -21,8 +21,6 @@ import java.io.IOException;
 
 @RequestScoped
 @Path("/share")
-@Produces(MediaType.APPLICATION_JSON)
-@Consumes(MediaType.APPLICATION_JSON)
 @Log4j2
 public class ShareResource {
 
@@ -47,6 +45,7 @@ public class ShareResource {
 
     @GET
     @Path("/qrcode/{shareLink}")
+    @Produces("image/png")
     @PublicAPI
     @BinaryAPI
     @Operation(summary = "Get QRCode of the provided share link, simulating a static resource served by an http server")

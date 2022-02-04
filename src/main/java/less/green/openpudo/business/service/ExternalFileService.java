@@ -36,7 +36,7 @@ public class ExternalFileService {
     public Response getExternalFile(UUID externalFileId) {
         TbExternalFile ext = externalFileDao.get(externalFileId);
         if (ext == null) {
-            return Response.status(Response.Status.NOT_FOUND).build();
+            return Response.status(Response.Status.NOT_FOUND).entity(Response.Status.NOT_FOUND.getReasonPhrase()).build();
         }
         byte[] bytes;
         try {
@@ -47,7 +47,7 @@ public class ExternalFileService {
         }
         if (bytes == null) {
             log.error("[{}] External file {} exists in database but not on filesystem", context.getExecutionId(), externalFileId);
-            return Response.status(Response.Status.NOT_FOUND).build();
+            return Response.status(Response.Status.NOT_FOUND).entity(Response.Status.NOT_FOUND.getReasonPhrase()).build();
         }
         return Response.ok(bytes).header("Content-Type", ext.getMimeType()).build();
     }
