@@ -123,120 +123,55 @@ public class PudoService {
         List<RewardOption> ret = new ArrayList<>(5);
 
         // free for all
-        RewardOption free = new RewardOption();
+        RewardOption free = new RewardOption("free", localizationService.getMessage(context.getLanguage(), "label.reward.free"), RewardIcon.SMILE, true, false, null);
         ret.add(free);
-        free.setName("free");
-        free.setText(localizationService.getMessage(context.getLanguage(), "label.reward.free"));
-        free.setExclusive(true);
-        free.setExtraInfo(null);
 
         // customers
-        RewardOption customers = new RewardOption();
+        RewardOption customers = new RewardOption("customers", localizationService.getMessage(context.getLanguage(), "label.reward.customers"), RewardIcon.SMILE, false, false);
         ret.add(customers);
-        customers.setName("customers");
-        customers.setText(localizationService.getMessage(context.getLanguage(), "label.reward.customers"));
-        customers.setExclusive(false);
-        ExtraInfoSelect customersExtraInfo = new ExtraInfoSelect();
+        ExtraInfoSelect customersExtraInfo = new ExtraInfoSelect("customers.select", localizationService.getMessage(context.getLanguage(), "label.reward.customers.select"), ExtraInfoType.SELECT, true, new ArrayList<>(9));
         customers.setExtraInfo(customersExtraInfo);
-        customersExtraInfo.setName("customers.select");
-        customersExtraInfo.setText(localizationService.getMessage(context.getLanguage(), "label.reward.customers.select"));
-        customersExtraInfo.setType(ExtraInfoType.SELECT);
-        customersExtraInfo.setMandatoryValue(true);
-        List<ExtraInfoSelectItem> selectItems = new ArrayList<>();
-        customersExtraInfo.setSelectItems(selectItems);
-        ExtraInfoSelectItem select1Day = new ExtraInfoSelectItem();
-        selectItems.add(select1Day);
-        select1Day.setName("1/day");
-        select1Day.setText(localizationService.getMessage(context.getLanguage(), "label.reward.customers.select.1/day"));
-        select1Day.setExtraInfo(null);
-        ExtraInfoSelectItem select3Week = new ExtraInfoSelectItem();
-        selectItems.add(select3Week);
-        select3Week.setName("3/week");
-        select3Week.setText(localizationService.getMessage(context.getLanguage(), "label.reward.customers.select.3/week"));
-        select3Week.setExtraInfo(null);
-        ExtraInfoSelectItem select1Week = new ExtraInfoSelectItem();
-        selectItems.add(select1Week);
-        select1Week.setName("1/week");
-        select1Week.setText(localizationService.getMessage(context.getLanguage(), "label.reward.customers.select.1/week"));
-        select1Week.setExtraInfo(null);
-        ExtraInfoSelectItem select2Month = new ExtraInfoSelectItem();
-        selectItems.add(select2Month);
-        select2Month.setName("2/month");
-        select2Month.setText(localizationService.getMessage(context.getLanguage(), "label.reward.customers.select.2/month"));
-        select2Month.setExtraInfo(null);
-        ExtraInfoSelectItem select1Month = new ExtraInfoSelectItem();
-        selectItems.add(select1Month);
-        select1Month.setName("1/month");
-        select1Month.setText(localizationService.getMessage(context.getLanguage(), "label.reward.customers.select.1/month"));
-        select1Month.setExtraInfo(null);
-        ExtraInfoSelectItem select4Year = new ExtraInfoSelectItem();
-        selectItems.add(select4Year);
-        select4Year.setName("4/year");
-        select4Year.setText(localizationService.getMessage(context.getLanguage(), "label.reward.customers.select.4/year"));
-        select4Year.setExtraInfo(null);
-        ExtraInfoSelectItem select2Year = new ExtraInfoSelectItem();
-        selectItems.add(select2Year);
-        select2Year.setName("2/year");
-        select2Year.setText(localizationService.getMessage(context.getLanguage(), "label.reward.customers.select.2/year"));
-        select2Year.setExtraInfo(null);
-        ExtraInfoSelectItem select1Year = new ExtraInfoSelectItem();
-        selectItems.add(select1Year);
-        select1Year.setName("1/year");
-        select1Year.setText(localizationService.getMessage(context.getLanguage(), "label.reward.customers.select.1/year"));
-        select1Year.setExtraInfo(null);
-        ExtraInfoSelectItem other = new ExtraInfoSelectItem();
-        selectItems.add(other);
-        other.setName("other");
-        other.setText(localizationService.getMessage(context.getLanguage(), "label.reward.customers.select.other"));
-        ExtraInfoText otherExtraInfo = new ExtraInfoText();
+        // customers selectitems
+        List<ExtraInfoSelectItem> values = customersExtraInfo.getValues();
+        ExtraInfoSelectItem select1Day = new ExtraInfoSelectItem("customers.select.1/day", localizationService.getMessage(context.getLanguage(), "label.reward.customers.select.1/day"), false, null);
+        values.add(select1Day);
+        ExtraInfoSelectItem select3Week = new ExtraInfoSelectItem("customers.select.3/week", localizationService.getMessage(context.getLanguage(), "label.reward.customers.select.3/week"), false, null);
+        values.add(select3Week);
+        ExtraInfoSelectItem select1Week = new ExtraInfoSelectItem("customers.select.1/week", localizationService.getMessage(context.getLanguage(), "label.reward.customers.select.1/week"), false, null);
+        values.add(select1Week);
+        ExtraInfoSelectItem select2Month = new ExtraInfoSelectItem("customers.select.2/month", localizationService.getMessage(context.getLanguage(), "label.reward.customers.select.2/month"), false, null);
+        values.add(select2Month);
+        ExtraInfoSelectItem select1Month = new ExtraInfoSelectItem("customers.select.1/month", localizationService.getMessage(context.getLanguage(), "label.reward.customers.select.1/month"), false, null);
+        values.add(select1Month);
+        ExtraInfoSelectItem select4Year = new ExtraInfoSelectItem("customers.select.4/year", localizationService.getMessage(context.getLanguage(), "label.reward.customers.select.4/year"), false, null);
+        values.add(select4Year);
+        ExtraInfoSelectItem select2Year = new ExtraInfoSelectItem("customers.select.2/year", localizationService.getMessage(context.getLanguage(), "label.reward.customers.select.2/year"), false, null);
+        values.add(select2Year);
+        ExtraInfoSelectItem select1Year = new ExtraInfoSelectItem("customers.select.1/year", localizationService.getMessage(context.getLanguage(), "label.reward.customers.select.1/year"), false, null);
+        values.add(select1Year);
+        ExtraInfoSelectItem other = new ExtraInfoSelectItem("customers.select.other", localizationService.getMessage(context.getLanguage(), "label.reward.customers.select.other"), false);
+        values.add(other);
+        ExtraInfoText otherExtraInfo = new ExtraInfoText("customers.select.other.text", localizationService.getMessage(context.getLanguage(), "label.reward.customers.select.other.text"), ExtraInfoType.TEXT, true, null);
         other.setExtraInfo(otherExtraInfo);
-        otherExtraInfo.setType(ExtraInfoType.TEXT);
-        otherExtraInfo.setMandatoryValue(true);
-        otherExtraInfo.setName("customers.select.other.text");
-        otherExtraInfo.setText(localizationService.getMessage(context.getLanguage(), "label.reward.customers.select.other.text"));
 
         // members
-        RewardOption members = new RewardOption();
+        RewardOption members = new RewardOption("members", localizationService.getMessage(context.getLanguage(), "label.reward.members"), RewardIcon.CARD, false, false);
         ret.add(members);
-        members.setName("members");
-        members.setText(localizationService.getMessage(context.getLanguage(), "label.reward.members"));
-        members.setExclusive(false);
-        ExtraInfoText membersExtraInfo = new ExtraInfoText();
+        ExtraInfoText membersExtraInfo = new ExtraInfoText("members.text", localizationService.getMessage(context.getLanguage(), "label.reward.members.text"), ExtraInfoType.TEXT, false, null);
         members.setExtraInfo(membersExtraInfo);
-        membersExtraInfo.setName("members.text");
-        membersExtraInfo.setText(localizationService.getMessage(context.getLanguage(), "label.reward.members.text"));
-        membersExtraInfo.setType(ExtraInfoType.TEXT);
-        membersExtraInfo.setMandatoryValue(false);
 
         // buy
-        RewardOption buy = new RewardOption();
+        RewardOption buy = new RewardOption("buy", localizationService.getMessage(context.getLanguage(), "label.reward.buy"), RewardIcon.BAG, false, null);
         ret.add(buy);
-        buy.setName("buy");
-        buy.setText(localizationService.getMessage(context.getLanguage(), "label.reward.buy"));
-        buy.setExclusive(false);
-        ExtraInfoText buyExtraInfo = new ExtraInfoText();
+        ExtraInfoText buyExtraInfo = new ExtraInfoText("buy.text", localizationService.getMessage(context.getLanguage(), "label.reward.buy.text"), ExtraInfoType.TEXT, false, null);
         buy.setExtraInfo(buyExtraInfo);
-        buyExtraInfo.setName("buy.text");
-        buyExtraInfo.setText(localizationService.getMessage(context.getLanguage(), "label.reward.buy.text"));
-        buyExtraInfo.setType(ExtraInfoType.TEXT);
-        buyExtraInfo.setMandatoryValue(false);
 
         // fee
-        RewardOption fee = new RewardOption();
+        RewardOption fee = new RewardOption("fee", localizationService.getMessage(context.getLanguage(), "label.reward.fee"), RewardIcon.MONEY, false, null);
         ret.add(fee);
-        fee.setName("fee");
-        fee.setText(localizationService.getMessage(context.getLanguage(), "label.reward.fee"));
-        fee.setExclusive(false);
-        ExtraInfoDecimal feeExtraInfo = new ExtraInfoDecimal();
+        ExtraInfoDecimal feeExtraInfo = new ExtraInfoDecimal("fee.price", localizationService.getMessage(context.getLanguage(), "label.reward.fee.price"), ExtraInfoType.DECIMAL, true,
+                BigDecimal.valueOf(0.1), BigDecimal.valueOf(2.0), 2, BigDecimal.valueOf(0.1), null);
         fee.setExtraInfo(feeExtraInfo);
-        feeExtraInfo.setName("fee.price");
-        feeExtraInfo.setText(localizationService.getMessage(context.getLanguage(), "label.reward.fee.price"));
-        feeExtraInfo.setType(ExtraInfoType.DECIMAL);
-        feeExtraInfo.setMandatoryValue(true);
-        feeExtraInfo.setMin(BigDecimal.valueOf(0.1));
-        feeExtraInfo.setMax(BigDecimal.valueOf(2.0));
-        feeExtraInfo.setScale(2);
-        feeExtraInfo.setStep(BigDecimal.valueOf(0.1));
 
         return ret;
     }
@@ -244,99 +179,45 @@ public class PudoService {
     public List<RewardOption> getCurrentPudoRewardPolicy() {
         Long pudoId = getCurrentPudoId();
         TbRewardPolicy rewardPolicy = rewardPolicyDao.getActiveRewardPolicy(pudoId);
-        List<RewardOption> ret = new ArrayList<>(5);
+        List<RewardOption> ret = getRewardSchema();
 
         // free for all
-        RewardOption free = new RewardOption();
-        ret.add(free);
-        free.setName("free");
-        free.setText(localizationService.getMessage(context.getLanguage(), "label.reward.free"));
-        free.setExclusive(true);
-        free.setExtraInfo(null);
-        free.setChecked(rewardPolicy.getFeeChecked());
+        if (rewardPolicy.getFreeChecked()) {
+            RewardOption opt = ret.stream().filter(i -> i.getName().equals("free")).findAny().get();
+            opt.setChecked(true);
+        }
 
         // customers
-        RewardOption customers = new RewardOption();
-        ret.add(customers);
-        customers.setName("customers");
-        customers.setText(localizationService.getMessage(context.getLanguage(), "label.reward.customers"));
-        customers.setExclusive(false);
-        customers.setChecked(rewardPolicy.getCustomerChecked());
         if (rewardPolicy.getCustomerChecked()) {
-            ExtraInfoSelect customersExtraInfo = new ExtraInfoSelect();
-            customers.setExtraInfo(customersExtraInfo);
-            customersExtraInfo.setName("customers.select");
-            customersExtraInfo.setText(localizationService.getMessage(context.getLanguage(), "label.reward.customers.select"));
-            customersExtraInfo.setType(ExtraInfoType.SELECT);
-            customersExtraInfo.setMandatoryValue(true);
-            ExtraInfoSelectItem customersValue = new ExtraInfoSelectItem();
-            customersExtraInfo.setValue(customersValue);
-            customersValue.setName(rewardPolicy.getCustomerSelectitem());
-            customersValue.setText(localizationService.getMessage(context.getLanguage(), "label.reward.customers.select." + rewardPolicy.getCustomerSelectitem()));
-            if ("other".equals(rewardPolicy.getCustomerSelectitem())) {
-                ExtraInfoText otherExtraInfo = new ExtraInfoText();
-                customersValue.setExtraInfo(otherExtraInfo);
-                otherExtraInfo.setType(ExtraInfoType.TEXT);
-                otherExtraInfo.setMandatoryValue(true);
-                otherExtraInfo.setName("customers.select.other.text");
-                otherExtraInfo.setText(localizationService.getMessage(context.getLanguage(), "label.reward.customers.select.other.text"));
-                otherExtraInfo.setValue(rewardPolicy.getCustomerSelectitemText());
+            RewardOption opt = ret.stream().filter(i -> i.getName().equals("customers")).findFirst().get();
+            opt.setChecked(true);
+            List<ExtraInfoSelectItem> values = ((ExtraInfoSelect) opt.getExtraInfo()).getValues();
+            ExtraInfoSelectItem selectedValue = values.stream().filter(i -> i.getName().equals(rewardPolicy.getCustomerSelectitem())).findFirst().get();
+            selectedValue.setChecked(true);
+            if ("customers.select.other".equals(selectedValue.getName())) {
+                ((ExtraInfoText) selectedValue.getExtraInfo()).setValue(rewardPolicy.getCustomerSelectitemText());
             }
         }
 
         // members
-        RewardOption members = new RewardOption();
-        ret.add(members);
-        members.setName("members");
-        members.setText(localizationService.getMessage(context.getLanguage(), "label.reward.members"));
-        members.setExclusive(false);
-        members.setChecked(rewardPolicy.getMembersChecked());
         if (rewardPolicy.getMembersChecked()) {
-            ExtraInfoText membersExtraInfo = new ExtraInfoText();
-            members.setExtraInfo(membersExtraInfo);
-            membersExtraInfo.setName("members.text");
-            membersExtraInfo.setText(localizationService.getMessage(context.getLanguage(), "label.reward.members.text"));
-            membersExtraInfo.setType(ExtraInfoType.TEXT);
-            membersExtraInfo.setMandatoryValue(false);
-            membersExtraInfo.setValue(rewardPolicy.getMembersText());
+            RewardOption opt = ret.stream().filter(i -> i.getName().equals("members")).findFirst().get();
+            opt.setChecked(true);
+            ((ExtraInfoText) opt.getExtraInfo()).setValue(rewardPolicy.getMembersText());
         }
 
         // buy
-        RewardOption buy = new RewardOption();
-        ret.add(buy);
-        buy.setName("buy");
-        buy.setText(localizationService.getMessage(context.getLanguage(), "label.reward.buy"));
-        buy.setExclusive(false);
-        buy.setChecked(rewardPolicy.getBuyChecked());
         if (rewardPolicy.getBuyChecked()) {
-            ExtraInfoText buyExtraInfo = new ExtraInfoText();
-            buy.setExtraInfo(buyExtraInfo);
-            buyExtraInfo.setName("buy.text");
-            buyExtraInfo.setText(localizationService.getMessage(context.getLanguage(), "label.reward.buy.text"));
-            buyExtraInfo.setType(ExtraInfoType.TEXT);
-            buyExtraInfo.setMandatoryValue(false);
-            buyExtraInfo.setValue(rewardPolicy.getBuyText());
+            RewardOption opt = ret.stream().filter(i -> i.getName().equals("buy")).findFirst().get();
+            opt.setChecked(true);
+            ((ExtraInfoText) opt.getExtraInfo()).setValue(rewardPolicy.getBuyText());
         }
 
         // fee
-        RewardOption fee = new RewardOption();
-        ret.add(fee);
-        fee.setName("fee");
-        fee.setText(localizationService.getMessage(context.getLanguage(), "label.reward.fee"));
-        fee.setExclusive(false);
-        fee.setChecked(rewardPolicy.getFeeChecked());
         if (rewardPolicy.getFeeChecked()) {
-            ExtraInfoDecimal feeExtraInfo = new ExtraInfoDecimal();
-            fee.setExtraInfo(feeExtraInfo);
-            feeExtraInfo.setName("fee.price");
-            feeExtraInfo.setText(localizationService.getMessage(context.getLanguage(), "label.reward.fee.price"));
-            feeExtraInfo.setType(ExtraInfoType.DECIMAL);
-            feeExtraInfo.setMandatoryValue(true);
-            feeExtraInfo.setMin(BigDecimal.valueOf(0.1));
-            feeExtraInfo.setMax(BigDecimal.valueOf(2.0));
-            feeExtraInfo.setScale(2);
-            feeExtraInfo.setStep(BigDecimal.valueOf(0.1));
-            feeExtraInfo.setValue(rewardPolicy.getFeePrice());
+            RewardOption opt = ret.stream().filter(i -> i.getName().equals("fee")).findFirst().get();
+            opt.setChecked(true);
+            ((ExtraInfoDecimal) opt.getExtraInfo()).setValue(rewardPolicy.getFeePrice());
         }
 
         return ret;
@@ -491,27 +372,39 @@ public class PudoService {
                 throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.invalid_field", "rewardPolicy"));
             }
             ExtraInfoSelect customersExtraInfo = (ExtraInfoSelect) customers.getExtraInfo();
-            if (!customersExtraInfo.getName().equals("customers.select") || customersExtraInfo.getValue() == null) {
+            if (!customersExtraInfo.getName().equals("customers.select") || customersExtraInfo.getValues() == null || customersExtraInfo.getValues().isEmpty()) {
                 throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.invalid_field", "rewardPolicy"));
             }
-            ExtraInfoSelectItem customersExtraInfoValue = customersExtraInfo.getValue();
-            if (!customersExtraInfoValue.getName().equals("1/day")
-                && !customersExtraInfoValue.getName().equals("3/week")
-                && !customersExtraInfoValue.getName().equals("1/week")
-                && !customersExtraInfoValue.getName().equals("2/month")
-                && !customersExtraInfoValue.getName().equals("1/month")
-                && !customersExtraInfoValue.getName().equals("4/year")
-                && !customersExtraInfoValue.getName().equals("2/year")
-                && !customersExtraInfoValue.getName().equals("1/year")
-                && !customersExtraInfoValue.getName().equals("other")) {
+            List<ExtraInfoSelectItem> values = customersExtraInfo.getValues();
+            if (values.size() != 9) {
                 throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.invalid_field", "rewardPolicy"));
             }
-            ret.setCustomerSelectitem(customersExtraInfoValue.getName());
-            if (customersExtraInfoValue.getName().equals("other")) {
-                if (customersExtraInfoValue.getExtraInfo() == null || !(customersExtraInfoValue.getExtraInfo() instanceof ExtraInfoText)) {
+            final List<String> allowedValueNames = Arrays.asList(
+                    "customers.select.1/day",
+                    "customers.select.3/week",
+                    "customers.select.1/week",
+                    "customers.select.2/month",
+                    "customers.select.1/month",
+                    "customers.select.4/year",
+                    "customers.select.2/year",
+                    "customers.select.1/year",
+                    "customers.select.other"
+            );
+            for (String name : allowedValueNames) {
+                if (values.stream().filter(i -> name.equals(i.getName())).count() != 1) {
                     throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.invalid_field", "rewardPolicy"));
                 }
-                ExtraInfoText otherExtraInfo = (ExtraInfoText) customersExtraInfoValue.getExtraInfo();
+            }
+            if (values.stream().filter(i -> i.getChecked()).count() > 1) {
+                throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.invalid_field", "rewardPolicy"));
+            }
+            ExtraInfoSelectItem selectedValue = values.stream().filter(i -> i.getChecked()).findFirst().get();
+            ret.setCustomerSelectitem(selectedValue.getName());
+            if ("customers.select.other".equals(selectedValue.getName())) {
+                if (selectedValue.getExtraInfo() == null || !(selectedValue.getExtraInfo() instanceof ExtraInfoText)) {
+                    throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.invalid_field", "rewardPolicy"));
+                }
+                ExtraInfoText otherExtraInfo = (ExtraInfoText) selectedValue.getExtraInfo();
                 if (!otherExtraInfo.getName().equals("customers.select.other.text") || isEmpty(otherExtraInfo.getValue())) {
                     throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.invalid_field", "rewardPolicy"));
                 }
