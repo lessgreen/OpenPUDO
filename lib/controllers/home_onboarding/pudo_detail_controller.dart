@@ -23,6 +23,7 @@ import 'package:flutter/material.dart';
 import 'package:qui_green/commons/alert_dialog.dart';
 import 'package:qui_green/commons/ui/custom_network_image.dart';
 import 'package:qui_green/models/pudo_detail_controller_data_model.dart';
+import 'package:qui_green/models/pudo_profile.dart';
 import 'package:qui_green/resources/routes_enum.dart';
 import 'package:qui_green/resources/res.dart';
 import 'package:qui_green/singletons/network/network_manager.dart';
@@ -149,6 +150,13 @@ class _HomePudoDetailControllerState extends State<HomePudoDetailController> {
       );
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getIfPudoAlreadyExists();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(
@@ -169,16 +177,18 @@ class _HomePudoDetailControllerState extends State<HomePudoDetailController> {
             color: Colors.white,
           ),
         ),
-        trailing: InkWell(
-          onTap: goToRegistration,
-          child: const Padding(
-            padding: EdgeInsets.only(right: Dimension.padding),
-            child: Text(
-              'Scegli',
-              style: TextStyle(color: Colors.white),
-            ),
-          ),
-        ),
+        trailing: nextVisible
+            ? Container()
+            : InkWell(
+                onTap: goToRegistration,
+                child: const Padding(
+                  padding: EdgeInsets.only(right: Dimension.padding),
+                  child: Text(
+                    'Scegli',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+              ),
       ),
       child: SafeArea(
         child: ListView(
@@ -243,14 +253,39 @@ class _HomePudoDetailControllerState extends State<HomePudoDetailController> {
     );
   }
 
+  bool nextVisible = false;
+
+  void getIfPudoAlreadyExists() {
+    NetworkManager.instance.getMyPudos().then((value) {
+      final index = value.indexWhere(
+          (element) => element.pudoId == widget.dataModel.pudoProfile.pudoId);
+      if (index > 0) {
+        setState(() {
+          nextVisible = true;
+        });
+      } else {
+        setState(() {
+          nextVisible = false;
+        });
+      }
+    }).catchError((onError) =>
+        SAAlertDialog.displayAlertWithClose(context, "Error", onError));
+  }
+
   void goToRegistration() {
     NetworkManager.instance
         .addPudoFavorite(widget.dataModel.pudoProfile.pudoId.toString())
-        .then((value) => Navigator.of(context).pushNamed(
-              Routes.registrationComplete,
-              arguments: widget.dataModel.pudoProfile,
-            ))
-        .catchError((onError) =>
+        .then((value) {
+      if (value.value[0].contains('Error 400')) {
+        SAAlertDialog.displayAlertWithClose(context, "Attenzione",
+            'Il PUDO selezionato è già nella lista dei preferiti dell\'utente');
+      } else {
+        Navigator.of(context).pushNamed(
+          Routes.registrationComplete,
+          arguments: widget.dataModel.pudoProfile,
+        );
+      }
+    }).catchError((onError) =>
             SAAlertDialog.displayAlertWithClose(context, "Error", onError));
   }
 }
