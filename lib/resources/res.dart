@@ -65,6 +65,11 @@ class ImageSrc {
   static const userPositionArt = "assets/userPositionArt.svg";
   static const imagePlaceHolder = "assets/placeholderImage.jpg";
   static const imageSVGPlaceHolder = "assets/placeholder.svg";
+  static const mapsArt = "assets/Map.svg";
+  static const homeArt = "assets/Home.svg";
+  static const profileArt = "assets/Profile.svg";
+  static const searchArt = "assets/Search.svg";
+  static const shareArt = "assets/Share.svg";
 }
 
 class IconSrc {}
