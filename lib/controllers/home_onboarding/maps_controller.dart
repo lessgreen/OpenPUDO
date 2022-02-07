@@ -59,7 +59,7 @@ class _HomeMapsControllerState extends State<HomeMapsController> {
               brightness: Brightness.dark,
               backgroundColor: AppColors.primaryColorDark,
               middle: Text(
-                '',
+                'Seleziona un pudo',
                 style: Theme.of(context)
                     .textTheme
                     .headline6

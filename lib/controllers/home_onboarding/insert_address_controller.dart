@@ -18,7 +18,6 @@
  If not, see <https://github.com/lessgreen/OpenPUDO>.
 */
 
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -63,7 +62,7 @@ class _HomeInsertAddressControllerState
                 brightness: Brightness.dark,
                 backgroundColor: AppColors.primaryColorDark,
                 middle: Text(
-                  '',
+                  'Inserisci il tuo indirizzo',
                   style: Theme.of(context)
                       .textTheme
                       .headline6
@@ -81,12 +80,12 @@ class _HomeInsertAddressControllerState
                 child: Column(
                   children: [
                     const SizedBox(height: Dimension.padding),
-                    Center(
-                      child: Text(
-                        'Inserisci il tuo indirizzo',
-                        style: Theme.of(context).textTheme.headline6,
-                      ),
-                    ),
+                    // Center(
+                    //   child: Text(
+                    //     'Inserisci il tuo indirizzo',
+                    //     style: Theme.of(context).textTheme.headline6,
+                    //   ),
+                    // ),
                     Padding(
                         padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
                         child: AddressField(

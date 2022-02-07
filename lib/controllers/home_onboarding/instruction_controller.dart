@@ -115,7 +115,7 @@ class _HomeInstructionControllerState extends State<HomeInstructionController> {
           brightness: Brightness.dark,
           backgroundColor: AppColors.primaryColorDark,
           middle: Text(
-            '',
+            'Istruzioni',
             style: Theme.of(context)
                 .textTheme
                 .headline6

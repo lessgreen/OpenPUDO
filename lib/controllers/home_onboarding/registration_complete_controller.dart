@@ -60,7 +60,7 @@ class _HomeRegistrationCompleteControllerState
                   brightness: Brightness.dark,
                   backgroundColor: AppColors.primaryColorDark,
                   middle: Text(
-                    '',
+                    'Fatto!',
                     style: Theme.of(context)
                         .textTheme
                         .headline6
@@ -80,12 +80,12 @@ class _HomeRegistrationCompleteControllerState
                       const SizedBox(
                         height: Dimension.padding,
                       ),
-                      Center(
-                        child: Text(
-                          'Fatto!',
-                          style: Theme.of(context).textTheme.headline6,
-                        ),
-                      ),
+                      // Center(
+                      //   child: Text(
+                      //     'Fatto!',
+                      //     style: Theme.of(context).textTheme.headline6,
+                      //   ),
+                      // ),
                       const SizedBox(
                         height: 10,
                       ),
