@@ -19,12 +19,15 @@
 */
 
 import 'package:flutter_map/plugin_api.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:qui_green/models/address_model.dart';
 import 'package:qui_green/models/pudo_model.dart';
+
+import '../resources/res.dart';
 
 part 'geo_marker.g.dart';
 
@@ -65,7 +68,7 @@ extension PudoUtilities on List<GeoMarker> {
     return retArray.isNotEmpty ? retArray : null;
   }
 
-  List<Marker> markers(Function(GeoMarker)? callback, {required Color tintColor,required int selectedMarker}) {
+  List<Marker> markers(Function(GeoMarker)? callback, {required Color tintColor, required int selectedMarker}) {
     List<Marker> retArray = [];
 
     for (final aRow in this) {
@@ -79,10 +82,15 @@ extension PudoUtilities on List<GeoMarker> {
               onTap: () {
                 callback?.call(aRow);
               },
-              child: ImageIcon(
-                const AssetImage('assets/pudoMarker.png'),
-                color: selectedMarker==aRow.pudo!.pudoId?Colors.red:tintColor,
-              ),
+              child: aRow.pudo?.pudoId == selectedMarker
+                  ? SvgPicture.asset(
+                      ImageSrc.fillBox,
+                      color: tintColor,
+                    )
+                  : SvgPicture.asset(
+                      ImageSrc.emptyBox,
+                      color: tintColor,
+                    ),
             ),
           ),
         );
