@@ -21,6 +21,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
 import 'package:qui_green/singletons/current_user.dart';
 import 'package:qui_green/singletons/network/network_manager.dart';
 import 'package:qui_green/resources/res.dart';
@@ -32,8 +33,7 @@ class PudoHomeController extends StatefulWidget {
   _PudoHomeControllerState createState() => _PudoHomeControllerState();
 }
 
-class _PudoHomeControllerState extends State<PudoHomeController>
-    with ConnectionAware {
+class _PudoHomeControllerState extends State<PudoHomeController> with ConnectionAware {
   @override
   Widget build(BuildContext context) {
     return Material(
@@ -54,15 +54,7 @@ class _PudoHomeControllerState extends State<PudoHomeController>
                       navigationBar: CupertinoNavigationBar(
                         padding: const EdgeInsetsDirectional.all(0),
                         backgroundColor: AppColors.primaryColorDark,
-                        middle: Text(
-                          'Il tuo profilo',
-                          style: Theme.of(context)
-                              .textTheme
-                              .headline6
-                              ?.copyWith(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w400),
-                        ),
+                        middle: Text('Il tuo profilo', style: AdditionalTextStyles.navBarStyle(context)),
                       ),
                       child: Container(),
                     );
@@ -80,12 +72,7 @@ class _PudoHomeControllerState extends State<PudoHomeController>
                           backgroundColor: AppColors.primaryColorDark,
                           middle: Text(
                             'HomePudo',
-                            style: Theme.of(context)
-                                .textTheme
-                                .headline6
-                                ?.copyWith(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w400),
+                            style: Theme.of(context).textTheme.headline6?.copyWith(color: Colors.white, fontWeight: FontWeight.w400),
                           ),
                         ),
                         child: Center(
@@ -93,8 +80,7 @@ class _PudoHomeControllerState extends State<PudoHomeController>
                             onPressed: () {
                               Navigator.pop(context);
                               NetworkManager.instance.setAccessToken(null);
-                              Provider.of<CurrentUser>(context, listen: false)
-                                  .refresh();
+                              Provider.of<CurrentUser>(context, listen: false).refresh();
                             },
                             child: const Text("Logout"),
                           ),

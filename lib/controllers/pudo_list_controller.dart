@@ -20,6 +20,7 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
 import 'package:qui_green/widgets/pudo_map_card.dart';
 import 'package:qui_green/resources/res.dart';
 
@@ -39,13 +40,7 @@ class _PudoListControllerState extends State<PudoListController> {
           padding: const EdgeInsetsDirectional.all(0),
           brightness: Brightness.dark,
           backgroundColor: AppColors.primaryColorDark,
-          middle: Text(
-            'Il tuoi pudo',
-            style: Theme.of(context)
-                .textTheme
-                .headline6
-                ?.copyWith(color: Colors.white, fontWeight: FontWeight.w400),
-          ),
+          middle: Text('Il tuoi pudo', style: AdditionalTextStyles.navBarStyle(context)),
           leading: CupertinoNavigationBarBackButton(
             color: Colors.white,
             onPressed: () => Navigator.of(context).pop(),
@@ -68,8 +63,7 @@ class _PudoListControllerState extends State<PudoListController> {
             ),
             const SizedBox(height: 10),
             Padding(
-              padding: const EdgeInsets.only(
-                  left: Dimension.padding, right: Dimension.padding),
+              padding: const EdgeInsets.only(left: Dimension.padding, right: Dimension.padding),
               child: PudoMapCard(
                 name: "Bar - La pinta",
                 address: "Via ippolito, 8",

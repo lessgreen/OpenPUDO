@@ -65,6 +65,8 @@ class ImageSrc {
   static const userPositionArt = "assets/userPositionArt.svg";
   static const imagePlaceHolder = "assets/placeholderImage.jpg";
   static const imageSVGPlaceHolder = "assets/placeholder.svg";
+  static const leaf = "assets/leaf.svg";
+  static const chevronRight = "assets/chevron_right.svg";
 }
 
 class IconSrc {}
