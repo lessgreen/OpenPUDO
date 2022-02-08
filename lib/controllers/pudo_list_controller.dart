@@ -20,7 +20,12 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:qui_green/widgets/pudo_map_card.dart';
+import 'package:qui_green/commons/alert_dialog.dart';
+import 'package:qui_green/models/pudo_profile.dart';
+import 'package:qui_green/resources/routes_enum.dart';
+import 'package:qui_green/singletons/network/network_manager.dart';
+import 'package:qui_green/widgets/main_button.dart';
+import 'package:qui_green/widgets/pudo_card.dart';
 import 'package:qui_green/resources/res.dart';
 
 class PudoListController extends StatefulWidget {
@@ -32,6 +37,26 @@ class PudoListController extends StatefulWidget {
 
 class _PudoListControllerState extends State<PudoListController> {
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getPudos();
+  }
+
+  List<PudoProfile> pudoList = [];
+
+  void getPudos() async {
+    NetworkManager.instance.getMyPudos().then((value) {
+      for (var i = 0; i < value.length; i++) {
+        setState(() {
+          pudoList.add(value[i]);
+        });
+      }
+    }).catchError((onError) =>
+        SAAlertDialog.displayAlertWithClose(context, "Error", onError));
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Material(
       child: CupertinoPageScaffold(
@@ -41,40 +66,58 @@ class _PudoListControllerState extends State<PudoListController> {
           backgroundColor: AppColors.primaryColorDark,
           middle: Text(
             'Il tuoi pudo',
-            style: Theme.of(context).textTheme.headline6?.copyWith(color: Colors.white),
+            style: Theme.of(context)
+                .textTheme
+                .headline6
+                ?.copyWith(color: Colors.white),
           ),
           leading: CupertinoNavigationBarBackButton(
             color: Colors.white,
             onPressed: () => Navigator.of(context).pop(),
           ),
         ),
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(
-                left: Dimension.padding,
-                top: Dimension.padding,
+        child: pudoList.isNotEmpty
+            ? ListView(
+                children: [
+                  const Padding(
+                    padding: EdgeInsets.only(
+                        left: Dimension.padding, top: Dimension.padding),
+                    child: Text(
+                      'I tuoi pudo:',
+                    ),
+                  ),
+                  ListView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: pudoList.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return Padding(
+                          padding: const EdgeInsets.only(
+                            top: Dimension.padding,
+                          ),
+                          child:
+                              PudoCard(pudo: pudoList[index], onTap: () => {}),
+                        );
+                      })
+                ],
+              )
+            : Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'Non hai ancora aggiunto un pudo per le tue consegne!',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: Colors.grey.shade600),
+                  ),
+                  const SizedBox(
+                    height: Dimension.padding,
+                  ),
+                  MainButton(
+                      text: 'Vai',
+                      onPressed: () =>
+                          Navigator.of(context).pushNamed(Routes.userPosition))
+                ],
               ),
-              child: Container(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  'I tuoi pudo:',
-                  style: TextStyle(color: Colors.grey.shade600, fontSize: 18),
-                ),
-              ),
-            ),
-            const SizedBox(height: 10),
-            Padding(
-              padding: const EdgeInsets.only(left: Dimension.padding, right: Dimension.padding),
-              child: PudoMapCard(
-                name: "Bar - La pinta",
-                address: "Via ippolito, 8",
-                stars: 3,
-                onTap: () {},
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }

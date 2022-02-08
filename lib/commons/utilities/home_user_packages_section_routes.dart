@@ -24,6 +24,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:qui_green/app.dart';
 import 'package:qui_green/controllers/home_user_packages.dart';
 import 'package:qui_green/controllers/profile_controller.dart';
+import 'package:qui_green/controllers/pudo_list_controller.dart';
 import 'package:qui_green/resources/routes_enum.dart';
 
 dynamic routeHomeUserPackagesSectionWithSetting(RouteSettings settings) {
@@ -33,6 +34,9 @@ dynamic routeHomeUserPackagesSectionWithSetting(RouteSettings settings) {
     case Routes.profile:
       return CupertinoPageRoute(
           builder: (context) => const ProfileController());
+    case Routes.pudoList:
+      return CupertinoPageRoute(
+          builder: (context) => const PudoListController());
     default:
       return CupertinoPageRoute(
         builder: (context) => const HomeUserPackages(),
