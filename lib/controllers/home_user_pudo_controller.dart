@@ -20,6 +20,7 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
 import 'package:qui_green/resources/res.dart';
 import 'package:qui_green/widgets/main_button.dart';
 import 'package:qui_green/resources/routes_enum.dart';
@@ -41,7 +42,7 @@ class _HomeUserPudoControllerState extends State<HomeUserPudoController> {
         backgroundColor: AppColors.primaryColorDark,
         middle: Text(
           'I tuoi Pudo',
-          style: Theme.of(context).textTheme.headline6?.copyWith(color: Colors.white, fontWeight: FontWeight.w400),
+          style: AdditionalTextStyles.navBarStyle(context),
         ),
       ),
       child: Column(

@@ -18,7 +18,6 @@
  If not, see <https://github.com/lessgreen/OpenPUDO>.
 */
 
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -73,7 +72,7 @@ class _PudoHomeControllerState extends State<PudoHomeController> with Connection
                           backgroundColor: AppColors.primaryColorDark,
                           middle: Text(
                             'HomePudo',
-                            style: Theme.of(context).textTheme.headline6?.copyWith(color: Colors.white, fontWeight: FontWeight.w400),
+                            style: AdditionalTextStyles.navBarStyle(context),
                           ),
                         ),
                         child: Center(
