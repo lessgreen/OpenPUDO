@@ -41,7 +41,7 @@ class _HomeUserPudoControllerState extends State<HomeUserPudoController> {
         backgroundColor: AppColors.primaryColorDark,
         middle: Text(
           'I tuoi Pudo',
-          style: Theme.of(context).textTheme.headline6?.copyWith(color: Colors.white),
+          style: Theme.of(context).textTheme.headline6?.copyWith(color: Colors.white, fontWeight: FontWeight.w400),
         ),
       ),
       child: Column(
