@@ -49,7 +49,7 @@ public class PackageCronService extends BaseCronService {
         }
     }
 
-    @Scheduled(cron = "*/10 * * * * ?", concurrentExecution = Scheduled.ConcurrentExecution.SKIP)
+    @Scheduled(cron = "0 * * * * ?", concurrentExecution = Scheduled.ConcurrentExecution.SKIP)
     void acceptedPackages() {
         if (!acquireLock(context.getExecutionId(), PACKAGE_ACCEPTED_LOCK)) {
             return;
