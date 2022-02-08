@@ -157,7 +157,10 @@ class _MapsControllerState extends State<MapsController>
                       ),
                       MarkerClusterLayerOptions(
                         showPolygon: false,
-                        size: const Size(200,200),
+                        size: const Size(40, 40),
+                        fitBoundsOptions: const FitBoundsOptions(
+                          padding: EdgeInsets.all(50),
+                        ),
                         maxClusterRadius: 120,
                         markers: viewModel.pudos.markers(
                           (marker) {
