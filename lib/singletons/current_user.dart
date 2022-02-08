@@ -20,6 +20,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:qui_green/commons/utilities/print_helper.dart';
+import 'package:qui_green/models/base_response.dart';
 import 'package:qui_green/models/pudo_profile.dart';
 import 'package:qui_green/models/user_profile.dart';
 import 'package:qui_green/resources/routes_enum.dart';
@@ -47,44 +48,49 @@ class CurrentUser with ChangeNotifier {
     if (sharedPreferences?.getString('accessToken') != null) {
       var oldToken = sharedPreferences?.getString('accessToken');
       NetworkManager.instance.renewToken(accessToken: oldToken!).then((response) {
-        switch (NetworkManager.instance.accessTokenAccess) {
-          case "customer":
-            NetworkManager.instance.getMyProfile().then((profile) {
-              if (profile != null) {
-                user = profile;
-                pushPage(Routes.home);
-              }
-            }).catchError((onError) {
-              user = null;
-              pushPage(Routes.login);
-              safePrint(onError);
-            });
-            break;
-          case "pudo":
-            NetworkManager.instance.getMyPudoProfile().then((profile) {
-              if (profile != null) {
-                pudoProfile = profile;
-                pushPage(Routes.pudoHome);
-              }
-            }).catchError((onError) {
-              pudoProfile = null;
-              pushPage(Routes.login);
-              safePrint(onError);
-            });
-            break;
-          case "guest":
-            pushPage(Routes.aboutYou);
-            break;
-          default:
-            safePrint("wrong access type");
-            break;
+        if(response is OPBaseResponse) {
+          switch (NetworkManager.instance.accessTokenAccess) {
+            case "customer":
+              NetworkManager.instance.getMyProfile().then((profile) {
+                if (profile != null) {
+                  user = profile;
+                  pushPage(Routes.home);
+                }
+              }).catchError((onError) {
+                user = null;
+                pushPage(Routes.login);
+                safePrint(onError);
+              });
+              break;
+            case "pudo":
+              NetworkManager.instance.getMyPudoProfile().then((profile) {
+                if (profile != null) {
+                  pudoProfile = profile;
+                  pushPage(Routes.pudoHome);
+                }
+              }).catchError((onError) {
+                pudoProfile = null;
+                pushPage(Routes.login);
+                safePrint(onError);
+              });
+              break;
+            case "guest":
+              pushPage(Routes.aboutYou);
+              break;
+            default:
+              safePrint("wrong access type");
+              break;
+          }
+        } else if (response is ErrorDescription){
+          user = null;
+          pudoProfile = null;
+          pushPage(Routes.login);
         }
       }).catchError((onError) {
         user = null;
         WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
           pushPage(Routes.login);
         });
-        //safePrint(onError);
       });
     } else {
       user = null;

@@ -67,6 +67,8 @@ class ImageSrc {
   static const imageSVGPlaceHolder = "assets/placeholder.svg";
   static const leaf = "assets/leaf.svg";
   static const chevronRight = "assets/chevron_right.svg";
+  static const emptyBox = "assets/boxEmpty.svg";
+  static const fillBox = "assets/boxFill.svg";
 }
 
 class IconSrc {}
