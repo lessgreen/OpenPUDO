@@ -113,8 +113,38 @@ public class PackageDao extends BaseEntityDao<TbPackage, Long> {
                     + "AND t2.packageStatus = :packageStatus "
                     + "ORDER BY t1.createTms";
         TypedQuery<Long> q = em.createQuery(qs, Long.class);
-        q.setParameter("packageStatus", PackageStatus.DELIVERED);
         q.setParameter("timeThreshold", timeThreshold);
+        q.setParameter("packageStatus", PackageStatus.DELIVERED);
+        List<Long> rs = q.getResultList();
+        return rs.isEmpty() ? Collections.emptyList() : rs;
+    }
+
+    public List<Long> getPackageIdsToExpired(Date timeThreshold) {
+        String qs = "SELECT t1.packageId "
+                    + "FROM TbPackage t1, TbPackageEvent t2 "
+                    + "WHERE t2.packageId = t1.packageId "
+                    + "AND t2.createTms = (SELECT MAX(st2.createTms) FROM TbPackageEvent st2 WHERE st2.packageId = t2.packageId) "
+                    + "AND t1.createTms < :timeThreshold "
+                    + "AND t2.packageStatus IN :packageStatuses "
+                    + "ORDER BY t1.createTms";
+        TypedQuery<Long> q = em.createQuery(qs, Long.class);
+        q.setParameter("timeThreshold", timeThreshold);
+        q.setParameter("packageStatuses", Arrays.asList(PackageStatus.NOTIFY_SENT, PackageStatus.NOTIFIED));
+        List<Long> rs = q.getResultList();
+        return rs.isEmpty() ? Collections.emptyList() : rs;
+    }
+
+    public List<Long> getPackageIdsToAccepted(Date timeThreshold) {
+        String qs = "SELECT t1.packageId "
+                    + "FROM TbPackage t1, TbPackageEvent t2 "
+                    + "WHERE t2.packageId = t1.packageId "
+                    + "AND t2.createTms = (SELECT MAX(st2.createTms) FROM TbPackageEvent st2 WHERE st2.packageId = t2.packageId) "
+                    + "AND t2.createTms < :timeThreshold "
+                    + "AND t2.packageStatus = :packageStatus "
+                    + "ORDER BY t1.createTms";
+        TypedQuery<Long> q = em.createQuery(qs, Long.class);
+        q.setParameter("timeThreshold", timeThreshold);
+        q.setParameter("packageStatus", PackageStatus.COLLECTED);
         List<Long> rs = q.getResultList();
         return rs.isEmpty() ? Collections.emptyList() : rs;
     }

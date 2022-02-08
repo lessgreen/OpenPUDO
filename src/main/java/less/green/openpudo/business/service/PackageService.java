@@ -146,49 +146,6 @@ public class PackageService {
         return getPackage(pack.getPackageId());
     }
 
-    public List<Long> getPackageIdsToNotifySent() {
-        // get packages in delivered status for more than 5 minutes
-        Date timeThreshold = CalendarUtils.getDateWithOffset(new Date(), Calendar.MINUTE, -5);
-        return packageDao.getPackageIdsToNotifySent(timeThreshold);
-    }
-
-    public void notifySentPackage(Long packageId) {
-        // we are coming from a cron job, so no need to check the existence of the package nor the grants to access it
-        Date now = new Date();
-        Pair<TbPackage, List<TbPackageEvent>> rs = packageDao.getPackage(packageId);
-        rs.getValue0().setUpdateTms(now);
-        TbPackageEvent packageEvent = new TbPackageEvent();
-        packageEvent.setPackageId(packageId);
-        packageEvent.setCreateTms(now);
-        packageEvent.setPackageStatus(PackageStatus.NOTIFY_SENT);
-        packageEvent.setAutoFlag(true);
-        packageEvent.setNotes(null);
-        packageEventDao.persist(packageEvent);
-        packageEventDao.flush();
-
-        // send notification to user
-        TbPudo pudo = pudoDao.get(rs.getValue0().getPudoId());
-        String titleTemplate = "notification.package.delivered.title";
-        String messageTemplate = "notification.package.delivered.message";
-        String[] messageParams = {cryptoService.hashidEncodeShort(packageId), pudo.getBusinessName()};
-        TbNotificationPackage notification = new TbNotificationPackage();
-        notification.setUserId(rs.getValue0().getUserId());
-        notification.setCreateTms(now);
-        notification.setQueuedFlag(false);
-        notification.setDueTms(now);
-        notification.setReadTms(null);
-        notification.setTitle(titleTemplate);
-        notification.setTitleParams(null);
-        notification.setMessage(messageTemplate);
-        notification.setMessageParams(messageParams);
-        notification.setPackageId(packageId);
-        notificationDao.persist(notification);
-        notificationDao.flush();
-        notificationService.sendPushNotifications(rs.getValue0().getUserId(), titleTemplate, null, messageTemplate, messageParams, Map.of("packageId", packageId.toString()));
-
-        log.info("[{}] Package {}: {} -> {}", context.getExecutionId(), packageId, rs.getValue1().get(0).getPackageStatus(), packageEvent.getPackageStatus());
-    }
-
     public UUID updatePackagePicture(Long packageId, String mimeType, byte[] bytes) {
         TbPackage pack = packageDao.get(packageId);
         if (pack == null) {
@@ -362,6 +319,95 @@ public class PackageService {
 
         log.info("[{}] Package {}: {} -> {}", context.getExecutionId(), packageId, rs.getValue1().get(0).getPackageStatus(), packageEvent.getPackageStatus());
         return getPackage(packageId);
+    }
+
+    public List<Long> getPackageIdsToNotifySent() {
+        // get packages in delivered status for more than 5 minutes
+        Date timeThreshold = CalendarUtils.getDateWithOffset(new Date(), Calendar.MINUTE, -5);
+        return packageDao.getPackageIdsToNotifySent(timeThreshold);
+    }
+
+    public void notifySentPackage(Long packageId) {
+        // we are coming from a cron job, so no need to check the existence of the package nor the grants to access it
+        Date now = new Date();
+        Pair<TbPackage, List<TbPackageEvent>> rs = packageDao.getPackage(packageId);
+        rs.getValue0().setUpdateTms(now);
+        TbPackageEvent packageEvent = new TbPackageEvent();
+        packageEvent.setPackageId(packageId);
+        packageEvent.setCreateTms(now);
+        packageEvent.setPackageStatus(PackageStatus.NOTIFY_SENT);
+        packageEvent.setAutoFlag(true);
+        packageEvent.setNotes(null);
+        packageEventDao.persist(packageEvent);
+        packageEventDao.flush();
+
+        // send notification to user
+        TbPudo pudo = pudoDao.get(rs.getValue0().getPudoId());
+        String titleTemplate = "notification.package.delivered.title";
+        String messageTemplate = "notification.package.delivered.message";
+        String[] messageParams = {cryptoService.hashidEncodeShort(packageId), pudo.getBusinessName()};
+        TbNotificationPackage notification = new TbNotificationPackage();
+        notification.setUserId(rs.getValue0().getUserId());
+        notification.setCreateTms(now);
+        notification.setQueuedFlag(false);
+        notification.setDueTms(now);
+        notification.setReadTms(null);
+        notification.setTitle(titleTemplate);
+        notification.setTitleParams(null);
+        notification.setMessage(messageTemplate);
+        notification.setMessageParams(messageParams);
+        notification.setPackageId(packageId);
+        notificationDao.persist(notification);
+        notificationDao.flush();
+        notificationService.sendPushNotifications(rs.getValue0().getUserId(), titleTemplate, null, messageTemplate, messageParams, Map.of("packageId", packageId.toString()));
+
+        log.info("[{}] Package {}: {} -> {}", context.getExecutionId(), packageId, rs.getValue1().get(0).getPackageStatus(), packageEvent.getPackageStatus());
+    }
+
+    public List<Long> getPackageIdsToExpired() {
+        // get packages in notified or notify_sent status for more than 30 days
+        Date timeThreshold = CalendarUtils.getDateWithOffset(new Date(), Calendar.DAY_OF_MONTH, -30);
+        return packageDao.getPackageIdsToExpired(timeThreshold);
+    }
+
+    public void expiredPackage(Long packageId) {
+        // we are coming from a cron job, so no need to check the existence of the package nor the grants to access it
+        Date now = new Date();
+        Pair<TbPackage, List<TbPackageEvent>> rs = packageDao.getPackage(packageId);
+        rs.getValue0().setUpdateTms(now);
+        TbPackageEvent packageEvent = new TbPackageEvent();
+        packageEvent.setPackageId(packageId);
+        packageEvent.setCreateTms(now);
+        packageEvent.setPackageStatus(PackageStatus.EXPIRED);
+        packageEvent.setAutoFlag(true);
+        packageEvent.setNotes(null);
+        packageEventDao.persist(packageEvent);
+        packageEventDao.flush();
+
+        log.info("[{}] Package {}: {} -> {}", context.getExecutionId(), packageId, rs.getValue1().get(0).getPackageStatus(), packageEvent.getPackageStatus());
+    }
+
+    public List<Long> getPackageIdsToAccepted() {
+        // get packages in collected status for more than 7 days
+        Date timeThreshold = CalendarUtils.getDateWithOffset(new Date(), Calendar.DAY_OF_MONTH, -7);
+        return packageDao.getPackageIdsToAccepted(timeThreshold);
+    }
+
+    public void autoAcceptedPackage(Long packageId) {
+        // we are coming from a cron job, so no need to check the existence of the package nor the grants to access it
+        Date now = new Date();
+        Pair<TbPackage, List<TbPackageEvent>> rs = packageDao.getPackage(packageId);
+        rs.getValue0().setUpdateTms(now);
+        TbPackageEvent packageEvent = new TbPackageEvent();
+        packageEvent.setPackageId(packageId);
+        packageEvent.setCreateTms(now);
+        packageEvent.setPackageStatus(PackageStatus.ACCEPTED);
+        packageEvent.setAutoFlag(true);
+        packageEvent.setNotes(null);
+        packageEventDao.persist(packageEvent);
+        packageEventDao.flush();
+
+        log.info("[{}] Package {}: {} -> {}", context.getExecutionId(), packageId, rs.getValue1().get(0).getPackageStatus(), packageEvent.getPackageStatus());
     }
 
 }

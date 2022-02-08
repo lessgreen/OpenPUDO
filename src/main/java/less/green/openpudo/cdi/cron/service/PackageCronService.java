@@ -15,6 +15,8 @@ import java.util.List;
 public class PackageCronService extends BaseCronService {
 
     private static final String PACKAGE_NOTIFY_SENT_LOCK = "package.notify_sent";
+    private static final String PACKAGE_ACCEPTED_LOCK = "package.accepted";
+    private static final String PACKAGE_EXPIRED_LOCK = "package.expired";
 
     @Inject
     ExecutionContext context;
@@ -30,7 +32,7 @@ public class PackageCronService extends BaseCronService {
         try {
             List<Long> rs = packageService.getPackageIdsToNotifySent();
             if (!rs.isEmpty()) {
-                log.info("[{}] Sending delivered package notifications", context.getExecutionId());
+                log.info("[{}] Moving packages in NOTIFY_SENT state", context.getExecutionId());
                 for (var packageId : rs) {
                     packageService.notifySentPackage(packageId);
 
@@ -38,12 +40,62 @@ public class PackageCronService extends BaseCronService {
                         return;
                     }
                 }
-                log.info("[{}] Delivered package notifications sent: {}", context.getExecutionId(), rs.size());
+                log.info("[{}] Packages NOTIFY_SENT: {}", context.getExecutionId(), rs.size());
             }
         } catch (Exception ex) {
             log.error("[{}] {}", context.getExecutionId(), ExceptionUtils.getRelevantStackTrace(ex));
         } finally {
             releaseLock(context.getExecutionId(), PACKAGE_NOTIFY_SENT_LOCK);
+        }
+    }
+
+    @Scheduled(cron = "*/10 * * * * ?", concurrentExecution = Scheduled.ConcurrentExecution.SKIP)
+    void acceptedPackages() {
+        if (!acquireLock(context.getExecutionId(), PACKAGE_ACCEPTED_LOCK)) {
+            return;
+        }
+        try {
+            List<Long> rs = packageService.getPackageIdsToAccepted();
+            if (!rs.isEmpty()) {
+                log.info("[{}] Moving packages in ACCEPTED state", context.getExecutionId());
+                for (var packageId : rs) {
+                    packageService.autoAcceptedPackage(packageId);
+
+                    if (!refreshLock(context.getExecutionId(), PACKAGE_ACCEPTED_LOCK)) {
+                        return;
+                    }
+                }
+                log.info("[{}] Packages ACCEPTED: {}", context.getExecutionId(), rs.size());
+            }
+        } catch (Exception ex) {
+            log.error("[{}] {}", context.getExecutionId(), ExceptionUtils.getRelevantStackTrace(ex));
+        } finally {
+            releaseLock(context.getExecutionId(), PACKAGE_ACCEPTED_LOCK);
+        }
+    }
+
+    @Scheduled(cron = "0 * * * * ?", concurrentExecution = Scheduled.ConcurrentExecution.SKIP)
+    void expiredPackages() {
+        if (!acquireLock(context.getExecutionId(), PACKAGE_EXPIRED_LOCK)) {
+            return;
+        }
+        try {
+            List<Long> rs = packageService.getPackageIdsToExpired();
+            if (!rs.isEmpty()) {
+                log.info("[{}] Moving packages in EXPIRED state", context.getExecutionId());
+                for (var packageId : rs) {
+                    packageService.expiredPackage(packageId);
+
+                    if (!refreshLock(context.getExecutionId(), PACKAGE_EXPIRED_LOCK)) {
+                        return;
+                    }
+                }
+                log.info("[{}] Packages EXPIRED: {}", context.getExecutionId(), rs.size());
+            }
+        } catch (Exception ex) {
+            log.error("[{}] {}", context.getExecutionId(), ExceptionUtils.getRelevantStackTrace(ex));
+        } finally {
+            releaseLock(context.getExecutionId(), PACKAGE_EXPIRED_LOCK);
         }
     }
 
