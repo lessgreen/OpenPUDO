@@ -41,7 +41,7 @@ public class RestFilter implements ContainerRequestFilter, ContainerResponseFilt
         }
         context.setEndTimestamp(System.nanoTime());
         log.info("[{}] {} {}", context.getExecutionId(),
-                responseContext.hasEntity() && BaseResponse.class.isAssignableFrom(responseContext.getEntity().getClass()) ? ((BaseResponse) responseContext.getEntity()).getReturnCode() : responseContext.getStatusInfo(),
+                responseContext.hasEntity() && BaseResponse.class.isAssignableFrom(responseContext.getEntity().getClass()) ? ((BaseResponse) responseContext.getEntity()).getReturnCode() : responseContext.getStatus(),
                 smartElapsed(context.getEndTimestamp() - context.getStartTimestamp()));
     }
 
