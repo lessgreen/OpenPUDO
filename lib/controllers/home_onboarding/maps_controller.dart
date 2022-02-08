@@ -137,8 +137,9 @@ class _HomeMapsControllerState extends State<HomeMapsController> {
                         markers: viewModel.pudos.markers(
                           (marker) {
                             viewModel.onPudoClick(
-                                context, marker.pudo!, widget.initialPosition);
+                                context, marker, widget.initialPosition);
                           },
+                          selectedMarker: 1,
                           tintColor: AppColors.primaryColorDark,
                         ),
                         builder: (context, markers) {
