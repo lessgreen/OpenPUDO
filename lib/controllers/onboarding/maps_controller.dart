@@ -157,15 +157,13 @@ class _MapsControllerState extends State<MapsController>
                       ),
                       MarkerClusterLayerOptions(
                         showPolygon: false,
+                        size: const Size(200,200),
                         maxClusterRadius: 120,
-                        size: const Size(40, 40),
-                        fitBoundsOptions: const FitBoundsOptions(
-                          padding: EdgeInsets.all(50),
-                        ),
                         markers: viewModel.pudos.markers(
                           (marker) {
                             viewModel.selectPudo(context, marker.pudo?.pudoId);
                           },
+                          selectedMarker: viewModel.showingCardPudo,
                           tintColor: AppColors.primaryColorDark,
                         ),
                         builder: (context, markers) {
@@ -226,54 +224,54 @@ class _MapsControllerState extends State<MapsController>
                           ),
                         ),
                         const Spacer(),
-                        SizedBox(
-                          height: 180,
-                          child: PageView.builder(
-                              itemCount: viewModel.pudos.length,
-                              controller: viewModel.pageController,
-                              onPageChanged: (value) async {
-                                //Check if is fetching something (image not included)
-                                if (!viewModel.isReloadingPudos) {
-                                  onPageControllerChange(viewModel, value);
-                                }
-                              },
-                              itemBuilder: (context, index) =>
-                                  AnimatedCrossFade(
-                                    secondChild: Padding(
-                                      padding: const EdgeInsets.only(
-                                          top: Dimension.paddingM,
-                                          left: Dimension.paddingXS,
-                                          right: Dimension.paddingXS,
-                                          bottom: Dimension.paddingM),
-                                      child: PudoMapCard(
-                                          name: viewModel.pudos[index].pudo
-                                                  ?.businessName ??
+                        AnimatedCrossFade(
+                            duration: const Duration(milliseconds: 100),
+                            crossFadeState: viewModel.pudos.isEmpty ||
+                                    viewModel.currentZoomLevel < 14
+                                ? CrossFadeState.showFirst
+                                : CrossFadeState.showSecond,
+                            firstChild: SizedBox(
+                                width: MediaQuery.of(context).size.width,height: 0,),
+                            secondChild: SizedBox(
+                              height: 100+(Dimension.paddingM*2),
+                              child: PageView.builder(
+                                itemCount: viewModel.pudos.length,
+                                controller: viewModel.pageController,
+                                onPageChanged: (value) async {
+                                  //Check if is fetching something (image not included)
+                                  if (!viewModel.isReloadingPudos) {
+                                    onPageControllerChange(viewModel, value);
+                                    viewModel.showingCardPudo = viewModel.pudos[value].pudo!.pudoId;
+                                  }
+                                },
+                                itemBuilder: (context, index) => Padding(
+                                  padding: const EdgeInsets.only(
+                                      top: Dimension.paddingM,
+                                      left: Dimension.paddingXS,
+                                      right: Dimension.paddingXS,
+                                      bottom: Dimension.paddingM),
+                                  child: PudoMapCard(
+                                      name: viewModel.pudos[index].pudo
+                                              ?.businessName ??
+                                          "",
+                                      address:
+                                          viewModel.pudos[index].pudo?.label ??
                                               "",
-                                          address: viewModel
-                                                  .pudos[index].pudo?.label ??
-                                              "",
-                                          stars: viewModel.pudos[index].pudo
-                                                  ?.rating?.reviewCount ??
-                                              0,
-                                          hasShadow: true,
-                                          onTap: () {
-                                            viewModel.onPudoClick(
-                                                context,
-                                                viewModel.pudos[index],
-                                                widget.initialPosition);
-                                          },
-                                          image: viewModel
-                                              .pudos[index].pudo?.pudoPicId),
-                                    ),
-                                    crossFadeState: viewModel.pudos.isEmpty
-                                        ? CrossFadeState.showFirst
-                                        : CrossFadeState.showSecond,
-                                    duration: const Duration(milliseconds: 100),
-                                    firstChild: SizedBox(
-                                        width:
-                                            MediaQuery.of(context).size.width),
-                                  )),
-                        )
+                                      stars: viewModel.pudos[index].pudo?.rating
+                                              ?.reviewCount ??
+                                          0,
+                                      hasShadow: true,
+                                      onTap: () {
+                                        viewModel.onPudoClick(
+                                            context,
+                                            viewModel.pudos[index],
+                                            widget.initialPosition);
+                                      },
+                                      image: viewModel
+                                          .pudos[index].pudo?.pudoPicId),
+                                ),
+                              ),
+                            ))
                       ],
                     ),
                   )

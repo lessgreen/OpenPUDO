@@ -65,7 +65,7 @@ extension PudoUtilities on List<GeoMarker> {
     return retArray.isNotEmpty ? retArray : null;
   }
 
-  List<Marker> markers(Function(GeoMarker)? callback, {required Color tintColor}) {
+  List<Marker> markers(Function(GeoMarker)? callback, {required Color tintColor,required int selectedMarker}) {
     List<Marker> retArray = [];
 
     for (final aRow in this) {
@@ -81,7 +81,7 @@ extension PudoUtilities on List<GeoMarker> {
               },
               child: ImageIcon(
                 const AssetImage('assets/pudoMarker.png'),
-                color: tintColor,
+                color: selectedMarker==aRow.pudo!.pudoId?Colors.red:tintColor,
               ),
             ),
           ),

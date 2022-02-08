@@ -132,14 +132,10 @@ class MapsControllerViewModel extends ChangeNotifier {
               zoom: currentZoomLevel)
           .then((response) {
         if (response is List<GeoMarker>) {
-          if (_pudos.isNotEmpty && response.isEmpty) {
-            mapController?.move(LatLng(currentLatitude, currentLongitude),
-                currentZoomLevel.toDouble());
-            return;
+          if (pudos.isEmpty) {
+            showingCardPudo = response[0].pudo!.pudoId;
           }
           pudos = smartPlacement(response);
-          mapController?.move(LatLng(currentLatitude, currentLongitude),
-              currentZoomLevel.toDouble());
         }
       }).catchError((onError) => showErrorDialog?.call(onError));
     }).catchError((onError) => showErrorDialog?.call(onError));
@@ -152,12 +148,17 @@ class MapsControllerViewModel extends ChangeNotifier {
   /// _maxLoadedPudos To be set to 100 when enough pudos created
   ///
   final int _maxLoadedPudos = 20;
+
   List<GeoMarker> smartPlacement(List<GeoMarker> newPudos) {
     List<GeoMarker> oldPudos = List<GeoMarker>.from(pudos);
 
     if (oldPudos.length >= _maxLoadedPudos) {
       //removes oldest fetched pudos if oldPudos exceeds the maxLoaded
-      oldPudos.removeRange(0, newPudos.length>oldPudos.length?oldPudos.length-1:newPudos.length-1);
+      oldPudos.removeRange(
+          0,
+          newPudos.length > oldPudos.length
+              ? oldPudos.length - 1
+              : newPudos.length - 1);
     }
     for (GeoMarker i in newPudos) {
       //if never fetched add the newFetchedPudo
@@ -172,12 +173,25 @@ class MapsControllerViewModel extends ChangeNotifier {
     if (pudoId == null) {
       return;
     }
+    isReloadingPudos = true;
     for (var i = 0; i < pudos.length; i++) {
       if (pudos[i].pudo?.pudoId == pudoId) {
         pageController.animateToPage(i,
-            duration: const Duration(milliseconds: 150), curve: Curves.easeIn);
+            duration: const Duration(milliseconds: 150), curve: Curves.easeIn).then((value){
+          isReloadingPudos = false;
+          showingCardPudo = pudoId;
+        });
         return;
       }
     }
+  }
+
+  int _showingCardPudo = 0;
+
+  int get showingCardPudo => _showingCardPudo;
+
+  set showingCardPudo(int newVal) {
+    _showingCardPudo = newVal;
+    notifyListeners();
   }
 }
