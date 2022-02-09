@@ -252,8 +252,8 @@ class _HomePudoDetailControllerState extends State<HomePudoDetailController> {
 
   void getIfPudoAlreadySelected() {
     NetworkManager.instance.getMyPudos().then((value) {
-      final index = value.indexWhere(
-          (element) => element.pudoId == widget.dataModel.pudoProfile.pudoId);
+      final index = value
+          .indexWhere((element) => element.pudoId == widget.dataModel.pudoId);
       if (index > -1) {
         setState(() {
           nextVisible = false;
