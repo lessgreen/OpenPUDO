@@ -27,14 +27,14 @@ import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
 import 'package:qui_green/commons/alert_dialog.dart';
-import 'package:qui_green/widgets/sascaffold.dart';
-import 'package:qui_green/widgets/text_field_button.dart';
-import 'package:qui_green/view_models/maps_controller_viewmodel.dart';
-import 'package:qui_green/widgets/pudo_map_card.dart';
 import 'package:qui_green/models/geo_marker.dart';
 import 'package:qui_green/resources/res.dart';
 import 'package:qui_green/resources/routes_enum.dart';
 import 'package:qui_green/singletons/network/network_manager.dart';
+import 'package:qui_green/view_models/maps_controller_viewmodel.dart';
+import 'package:qui_green/widgets/pudo_map_card.dart';
+import 'package:qui_green/widgets/sascaffold.dart';
+import 'package:qui_green/widgets/text_field_button.dart';
 
 class MapsController extends StatefulWidget {
   const MapsController({Key? key, required this.initialPosition}) : super(key: key);
@@ -44,8 +44,43 @@ class MapsController extends StatefulWidget {
   _MapsControllerState createState() => _MapsControllerState();
 }
 
-class _MapsControllerState extends State<MapsController> with ConnectionAware {
+class _MapsControllerState extends State<MapsController> with ConnectionAware, TickerProviderStateMixin {
   void _showErrorDialog(BuildContext context, String val) => SAAlertDialog.displayAlertWithClose(context, "Error", val);
+
+  void onPageControllerChange(MapsControllerViewModel viewModel, int index) {
+    final _latTween = Tween<double>(
+      begin: viewModel.mapController?.center.latitude,
+      end: viewModel.pudos[index].lat,
+    );
+    final _lngTween = Tween<double>(
+      begin: viewModel.mapController?.center.longitude,
+      end: viewModel.pudos[index].lon,
+    );
+    final _zoomTween = Tween<double>(begin: viewModel.mapController?.zoom, end: 16);
+
+    var controller = AnimationController(duration: const Duration(milliseconds: 500), vsync: this);
+    Animation<double> animation = CurvedAnimation(
+      parent: controller,
+      curve: Curves.fastOutSlowIn,
+    );
+
+    controller.addListener(() {
+      viewModel.mapController?.move(
+        LatLng(_latTween.evaluate(animation), _lngTween.evaluate(animation)),
+        _zoomTween.evaluate(animation),
+      );
+    });
+
+    animation.addStatusListener((status) {
+      if (status == AnimationStatus.completed) {
+        controller.dispose();
+      } else if (status == AnimationStatus.dismissed) {
+        controller.dispose();
+      }
+    });
+
+    controller.forward();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -86,7 +121,12 @@ class _MapsControllerState extends State<MapsController> with ConnectionAware {
                           mapPosition.bounds!.southWest!.longitude,
                         );
                         var visibleChangeDelta = mapVisibleMaxDistance - (mapVisibleMaxDistance * 50 / 100);
-                        var distance = Geolocator.distanceBetween(viewModel.lastTriggeredLatitude, viewModel.lastTriggeredLongitude, mapPosition.center!.latitude, mapPosition.center!.longitude);
+                        var distance = Geolocator.distanceBetween(
+                          viewModel.lastTriggeredLatitude,
+                          viewModel.lastTriggeredLongitude,
+                          mapPosition.center!.latitude,
+                          mapPosition.center!.longitude,
+                        );
 
                         if (mapPosition.center != null && mapPosition.zoom != null) {
                           viewModel.updateCurrentMapPosition(mapPosition);
@@ -110,20 +150,24 @@ class _MapsControllerState extends State<MapsController> with ConnectionAware {
                       ),
                       MarkerClusterLayerOptions(
                         showPolygon: false,
-                        maxClusterRadius: 120,
                         size: const Size(40, 40),
                         fitBoundsOptions: const FitBoundsOptions(
                           padding: EdgeInsets.all(50),
                         ),
+                        maxClusterRadius: 120,
                         markers: viewModel.pudos.markers(
                           (marker) {
-                            viewModel.selectPudo(context, marker);
+                            viewModel.selectPudo(context, marker.pudo?.pudoId);
                           },
+                          selectedMarker: viewModel.showingCardPudo,
                           tintColor: AppColors.primaryColorDark,
                         ),
                         builder: (context, markers) {
                           return FloatingActionButton(
-                            child: Text(markers.length.toString(), style: Theme.of(context).textTheme.caption?.copyWith(color: Colors.white)),
+                            child: Text(
+                              markers.length.toString(),
+                              style: Theme.of(context).textTheme.caption?.copyWith(color: Colors.white),
+                            ),
                             onPressed: null,
                           );
                         },
@@ -145,10 +189,16 @@ class _MapsControllerState extends State<MapsController> with ConnectionAware {
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                    CupertinoNavigationBarBackButton(color: AppColors.primaryColorDark, onPressed: () => Navigator.pop(context)),
+                                    CupertinoNavigationBarBackButton(
+                                      color: AppColors.primaryColorDark,
+                                      onPressed: () => Navigator.pop(context),
+                                    ),
                                     TextFieldButton(
                                       text: "Salta",
-                                      onPressed: () => Navigator.of(context).pushNamedAndRemoveUntil(Routes.personalData, ModalRoute.withName('/')),
+                                      onPressed: () => Navigator.of(context).pushNamedAndRemoveUntil(
+                                        Routes.personalData,
+                                        ModalRoute.withName('/'),
+                                      ),
                                     ),
                                   ],
                                 ),
@@ -162,22 +212,47 @@ class _MapsControllerState extends State<MapsController> with ConnectionAware {
                         ),
                         const Spacer(),
                         AnimatedCrossFade(
-                          secondChild: Padding(
-                            padding: const EdgeInsets.only(top: Dimension.paddingM, left: Dimension.paddingXS, right: Dimension.paddingXS, bottom: Dimension.paddingM),
-                            child: PudoMapCard(
-                                name: viewModel.selectedMarker?.pudo?.businessName ?? "",
-                                address: viewModel.selectedMarker?.address?.label ?? "",
-                                stars: viewModel.selectedMarker?.pudo?.rating?.stars ?? 0,
-                                hasShadow: true,
-                                onTap: () {
-                                  viewModel.onPudoClick(context, viewModel.selectedMarker!.pudo!, widget.initialPosition);
+                            duration: const Duration(milliseconds: 100),
+                            crossFadeState: viewModel.pudos.isEmpty || viewModel.currentZoomLevel < 14 ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+                            firstChild: SizedBox(
+                              width: MediaQuery.of(context).size.width,
+                              height: 0,
+                            ),
+                            secondChild: SizedBox(
+                              height: 100 + (Dimension.paddingM * 2),
+                              child: PageView.builder(
+                                itemCount: viewModel.pudos.length,
+                                controller: viewModel.pageController,
+                                onPageChanged: (value) async {
+                                  //Check if is fetching something (image not included)
+                                  if (!viewModel.isReloadingPudos) {
+                                    onPageControllerChange(viewModel, value);
+                                    viewModel.showingCardPudo = viewModel.pudos[value].pudo!.pudoId;
+                                  }
                                 },
-                                image: viewModel.selectedMarker?.pudo!.pudoPicId),
-                          ),
-                          crossFadeState: viewModel.selectedMarker == null ? CrossFadeState.showFirst : CrossFadeState.showSecond,
-                          duration: const Duration(milliseconds: 100),
-                          firstChild: SizedBox(width: MediaQuery.of(context).size.width),
-                        )
+                                itemBuilder: (context, index) => Padding(
+                                  padding: const EdgeInsets.only(
+                                    top: Dimension.paddingM,
+                                    left: Dimension.paddingXS,
+                                    right: Dimension.paddingXS,
+                                    bottom: Dimension.paddingM,
+                                  ),
+                                  child: PudoMapCard(
+                                      name: viewModel.pudos[index].pudo?.businessName ?? "",
+                                      address: viewModel.pudos[index].pudo?.label ?? "",
+                                      stars: viewModel.pudos[index].pudo?.rating?.reviewCount ?? 0,
+                                      hasShadow: true,
+                                      onTap: () {
+                                        viewModel.onPudoClick(
+                                          context,
+                                          viewModel.pudos[index],
+                                          widget.initialPosition,
+                                        );
+                                      },
+                                      image: viewModel.pudos[index].pudo?.pudoPicId),
+                                ),
+                              ),
+                            ))
                       ],
                     ),
                   )
