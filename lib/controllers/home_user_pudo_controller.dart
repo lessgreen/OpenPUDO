@@ -96,7 +96,11 @@ class _HomeUserPudoControllerState extends State<HomeUserPudoController> {
                   padding: const EdgeInsets.only(
                     top: Dimension.padding,
                   ),
-                  child: PudoCard(pudo: pudoList![index], onTap: () => {}),
+                  child: PudoCard(
+                      pudo: pudoList![index],
+                      onTap: () => Navigator.of(context).pushNamed(
+                          Routes.pudoDetail,
+                          arguments: pudoList![index])),
                 );
               })
         ],
