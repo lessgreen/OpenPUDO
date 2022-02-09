@@ -31,7 +31,6 @@ import 'package:qui_green/controllers/home_onboarding/registration_complete_cont
 import 'package:qui_green/controllers/home_onboarding/user_position_controller.dart';
 import 'package:qui_green/controllers/home_user_pudo_controller.dart';
 import 'package:qui_green/controllers/pudo_tutorial_controller.dart';
-import 'package:qui_green/models/pudo_detail_controller_data_model.dart';
 import 'package:qui_green/models/pudo_profile.dart';
 import 'package:qui_green/resources/routes_enum.dart';
 
@@ -41,11 +40,14 @@ dynamic routeHomeUserPudoSectionWithSetting(RouteSettings settings) {
   switch (settings.name) {
     case Routes.instruction:
       return CupertinoPageRoute(
-        builder: (context) => HomeInstructionController(pudoDataModel: settings.arguments as PudoProfile?),
+        builder: (context) => HomeInstructionController(
+            pudoDataModel: settings.arguments as PudoProfile?),
       );
     case Routes.registrationComplete:
       return CupertinoPageRoute(
-        builder: (context) => HomeRegistrationCompleteController(pudoDataModel: settings.arguments as PudoProfile,),
+        builder: (context) => HomeRegistrationCompleteController(
+          pudoDataModel: settings.arguments as PudoProfile,
+        ),
       );
     case Routes.maps:
       return CupertinoPageRoute(
@@ -66,7 +68,8 @@ dynamic routeHomeUserPudoSectionWithSetting(RouteSettings settings) {
       );
     case Routes.pudoDetail:
       return CupertinoPageRoute(
-        builder: (context) => HomePudoDetailController(dataModel: settings.arguments as PudoDetailControllerDataModel),
+        builder: (context) => HomePudoDetailController(
+            dataModel: settings.arguments as PudoProfile),
       );
     default:
       return CupertinoPageRoute(

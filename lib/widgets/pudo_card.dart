@@ -18,12 +18,28 @@
  If not, see <https://github.com/lessgreen/OpenPUDO>.
 */
 
-import 'package:latlong2/latlong.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:qui_green/models/pudo_profile.dart';
+import 'package:qui_green/widgets/pudo_map_card.dart';
 
-class PudoDetailControllerDataModel {
-  final LatLng initialPosition;
-  final PudoProfile pudoProfile;
+class PudoCard extends StatelessWidget {
+  final Function() onTap;
+  final PudoProfile pudo;
 
-  const PudoDetailControllerDataModel(this.initialPosition, this.pudoProfile);
+  const PudoCard({Key? key, required this.onTap, required this.pudo})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 100,
+      child: PudoMapCard(
+        name: pudo.businessName,
+        address: pudo.address?.street ?? "Via Ippolito, 8",
+        stars: pudo.ratingModel?.reviewCount ?? 3,
+        image: pudo.pudoPicId,
+        onTap: onTap,
+      ),
+    );
+  }
 }
