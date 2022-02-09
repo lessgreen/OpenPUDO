@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors
+
 /*
  OpenPUDO - PUDO and Micro-delivery software for Last Mile Collaboration
  Copyright (C) 2020-2022 LESS SRL - https://less.green
@@ -22,11 +24,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
 import 'package:qui_green/commons/ui/custom_network_image.dart';
 import 'package:qui_green/resources/res.dart';
-import 'package:qui_green/resources/routes_enum.dart';
 import 'package:qui_green/singletons/current_user.dart';
 import 'package:qui_green/singletons/network/network_manager.dart';
+import 'package:qui_green/widgets/table_view_cell.dart';
+import 'package:qui_green/widgets/user_profile_recap_widget.dart';
 
 class ProfileController extends StatefulWidget {
   const ProfileController({Key? key}) : super(key: key);
@@ -35,7 +39,7 @@ class ProfileController extends StatefulWidget {
   _ProfileControllerState createState() => _ProfileControllerState();
 }
 
-class _ProfileControllerState extends State<ProfileController> with ConnectionAware{
+class _ProfileControllerState extends State<ProfileController> with ConnectionAware {
   @override
   Widget build(BuildContext context) {
     return Consumer<CurrentUser>(builder: (_, currentUser, __) {
@@ -45,13 +49,7 @@ class _ProfileControllerState extends State<ProfileController> with ConnectionAw
               padding: const EdgeInsetsDirectional.all(0),
               brightness: Brightness.dark,
               backgroundColor: AppColors.primaryColorDark,
-              middle: Text(
-                'Il tuo profilo',
-                style: Theme.of(context)
-                    .textTheme
-                    .headline6
-                    ?.copyWith(color: Colors.white),
-              ),
+              middle: Text('Il tuo profilo', style: AdditionalTextStyles.navBarStyle(context)),
               leading: CupertinoNavigationBarBackButton(
                 color: Colors.white,
                 onPressed: () => Navigator.of(context).pop(),
@@ -63,11 +61,7 @@ class _ProfileControllerState extends State<ProfileController> with ConnectionAw
                 Center(
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(100),
-                    child: CustomNetworkImage(
-                        height: 100,
-                        width: 100,
-                        fit: BoxFit.cover,
-                        url: currentUser.user?.profilePicId),
+                    child: CustomNetworkImage(height: 150, width: 150, fit: BoxFit.cover, url: currentUser.user?.profilePicId),
                   ),
                 ),
                 const SizedBox(
@@ -75,107 +69,47 @@ class _ProfileControllerState extends State<ProfileController> with ConnectionAw
                 ),
                 Text(
                   "${currentUser.user?.firstName ?? " "} ${currentUser.user?.lastName ?? " "}",
-                  style: const TextStyle(
-                      fontWeight: FontWeight.w500, fontSize: 17),
+                  style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 20),
                 ),
+                const SizedBox(height: 6),
                 Text(
                   'Utente dal ${currentUser.user?.createTms != null ? DateFormat('dd/MM/yyyy').format(DateTime.parse(currentUser.user!.createTms!)) : " "}',
-                  style: TextStyle(fontSize: 12, color: Colors.grey.shade500),
+                  style: const TextStyle(fontWeight: FontWeight.w300, fontSize: 14, color: AppColors.primaryTextColor),
                 ),
                 const SizedBox(
                   height: 20,
                 ),
-                RichText(
-                  textAlign: TextAlign.center,
-                  text: TextSpan(
-                    text: '',
-                    style: Theme.of(context).textTheme.bodyText2,
-                    children: const [
-                      TextSpan(text: "Hai usato il servizio di QuiGreen "),
-                      TextSpan(
-                          text: "123",
-                          style: TextStyle(
-                              color: AppColors.accentColor,
-                              fontWeight: FontWeight.w500)),
-                      TextSpan(text: " volte,"),
-                      TextSpan(text: " contribuendo a ridurre di "),
-                      TextSpan(
-                          text: "456kg",
-                          style: TextStyle(
-                              color: AppColors.accentColor,
-                              fontWeight: FontWeight.w500)),
-                      TextSpan(text: " le emissioni di CO2")
-                    ],
-                  ),
+                const UserProfileRecapWidget(
+                  totalUsage: 123,
+                  kgCO2Saved: 456,
                 ),
-                const SizedBox(
-                  height: 20,
-                ),
-                const Divider(color: Colors.grey),
-                GestureDetector(
-                  onTap: () => Navigator.of(context)
-                      .pushReplacementNamed(Routes.pudoList),
-                  child: Row(
-                    children: const [
-                      SizedBox(width: 10),
-                      Icon(
-                        Icons.person_pin_circle,
-                        color: AppColors.cardColor,
-                      ),
-                      SizedBox(width: 10),
-                      Text("I tuoi pudo"),
-                      Spacer(),
-                      Icon(
-                        Icons.keyboard_arrow_right,
-                        color: AppColors.cardColor,
-                      ),
-                    ],
-                  ),
-                ),
-                const Divider(color: Colors.grey),
-                Row(
-                  children: const [
-                    SizedBox(width: 10),
-                    Icon(
-                      Icons.new_label,
+                TableViewCell(
+                    leading: Icon(
+                      Icons.person_pin_circle,
                       color: AppColors.cardColor,
                     ),
-                    SizedBox(width: 10),
-                    Text("Le tue spedizioni"),
-                    Spacer(),
-                    Icon(
-                      Icons.keyboard_arrow_right,
-                      color: AppColors.cardColor,
-                    ),
-                  ],
-                ),
-                const Divider(color: Colors.grey),
-                Material(
-                  child: InkWell(
-                    onTap: () {
-                      Navigator.pop(context);
-                      NetworkManager.instance.setAccessToken(null);
-                      currentUser.refresh();
-                    },
-                    child: Row(
-                      children: const [
-                        SizedBox(width: 10),
-                        Icon(
-                          Icons.logout,
-                          color: AppColors.cardColor,
-                        ),
-                        SizedBox(width: 10),
-                        Text("Logout"),
-                        Spacer(),
-                        Icon(
-                          Icons.keyboard_arrow_right,
-                          color: AppColors.cardColor,
-                        ),
-                      ],
-                    ),
+                    title: "I tuoi pudo",
+                    onTap: () {}),
+                TableViewCell(
+                  leading: Icon(
+                    Icons.new_label,
+                    color: AppColors.cardColor,
                   ),
+                  title: "Le tue spedizioni",
+                  onTap: () {},
                 ),
-                const Divider(color: Colors.grey),
+                TableViewCell(
+                  leading: Icon(
+                    Icons.logout,
+                    color: AppColors.cardColor,
+                  ),
+                  title: "Logout",
+                  onTap: () {
+                    Navigator.pop(context);
+                    NetworkManager.instance.setAccessToken(null);
+                    currentUser.refresh();
+                  },
+                ),
               ],
             )),
       );

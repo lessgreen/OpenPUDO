@@ -302,17 +302,11 @@ mixin NetworkManagerUser on NetworkGeneral {
         _headers['Authorization'] = 'Bearer $_accessToken';
       }
       var url = _baseURL + '/api/v2/file/$id';
-      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
-        _networkActivity.value = true;
-      });
       Response response = await r.retry(
         () => get(Uri.parse(url), headers: _headers)
             .timeout(Duration(seconds: _timeout)),
         retryIf: (e) => e is SocketException || e is TimeoutException,
       );
-      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
-        _networkActivity.value = false;
-      });
       if (response.statusCode == 200) {
         return response.bodyBytes;
       }

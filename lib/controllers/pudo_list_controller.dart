@@ -14,13 +14,14 @@
  GNU Affero General Public License version 3 for more details.
 
  You should have received a copy of the GNU Affero General Public License
- version 3 published by the Copyright Owner along with OpenPUDO.  
+ version 3 published by the Copyright Owner along with OpenPUDO.
  If not, see <https://github.com/lessgreen/OpenPUDO>.
 */
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:qui_green/commons/alert_dialog.dart';
+import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
 import 'package:qui_green/models/pudo_profile.dart';
 import 'package:qui_green/resources/res.dart';
 import 'package:qui_green/resources/routes_enum.dart';
@@ -104,30 +105,24 @@ class _PudoListControllerState extends State<PudoListController> {
   @override
   Widget build(BuildContext context) {
     return Material(
-      child: CupertinoPageScaffold(
-          navigationBar: CupertinoNavigationBar(
-            padding: const EdgeInsetsDirectional.all(0),
-            brightness: Brightness.dark,
-            backgroundColor: AppColors.primaryColorDark,
-            middle: Text(
-              'Il tuoi pudo',
-              style: Theme.of(context)
-                  .textTheme
-                  .headline6
-                  ?.copyWith(color: Colors.white),
+        child: CupertinoPageScaffold(
+            navigationBar: CupertinoNavigationBar(
+              padding: const EdgeInsetsDirectional.all(0),
+              brightness: Brightness.dark,
+              backgroundColor: AppColors.primaryColorDark,
+              middle: Text('Il tuoi pudo',
+                  style: AdditionalTextStyles.navBarStyle(context)),
+              leading: CupertinoNavigationBarBackButton(
+                color: Colors.white,
+                onPressed: () => Navigator.of(context).pop(),
+              ),
             ),
-            leading: CupertinoNavigationBarBackButton(
-              color: Colors.white,
-              onPressed: () => Navigator.of(context).pop(),
-            ),
-          ),
-          child: SAScaffold(
-              isLoading: NetworkManager.instance.networkActivity,
-              body: pudoList == null
-                  ? Container()
-                  : pudoList!.isEmpty
-                      ? _buildEmptyPudos()
-                      : _buildPudos())),
-    );
+            child: SAScaffold(
+                isLoading: NetworkManager.instance.networkActivity,
+                body: pudoList == null
+                    ? Container()
+                    : pudoList!.isEmpty
+                        ? _buildEmptyPudos()
+                        : _buildPudos())));
   }
 }
