@@ -22,6 +22,7 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:qui_green/commons/utilities/home_user_packages_section_routes.dart';
 import 'package:qui_green/commons/utilities/home_user_pudo_section_routes.dart';
 import 'package:qui_green/widgets/listview_header.dart';
@@ -56,13 +57,25 @@ class _HomeControllerState extends State<HomeController> with ConnectionAware {
         tabBar: CupertinoTabBar(
           onTap: (selectedIndex) {
             if (selectedIndex == _oldIndex) {
-              _navigatorObservers[selectedIndex].navigator?.popUntil((Route<dynamic> route) => route.isFirst);
+              _navigatorObservers[selectedIndex]
+                  .navigator
+                  ?.popUntil((Route<dynamic> route) => route.isFirst);
             }
             _oldIndex = selectedIndex;
           },
-          items: const [
-            BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-            BottomNavigationBarItem(icon: Icon(Icons.map), label: 'Pudo'),
+          items: [
+            BottomNavigationBarItem(
+                icon: SvgPicture.asset(ImageSrc.homeArt,
+                    color: Colors.grey.shade400),
+                activeIcon: SvgPicture.asset(ImageSrc.homeArt,
+                    color: AppColors.primaryColorDark),
+                label: 'Home'),
+            BottomNavigationBarItem(
+                icon: SvgPicture.asset(ImageSrc.mapsArt,
+                    color: Colors.grey.shade400),
+                activeIcon: SvgPicture.asset(ImageSrc.mapsArt,
+                    color: AppColors.primaryColorDark),
+                label: 'Pudo'),
           ],
         ),
         tabBuilder: (innerContext, index) {
@@ -70,12 +83,14 @@ class _HomeControllerState extends State<HomeController> with ConnectionAware {
             case 1:
               return CupertinoTabView(
                 navigatorObservers: [_navigatorObservers[1]],
-                onGenerateRoute: (RouteSettings settings) => routeHomeUserPudoSectionWithSetting(settings),
+                onGenerateRoute: (RouteSettings settings) =>
+                    routeHomeUserPudoSectionWithSetting(settings),
               );
             default:
               return CupertinoTabView(
                 navigatorObservers: [_navigatorObservers[0]],
-                onGenerateRoute: (RouteSettings settings) => routeHomeUserPackagesSectionWithSetting(settings),
+                onGenerateRoute: (RouteSettings settings) =>
+                    routeHomeUserPackagesSectionWithSetting(settings),
               );
           }
         },

@@ -54,7 +54,10 @@ class _PudoHomeControllerState extends State<PudoHomeController> with Connection
                       navigationBar: CupertinoNavigationBar(
                         padding: const EdgeInsetsDirectional.all(0),
                         backgroundColor: AppColors.primaryColorDark,
-                        middle: Text('Il tuo profilo', style: AdditionalTextStyles.navBarStyle(context)),
+                        middle: Text(
+                          'Il tuo profilo',
+                          style: Theme.of(context).textTheme.navBarTitle,
+                        ),
                       ),
                       child: Container(),
                     );
@@ -72,7 +75,7 @@ class _PudoHomeControllerState extends State<PudoHomeController> with Connection
                           backgroundColor: AppColors.primaryColorDark,
                           middle: Text(
                             'HomePudo',
-                            style: AdditionalTextStyles.navBarStyle(context),
+                            style: Theme.of(context).textTheme.navBarTitle,
                           ),
                         ),
                         child: Center(

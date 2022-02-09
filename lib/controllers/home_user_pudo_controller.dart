@@ -42,7 +42,7 @@ class _HomeUserPudoControllerState extends State<HomeUserPudoController> {
         backgroundColor: AppColors.primaryColorDark,
         middle: Text(
           'I tuoi Pudo',
-          style: AdditionalTextStyles.navBarStyle(context),
+          style: Theme.of(context).textTheme.navBarTitle,
         ),
       ),
       child: Column(

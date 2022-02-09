@@ -40,7 +40,10 @@ class _PudoListControllerState extends State<PudoListController> {
           padding: const EdgeInsetsDirectional.all(0),
           brightness: Brightness.dark,
           backgroundColor: AppColors.primaryColorDark,
-          middle: Text('Il tuoi pudo', style: AdditionalTextStyles.navBarStyle(context)),
+          middle: Text(
+            'Il tuoi pudo',
+            style: Theme.of(context).textTheme.navBarTitle,
+          ),
           leading: CupertinoNavigationBarBackButton(
             color: Colors.white,
             onPressed: () => Navigator.of(context).pop(),
