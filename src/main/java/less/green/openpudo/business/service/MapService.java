@@ -155,7 +155,7 @@ public class MapService {
     }
 
     public List<PudoMarker> searchPudos(String text, BigDecimal lat, BigDecimal lon) {
-        // prevent returning meaningless results with too few characters
+        // prevent returning meaningless results with too few characters, and removing charachters that can interfere with full etxt search
         if (text.trim().replaceAll("[\\*\\&\\:\\|\\(\\)]", "").length() <= 3) {
             return Collections.emptyList();
         }
