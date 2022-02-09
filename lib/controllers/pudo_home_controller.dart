@@ -21,6 +21,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
 import 'package:qui_green/singletons/current_user.dart';
 import 'package:qui_green/singletons/network/network_manager.dart';
 import 'package:qui_green/resources/res.dart';
@@ -53,10 +54,7 @@ class _PudoHomeControllerState extends State<PudoHomeController> with Connection
                       navigationBar: CupertinoNavigationBar(
                         padding: const EdgeInsetsDirectional.all(0),
                         backgroundColor: AppColors.primaryColorDark,
-                        middle: Text(
-                          'Il tuo profilo',
-                          style: Theme.of(context).textTheme.headline6?.copyWith(color: Colors.white),
-                        ),
+                        middle: Text('Il tuo profilo', style: AdditionalTextStyles.navBarStyle(context)),
                       ),
                       child: Container(),
                     );
@@ -74,7 +72,7 @@ class _PudoHomeControllerState extends State<PudoHomeController> with Connection
                           backgroundColor: AppColors.primaryColorDark,
                           middle: Text(
                             'HomePudo',
-                            style: Theme.of(context).textTheme.headline6?.copyWith(color: Colors.white),
+                            style: AdditionalTextStyles.navBarStyle(context),
                           ),
                         ),
                         child: Center(
