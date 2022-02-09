@@ -30,7 +30,6 @@ import 'package:qui_green/controllers/home_onboarding/maps_search_controller.dar
 import 'package:qui_green/controllers/home_onboarding/pudo_detail_controller.dart';
 import 'package:qui_green/controllers/home_onboarding/registration_complete_controller.dart';
 import 'package:qui_green/controllers/home_onboarding/user_position_controller.dart';
-import 'package:qui_green/controllers/home_user_pudo_controller.dart';
 import 'package:qui_green/controllers/profile_controller.dart';
 import 'package:qui_green/controllers/pudo_tutorial_controller.dart';
 import 'package:qui_green/models/pudo_profile.dart';

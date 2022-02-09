@@ -26,7 +26,6 @@ import 'package:latlong2/latlong.dart';
 import 'package:location/location.dart';
 import 'package:qui_green/models/address_model.dart';
 import 'package:qui_green/models/geo_marker.dart';
-import 'package:qui_green/models/pudo_detail_controller_data_model.dart';
 import 'package:qui_green/models/pudo_profile.dart';
 import 'package:qui_green/resources/routes_enum.dart';
 import 'package:qui_green/singletons/network/network_manager.dart';
@@ -114,8 +113,8 @@ class MapsSearchControllerViewModel extends ChangeNotifier {
         .then(
       (response) {
         if (response is PudoProfile) {
-          Navigator.of(context).pushNamed(Routes.pudoDetail,
-              arguments: PudoDetailControllerDataModel(position, response));
+          Navigator.of(context)
+              .pushNamed(Routes.pudoDetail, arguments: response);
         } else {
           showErrorDialog?.call("Qualcosa e' andato storto");
         }
