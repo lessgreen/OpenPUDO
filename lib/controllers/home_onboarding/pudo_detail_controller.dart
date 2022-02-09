@@ -23,9 +23,8 @@ import 'package:flutter/material.dart';
 import 'package:qui_green/commons/alert_dialog.dart';
 import 'package:qui_green/commons/ui/custom_network_image.dart';
 import 'package:qui_green/models/pudo_detail_controller_data_model.dart';
-import 'package:qui_green/models/pudo_profile.dart';
-import 'package:qui_green/resources/routes_enum.dart';
 import 'package:qui_green/resources/res.dart';
+import 'package:qui_green/resources/routes_enum.dart';
 import 'package:qui_green/singletons/network/network_manager.dart';
 
 class HomePudoDetailController extends StatefulWidget {
@@ -153,7 +152,7 @@ class _HomePudoDetailControllerState extends State<HomePudoDetailController> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    getIfPudoAlreadyExists();
+    getIfPudoAlreadySelected();
   }
 
   @override
@@ -177,7 +176,7 @@ class _HomePudoDetailControllerState extends State<HomePudoDetailController> {
             color: Colors.white,
           ),
         ),
-        trailing: nextVisible
+        trailing: !nextVisible
             ? Container()
             : InkWell(
                 onTap: goToRegistration,
@@ -255,17 +254,17 @@ class _HomePudoDetailControllerState extends State<HomePudoDetailController> {
 
   bool nextVisible = false;
 
-  void getIfPudoAlreadyExists() {
+  void getIfPudoAlreadySelected() {
     NetworkManager.instance.getMyPudos().then((value) {
       final index = value.indexWhere(
           (element) => element.pudoId == widget.dataModel.pudoProfile.pudoId);
-      if (index > 0) {
+      if (index > -1) {
         setState(() {
-          nextVisible = true;
+          nextVisible = false;
         });
       } else {
         setState(() {
-          nextVisible = false;
+          nextVisible = true;
         });
       }
     }).catchError((onError) =>
