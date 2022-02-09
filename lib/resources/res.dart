@@ -45,6 +45,7 @@ class Dimension {
 
   static const borderRadiusS = 10.0;
   static const borderRadius = 30.0;
+  static const borderRadiusSearch = 25.0;
 
   static const chipIcon = 16.0;
   static const illustrationHeight = 120.0;
