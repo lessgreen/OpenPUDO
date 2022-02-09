@@ -21,6 +21,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:qui_green/commons/alert_dialog.dart';
+import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
 import 'package:qui_green/commons/ui/custom_network_image.dart';
 import 'package:qui_green/models/pudo_profile.dart';
 import 'package:qui_green/resources/res.dart';
@@ -53,12 +54,12 @@ class _HomePudoDetailControllerState extends State<HomePudoDetailController> {
               ),
               Row(
                 children: List<Widget>.generate(
-                  (widget.dataModel.ratingModel?.stars ?? 0) > 5
-                      ? 5
-                      : widget.dataModel.ratingModel?.stars ?? 0,
+                  5,
                   (index) => Icon(
                     Icons.star_rounded,
-                    color: Colors.yellow.shade700,
+                    color: (index + 1 <= (widget.dataModel.rating?.stars ?? 0))
+                        ? Colors.yellow.shade700
+                        : Colors.grey.shade200,
                   ),
                 ),
               ),
@@ -159,21 +160,15 @@ class _HomePudoDetailControllerState extends State<HomePudoDetailController> {
         brightness: Brightness.dark,
         backgroundColor: AppColors.primaryColorDark,
         middle: Text(
-          '',
-          style: Theme.of(context)
-              .textTheme
-              .headline6
-              ?.copyWith(color: Colors.white),
+          widget.dataModel.businessName,
+          style: Theme.of(context).textTheme.navBarTitle,
         ),
-        leading: IconButton(
+        leading: CupertinoNavigationBarBackButton(
+          color: Colors.white,
           onPressed: () => Navigator.of(context).pop(),
-          icon: const Icon(
-            Icons.arrow_back_ios_rounded,
-            color: Colors.white,
-          ),
         ),
         trailing: !nextVisible
-            ? Container()
+            ? const SizedBox()
             : InkWell(
                 onTap: goToRegistration,
                 child: const Padding(

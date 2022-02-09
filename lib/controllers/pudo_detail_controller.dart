@@ -18,6 +18,7 @@
  If not, see <https://github.com/lessgreen/OpenPUDO>.
 */
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:qui_green/commons/ui/custom_network_image.dart';
@@ -53,12 +54,12 @@ class _PudoDetailControllerState extends State<PudoDetailController>
               ),
               Row(
                 children: List<Widget>.generate(
-                  (widget.dataModel.ratingModel?.stars ?? 0) > 5
-                      ? 5
-                      : widget.dataModel.ratingModel?.stars ?? 0,
+                  5,
                   (index) => Icon(
                     Icons.star_rounded,
-                    color: Colors.yellow.shade700,
+                    color: (index + 1 <= (widget.dataModel.rating?.stars ?? 0))
+                        ? Colors.yellow.shade700
+                        : Colors.grey.shade200,
                   ),
                 ),
               ),
@@ -162,12 +163,9 @@ class _PudoDetailControllerState extends State<PudoDetailController>
                 ),
           ),
           centerTitle: true,
-          leading: GestureDetector(
-            onTap: () => Navigator.of(context).pop(),
-            child: const Icon(
-              Icons.arrow_back_ios_rounded,
-              color: AppColors.primaryColorDark,
-            ),
+          leading: CupertinoNavigationBarBackButton(
+            color: Colors.white,
+            onPressed: () => Navigator.of(context).pop(),
           ),
           actions: [
             TextFieldButton(

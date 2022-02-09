@@ -57,21 +57,17 @@ class _HomeRegistrationCompleteControllerState
             builder: (context, child, isKeyboardVisible) {
               return CupertinoPageScaffold(
                 navigationBar: CupertinoNavigationBar(
-                  padding: const EdgeInsetsDirectional.all(0),
-                  brightness: Brightness.dark,
-                  backgroundColor: AppColors.primaryColorDark,
-                  middle: Text(
-                    'Fatto!',
-                    style: Theme.of(context).textTheme.navBarTitle,
-                  ),
-                  leading: IconButton(
-                    onPressed: () => Navigator.of(context).pop(),
-                    icon: const Icon(
-                      Icons.arrow_back_ios_rounded,
-                      color: Colors.white,
+                    padding: const EdgeInsetsDirectional.all(0),
+                    brightness: Brightness.dark,
+                    backgroundColor: AppColors.primaryColorDark,
+                    middle: Text(
+                      'Fatto!',
+                      style: Theme.of(context).textTheme.navBarTitle,
                     ),
-                  ),
-                ),
+                    leading: CupertinoNavigationBarBackButton(
+                      color: Colors.white,
+                      onPressed: () => Navigator.of(context).pop(),
+                    )),
                 child: SafeArea(
                   child: Column(
                     children: [
@@ -109,9 +105,7 @@ class _HomeRegistrationCompleteControllerState
                                 name: widget.pudoDataModel?.businessName ?? "",
                                 address:
                                     widget.pudoDataModel?.address?.label ?? "",
-                                stars:
-                                    widget.pudoDataModel?.ratingModel?.stars ??
-                                        0,
+                                stars: widget.pudoDataModel?.rating?.stars ?? 0,
                                 onTap: () {},
                                 image: widget.pudoDataModel?.pudoPicId,
                               ),

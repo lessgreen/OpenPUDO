@@ -19,12 +19,12 @@
 */
 
 import 'package:flutter/cupertino.dart';
-import 'package:qui_green/models/pudo_profile.dart';
+import 'package:qui_green/models/pudo_summary.dart';
 import 'package:qui_green/widgets/pudo_map_card.dart';
 
 class PudoCard extends StatelessWidget {
   final Function() onTap;
-  final PudoProfile pudo;
+  final PudoSummary pudo;
 
   const PudoCard({Key? key, required this.onTap, required this.pudo})
       : super(key: key);
@@ -35,8 +35,8 @@ class PudoCard extends StatelessWidget {
       height: 100,
       child: PudoMapCard(
         name: pudo.businessName,
-        address: pudo.address?.street ?? "Via Ippolito, 8",
-        stars: pudo.ratingModel?.reviewCount ?? 3,
+        address: pudo.label ?? "",
+        stars: (pudo.rating?.stars ?? 0).toInt(),
         image: pudo.pudoPicId,
         onTap: onTap,
       ),

@@ -22,9 +22,9 @@ PudoProfile _$PudoProfileFromJson(Map<String, dynamic> json) => PudoProfile(
       rewardMessage: json['rewardMessage'] as String?,
       customizedAddress: json['customizedAddress'] as String?,
     )
-      ..ratingModel = json['ratingModel'] == null
+      ..rating = json['rating'] == null
           ? null
-          : RatingModel.fromJson(json['ratingModel'] as Map<String, dynamic>)
+          : RatingModel.fromJson(json['rating'] as Map<String, dynamic>)
       ..packageCount = json['packageCount'] as int?
       ..imageUrl = json['imageUrl'] as String?;
 
@@ -39,7 +39,7 @@ Map<String, dynamic> _$PudoProfileToJson(PudoProfile instance) =>
       'updateTms': instance.updateTms,
       'vat': instance.vat,
       'address': instance.address,
-      'ratingModel': instance.ratingModel,
+      'rating': instance.rating,
       'customerCount': instance.customerCount,
       'packageCount': instance.packageCount,
       'rewardMessage': instance.rewardMessage,
