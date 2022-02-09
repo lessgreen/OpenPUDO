@@ -25,23 +25,22 @@ import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:qui_green/app.dart';
 import 'package:qui_green/controllers/about_you_controller.dart';
+import 'package:qui_green/controllers/home_controller.dart';
+import 'package:qui_green/controllers/instruction_controller.dart';
 import 'package:qui_green/controllers/onboarding/confirm_phone_controller.dart';
 import 'package:qui_green/controllers/onboarding/exchange_controller.dart';
-import 'package:qui_green/controllers/home_controller.dart';
 import 'package:qui_green/controllers/onboarding/insert_address_controller.dart';
 import 'package:qui_green/controllers/onboarding/insert_phone_controller.dart';
-import 'package:qui_green/controllers/instruction_controller.dart';
-import 'package:qui_green/controllers/pudo_home_controller.dart';
-import 'package:qui_green/controllers/pudo_list_controller.dart';
 import 'package:qui_green/controllers/onboarding/login_controller.dart';
 import 'package:qui_green/controllers/onboarding/maps_controller.dart';
-import 'package:qui_green/controllers/onboarding/personal_data_controller.dart';
 import 'package:qui_green/controllers/onboarding/personal_data_business_controller.dart';
-import 'package:qui_green/controllers/thanks_controller.dart';
-import 'package:qui_green/models/pudo_detail_controller_data_model.dart';
+import 'package:qui_green/controllers/onboarding/personal_data_controller.dart';
 import 'package:qui_green/controllers/pudo_detail_controller.dart';
+import 'package:qui_green/controllers/pudo_home_controller.dart';
+import 'package:qui_green/controllers/pudo_list_controller.dart';
 import 'package:qui_green/controllers/pudo_tutorial_controller.dart';
 import 'package:qui_green/controllers/registration_complete_controller.dart';
+import 'package:qui_green/controllers/thanks_controller.dart';
 import 'package:qui_green/controllers/user_position_controller.dart';
 import 'package:qui_green/models/pudo_profile.dart';
 import 'package:qui_green/resources/routes_enum.dart';
@@ -88,23 +87,28 @@ dynamic routeWithSetting(RouteSettings settings) {
       );
     case Routes.maps:
       return CupertinoPageRoute(
-        builder: (context) => MapsController(initialPosition: settings.arguments as LatLng),
+        builder: (context) =>
+            MapsController(initialPosition: settings.arguments as LatLng),
       );
     case Routes.pudoDetail:
       return CupertinoPageRoute(
-        builder: (context) => PudoDetailController(dataModel: settings.arguments as PudoDetailControllerDataModel),
+        builder: (context) =>
+            PudoDetailController(dataModel: settings.arguments as PudoProfile),
       );
     case Routes.personalData:
       return CupertinoPageRoute(
-        builder: (context) => PersonalDataController(pudoDataModel: settings.arguments as PudoProfile?),
+        builder: (context) => PersonalDataController(
+            pudoDataModel: settings.arguments as PudoProfile?),
       );
     case Routes.registrationComplete:
       return CupertinoPageRoute(
-        builder: (context) => RegistrationCompleteController(pudoDataModel: settings.arguments as PudoProfile?),
+        builder: (context) => RegistrationCompleteController(
+            pudoDataModel: settings.arguments as PudoProfile?),
       );
     case Routes.instruction:
       return CupertinoPageRoute(
-        builder: (context) => InstructionController(pudoDataModel: settings.arguments as PudoProfile?),
+        builder: (context) => InstructionController(
+            pudoDataModel: settings.arguments as PudoProfile?),
       );
     case Routes.thanks:
       return CupertinoPageRoute(

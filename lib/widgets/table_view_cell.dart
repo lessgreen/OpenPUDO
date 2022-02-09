@@ -22,6 +22,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
 import 'package:qui_green/resources/res.dart';
 
 class TableViewCell extends StatelessWidget {
@@ -30,13 +31,21 @@ class TableViewCell extends StatelessWidget {
   final bool showTrailingChevron;
   final Function? onTap;
 
-  const TableViewCell({Key? key, this.leading, this.title, this.showTrailingChevron = true, this.onTap}) : super(key: key);
+  const TableViewCell({
+    Key? key,
+    this.leading,
+    this.title,
+    this.showTrailingChevron = true,
+    this.onTap,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
+      dense: true,
       onTap: () => onTap?.call(),
       title: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
@@ -44,25 +53,33 @@ class TableViewCell extends StatelessWidget {
               leading != null
                   ? SizedBox(
                       width: 30,
-                      child: Icon(
-                        Icons.new_label,
-                        color: AppColors.cardColor,
-                      ),
+                      child: leading,
                     )
                   : SizedBox(),
-              Expanded(child: Text(title ?? "", textAlign: TextAlign.left, style: TextStyle(fontSize: 18, color: AppColors.primaryTextColor))),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    title ?? "",
+                    textAlign: TextAlign.left,
+                    style: Theme.of(context).textTheme.bodyTextLight?.copyWith(
+                          color: AppColors.primaryTextColor,
+                        ),
+                  ),
+                ),
+              ),
               showTrailingChevron
                   ? SvgPicture.asset(
                       ImageSrc.chevronRight,
-                      width: 30,
-                      height: 30,
+                      width: 24,
+                      height: 24,
                       color: AppColors.colorGrey,
                     )
                   : SizedBox(),
             ],
           ),
           Padding(
-            padding: const EdgeInsets.only(top: 8),
+            padding: const EdgeInsets.only(top: 8.0),
             child: Divider(
               height: 1,
             ),
