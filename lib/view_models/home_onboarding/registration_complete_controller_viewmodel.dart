@@ -29,7 +29,19 @@ import 'package:qui_green/singletons/network/network_manager.dart';
 
 class HomeRegistrationCompleteControllerViewModel extends ChangeNotifier {
   Function(dynamic)? showErrorDialog;
-  bool _showNumber = true;
+
+  showNumberPreference() {
+    bool val = true;
+    NetworkManager.instance.getUserPreferences().then((value) {
+      val = value.showPhoneNumber;
+      notifyListeners();
+    }).catchError(
+      (onError) => showErrorDialog?.call(onError),
+    );
+    return val;
+  }
+
+  late bool _showNumber = showNumberPreference();
 
   bool get showNumber => _showNumber;
 

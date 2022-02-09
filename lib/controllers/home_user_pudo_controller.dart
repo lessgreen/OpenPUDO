@@ -69,7 +69,10 @@ class _HomeUserPudoControllerState extends State<HomeUserPudoController> {
           const SizedBox(
             height: Dimension.padding,
           ),
-          MainButton(text: 'Vai', onPressed: () => Navigator.of(context).pushNamed(Routes.userPosition))
+          MainButton(
+              text: 'Vai',
+              onPressed: () =>
+                  Navigator.of(context).pushNamed(Routes.userPosition))
         ],
       );
 

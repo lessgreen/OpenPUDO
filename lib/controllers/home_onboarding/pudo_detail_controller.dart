@@ -14,7 +14,7 @@
  GNU Affero General Public License version 3 for more details.
 
  You should have received a copy of the GNU Affero General Public License
- version 3 published by the Copyright Owner along with OpenPUDO.  
+ version 3 published by the Copyright Owner along with OpenPUDO.
  If not, see <https://github.com/lessgreen/OpenPUDO>.
 */
 
@@ -145,6 +145,13 @@ class _HomePudoDetailControllerState extends State<HomePudoDetailController> {
       );
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getIfPudoAlreadySelected();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(
@@ -165,16 +172,18 @@ class _HomePudoDetailControllerState extends State<HomePudoDetailController> {
             color: Colors.white,
           ),
         ),
-        trailing: InkWell(
-          onTap: goToRegistration,
-          child: const Padding(
-            padding: EdgeInsets.only(right: Dimension.padding),
-            child: Text(
-              'Scegli',
-              style: TextStyle(color: Colors.white),
-            ),
-          ),
-        ),
+        trailing: !nextVisible
+            ? Container()
+            : InkWell(
+                onTap: goToRegistration,
+                child: const Padding(
+                  padding: EdgeInsets.only(right: Dimension.padding),
+                  child: Text(
+                    'Scegli',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+              ),
       ),
       child: SafeArea(
         child: ListView(
@@ -237,6 +246,25 @@ class _HomePudoDetailControllerState extends State<HomePudoDetailController> {
         ),
       ),
     );
+  }
+
+  bool nextVisible = false;
+
+  void getIfPudoAlreadySelected() {
+    NetworkManager.instance.getMyPudos().then((value) {
+      final index = value
+          .indexWhere((element) => element.pudoId == widget.dataModel.pudoId);
+      if (index > -1) {
+        setState(() {
+          nextVisible = false;
+        });
+      } else {
+        setState(() {
+          nextVisible = true;
+        });
+      }
+    }).catchError((onError) =>
+        SAAlertDialog.displayAlertWithClose(context, "Error", onError));
   }
 
   void goToRegistration() {
