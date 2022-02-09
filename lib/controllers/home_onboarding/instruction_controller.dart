@@ -117,7 +117,7 @@ class _HomeInstructionControllerState extends State<HomeInstructionController> {
           backgroundColor: AppColors.primaryColorDark,
           middle: Text(
             'Istruzioni',
-            style: AdditionalTextStyles.navBarStyle(context),
+            style: Theme.of(context).textTheme.navBarTitle,
           ),
           leading: IconButton(
             onPressed: () => Navigator.of(context).pop(),

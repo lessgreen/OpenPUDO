@@ -62,7 +62,7 @@ class _HomeRegistrationCompleteControllerState
                   backgroundColor: AppColors.primaryColorDark,
                   middle: Text(
                     'Fatto!',
-                    style: AdditionalTextStyles.navBarStyle(context),
+                    style: Theme.of(context).textTheme.navBarTitle,
                   ),
                   leading: IconButton(
                     onPressed: () => Navigator.of(context).pop(),

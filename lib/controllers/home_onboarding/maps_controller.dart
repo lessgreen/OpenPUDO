@@ -61,7 +61,7 @@ class _HomeMapsControllerState extends State<HomeMapsController> {
               backgroundColor: AppColors.primaryColorDark,
               middle: Text(
                 'Seleziona un pudo',
-                style: AdditionalTextStyles.navBarStyle(context),
+                style: Theme.of(context).textTheme.navBarTitle,
               ),
               leading: IconButton(
                 onPressed: () => Navigator.of(context).pop(),

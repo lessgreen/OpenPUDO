@@ -64,7 +64,7 @@ class _HomeInsertAddressControllerState
                 backgroundColor: AppColors.primaryColorDark,
                 middle: Text(
                   'Inserisci il tuo indirizzo',
-                  style: AdditionalTextStyles.navBarStyle(context),
+                  style: Theme.of(context).textTheme.navBarTitle,
                 ),
                 leading: IconButton(
                   onPressed: () => Navigator.of(context).pop(),

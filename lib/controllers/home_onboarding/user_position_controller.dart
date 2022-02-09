@@ -50,7 +50,7 @@ class _HomeUserPositionControllerState
               backgroundColor: AppColors.primaryColorDark,
               middle: Text(
                 'Vediamo dove ti trovi',
-                style: AdditionalTextStyles.navBarStyle(context),
+                style: Theme.of(context).textTheme.navBarTitle,
               ),
               leading: IconButton(
                 onPressed: () => Navigator.of(context).pop(),
