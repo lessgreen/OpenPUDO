@@ -547,7 +547,7 @@ mixin NetworkManagerUser on NetworkGeneral {
       var decodedUTF8 = const Utf8Decoder().convert(codeUnits);
       var json = jsonDecode(decodedUTF8);
       var baseResponse = OPBaseResponse.fromJson(json);
-      List<PudoProfile> myPudos = <PudoProfile>[];
+      List<PudoSummary> myPudos = <PudoSummary>[];
 
       var needHandleTokenRefresh = _handleTokenRefresh(
         baseResponse,
@@ -560,7 +560,7 @@ mixin NetworkManagerUser on NetworkGeneral {
             baseResponse.payload != null &&
             baseResponse.payload is List) {
           for (dynamic aRow in baseResponse.payload) {
-            myPudos.add(PudoProfile.fromJson(aRow));
+            myPudos.add(PudoSummary.fromJson(aRow));
           }
           return myPudos;
         } else {

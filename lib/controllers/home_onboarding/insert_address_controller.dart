@@ -59,21 +59,17 @@ class _HomeInsertAddressControllerState
               builder: (context, child, isKeyboardVisible) {
             return CupertinoPageScaffold(
               navigationBar: CupertinoNavigationBar(
-                padding: const EdgeInsetsDirectional.all(0),
-                brightness: Brightness.dark,
-                backgroundColor: AppColors.primaryColorDark,
-                middle: Text(
-                  'Inserisci il tuo indirizzo',
-                  style: Theme.of(context).textTheme.navBarTitle,
-                ),
-                leading: IconButton(
-                  onPressed: () => Navigator.of(context).pop(),
-                  icon: const Icon(
-                    Icons.arrow_back_ios_rounded,
-                    color: Colors.white,
+                  padding: const EdgeInsetsDirectional.all(0),
+                  brightness: Brightness.dark,
+                  backgroundColor: AppColors.primaryColorDark,
+                  middle: Text(
+                    'Inserisci il tuo indirizzo',
+                    style: Theme.of(context).textTheme.navBarTitle,
                   ),
-                ),
-              ),
+                  leading: CupertinoNavigationBarBackButton(
+                    color: Colors.white,
+                    onPressed: () => Navigator.of(context).pop(),
+                  )),
               child: SafeArea(
                 child: Column(
                   children: [

@@ -20,9 +20,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:qui_green/widgets/main_button.dart';
-import 'package:qui_green/widgets/instruction_card.dart';
 import 'package:qui_green/resources/res.dart';
+import 'package:qui_green/widgets/instruction_card.dart';
+import 'package:qui_green/widgets/main_button.dart';
 
 class PudoTutorialController extends StatefulWidget {
   const PudoTutorialController({Key? key}) : super(key: key);
@@ -45,7 +45,9 @@ class _PudoTutorialControllerState extends State<PudoTutorialController> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Container(alignment: Alignment.centerLeft, child: const Text('Destinatario:')),
+                Container(
+                    alignment: Alignment.centerLeft,
+                    child: const Text('Destinatario:')),
                 const SizedBox(height: 10),
                 Container(
                     alignment: Alignment.centerLeft,
@@ -56,7 +58,7 @@ class _PudoTutorialControllerState extends State<PudoTutorialController> {
                 Container(
                     alignment: Alignment.centerLeft,
                     child: const Text(
-                      'Via ippolito, 8',
+                      '',
                       style: TextStyle(fontSize: 16),
                     )),
                 Container(
@@ -79,7 +81,8 @@ class _PudoTutorialControllerState extends State<PudoTutorialController> {
                   ),
                 ],
                 border: Border.all(color: Colors.grey),
-                borderRadius: const BorderRadius.all(Radius.circular(Dimension.borderRadiusS))),
+                borderRadius: const BorderRadius.all(
+                    Radius.circular(Dimension.borderRadiusS))),
           ),
         ],
       );
@@ -108,7 +111,11 @@ class _PudoTutorialControllerState extends State<PudoTutorialController> {
             'dal menù principale dell\'app',
             style: TextStyle(fontSize: 18),
           ),
-          const Text('QuiGreen', style: TextStyle(color: AppColors.cardColor, fontWeight: FontWeight.w500, fontSize: 18)),
+          const Text('QuiGreen',
+              style: TextStyle(
+                  color: AppColors.cardColor,
+                  fontWeight: FontWeight.w500,
+                  fontSize: 18)),
         ],
       );
 
@@ -136,7 +143,11 @@ class _PudoTutorialControllerState extends State<PudoTutorialController> {
             textAlign: TextAlign.center,
             style: TextStyle(fontSize: 18),
           ),
-          const Text('QuiGreen', style: TextStyle(color: AppColors.cardColor, fontWeight: FontWeight.w500, fontSize: 18)),
+          const Text('QuiGreen',
+              style: TextStyle(
+                  color: AppColors.cardColor,
+                  fontWeight: FontWeight.w500,
+                  fontSize: 18)),
         ],
       );
 
@@ -146,7 +157,11 @@ class _PudoTutorialControllerState extends State<PudoTutorialController> {
           Container(
             width: MediaQuery.of(context).size.width / 3,
             height: MediaQuery.of(context).size.width / 3,
-            decoration: BoxDecoration(color: Colors.grey.shade100, border: Border.all(color: Colors.grey.shade300), borderRadius: const BorderRadius.all(Radius.circular(Dimension.borderRadius))),
+            decoration: BoxDecoration(
+                color: Colors.grey.shade100,
+                border: Border.all(color: Colors.grey.shade300),
+                borderRadius: const BorderRadius.all(
+                    Radius.circular(Dimension.borderRadius))),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
@@ -167,7 +182,11 @@ class _PudoTutorialControllerState extends State<PudoTutorialController> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: const [
-              Text('et voilà!', style: TextStyle(color: AppColors.cardColor, fontWeight: FontWeight.w500, fontSize: 18)),
+              Text('et voilà!',
+                  style: TextStyle(
+                      color: AppColors.cardColor,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 18)),
               Text(
                 ', il gioco è fatto!',
                 textAlign: TextAlign.center,
@@ -203,13 +222,29 @@ class _PudoTutorialControllerState extends State<PudoTutorialController> {
                 children: [
                   InstructionCard(
                       title: "É semplicissimo!",
-                      description: 'Quanto i tuoi clienti invieranno un pacco verso la tua attivit , riceverai un destinatario simile a quello riportato sotto.',
+                      description:
+                          'Quanto i tuoi clienti invieranno un pacco verso la tua attivit , riceverai un destinatario simile a quello riportato sotto.',
                       activeIndex: _currentPage,
                       pages: 2,
                       bottomWidget: _buildFirstPageWidget()),
-                  InstructionCard(title: "Gesisci la ricezione del pacco", description: 'Ti basterà scegliere la voce:', activeIndex: _currentPage, pages: 2, bottomWidget: _buildSecondPageWidget()),
-                  InstructionCard(title: "Scegli il tuo utente", description: 'Scegli il destinatario del pacco', activeIndex: _currentPage, pages: 3, bottomWidget: _buildThirdPageWidget()),
-                  InstructionCard(title: "Notificagli l'arrivo", description: 'Scatta una foto al pacco', activeIndex: _currentPage, pages: 4, bottomWidget: _buildFourPageWidget()),
+                  InstructionCard(
+                      title: "Gesisci la ricezione del pacco",
+                      description: 'Ti basterà scegliere la voce:',
+                      activeIndex: _currentPage,
+                      pages: 2,
+                      bottomWidget: _buildSecondPageWidget()),
+                  InstructionCard(
+                      title: "Scegli il tuo utente",
+                      description: 'Scegli il destinatario del pacco',
+                      activeIndex: _currentPage,
+                      pages: 3,
+                      bottomWidget: _buildThirdPageWidget()),
+                  InstructionCard(
+                      title: "Notificagli l'arrivo",
+                      description: 'Scatta una foto al pacco',
+                      activeIndex: _currentPage,
+                      pages: 4,
+                      bottomWidget: _buildFourPageWidget()),
                 ],
               ),
             ),

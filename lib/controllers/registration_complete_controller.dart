@@ -24,24 +24,28 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:qui_green/commons/alert_dialog.dart';
 import 'package:qui_green/commons/utilities/keyboard_visibility.dart';
-import 'package:qui_green/singletons/network/network_manager.dart';
-import 'package:qui_green/widgets/main_button.dart';
-import 'package:qui_green/widgets/pudo_map_card.dart';
-import 'package:qui_green/view_models/registration_complete_controller_viewmodel.dart';
 import 'package:qui_green/models/pudo_profile.dart';
 import 'package:qui_green/resources/res.dart';
+import 'package:qui_green/singletons/network/network_manager.dart';
+import 'package:qui_green/view_models/registration_complete_controller_viewmodel.dart';
+import 'package:qui_green/widgets/main_button.dart';
+import 'package:qui_green/widgets/pudo_map_card.dart';
 import 'package:qui_green/widgets/sascaffold.dart';
 
 class RegistrationCompleteController extends StatefulWidget {
-  const RegistrationCompleteController({Key? key, this.pudoDataModel}) : super(key: key);
+  const RegistrationCompleteController({Key? key, this.pudoDataModel})
+      : super(key: key);
   final PudoProfile? pudoDataModel;
 
   @override
-  _RegistrationCompleteControllerState createState() => _RegistrationCompleteControllerState();
+  _RegistrationCompleteControllerState createState() =>
+      _RegistrationCompleteControllerState();
 }
 
-class _RegistrationCompleteControllerState extends State<RegistrationCompleteController> with ConnectionAware {
-  void _showErrorDialog(BuildContext context, dynamic val) => SAAlertDialog.displayAlertWithClose(context, "Error", val);
+class _RegistrationCompleteControllerState
+    extends State<RegistrationCompleteController> with ConnectionAware {
+  void _showErrorDialog(BuildContext context, dynamic val) =>
+      SAAlertDialog.displayAlertWithClose(context, "Error", val);
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +53,8 @@ class _RegistrationCompleteControllerState extends State<RegistrationCompleteCon
       create: (context) => RegistrationCompleteControllerViewModel(),
       child: Consumer<RegistrationCompleteControllerViewModel?>(
         builder: (_, viewModel, __) {
-          viewModel?.showErrorDialog = (dynamic val) => _showErrorDialog(context, val);
+          viewModel?.showErrorDialog =
+              (dynamic val) => _showErrorDialog(context, val);
           return KeyboardVisibilityBuilder(
             builder: (context, child, isKeyboardVisible) {
               return WillPopScope(
@@ -75,20 +80,28 @@ class _RegistrationCompleteControllerState extends State<RegistrationCompleteCon
                         height: 10,
                       ),
                       Padding(
-                        padding: const EdgeInsets.only(left: Dimension.padding, right: Dimension.padding),
+                        padding: const EdgeInsets.only(
+                            left: Dimension.padding, right: Dimension.padding),
                         child: Text(
                           'Adesso potrai usare questo indirizzo per farti inviare i tuoi pacchi in totale comodità!',
                           textAlign: TextAlign.center,
-                          style: Theme.of(context).textTheme.subtitle1?.copyWith(fontWeight: FontWeight.w400),
+                          style: Theme.of(context)
+                              .textTheme
+                              .subtitle1
+                              ?.copyWith(fontWeight: FontWeight.w400),
                         ),
                       ),
                       (widget.pudoDataModel != null)
                           ? Padding(
-                              padding: const EdgeInsets.only(top: Dimension.paddingL, left: Dimension.padding, right: Dimension.padding),
+                              padding: const EdgeInsets.only(
+                                  top: Dimension.paddingL,
+                                  left: Dimension.padding,
+                                  right: Dimension.padding),
                               child: PudoMapCard(
                                 name: widget.pudoDataModel?.businessName ?? "",
-                                address: widget.pudoDataModel?.address?.label ?? "",
-                                stars: widget.pudoDataModel?.ratingModel?.stars ?? 0,
+                                address:
+                                    widget.pudoDataModel?.address?.label ?? "",
+                                stars: widget.pudoDataModel?.rating?.stars ?? 0,
                                 onTap: () {},
                                 image: widget.pudoDataModel?.pudoPicId,
                               ),
@@ -96,7 +109,8 @@ class _RegistrationCompleteControllerState extends State<RegistrationCompleteCon
                           : const SizedBox(),
                       const SizedBox(height: Dimension.paddingL),
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: Dimension.padding),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: Dimension.padding),
                         child: Row(
                           children: [
                             CupertinoSwitch(
@@ -112,7 +126,13 @@ class _RegistrationCompleteControllerState extends State<RegistrationCompleteCon
                                 padding: const EdgeInsets.all(8.0),
                                 child: Text(
                                   'Permetti ai pudo di contattarmi al mio numero telefonico in caso di comunicazioni inerenti i miei pacchi.',
-                                  style: Theme.of(context).textTheme.caption?.copyWith(fontStyle: FontStyle.italic, height: 1.5, letterSpacing: 0),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .caption
+                                      ?.copyWith(
+                                          fontStyle: FontStyle.italic,
+                                          height: 1.5,
+                                          letterSpacing: 0),
                                 ),
                               ),
                             )
@@ -125,12 +145,15 @@ class _RegistrationCompleteControllerState extends State<RegistrationCompleteCon
                           padding: const EdgeInsets.symmetric(
                             horizontal: Dimension.padding,
                           ),
-                          onPressed: () => viewModel.onInstructionsClick(context, widget.pudoDataModel),
+                          onPressed: () => viewModel.onInstructionsClick(
+                              context, widget.pudoDataModel),
                           text: 'Vedi le istruzioni',
                         ),
                       const SizedBox(height: Dimension.padding),
                       AnimatedCrossFade(
-                        crossFadeState: isKeyboardVisible ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+                        crossFadeState: isKeyboardVisible
+                            ? CrossFadeState.showSecond
+                            : CrossFadeState.showFirst,
                         secondChild: const SizedBox(),
                         firstChild: MainButton(
                           onPressed: () => viewModel.onGoHomeClick(context),

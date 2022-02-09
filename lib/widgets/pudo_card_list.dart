@@ -25,7 +25,9 @@ class PudoCardList extends StatelessWidget {
   final Function(int) onPageChange;
   final Function() onTap;
 
-  const PudoCardList({Key? key, required this.onPageChange, required this.onTap}) : super(key: key);
+  const PudoCardList(
+      {Key? key, required this.onPageChange, required this.onTap})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +39,7 @@ class PudoCardList extends StatelessWidget {
         itemCount: 2,
         itemBuilder: (context, index) => PudoMapCard(
           name: "Bar - La pinta",
-          address: "Via ippolito, 8",
+          address: "",
           stars: 3,
           onTap: onTap,
         ),

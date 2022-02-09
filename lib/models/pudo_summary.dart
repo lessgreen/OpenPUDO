@@ -19,41 +19,27 @@
 */
 
 import 'package:json_annotation/json_annotation.dart';
+import 'package:qui_green/models/rating_model.dart';
 
-part 'rating_model.g.dart';
+part 'pudo_summary.g.dart';
 
 @JsonSerializable()
-class RatingModel {
-  int pudoId;
-  double? averageScore;
-  int reviewCount;
+class PudoSummary {
+  String businessName;
+  String? pudoPicId;
+  int? pudoId;
+  String? label;
+  RatingModel? rating;
 
-  RatingModel(
-      {required this.pudoId,
-      required this.averageScore,
-      required this.reviewCount});
+  PudoSummary(
+      {required this.businessName,
+      this.label,
+      this.pudoId,
+      this.pudoPicId,
+      this.rating});
 
-  factory RatingModel.fromJson(Map<String, dynamic> json) =>
-      _$RatingModelFromJson(json);
+  factory PudoSummary.fromJson(Map<String, dynamic> json) =>
+      _$PudoSummaryFromJson(json);
 
-  Map<String, dynamic> toJson() => _$RatingModelToJson(this);
-
-  int get stars {
-    if (averageScore == null) {
-      return 0;
-    }
-    if (averageScore! <= 0) {
-      return 0;
-    } else if (averageScore! > 0 && averageScore! < 2) {
-      return 1;
-    } else if (averageScore! > 1 && averageScore! < 3) {
-      return 2;
-    } else if (averageScore! > 2 && averageScore! < 4) {
-      return 3;
-    } else if (averageScore! > 3 && averageScore! < 5) {
-      return 4;
-    } else {
-      return 5;
-    }
-  }
+  Map<String, dynamic> toJson() => _$PudoSummaryToJson(this);
 }
