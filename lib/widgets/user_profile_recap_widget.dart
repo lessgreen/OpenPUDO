@@ -20,8 +20,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:qui_green/resources/res.dart';
 import 'package:qui_green/commons/extensions/additional_button_styles.dart';
+import 'package:qui_green/resources/res.dart';
 
 class UserProfileRecapWidget extends StatelessWidget {
   final int totalUsage;
@@ -38,7 +38,8 @@ class UserProfileRecapWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(left: Dimension.padding, right: Dimension.padding),
+      padding: const EdgeInsets.only(
+          left: Dimension.padding, right: Dimension.padding),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
@@ -49,20 +50,29 @@ class UserProfileRecapWidget extends StatelessWidget {
                   textAlign: TextAlign.left,
                   text: TextSpan(
                     text: '',
-                    style: Theme.of(context).textTheme.bodyText2?.copyWith(fontWeight: FontWeight.w300, color: AppColors.primaryTextColor, fontSize: 16),
+                    style: Theme.of(context).textTheme.bodyText2?.copyWith(
+                        fontWeight: FontWeight.w300,
+                        color: AppColors.primaryTextColor,
+                        fontSize: 16),
                     children: [
                       const TextSpan(
                         text: "Hai usato il servizio di QuiGreen ",
                       ),
                       TextSpan(
                         text: "$totalUsage",
-                        style: const TextStyle(color: AppColors.accentColor, fontWeight: FontWeight.w500, fontStyle: FontStyle.italic),
+                        style: const TextStyle(
+                            color: AppColors.accentColor,
+                            fontWeight: FontWeight.w500,
+                            fontStyle: FontStyle.italic),
                       ),
                       const TextSpan(text: " volte,"),
                       const TextSpan(text: " contribuendo a ridurre di "),
                       TextSpan(
                         text: "${kgCO2Saved}kg",
-                        style: const TextStyle(color: AppColors.accentColor, fontWeight: FontWeight.w500, fontStyle: FontStyle.italic),
+                        style: const TextStyle(
+                            color: AppColors.accentColor,
+                            fontWeight: FontWeight.w500,
+                            fontStyle: FontStyle.italic),
                       ),
                       const TextSpan(text: " le emissioni di CO2 "),
                       WidgetSpan(

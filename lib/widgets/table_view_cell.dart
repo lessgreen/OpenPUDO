@@ -30,7 +30,13 @@ class TableViewCell extends StatelessWidget {
   final bool showTrailingChevron;
   final Function? onTap;
 
-  const TableViewCell({Key? key, this.leading, this.title, this.showTrailingChevron = true, this.onTap}) : super(key: key);
+  const TableViewCell(
+      {Key? key,
+      this.leading,
+      this.title,
+      this.showTrailingChevron = true,
+      this.onTap})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -44,13 +50,20 @@ class TableViewCell extends StatelessWidget {
               leading != null
                   ? SizedBox(
                       width: 30,
+                      child: leading,
+                    )
+                  : SizedBox(
+                      width: 30,
                       child: Icon(
                         Icons.new_label,
                         color: AppColors.cardColor,
                       ),
-                    )
-                  : SizedBox(),
-              Expanded(child: Text(title ?? "", textAlign: TextAlign.left, style: TextStyle(fontSize: 18, color: AppColors.primaryTextColor))),
+                    ),
+              Expanded(
+                  child: Text(title ?? "",
+                      textAlign: TextAlign.left,
+                      style: TextStyle(
+                          fontSize: 18, color: AppColors.primaryTextColor))),
               showTrailingChevron
                   ? SvgPicture.asset(
                       ImageSrc.chevronRight,
