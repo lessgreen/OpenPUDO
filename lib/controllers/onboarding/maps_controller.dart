@@ -147,6 +147,7 @@ class _MapsControllerState extends State<MapsController> with ConnectionAware, T
                       TileLayerOptions(
                         urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
                         subdomains: ['a', 'b', 'c'],
+                        retinaMode: true,
                       ),
                       MarkerClusterLayerOptions(
                         showPolygon: false,
