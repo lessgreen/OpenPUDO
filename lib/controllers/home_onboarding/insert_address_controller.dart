@@ -22,11 +22,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
+import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
 import 'package:qui_green/commons/utilities/keyboard_visibility.dart';
-import 'package:qui_green/widgets/main_button.dart';
+import 'package:qui_green/resources/res.dart';
 import 'package:qui_green/view_models/insert_address_controller_viewmodel.dart';
 import 'package:qui_green/widgets/address_field.dart';
-import 'package:qui_green/resources/res.dart';
+import 'package:qui_green/widgets/main_button.dart';
 
 class HomeInsertAddressController extends StatefulWidget {
   const HomeInsertAddressController({Key? key}) : super(key: key);
@@ -63,10 +64,7 @@ class _HomeInsertAddressControllerState
                 backgroundColor: AppColors.primaryColorDark,
                 middle: Text(
                   'Inserisci il tuo indirizzo',
-                  style: Theme.of(context)
-                      .textTheme
-                      .headline6
-                      ?.copyWith(color: Colors.white),
+                  style: AdditionalTextStyles.navBarStyle(context),
                 ),
                 leading: IconButton(
                   onPressed: () => Navigator.of(context).pop(),

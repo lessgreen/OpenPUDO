@@ -22,11 +22,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
-import 'package:qui_green/widgets/main_button.dart';
-import 'package:qui_green/widgets/instruction_card.dart';
+import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
 import 'package:qui_green/models/pudo_profile.dart';
 import 'package:qui_green/resources/res.dart';
 import 'package:qui_green/singletons/current_user.dart';
+import 'package:qui_green/widgets/instruction_card.dart';
+import 'package:qui_green/widgets/main_button.dart';
 
 class HomeInstructionController extends StatefulWidget {
   final PudoProfile? pudoDataModel;
@@ -116,10 +117,7 @@ class _HomeInstructionControllerState extends State<HomeInstructionController> {
           backgroundColor: AppColors.primaryColorDark,
           middle: Text(
             'Istruzioni',
-            style: Theme.of(context)
-                .textTheme
-                .headline6
-                ?.copyWith(color: Colors.white),
+            style: AdditionalTextStyles.navBarStyle(context),
           ),
           leading: IconButton(
             onPressed: () => Navigator.of(context).pop(),

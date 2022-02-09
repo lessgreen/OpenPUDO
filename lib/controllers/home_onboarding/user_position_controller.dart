@@ -22,9 +22,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
+import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
+import 'package:qui_green/resources/res.dart';
 import 'package:qui_green/view_models/user_position_controller_viewmodel.dart';
 import 'package:qui_green/widgets/main_button.dart';
-import 'package:qui_green/resources/res.dart';
 
 class HomeUserPositionController extends StatefulWidget {
   const HomeUserPositionController({Key? key}) : super(key: key);
@@ -49,10 +50,7 @@ class _HomeUserPositionControllerState
               backgroundColor: AppColors.primaryColorDark,
               middle: Text(
                 'Vediamo dove ti trovi',
-                style: Theme.of(context)
-                    .textTheme
-                    .headline6
-                    ?.copyWith(color: Colors.white),
+                style: AdditionalTextStyles.navBarStyle(context),
               ),
               leading: IconButton(
                 onPressed: () => Navigator.of(context).pop(),
