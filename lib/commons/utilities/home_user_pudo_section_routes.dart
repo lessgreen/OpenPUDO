@@ -33,7 +33,6 @@ import 'package:qui_green/controllers/home_onboarding/user_position_controller.d
 import 'package:qui_green/controllers/home_user_pudo_controller.dart';
 import 'package:qui_green/controllers/profile_controller.dart';
 import 'package:qui_green/controllers/pudo_tutorial_controller.dart';
-import 'package:qui_green/models/pudo_detail_controller_data_model.dart';
 import 'package:qui_green/models/pudo_profile.dart';
 import 'package:qui_green/resources/routes_enum.dart';
 
@@ -76,7 +75,7 @@ dynamic routeHomeUserPudoSectionWithSetting(RouteSettings settings) {
     case Routes.pudoDetail:
       return CupertinoPageRoute(
         builder: (context) => HomePudoDetailController(
-            dataModel: settings.arguments as PudoDetailControllerDataModel),
+            dataModel: settings.arguments as PudoProfile),
       );
     default:
       return CupertinoPageRoute(

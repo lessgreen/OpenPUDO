@@ -22,11 +22,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
+import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
 import 'package:qui_green/commons/utilities/keyboard_visibility.dart';
-import 'package:qui_green/widgets/main_button.dart';
+import 'package:qui_green/resources/res.dart';
 import 'package:qui_green/view_models/insert_address_controller_viewmodel.dart';
 import 'package:qui_green/widgets/address_field.dart';
-import 'package:qui_green/resources/res.dart';
+import 'package:qui_green/widgets/main_button.dart';
 
 class HomeInsertAddressController extends StatefulWidget {
   const HomeInsertAddressController({Key? key}) : super(key: key);
@@ -58,34 +59,27 @@ class _HomeInsertAddressControllerState
               builder: (context, child, isKeyboardVisible) {
             return CupertinoPageScaffold(
               navigationBar: CupertinoNavigationBar(
-                padding: const EdgeInsetsDirectional.all(0),
-                brightness: Brightness.dark,
-                backgroundColor: AppColors.primaryColorDark,
-                middle: Text(
-                  '',
-                  style: Theme.of(context)
-                      .textTheme
-                      .headline6
-                      ?.copyWith(color: Colors.white),
-                ),
-                leading: IconButton(
-                  onPressed: () => Navigator.of(context).pop(),
-                  icon: const Icon(
-                    Icons.arrow_back_ios_rounded,
-                    color: Colors.white,
+                  padding: const EdgeInsetsDirectional.all(0),
+                  brightness: Brightness.dark,
+                  backgroundColor: AppColors.primaryColorDark,
+                  middle: Text(
+                    'Inserisci il tuo indirizzo',
+                    style: Theme.of(context).textTheme.navBarTitle,
                   ),
-                ),
-              ),
+                  leading: CupertinoNavigationBarBackButton(
+                    color: Colors.white,
+                    onPressed: () => Navigator.of(context).pop(),
+                  )),
               child: SafeArea(
                 child: Column(
                   children: [
                     const SizedBox(height: Dimension.padding),
-                    Center(
-                      child: Text(
-                        'Inserisci il tuo indirizzo',
-                        style: Theme.of(context).textTheme.headline6,
-                      ),
-                    ),
+                    // Center(
+                    //   child: Text(
+                    //     'Inserisci il tuo indirizzo',
+                    //     style: Theme.of(context).textTheme.headline6,
+                    //   ),
+                    // ),
                     Padding(
                         padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
                         child: AddressField(

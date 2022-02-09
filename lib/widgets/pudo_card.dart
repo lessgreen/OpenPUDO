@@ -19,30 +19,26 @@
 */
 
 import 'package:flutter/cupertino.dart';
+import 'package:qui_green/models/pudo_summary.dart';
 import 'package:qui_green/widgets/pudo_map_card.dart';
 
-class PudoCardList extends StatelessWidget {
-  final Function(int) onPageChange;
+class PudoCard extends StatelessWidget {
   final Function() onTap;
+  final PudoSummary pudo;
 
-  const PudoCardList(
-      {Key? key, required this.onPageChange, required this.onTap})
+  const PudoCard({Key? key, required this.onTap, required this.pudo})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       height: 100,
-      child: PageView.builder(
-        onPageChanged: (index) => onPageChange(index),
-        controller: PageController(viewportFraction: 1),
-        itemCount: 2,
-        itemBuilder: (context, index) => PudoMapCard(
-          name: "Bar - La pinta",
-          address: "",
-          stars: 3,
-          onTap: onTap,
-        ),
+      child: PudoMapCard(
+        name: pudo.businessName,
+        address: pudo.label ?? "",
+        stars: (pudo.rating?.stars ?? 0).toInt(),
+        image: pudo.pudoPicId,
+        onTap: onTap,
       ),
     );
   }

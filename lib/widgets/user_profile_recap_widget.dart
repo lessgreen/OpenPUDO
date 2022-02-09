@@ -20,8 +20,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:qui_green/resources/res.dart';
 import 'package:qui_green/commons/extensions/additional_button_styles.dart';
+import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
+import 'package:qui_green/resources/res.dart';
 
 class UserProfileRecapWidget extends StatelessWidget {
   final int totalUsage;
@@ -46,23 +47,35 @@ class UserProfileRecapWidget extends StatelessWidget {
             children: [
               Expanded(
                 child: RichText(
-                  textAlign: TextAlign.left,
+                  textAlign: TextAlign.justify,
                   text: TextSpan(
                     text: '',
-                    style: Theme.of(context).textTheme.bodyText2?.copyWith(fontWeight: FontWeight.w300, color: AppColors.primaryTextColor, fontSize: 16),
+                    style: Theme.of(context).textTheme.bodyTextLight,
+                    // style: Theme.of(context).textTheme.bodyText2?.copyWith(
+                    //       fontWeight: FontWeight.w300,
+                    //       color: AppColors.primaryTextColor,
+                    //     ),
                     children: [
                       const TextSpan(
                         text: "Hai usato il servizio di QuiGreen ",
                       ),
                       TextSpan(
                         text: "$totalUsage",
-                        style: const TextStyle(color: AppColors.accentColor, fontWeight: FontWeight.w500, fontStyle: FontStyle.italic),
+                        style: Theme.of(context).textTheme.bodyText1?.copyWith(
+                              color: AppColors.accentColor,
+                              fontWeight: FontWeight.w500,
+                              fontStyle: FontStyle.italic,
+                            ),
                       ),
                       const TextSpan(text: " volte,"),
                       const TextSpan(text: " contribuendo a ridurre di "),
                       TextSpan(
                         text: "${kgCO2Saved}kg",
-                        style: const TextStyle(color: AppColors.accentColor, fontWeight: FontWeight.w500, fontStyle: FontStyle.italic),
+                        style: Theme.of(context).textTheme.bodyText1?.copyWith(
+                              color: AppColors.accentColor,
+                              fontWeight: FontWeight.w500,
+                              fontStyle: FontStyle.italic,
+                            ),
                       ),
                       const TextSpan(text: " le emissioni di CO2 "),
                       WidgetSpan(
@@ -83,11 +96,12 @@ class UserProfileRecapWidget extends StatelessWidget {
             ],
           ),
           TextButton(
-              onPressed: () {
-                onTap?.call();
-              },
-              child: const Text('condividi'),
-              style: AdditionalButtonStyles.simpleStyle(context))
+            onPressed: () {
+              onTap?.call();
+            },
+            child: const Text('condividi'),
+            style: AdditionalButtonStyles.simpleStyle(context),
+          )
         ],
       ),
     );

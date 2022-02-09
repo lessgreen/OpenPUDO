@@ -18,24 +18,27 @@
  If not, see <https://github.com/lessgreen/OpenPUDO>.
 */
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:qui_green/commons/ui/custom_network_image.dart';
+import 'package:qui_green/models/pudo_profile.dart';
+import 'package:qui_green/resources/res.dart';
+import 'package:qui_green/resources/routes_enum.dart';
 import 'package:qui_green/singletons/network/network_manager.dart';
 import 'package:qui_green/widgets/text_field_button.dart';
-import 'package:qui_green/models/pudo_detail_controller_data_model.dart';
-import 'package:qui_green/resources/routes_enum.dart';
-import 'package:qui_green/resources/res.dart';
 
 class PudoDetailController extends StatefulWidget {
-  const PudoDetailController({Key? key, required this.dataModel}) : super(key: key);
-  final PudoDetailControllerDataModel dataModel;
+  const PudoDetailController({Key? key, required this.dataModel})
+      : super(key: key);
+  final PudoProfile dataModel;
 
   @override
   _PudoDetailControllerState createState() => _PudoDetailControllerState();
 }
 
-class _PudoDetailControllerState extends State<PudoDetailController> with ConnectionAware {
+class _PudoDetailControllerState extends State<PudoDetailController>
+    with ConnectionAware {
   Widget _buildPudoDetail() => Padding(
         padding: const EdgeInsets.symmetric(horizontal: Dimension.padding),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -43,7 +46,7 @@ class _PudoDetailControllerState extends State<PudoDetailController> with Connec
           Row(
             children: [
               Text(
-                widget.dataModel.pudoProfile.businessName,
+                widget.dataModel.businessName,
                 style: const TextStyle(fontSize: 18),
               ),
               const SizedBox(
@@ -51,10 +54,12 @@ class _PudoDetailControllerState extends State<PudoDetailController> with Connec
               ),
               Row(
                 children: List<Widget>.generate(
-                  (widget.dataModel.pudoProfile.ratingModel?.stars ?? 0) > 5 ? 5 : widget.dataModel.pudoProfile.ratingModel?.stars ?? 0,
+                  5,
                   (index) => Icon(
                     Icons.star_rounded,
-                    color: Colors.yellow.shade700,
+                    color: (index + 1 <= (widget.dataModel.rating?.stars ?? 0))
+                        ? Colors.yellow.shade700
+                        : Colors.grey.shade200,
                   ),
                 ),
               ),
@@ -79,12 +84,13 @@ class _PudoDetailControllerState extends State<PudoDetailController> with Connec
                     width: Dimension.paddingS,
                   ),
                 ),
-                TextSpan(text: widget.dataModel.pudoProfile.address!.label ?? ""),
+                TextSpan(text: widget.dataModel.address!.label ?? ""),
               ],
             ),
           ),
-          if (widget.dataModel.pudoProfile.publicPhoneNumber != null) const SizedBox(height: Dimension.paddingS),
-          if (widget.dataModel.pudoProfile.publicPhoneNumber != null)
+          if (widget.dataModel.publicPhoneNumber != null)
+            const SizedBox(height: Dimension.paddingS),
+          if (widget.dataModel.publicPhoneNumber != null)
             RichText(
               textAlign: TextAlign.start,
               text: TextSpan(
@@ -103,7 +109,7 @@ class _PudoDetailControllerState extends State<PudoDetailController> with Connec
                       width: Dimension.paddingS,
                     ),
                   ),
-                  TextSpan(text: widget.dataModel.pudoProfile.publicPhoneNumber ?? ""),
+                  TextSpan(text: widget.dataModel.publicPhoneNumber ?? ""),
                 ],
               ),
             ),
@@ -127,10 +133,12 @@ class _PudoDetailControllerState extends State<PudoDetailController> with Connec
                   ),
                 ),
                 TextSpan(
-                  text: (widget.dataModel.pudoProfile.customerCount ?? 0).toString(),
+                  text: (widget.dataModel.customerCount ?? 0).toString(),
                   style: const TextStyle(fontWeight: FontWeight.w500),
                 ),
-                const TextSpan(text: ' persone hanno già scelto quest’attività come punto di ritiro QuiGreen.'),
+                const TextSpan(
+                    text:
+                        ' persone hanno già scelto quest’attività come punto di ritiro QuiGreen.'),
               ],
             ),
           ),
@@ -147,7 +155,7 @@ class _PudoDetailControllerState extends State<PudoDetailController> with Connec
           backgroundColor: ThemeData.light().scaffoldBackgroundColor,
           systemOverlayStyle: SystemUiOverlayStyle.dark,
           title: Text(
-            widget.dataModel.pudoProfile.businessName,
+            widget.dataModel.businessName,
             style: Theme.of(context).textTheme.headline6?.copyWith(
                   color: Colors.black,
                   fontSize: 16,
@@ -155,12 +163,9 @@ class _PudoDetailControllerState extends State<PudoDetailController> with Connec
                 ),
           ),
           centerTitle: true,
-          leading: GestureDetector(
-            onTap: () => Navigator.of(context).pop(),
-            child: const Icon(
-              Icons.arrow_back_ios_rounded,
-              color: AppColors.primaryColorDark,
-            ),
+          leading: CupertinoNavigationBarBackButton(
+            color: Colors.white,
+            onPressed: () => Navigator.of(context).pop(),
           ),
           actions: [
             TextFieldButton(
@@ -168,7 +173,7 @@ class _PudoDetailControllerState extends State<PudoDetailController> with Connec
               onPressed: () => Navigator.of(context).pushNamedAndRemoveUntil(
                 Routes.personalData,
                 ModalRoute.withName('/'),
-                arguments: widget.dataModel.pudoProfile,
+                arguments: widget.dataModel,
               ),
             )
           ],
@@ -183,7 +188,7 @@ class _PudoDetailControllerState extends State<PudoDetailController> with Connec
                   AspectRatio(
                       aspectRatio: 18 / 9,
                       child: CustomNetworkImage(
-                        url: widget.dataModel.pudoProfile.pudoPicId,
+                        url: widget.dataModel.pudoPicId,
                         fit: BoxFit.cover,
                       )),
                   _buildPudoDetail(),
@@ -217,7 +222,7 @@ class _PudoDetailControllerState extends State<PudoDetailController> with Connec
                   SizedBox(
                     width: MediaQuery.of(context).size.width / 3 * 2,
                     child: Text(
-                      '“${widget.dataModel.pudoProfile.rewardMessage ?? ""}”',
+                      '“${widget.dataModel.rewardMessage ?? ""}”',
                       style: Theme.of(context).textTheme.subtitle1?.copyWith(
                             height: 2,
                             fontStyle: FontStyle.italic,

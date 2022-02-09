@@ -18,12 +18,28 @@
  If not, see <https://github.com/lessgreen/OpenPUDO>.
 */
 
-import 'package:latlong2/latlong.dart';
-import 'package:qui_green/models/pudo_profile.dart';
+import 'package:json_annotation/json_annotation.dart';
+import 'package:qui_green/models/rating_model.dart';
 
-class PudoDetailControllerDataModel {
-  final LatLng initialPosition;
-  final PudoProfile pudoProfile;
+part 'pudo_summary.g.dart';
 
-  const PudoDetailControllerDataModel(this.initialPosition, this.pudoProfile);
+@JsonSerializable()
+class PudoSummary {
+  String businessName;
+  String? pudoPicId;
+  int? pudoId;
+  String? label;
+  RatingModel? rating;
+
+  PudoSummary(
+      {required this.businessName,
+      this.label,
+      this.pudoId,
+      this.pudoPicId,
+      this.rating});
+
+  factory PudoSummary.fromJson(Map<String, dynamic> json) =>
+      _$PudoSummaryFromJson(json);
+
+  Map<String, dynamic> toJson() => _$PudoSummaryToJson(this);
 }

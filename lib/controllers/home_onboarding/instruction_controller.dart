@@ -22,11 +22,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
-import 'package:qui_green/widgets/main_button.dart';
-import 'package:qui_green/widgets/instruction_card.dart';
+import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
 import 'package:qui_green/models/pudo_profile.dart';
 import 'package:qui_green/resources/res.dart';
 import 'package:qui_green/singletons/current_user.dart';
+import 'package:qui_green/widgets/instruction_card.dart';
+import 'package:qui_green/widgets/main_button.dart';
 
 class HomeInstructionController extends StatefulWidget {
   final PudoProfile? pudoDataModel;
@@ -111,24 +112,17 @@ class _HomeInstructionControllerState extends State<HomeInstructionController> {
     return Consumer<CurrentUser>(
       builder: (_, currentUser, __) => CupertinoPageScaffold(
         navigationBar: CupertinoNavigationBar(
-          padding: const EdgeInsetsDirectional.all(0),
-          brightness: Brightness.dark,
-          backgroundColor: AppColors.primaryColorDark,
-          middle: Text(
-            '',
-            style: Theme.of(context)
-                .textTheme
-                .headline6
-                ?.copyWith(color: Colors.white),
-          ),
-          leading: IconButton(
-            onPressed: () => Navigator.of(context).pop(),
-            icon: const Icon(
-              Icons.arrow_back_ios_rounded,
-              color: Colors.white,
+            padding: const EdgeInsetsDirectional.all(0),
+            brightness: Brightness.dark,
+            backgroundColor: AppColors.primaryColorDark,
+            middle: Text(
+              'Istruzioni',
+              style: Theme.of(context).textTheme.navBarTitle,
             ),
-          ),
-        ),
+            leading: CupertinoNavigationBarBackButton(
+              color: Colors.white,
+              onPressed: () => Navigator.of(context).pop(),
+            )),
         child: SafeArea(
           child: Column(
             children: [

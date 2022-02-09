@@ -26,10 +26,11 @@ import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
 import 'package:qui_green/commons/alert_dialog.dart';
-import 'package:qui_green/singletons/network/network_manager.dart';
-import 'package:qui_green/view_models/maps_controller_viewmodel.dart';
+import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
 import 'package:qui_green/models/geo_marker.dart';
 import 'package:qui_green/resources/res.dart';
+import 'package:qui_green/singletons/network/network_manager.dart';
+import 'package:qui_green/view_models/maps_controller_viewmodel.dart';
 import 'package:qui_green/widgets/sascaffold.dart';
 
 class HomeMapsController extends StatefulWidget {
@@ -55,24 +56,17 @@ class _HomeMapsControllerState extends State<HomeMapsController> {
               (String val) => _showErrorDialog(context, val);
           return CupertinoPageScaffold(
             navigationBar: CupertinoNavigationBar(
-              padding: const EdgeInsetsDirectional.all(0),
-              brightness: Brightness.dark,
-              backgroundColor: AppColors.primaryColorDark,
-              middle: Text(
-                '',
-                style: Theme.of(context)
-                    .textTheme
-                    .headline6
-                    ?.copyWith(color: Colors.white),
-              ),
-              leading: IconButton(
-                onPressed: () => Navigator.of(context).pop(),
-                icon: const Icon(
-                  Icons.arrow_back_ios_rounded,
-                  color: Colors.white,
+                padding: const EdgeInsetsDirectional.all(0),
+                brightness: Brightness.dark,
+                backgroundColor: AppColors.primaryColorDark,
+                middle: Text(
+                  'Seleziona un pudo',
+                  style: Theme.of(context).textTheme.navBarTitle,
                 ),
-              ),
-            ),
+                leading: CupertinoNavigationBarBackButton(
+                  color: Colors.white,
+                  onPressed: () => Navigator.of(context).pop(),
+                )),
             child: SAScaffold(
               isLoading: NetworkManager.instance.networkActivity,
               body: Stack(

@@ -23,7 +23,8 @@ part of 'network_shared.dart';
 mixin NetworkManagerUser on NetworkGeneral {
   //TODO: implement API calls (user related)
 
-  Future<dynamic> login({required String login, required String password}) async {
+  Future<dynamic> login(
+      {required String login, required String password}) async {
     try {
       if (!isOnline) {
         throw ("Network is offline");
@@ -38,7 +39,8 @@ mixin NetworkManagerUser on NetworkGeneral {
         _networkActivity.value = true;
       });
       Response response = await r.retry(
-        () => post(Uri.parse(url), body: body, headers: _headers).timeout(Duration(seconds: _timeout)),
+        () => post(Uri.parse(url), body: body, headers: _headers)
+            .timeout(Duration(seconds: _timeout)),
         retryIf: (e) => e is SocketException || e is TimeoutException,
       );
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
@@ -77,7 +79,8 @@ mixin NetworkManagerUser on NetworkGeneral {
         _networkActivity.value = true;
       });
       Response response = await r.retry(
-        () => post(Uri.parse(url), body: body, headers: _headers).timeout(Duration(seconds: _timeout)),
+        () => post(Uri.parse(url), body: body, headers: _headers)
+            .timeout(Duration(seconds: _timeout)),
         retryIf: (e) => e is SocketException || e is TimeoutException,
       );
 
@@ -101,7 +104,8 @@ mixin NetworkManagerUser on NetworkGeneral {
     }
   }
 
-  Future<dynamic> registerUser({required String name, required String surname}) async {
+  Future<dynamic> registerUser(
+      {required String name, required String surname}) async {
     try {
       if (!isOnline) {
         throw ("Network is offline");
@@ -114,7 +118,8 @@ mixin NetworkManagerUser on NetworkGeneral {
         _networkActivity.value = true;
       });
       Response response = await r.retry(
-        () => post(Uri.parse(url), body: body, headers: _headers).timeout(Duration(seconds: _timeout)),
+        () => post(Uri.parse(url), body: body, headers: _headers)
+            .timeout(Duration(seconds: _timeout)),
         retryIf: (e) => e is SocketException || e is TimeoutException,
       );
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
@@ -151,7 +156,8 @@ mixin NetworkManagerUser on NetworkGeneral {
         _networkActivity.value = true;
       });
       Response response = await r.retry(
-        () => get(Uri.parse(url), headers: _headers).timeout(Duration(seconds: _timeout)),
+        () => get(Uri.parse(url), headers: _headers)
+            .timeout(Duration(seconds: _timeout)),
         retryIf: (e) => e is SocketException || e is TimeoutException,
       );
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
@@ -169,14 +175,65 @@ mixin NetworkManagerUser on NetworkGeneral {
         },
       );
       if (needHandleTokenRefresh == false) {
-        if (baseResponse.returnCode == 0 && baseResponse.payload != null && baseResponse.payload is Map) {
+        if (baseResponse.returnCode == 0 &&
+            baseResponse.payload != null &&
+            baseResponse.payload is Map) {
           return UserProfile.fromJson(baseResponse.payload);
         } else {
-          throw ErrorDescription('Error ${baseResponse.returnCode}: ${baseResponse.message}');
+          throw ErrorDescription(
+              'Error ${baseResponse.returnCode}: ${baseResponse.message}');
         }
       }
     } catch (e) {
       safePrint('ERROR - getMyProfile: $e');
+      _refreshTokenRetryCounter = 0;
+      rethrow;
+    }
+  }
+
+  Future<dynamic> getUserPreferences() async {
+    try {
+      if (!isOnline) {
+        throw ("Network is offline");
+      }
+      if (_accessToken != null) {
+        _headers['Authorization'] = 'Bearer $_accessToken';
+      }
+      var url = _baseURL + '/api/v2/user/me/preferences';
+      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+        _networkActivity.value = true;
+      });
+      Response response = await r.retry(
+        () => get(Uri.parse(url), headers: _headers)
+            .timeout(Duration(seconds: _timeout)),
+        retryIf: (e) => e is SocketException || e is TimeoutException,
+      );
+      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+        _networkActivity.value = false;
+      });
+      final codeUnits = response.body.codeUnits;
+      var decodedUTF8 = const Utf8Decoder().convert(codeUnits);
+      var json = jsonDecode(decodedUTF8);
+      var baseResponse = OPBaseResponse.fromJson(json);
+
+      var needHandleTokenRefresh = _handleTokenRefresh(
+        baseResponse,
+        () {
+          getUserPreferences().catchError((onError) => throw onError);
+        },
+      );
+      if (needHandleTokenRefresh == false) {
+        if (baseResponse.returnCode == 0 &&
+            baseResponse.payload != null &&
+            baseResponse.payload is Map) {
+          return UserPreferences.fromJson(baseResponse.payload);
+        } else {
+          throw ErrorDescription(
+              'Error ${baseResponse.returnCode}: ${baseResponse.message}');
+        }
+      }
+    } catch (e) {
+      safePrint('ERROR - getUserPreferences: $e');
       _refreshTokenRetryCounter = 0;
       rethrow;
     }
@@ -191,12 +248,14 @@ mixin NetworkManagerUser on NetworkGeneral {
         _headers['Authorization'] = 'Bearer $_accessToken';
       }
       var url = _baseURL + '/api/v2/user/me';
-      var body = jsonEncode({"firstName": profile.firstName, "lastName": profile.lastName});
+      var body = jsonEncode(
+          {"firstName": profile.firstName, "lastName": profile.lastName});
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
       Response response = await r.retry(
-        () => put(Uri.parse(url), body: body, headers: _headers).timeout(Duration(seconds: _timeout)),
+        () => put(Uri.parse(url), body: body, headers: _headers)
+            .timeout(Duration(seconds: _timeout)),
         retryIf: (e) => e is SocketException || e is TimeoutException,
       );
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
@@ -214,10 +273,13 @@ mixin NetworkManagerUser on NetworkGeneral {
         },
       );
       if (needHandleTokenRefresh == false) {
-        if (baseResponse.returnCode == 0 && baseResponse.payload != null && baseResponse.payload is Map) {
+        if (baseResponse.returnCode == 0 &&
+            baseResponse.payload != null &&
+            baseResponse.payload is Map) {
           return UserProfile.fromJson(baseResponse.payload);
         } else {
-          throw ErrorDescription('Error ${baseResponse.returnCode}: ${baseResponse.message}');
+          throw ErrorDescription(
+              'Error ${baseResponse.returnCode}: ${baseResponse.message}');
         }
       }
     } catch (e) {
@@ -237,11 +299,15 @@ mixin NetworkManagerUser on NetworkGeneral {
         _headers['Authorization'] = 'Bearer $_accessToken';
       }
 
-      var url = _baseURL + ((isPudo != null && isPudo == true) ? '/api/v1/pudos/me/profile-pic' : '/api/v1/users/me/profile-pic');
+      var url = _baseURL +
+          ((isPudo != null && isPudo == true)
+              ? '/api/v1/pudos/me/profile-pic'
+              : '/api/v1/users/me/profile-pic');
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
-      Response response = await delete(Uri.parse(url), headers: _headers).timeout(Duration(seconds: _timeout));
+      Response response = await delete(Uri.parse(url), headers: _headers)
+          .timeout(Duration(seconds: _timeout));
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = false;
       });
@@ -254,14 +320,17 @@ mixin NetworkManagerUser on NetworkGeneral {
         deleteProfilePic(isPudo: isPudo).catchError((onError) => throw onError);
       });
       if (needHandleTokenRefresh == false) {
-        if (baseResponse.returnCode == 0 && baseResponse.payload != null && baseResponse.payload is Map) {
+        if (baseResponse.returnCode == 0 &&
+            baseResponse.payload != null &&
+            baseResponse.payload is Map) {
           if (isPudo == true) {
             return PudoProfile.fromJson(baseResponse.payload);
           } else {
             return UserProfile.fromJson(baseResponse.payload);
           }
         } else {
-          throw ErrorDescription('Error ${baseResponse.returnCode}: ${baseResponse.message}');
+          throw ErrorDescription(
+              'Error ${baseResponse.returnCode}: ${baseResponse.message}');
         }
       }
     } catch (e) {
@@ -282,7 +351,8 @@ mixin NetworkManagerUser on NetworkGeneral {
       }
       var url = _baseURL + '/api/v2/file/$id';
       Response response = await r.retry(
-        () => get(Uri.parse(url), headers: _headers).timeout(Duration(seconds: _timeout)),
+        () => get(Uri.parse(url), headers: _headers)
+            .timeout(Duration(seconds: _timeout)),
         retryIf: (e) => e is SocketException || e is TimeoutException,
       );
       if (response.statusCode == 200) {
@@ -311,7 +381,8 @@ mixin NetworkManagerUser on NetworkGeneral {
         _networkActivity.value = true;
       });
       Response response = await r.retry(
-        () => get(Uri.parse(url), headers: _headers).timeout(Duration(seconds: _timeout)),
+        () => get(Uri.parse(url), headers: _headers)
+            .timeout(Duration(seconds: _timeout)),
         retryIf: (e) => e is SocketException || e is TimeoutException,
       );
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
@@ -329,10 +400,13 @@ mixin NetworkManagerUser on NetworkGeneral {
         },
       );
       if (needHandleTokenRefresh == false) {
-        if (baseResponse.returnCode == 0 && baseResponse.payload != null && baseResponse.payload is Map) {
+        if (baseResponse.returnCode == 0 &&
+            baseResponse.payload != null &&
+            baseResponse.payload is Map) {
           return UserProfile.fromJson(baseResponse.payload);
         } else {
-          throw ErrorDescription('Error ${baseResponse.returnCode}: ${baseResponse.message}');
+          throw ErrorDescription(
+              'Error ${baseResponse.returnCode}: ${baseResponse.message}');
         }
       }
     } catch (e) {
@@ -357,7 +431,8 @@ mixin NetworkManagerUser on NetworkGeneral {
         _networkActivity.value = true;
       });
       Response response = await r.retry(
-        () => post(Uri.parse(url), headers: _headers).timeout(Duration(seconds: _timeout)),
+        () => post(Uri.parse(url), headers: _headers)
+            .timeout(Duration(seconds: _timeout)),
         retryIf: (e) => e is SocketException || e is TimeoutException,
       );
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
@@ -376,13 +451,16 @@ mixin NetworkManagerUser on NetworkGeneral {
         },
       );
       if (needHandleTokenRefresh == false) {
-        if (baseResponse.returnCode == 0 && baseResponse.payload != null && baseResponse.payload is List) {
+        if (baseResponse.returnCode == 0 &&
+            baseResponse.payload != null &&
+            baseResponse.payload is List) {
           for (dynamic aRow in baseResponse.payload) {
             myPudos.add(PudoProfile.fromJson(aRow));
           }
           return myPudos;
         } else {
-          throw ErrorDescription('Error ${baseResponse.returnCode}: ${baseResponse.message}');
+          throw ErrorDescription(
+              'Error ${baseResponse.returnCode}: ${baseResponse.message}');
         }
       }
     } catch (e) {
@@ -406,7 +484,8 @@ mixin NetworkManagerUser on NetworkGeneral {
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
-      Response response = await delete(Uri.parse(url), headers: _headers).timeout(Duration(seconds: _timeout));
+      Response response = await delete(Uri.parse(url), headers: _headers)
+          .timeout(Duration(seconds: _timeout));
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = false;
       });
@@ -423,13 +502,16 @@ mixin NetworkManagerUser on NetworkGeneral {
         },
       );
       if (needHandleTokenRefresh == false) {
-        if (baseResponse.returnCode == 0 && baseResponse.payload != null && baseResponse.payload is List) {
+        if (baseResponse.returnCode == 0 &&
+            baseResponse.payload != null &&
+            baseResponse.payload is List) {
           for (dynamic aRow in baseResponse.payload) {
             myPudos.add(PudoProfile.fromJson(aRow));
           }
           return myPudos;
         } else {
-          throw ErrorDescription('Error ${baseResponse.returnCode}: ${baseResponse.message}');
+          throw ErrorDescription(
+              'Error ${baseResponse.returnCode}: ${baseResponse.message}');
         }
       }
     } catch (e) {
@@ -449,12 +531,13 @@ mixin NetworkManagerUser on NetworkGeneral {
         _headers['Authorization'] = 'Bearer $_accessToken';
       }
 
-      var url = _baseURL + '/api/v1/users/me/pudos';
+      var url = _baseURL + '/api/v2/user/me/pudos';
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
       Response response = await r.retry(
-        () => get(Uri.parse(url), headers: _headers).timeout(Duration(seconds: _timeout)),
+        () => get(Uri.parse(url), headers: _headers)
+            .timeout(Duration(seconds: _timeout)),
         retryIf: (e) => e is SocketException || e is TimeoutException,
       );
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
@@ -464,7 +547,7 @@ mixin NetworkManagerUser on NetworkGeneral {
       var decodedUTF8 = const Utf8Decoder().convert(codeUnits);
       var json = jsonDecode(decodedUTF8);
       var baseResponse = OPBaseResponse.fromJson(json);
-      List<PudoProfile> myPudos = <PudoProfile>[];
+      List<PudoSummary> myPudos = <PudoSummary>[];
 
       var needHandleTokenRefresh = _handleTokenRefresh(
         baseResponse,
@@ -473,13 +556,16 @@ mixin NetworkManagerUser on NetworkGeneral {
         },
       );
       if (needHandleTokenRefresh == false) {
-        if (baseResponse.returnCode == 0 && baseResponse.payload != null && baseResponse.payload is List) {
+        if (baseResponse.returnCode == 0 &&
+            baseResponse.payload != null &&
+            baseResponse.payload is List) {
           for (dynamic aRow in baseResponse.payload) {
-            myPudos.add(PudoProfile.fromJson(aRow));
+            myPudos.add(PudoSummary.fromJson(aRow));
           }
           return myPudos;
         } else {
-          throw ErrorDescription('Error ${baseResponse.returnCode}: ${baseResponse.message}');
+          throw ErrorDescription(
+              'Error ${baseResponse.returnCode}: ${baseResponse.message}');
         }
       }
     } catch (e) {
@@ -504,7 +590,8 @@ mixin NetworkManagerUser on NetworkGeneral {
         _networkActivity.value = true;
       });
       Response response = await r.retry(
-        () => put(Uri.parse(url), body: body, headers: _headers).timeout(Duration(seconds: _timeout)),
+        () => put(Uri.parse(url), body: body, headers: _headers)
+            .timeout(Duration(seconds: _timeout)),
         retryIf: (e) => e is SocketException || e is TimeoutException,
       );
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
@@ -518,14 +605,18 @@ mixin NetworkManagerUser on NetworkGeneral {
       var needHandleTokenRefresh = _handleTokenRefresh(
         baseResponse,
         () {
-          updateUserPreferences(showNumber: showNumber).catchError((onError) => throw onError);
+          updateUserPreferences(showNumber: showNumber)
+              .catchError((onError) => throw onError);
         },
       );
       if (needHandleTokenRefresh == false) {
-        if (baseResponse.returnCode == 0 && baseResponse.payload != null && baseResponse.payload is Map) {
+        if (baseResponse.returnCode == 0 &&
+            baseResponse.payload != null &&
+            baseResponse.payload is Map) {
           return UserPreferences.fromJson(baseResponse.payload);
         } else {
-          throw ErrorDescription('Error ${baseResponse.returnCode}: ${baseResponse.message}');
+          throw ErrorDescription(
+              'Error ${baseResponse.returnCode}: ${baseResponse.message}');
         }
       }
     } catch (e) {

@@ -29,7 +29,35 @@ import 'package:qui_green/singletons/network/network_manager.dart';
 
 class HomeRegistrationCompleteControllerViewModel extends ChangeNotifier {
   Function(dynamic)? showErrorDialog;
-  bool _showNumber = true;
+
+  HomeRegistrationCompleteControllerViewModel() {
+    setPreference();
+  }
+
+  setPreference() {
+    NetworkManager.instance.getUserPreferences().then((value) {
+      if (value is UserPreferences) {
+        WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
+          _showNumber = value.showPhoneNumber;
+          notifyListeners();
+        });
+        notifyListeners();
+      } else {
+        WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
+          _showNumber = true;
+          notifyListeners();
+        });
+      }
+    }).catchError((onError) {
+      WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
+        _showNumber = true;
+        notifyListeners();
+      });
+      showErrorDialog?.call(onError);
+    });
+  }
+
+  late bool _showNumber = true;
 
   bool get showNumber => _showNumber;
 

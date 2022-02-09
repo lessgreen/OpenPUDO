@@ -35,7 +35,7 @@ class PudoProfile {
   String? updateTms;
   String? vat;
   AddressModel? address;
-  RatingModel? ratingModel;
+  RatingModel? rating;
   int? customerCount;
   int? packageCount;
   String? rewardMessage;
@@ -57,7 +57,8 @@ class PudoProfile {
     this.customizedAddress,
   });
 
-  factory PudoProfile.fromJson(Map<String, dynamic> json) => _$PudoProfileFromJson(json);
+  factory PudoProfile.fromJson(Map<String, dynamic> json) =>
+      _$PudoProfileFromJson(json);
 
   Map<String, dynamic> toJson() => _$PudoProfileToJson(this);
 }
