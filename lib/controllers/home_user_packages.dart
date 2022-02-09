@@ -22,6 +22,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
+import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
 import 'package:qui_green/resources/res.dart';
 import 'package:qui_green/resources/routes_enum.dart';
 import 'package:qui_green/singletons/current_user.dart';
@@ -49,10 +50,7 @@ class _HomeUserPackagesState extends State<HomeUserPackages>
                 backgroundColor: AppColors.primaryColorDark,
                 middle: Text(
                   'Home',
-                  style: Theme.of(context)
-                      .textTheme
-                      .headline6
-                      ?.copyWith(color: Colors.white),
+                  style: AdditionalTextStyles.navBarStyle(context),
                 ),
                 trailing: InkWell(
                   onTap: () => Navigator.of(context).pushNamed(Routes.profile),

@@ -105,6 +105,9 @@ class PudoMapCard extends StatelessWidget {
                   ],
                 ),
               ),
+              const SizedBox(
+                width: Dimension.padding,
+              ),
             ],
           ),
         ),

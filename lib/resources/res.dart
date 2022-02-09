@@ -14,7 +14,7 @@
  GNU Affero General Public License version 3 for more details.
 
  You should have received a copy of the GNU Affero General Public License
- version 3 published by the Copyright Owner along with OpenPUDO.  
+ version 3 published by the Copyright Owner along with OpenPUDO.
  If not, see <https://github.com/lessgreen/OpenPUDO>.
 */
 
@@ -70,6 +70,10 @@ class ImageSrc {
   static const profileArt = "assets/Profile.svg";
   static const searchArt = "assets/Search.svg";
   static const shareArt = "assets/Share.svg";
+  static const leaf = "assets/leaf.svg";
+  static const chevronRight = "assets/chevron_right.svg";
+  static const emptyBox = "assets/boxEmpty.svg";
+  static const fillBox = "assets/boxFill.svg";
 }
 
 class IconSrc {}
@@ -79,4 +83,6 @@ class AppColors {
   static const accentColor = Color(0xFFA0B92C);
   static const cardColor = Color(0xFFA0B92C);
   static const primaryColorDark = Color(0xFFA0B92C);
+  static const primaryTextColor = Color(0xFF363736);
+  static const colorGrey = Color(0xFF979797);
 }
