@@ -53,11 +53,9 @@ class _PudoListControllerState extends State<PudoListController> {
           pudoList = value;
         });
       } else {
-        SAAlertDialog.displayAlertWithClose(
-            context, "Error", "Qualcosa è andato storto");
+        SAAlertDialog.displayAlertWithClose(context, "Error", "Qualcosa è andato storto");
       }
-    }).catchError((onError) =>
-        SAAlertDialog.displayAlertWithClose(context, "Error", onError));
+    }).catchError((onError) => SAAlertDialog.displayAlertWithClose(context, "Error", onError));
   }
 
   Widget _buildEmptyPudos() => Column(
@@ -71,18 +69,14 @@ class _PudoListControllerState extends State<PudoListController> {
           const SizedBox(
             height: Dimension.padding,
           ),
-          MainButton(
-              text: 'Vai',
-              onPressed: () =>
-                  Navigator.of(context).pushNamed(Routes.userPosition))
+          MainButton(text: 'Vai', onPressed: () => Navigator.of(context).pushNamed(Routes.userPosition))
         ],
       );
 
   Widget _buildPudos() => ListView(
         children: [
           const Padding(
-            padding: EdgeInsets.only(
-                left: Dimension.padding, top: Dimension.padding),
+            padding: EdgeInsets.only(left: Dimension.padding, top: Dimension.padding),
             child: Text(
               'I tuoi pudo:',
             ),
@@ -96,11 +90,7 @@ class _PudoListControllerState extends State<PudoListController> {
                   padding: const EdgeInsets.only(
                     top: Dimension.padding,
                   ),
-                  child: PudoCard(
-                      pudo: pudoList![index],
-                      onTap: () => Navigator.of(context).pushNamed(
-                          Routes.pudoDetail,
-                          arguments: pudoList![index])),
+                  child: PudoCard(pudo: pudoList![index], onTap: () => Navigator.of(context).pushNamed(Routes.pudoDetail, arguments: pudoList![index])),
                 );
               })
         ],
@@ -114,8 +104,10 @@ class _PudoListControllerState extends State<PudoListController> {
               padding: const EdgeInsetsDirectional.all(0),
               brightness: Brightness.dark,
               backgroundColor: AppColors.primaryColorDark,
-              middle: Text('Il tuoi pudo',
-                  style: AdditionalTextStyles.navBarStyle(context)),
+              middle: Text(
+                'Il tuoi pudo',
+                style: Theme.of(context).textTheme.navBarTitle,
+              ),
               leading: CupertinoNavigationBarBackButton(
                 color: Colors.white,
                 onPressed: () => Navigator.of(context).pop(),

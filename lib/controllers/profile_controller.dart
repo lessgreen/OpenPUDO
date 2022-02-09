@@ -40,88 +40,80 @@ class ProfileController extends StatefulWidget {
   _ProfileControllerState createState() => _ProfileControllerState();
 }
 
-class _ProfileControllerState extends State<ProfileController>
-    with ConnectionAware {
+class _ProfileControllerState extends State<ProfileController> with ConnectionAware {
   @override
   Widget build(BuildContext context) {
     return Consumer<CurrentUser>(builder: (_, currentUser, __) {
       return Material(
         child: CupertinoPageScaffold(
-            navigationBar: CupertinoNavigationBar(
-              padding: const EdgeInsetsDirectional.all(0),
-              brightness: Brightness.dark,
-              backgroundColor: AppColors.primaryColorDark,
-              middle: Text('Il tuo profilo',
-                  style: AdditionalTextStyles.navBarStyle(context)),
-              leading: CupertinoNavigationBarBackButton(
-                color: Colors.white,
-                onPressed: () => Navigator.of(context).pop(),
+          navigationBar: CupertinoNavigationBar(
+            padding: const EdgeInsetsDirectional.all(0),
+            brightness: Brightness.dark,
+            backgroundColor: AppColors.primaryColorDark,
+            middle: Text(
+              'Il tuo profilo',
+              style: Theme.of(context).textTheme.navBarTitle,
+            ),
+            leading: CupertinoNavigationBarBackButton(
+              color: Colors.white,
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+          ),
+          child: Column(children: [
+            const SizedBox(height: 20),
+            Center(
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(100),
+                child: CustomNetworkImage(height: 150, width: 150, fit: BoxFit.cover, url: currentUser.user?.profilePicId),
               ),
             ),
-            child: Column(
-              children: [
-                const SizedBox(height: 20),
-                Center(
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(100),
-                    child: CustomNetworkImage(
-                        height: 150,
-                        width: 150,
-                        fit: BoxFit.cover,
-                        url: currentUser.user?.profilePicId),
-                  ),
+            const SizedBox(
+              height: 10,
+            ),
+            Text(
+              "${currentUser.user?.firstName ?? " "} ${currentUser.user?.lastName ?? " "}",
+              style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 20),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              'Utente dal ${currentUser.user?.createTms != null ? DateFormat('dd/MM/yyyy').format(DateTime.parse(currentUser.user!.createTms!)) : " "}',
+              style: const TextStyle(fontWeight: FontWeight.w300, fontSize: 14, color: AppColors.primaryTextColor),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            const UserProfileRecapWidget(
+              totalUsage: 123,
+              kgCO2Saved: 456,
+            ),
+            TableViewCell(
+                leading: Icon(
+                  Icons.person_pin_circle,
+                  color: AppColors.cardColor,
                 ),
-                const SizedBox(
-                  height: 10,
+                title: "I tuoi pudo",
+                onTap: () {
+                  Navigator.of(context).pushNamed(Routes.pudoList);
+                }),
+            TableViewCell(
+              leading: Icon(
+                Icons.new_label,
+                color: AppColors.cardColor,
+              ),
+              title: "Le tue spedizioni",
+              onTap: () {},
+            ),
+            TableViewCell(
+                leading: Icon(
+                  Icons.logout,
+                  color: AppColors.cardColor,
                 ),
-                Text(
-                  "${currentUser.user?.firstName ?? " "} ${currentUser.user?.lastName ?? " "}",
-                  style: const TextStyle(
-                      fontWeight: FontWeight.w600, fontSize: 20),
-                ),
-                const SizedBox(height: 6),
-                Text(
-                  'Utente dal ${currentUser.user?.createTms != null ? DateFormat('dd/MM/yyyy').format(DateTime.parse(currentUser.user!.createTms!)) : " "}',
-                  style: const TextStyle(
-                      fontWeight: FontWeight.w300,
-                      fontSize: 14,
-                      color: AppColors.primaryTextColor),
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                const UserProfileRecapWidget(
-                  totalUsage: 123,
-                  kgCO2Saved: 456,
-                ),
-                TableViewCell(
-                    leading: Icon(
-                      Icons.person_pin_circle,
-                      color: AppColors.cardColor,
-                    ),
-                    title: "I tuoi pudo",
-                    onTap: () {
-                      Navigator.of(context).pushNamed(Routes.pudoList);
-                    }),
-                TableViewCell(
-                  leading: Icon(
-                    Icons.new_label,
-                    color: AppColors.cardColor,
-                  ),
-                  title: "Le tue spedizioni",
-                  onTap: () {},
-                ),
-                TableViewCell(
-                  leading: Icon(
-                    Icons.logout,
-                    color: AppColors.cardColor,
-                  ),
-                  title: "Logout",
-                  onTap: () {
-                    Navigator.pop(context);
-                    NetworkManager.instance.setAccessToken(null);
-                    currentUser.refresh();
-                  }),
+                title: "Logout",
+                onTap: () {
+                  Navigator.pop(context);
+                  NetworkManager.instance.setAccessToken(null);
+                  currentUser.refresh();
+                }),
           ]),
         ),
       );

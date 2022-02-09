@@ -53,11 +53,9 @@ class _HomeUserPudoControllerState extends State<HomeUserPudoController> {
           pudoList = value;
         });
       } else {
-        SAAlertDialog.displayAlertWithClose(
-            context, "Error", "Qualcosa è andato storto");
+        SAAlertDialog.displayAlertWithClose(context, "Error", "Qualcosa è andato storto");
       }
-    }).catchError((onError) =>
-        SAAlertDialog.displayAlertWithClose(context, "Error", onError));
+    }).catchError((onError) => SAAlertDialog.displayAlertWithClose(context, "Error", onError));
   }
 
   Widget _buildEmptyPudos() => Column(
@@ -71,18 +69,14 @@ class _HomeUserPudoControllerState extends State<HomeUserPudoController> {
           const SizedBox(
             height: Dimension.padding,
           ),
-          MainButton(
-              text: 'Vai',
-              onPressed: () =>
-                  Navigator.of(context).pushNamed(Routes.userPosition))
+          MainButton(text: 'Vai', onPressed: () => Navigator.of(context).pushNamed(Routes.userPosition))
         ],
       );
 
   Widget _buildPudos() => ListView(
         children: [
           const Padding(
-            padding: EdgeInsets.only(
-                left: Dimension.padding, top: Dimension.padding),
+            padding: EdgeInsets.only(left: Dimension.padding, top: Dimension.padding),
             child: Text(
               'I tuoi pudo:',
             ),
@@ -96,11 +90,7 @@ class _HomeUserPudoControllerState extends State<HomeUserPudoController> {
                   padding: const EdgeInsets.only(
                     top: Dimension.padding,
                   ),
-                  child: PudoCard(
-                      pudo: pudoList![index],
-                      onTap: () => Navigator.of(context).pushNamed(
-                          Routes.pudoDetail,
-                          arguments: pudoList![index])),
+                  child: PudoCard(pudo: pudoList![index], onTap: () => Navigator.of(context).pushNamed(Routes.pudoDetail, arguments: pudoList![index])),
                 );
               })
         ],
@@ -116,7 +106,7 @@ class _HomeUserPudoControllerState extends State<HomeUserPudoController> {
             backgroundColor: AppColors.primaryColorDark,
             middle: Text(
               'Il tuoi pudo',
-              style: AdditionalTextStyles.navBarStyle(context),
+              style: Theme.of(context).textTheme.navBarTitle,
             ),
           ),
           child: SAScaffold(
