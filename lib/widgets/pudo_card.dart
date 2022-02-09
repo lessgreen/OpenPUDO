@@ -37,7 +37,7 @@ class PudoCard extends StatelessWidget {
         name: pudo.businessName,
         address: pudo.address?.street ?? "Via Ippolito, 8",
         stars: pudo.ratingModel?.reviewCount ?? 3,
-        image: pudo.imageUrl,
+        image: pudo.pudoPicId,
         onTap: onTap,
       ),
     );
