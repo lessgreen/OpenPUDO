@@ -1,6 +1,7 @@
 package less.green.openpudo.business.dao;
 
 import less.green.openpudo.business.model.TbDeviceToken;
+import lombok.extern.log4j.Log4j2;
 
 import javax.enterprise.context.RequestScoped;
 import javax.persistence.Query;
@@ -11,6 +12,7 @@ import java.util.List;
 
 @RequestScoped
 @Transactional(Transactional.TxType.MANDATORY)
+@Log4j2
 public class DeviceTokenDao extends BaseEntityDao<TbDeviceToken, String> {
 
     public DeviceTokenDao() {

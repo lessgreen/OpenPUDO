@@ -6,6 +6,7 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import java.math.BigDecimal;
 
 @Data
+@Schema(oneOf = {AddressMarker.class, PudoMarker.class})
 public class GPSMarker {
 
     @Schema(readOnly = true)

@@ -6,6 +6,7 @@ import less.green.openpudo.business.model.usertype.PackageStatus;
 import less.green.openpudo.business.model.usertype.RelationType;
 import less.green.openpudo.common.dto.tuple.Pair;
 import less.green.openpudo.common.dto.tuple.Sextet;
+import lombok.extern.log4j.Log4j2;
 
 import javax.enterprise.context.RequestScoped;
 import javax.persistence.TypedQuery;
@@ -18,6 +19,7 @@ import java.util.stream.Collectors;
 
 @RequestScoped
 @Transactional(Transactional.TxType.MANDATORY)
+@Log4j2
 public class PackageDao extends BaseEntityDao<TbPackage, Long> {
 
     public PackageDao() {
