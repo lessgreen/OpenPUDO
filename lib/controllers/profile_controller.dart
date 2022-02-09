@@ -121,10 +121,9 @@ class _ProfileControllerState extends State<ProfileController>
                     Navigator.pop(context);
                     NetworkManager.instance.setAccessToken(null);
                     currentUser.refresh();
-                  },
-                ),
-              ],
-            )),
+                  }),
+          ]),
+        ),
       );
     });
   }

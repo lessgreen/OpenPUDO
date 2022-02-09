@@ -20,6 +20,7 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
 import 'package:qui_green/resources/res.dart';
@@ -48,14 +49,11 @@ class _HomeUserPackagesState extends State<HomeUserPackages> with ConnectionAwar
                 backgroundColor: AppColors.primaryColorDark,
                 middle: Text(
                   'Home',
-                  style: AdditionalTextStyles.navBarStyle(context),
+                  style: Theme.of(context).textTheme.navBarTitle,
                 ),
-                trailing: IconButton(
-                  icon: const Icon(
-                    Icons.account_circle_rounded,
-                    color: Colors.white,
-                  ),
-                  onPressed: () => Navigator.of(context).pushNamed(Routes.profile),
+                trailing: InkWell(
+                  onTap: () => Navigator.of(context).pushNamed(Routes.profile),
+                  child: Container(margin: const EdgeInsets.only(right: Dimension.paddingS), width: 40, child: SvgPicture.asset(ImageSrc.profileArt, color: Colors.white)),
                 ),
               ),
               child: SafeArea(
