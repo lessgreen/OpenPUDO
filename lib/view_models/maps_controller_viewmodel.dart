@@ -24,7 +24,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:qui_green/models/geo_marker.dart';
-import 'package:qui_green/models/pudo_detail_controller_data_model.dart';
 import 'package:qui_green/models/pudo_profile.dart';
 import 'package:qui_green/resources/routes_enum.dart';
 import 'package:qui_green/singletons/network/network_manager.dart';
@@ -74,8 +73,8 @@ class MapsControllerViewModel extends ChangeNotifier {
         .then(
       (response) {
         if (response is PudoProfile) {
-          Navigator.of(context).pushNamed(Routes.pudoDetail,
-              arguments: PudoDetailControllerDataModel(position, response));
+          Navigator.of(context)
+              .pushNamed(Routes.pudoDetail, arguments: response);
         } else {
           showErrorDialog?.call("Qualcosa e' andato storto");
         }
@@ -176,8 +175,11 @@ class MapsControllerViewModel extends ChangeNotifier {
     isReloadingPudos = true;
     for (var i = 0; i < pudos.length; i++) {
       if (pudos[i].pudo?.pudoId == pudoId) {
-        pageController.animateToPage(i,
-            duration: const Duration(milliseconds: 150), curve: Curves.easeIn).then((value){
+        pageController
+            .animateToPage(i,
+                duration: const Duration(milliseconds: 150),
+                curve: Curves.easeIn)
+            .then((value) {
           isReloadingPudos = false;
           showingCardPudo = pudoId;
         });

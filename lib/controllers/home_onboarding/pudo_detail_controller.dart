@@ -22,15 +22,15 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:qui_green/commons/alert_dialog.dart';
 import 'package:qui_green/commons/ui/custom_network_image.dart';
-import 'package:qui_green/models/pudo_detail_controller_data_model.dart';
-import 'package:qui_green/resources/routes_enum.dart';
+import 'package:qui_green/models/pudo_profile.dart';
 import 'package:qui_green/resources/res.dart';
+import 'package:qui_green/resources/routes_enum.dart';
 import 'package:qui_green/singletons/network/network_manager.dart';
 
 class HomePudoDetailController extends StatefulWidget {
   const HomePudoDetailController({Key? key, required this.dataModel})
       : super(key: key);
-  final PudoDetailControllerDataModel dataModel;
+  final PudoProfile dataModel;
 
   @override
   _HomePudoDetailControllerState createState() =>
@@ -45,7 +45,7 @@ class _HomePudoDetailControllerState extends State<HomePudoDetailController> {
           Row(
             children: [
               Text(
-                widget.dataModel.pudoProfile.businessName,
+                widget.dataModel.businessName,
                 style: const TextStyle(fontSize: 18),
               ),
               const SizedBox(
@@ -53,9 +53,9 @@ class _HomePudoDetailControllerState extends State<HomePudoDetailController> {
               ),
               Row(
                 children: List<Widget>.generate(
-                  (widget.dataModel.pudoProfile.ratingModel?.stars ?? 0) > 5
+                  (widget.dataModel.ratingModel?.stars ?? 0) > 5
                       ? 5
-                      : widget.dataModel.pudoProfile.ratingModel?.stars ?? 0,
+                      : widget.dataModel.ratingModel?.stars ?? 0,
                   (index) => Icon(
                     Icons.star_rounded,
                     color: Colors.yellow.shade700,
@@ -83,14 +83,13 @@ class _HomePudoDetailControllerState extends State<HomePudoDetailController> {
                     width: Dimension.paddingS,
                   ),
                 ),
-                TextSpan(
-                    text: widget.dataModel.pudoProfile.address!.label ?? ""),
+                TextSpan(text: widget.dataModel.address?.label ?? ""),
               ],
             ),
           ),
-          if (widget.dataModel.pudoProfile.publicPhoneNumber != null)
+          if (widget.dataModel.publicPhoneNumber != null)
             const SizedBox(height: Dimension.paddingS),
-          if (widget.dataModel.pudoProfile.publicPhoneNumber != null)
+          if (widget.dataModel.publicPhoneNumber != null)
             RichText(
               textAlign: TextAlign.start,
               text: TextSpan(
@@ -109,9 +108,7 @@ class _HomePudoDetailControllerState extends State<HomePudoDetailController> {
                       width: Dimension.paddingS,
                     ),
                   ),
-                  TextSpan(
-                      text:
-                          widget.dataModel.pudoProfile.publicPhoneNumber ?? ""),
+                  TextSpan(text: widget.dataModel.publicPhoneNumber ?? ""),
                 ],
               ),
             ),
@@ -135,8 +132,7 @@ class _HomePudoDetailControllerState extends State<HomePudoDetailController> {
                   ),
                 ),
                 TextSpan(
-                  text: (widget.dataModel.pudoProfile.customerCount ?? 0)
-                      .toString(),
+                  text: (widget.dataModel.customerCount ?? 0).toString(),
                   style: const TextStyle(fontWeight: FontWeight.w500),
                 ),
                 const TextSpan(
@@ -191,7 +187,7 @@ class _HomePudoDetailControllerState extends State<HomePudoDetailController> {
                   AspectRatio(
                       aspectRatio: 18 / 9,
                       child: CustomNetworkImage(
-                        url: widget.dataModel.pudoProfile.pudoPicId,
+                        url: widget.dataModel.pudoPicId,
                         fit: BoxFit.cover,
                       )),
                   _buildPudoDetail(),
@@ -225,7 +221,7 @@ class _HomePudoDetailControllerState extends State<HomePudoDetailController> {
                   SizedBox(
                     width: MediaQuery.of(context).size.width / 3 * 2,
                     child: Text(
-                      '“${widget.dataModel.pudoProfile.rewardMessage ?? ""}”',
+                      '“${widget.dataModel.rewardMessage ?? ""}”',
                       style: Theme.of(context).textTheme.subtitle1?.copyWith(
                             height: 2,
                             fontStyle: FontStyle.italic,
@@ -245,10 +241,10 @@ class _HomePudoDetailControllerState extends State<HomePudoDetailController> {
 
   void goToRegistration() {
     NetworkManager.instance
-        .addPudoFavorite(widget.dataModel.pudoProfile.pudoId.toString())
+        .addPudoFavorite(widget.dataModel.pudoId.toString())
         .then((value) => Navigator.of(context).pushNamed(
               Routes.registrationComplete,
-              arguments: widget.dataModel.pudoProfile,
+              arguments: widget.dataModel,
             ))
         .catchError((onError) =>
             SAAlertDialog.displayAlertWithClose(context, "Error", onError));

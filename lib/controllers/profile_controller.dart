@@ -27,6 +27,7 @@ import 'package:provider/provider.dart';
 import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
 import 'package:qui_green/commons/ui/custom_network_image.dart';
 import 'package:qui_green/resources/res.dart';
+import 'package:qui_green/resources/routes_enum.dart';
 import 'package:qui_green/singletons/current_user.dart';
 import 'package:qui_green/singletons/network/network_manager.dart';
 import 'package:qui_green/widgets/table_view_cell.dart';
@@ -85,14 +86,15 @@ class _ProfileControllerState extends State<ProfileController> with ConnectionAw
               totalUsage: 123,
               kgCO2Saved: 456,
             ),
-            Divider(),
             TableViewCell(
                 leading: Icon(
                   Icons.person_pin_circle,
                   color: AppColors.cardColor,
                 ),
                 title: "I tuoi pudo",
-                onTap: () {}),
+                onTap: () {
+                  Navigator.of(context).pushNamed(Routes.pudoList);
+                }),
             TableViewCell(
               leading: Icon(
                 Icons.new_label,
@@ -102,17 +104,16 @@ class _ProfileControllerState extends State<ProfileController> with ConnectionAw
               onTap: () {},
             ),
             TableViewCell(
-              leading: Icon(
-                Icons.logout,
-                color: AppColors.cardColor,
-              ),
-              title: "Logout",
-              onTap: () {
-                Navigator.pop(context);
-                NetworkManager.instance.setAccessToken(null);
-                currentUser.refresh();
-              },
-            ),
+                leading: Icon(
+                  Icons.logout,
+                  color: AppColors.cardColor,
+                ),
+                title: "Logout",
+                onTap: () {
+                  Navigator.pop(context);
+                  NetworkManager.instance.setAccessToken(null);
+                  currentUser.refresh();
+                }),
           ]),
         ),
       );
