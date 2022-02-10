@@ -47,7 +47,24 @@ class _PudoListControllerState extends State<PudoListController> {
 
   List<PudoSummary>? pudoList;
 
+  void deletePudo(PudoSummary pudoProfile) {
+    NetworkManager.instance
+        .deletePudoFavorite(pudoProfile.pudoId.toString())
+        .then((value) {
+      if (value is List<PudoSummary>) {
+        setState(() {
+          pudoList = value;
+        });
+      } else {
+        SAAlertDialog.displayAlertWithClose(
+            context, "Error", "Qualcosa è andato storto");
+      }
+    }).catchError((onError) =>
+            SAAlertDialog.displayAlertWithClose(context, "Error", onError));
+  }
+
   void getPudos() async {
+    print(NetworkManager.instance.accessToken);
     NetworkManager.instance.getMyPudos().then((value) {
       if (value is List<PudoSummary>) {
         setState(() {
@@ -98,6 +115,7 @@ class _PudoListControllerState extends State<PudoListController> {
                     top: Dimension.padding,
                   ),
                   child: PudoCard(
+                      onDelete: () => deletePudo(pudoList![index]),
                       pudo: pudoList![index],
                       onTap: () {
                         NetworkManager.instance

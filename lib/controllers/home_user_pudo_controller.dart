@@ -98,6 +98,7 @@ class _HomeUserPudoControllerState extends State<HomeUserPudoController> {
                     top: Dimension.padding,
                   ),
                   child: PudoCard(
+                      onDelete: () {},
                       pudo: pudoList![index],
                       onTap: () {
                         NetworkManager.instance
