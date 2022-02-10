@@ -1,5 +1,3 @@
-// ignore_for_file: unused_import
-
 /*
  OpenPUDO - PUDO and Micro-delivery software for Last Mile Collaboration
  Copyright (C) 2020-2022 LESS SRL - https://less.green
@@ -25,12 +23,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:qui_green/commons/utilities/home_user_packages_section_routes.dart';
 import 'package:qui_green/commons/utilities/home_user_pudo_section_routes.dart';
-import 'package:qui_green/widgets/listview_header.dart';
-import 'package:qui_green/singletons/network/network_manager.dart';
-import 'package:qui_green/widgets/package_card.dart';
-import 'package:qui_green/controllers/profile_controller.dart';
 import 'package:qui_green/resources/res.dart';
-import 'package:qui_green/resources/routes_enum.dart';
+import 'package:qui_green/singletons/network/network_manager.dart';
 
 class HomeController extends StatefulWidget {
   const HomeController({Key? key}) : super(key: key);
@@ -57,25 +51,15 @@ class _HomeControllerState extends State<HomeController> with ConnectionAware {
         tabBar: CupertinoTabBar(
           onTap: (selectedIndex) {
             if (selectedIndex == _oldIndex) {
-              _navigatorObservers[selectedIndex]
-                  .navigator
-                  ?.popUntil((Route<dynamic> route) => route.isFirst);
+              _navigatorObservers[selectedIndex].navigator?.popUntil((Route<dynamic> route) => route.isFirst);
             }
             _oldIndex = selectedIndex;
           },
           items: [
             BottomNavigationBarItem(
-                icon: SvgPicture.asset(ImageSrc.homeArt,
-                    color: Colors.grey.shade400),
-                activeIcon: SvgPicture.asset(ImageSrc.homeArt,
-                    color: AppColors.primaryColorDark),
-                label: 'Home'),
+                icon: SvgPicture.asset(ImageSrc.homeArt, color: Colors.grey.shade400), activeIcon: SvgPicture.asset(ImageSrc.homeArt, color: AppColors.primaryColorDark), label: 'Home'),
             BottomNavigationBarItem(
-                icon: SvgPicture.asset(ImageSrc.mapsArt,
-                    color: Colors.grey.shade400),
-                activeIcon: SvgPicture.asset(ImageSrc.mapsArt,
-                    color: AppColors.primaryColorDark),
-                label: 'Pudo'),
+                icon: SvgPicture.asset(ImageSrc.mapsArt, color: Colors.grey.shade400), activeIcon: SvgPicture.asset(ImageSrc.mapsArt, color: AppColors.primaryColorDark), label: 'Pudo'),
           ],
         ),
         tabBuilder: (innerContext, index) {
@@ -83,14 +67,12 @@ class _HomeControllerState extends State<HomeController> with ConnectionAware {
             case 1:
               return CupertinoTabView(
                 navigatorObservers: [_navigatorObservers[1]],
-                onGenerateRoute: (RouteSettings settings) =>
-                    routeHomeUserPudoSectionWithSetting(settings),
+                onGenerateRoute: (RouteSettings settings) => routeHomeUserPudoSectionWithSetting(settings),
               );
             default:
               return CupertinoTabView(
                 navigatorObservers: [_navigatorObservers[0]],
-                onGenerateRoute: (RouteSettings settings) =>
-                    routeHomeUserPackagesSectionWithSetting(settings),
+                onGenerateRoute: (RouteSettings settings) => routeHomeUserPackagesSectionWithSetting(settings),
               );
           }
         },

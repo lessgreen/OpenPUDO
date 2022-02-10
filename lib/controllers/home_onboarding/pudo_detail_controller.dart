@@ -29,13 +29,12 @@ import 'package:qui_green/resources/routes_enum.dart';
 import 'package:qui_green/singletons/network/network_manager.dart';
 
 class HomePudoDetailController extends StatefulWidget {
-  const HomePudoDetailController({Key? key, required this.dataModel})
-      : super(key: key);
+  const HomePudoDetailController({Key? key, required this.dataModel, required this.continueOnRegistration}) : super(key: key);
+  final bool continueOnRegistration;
   final PudoProfile dataModel;
 
   @override
-  _HomePudoDetailControllerState createState() =>
-      _HomePudoDetailControllerState();
+  _HomePudoDetailControllerState createState() => _HomePudoDetailControllerState();
 }
 
 class _HomePudoDetailControllerState extends State<HomePudoDetailController> {
@@ -57,9 +56,7 @@ class _HomePudoDetailControllerState extends State<HomePudoDetailController> {
                   5,
                   (index) => Icon(
                     Icons.star_rounded,
-                    color: (index + 1 <= (widget.dataModel.rating?.stars ?? 0))
-                        ? Colors.yellow.shade700
-                        : Colors.grey.shade200,
+                    color: (index + 1 <= (widget.dataModel.rating?.stars ?? 0)) ? Colors.yellow.shade700 : Colors.grey.shade200,
                   ),
                 ),
               ),
@@ -88,8 +85,7 @@ class _HomePudoDetailControllerState extends State<HomePudoDetailController> {
               ],
             ),
           ),
-          if (widget.dataModel.publicPhoneNumber != null)
-            const SizedBox(height: Dimension.paddingS),
+          if (widget.dataModel.publicPhoneNumber != null) const SizedBox(height: Dimension.paddingS),
           if (widget.dataModel.publicPhoneNumber != null)
             RichText(
               textAlign: TextAlign.start,
@@ -136,9 +132,7 @@ class _HomePudoDetailControllerState extends State<HomePudoDetailController> {
                   text: (widget.dataModel.customerCount ?? 0).toString(),
                   style: const TextStyle(fontWeight: FontWeight.w500),
                 ),
-                const TextSpan(
-                    text:
-                        ' persone hanno già scelto quest’attività come punto di ritiro QuiGreen.'),
+                const TextSpan(text: ' persone hanno già scelto quest’attività come punto di ritiro QuiGreen.'),
               ],
             ),
           ),
@@ -170,7 +164,7 @@ class _HomePudoDetailControllerState extends State<HomePudoDetailController> {
         trailing: !nextVisible
             ? const SizedBox()
             : InkWell(
-                onTap: goToRegistration,
+                onTap: widget.continueOnRegistration ? goToRegistration : selectPudo,
                 child: const Padding(
                   padding: EdgeInsets.only(right: Dimension.padding),
                   child: Text(
@@ -247,8 +241,7 @@ class _HomePudoDetailControllerState extends State<HomePudoDetailController> {
 
   void getIfPudoAlreadySelected() {
     NetworkManager.instance.getMyPudos().then((value) {
-      final index = value
-          .indexWhere((element) => element.pudoId == widget.dataModel.pudoId);
+      final index = value.indexWhere((element) => element.pudoId == widget.dataModel.pudoId);
       if (index > -1) {
         setState(() {
           nextVisible = false;
@@ -258,8 +251,7 @@ class _HomePudoDetailControllerState extends State<HomePudoDetailController> {
           nextVisible = true;
         });
       }
-    }).catchError((onError) =>
-        SAAlertDialog.displayAlertWithClose(context, "Error", onError));
+    }).catchError((onError) => SAAlertDialog.displayAlertWithClose(context, "Error", onError));
   }
 
   void goToRegistration() {
@@ -269,7 +261,13 @@ class _HomePudoDetailControllerState extends State<HomePudoDetailController> {
               Routes.registrationComplete,
               arguments: widget.dataModel,
             ))
-        .catchError((onError) =>
-            SAAlertDialog.displayAlertWithClose(context, "Error", onError));
+        .catchError((onError) => SAAlertDialog.displayAlertWithClose(context, "Error", onError));
+  }
+
+  void selectPudo() {
+    NetworkManager.instance
+        .addPudoFavorite(widget.dataModel.pudoId.toString())
+        .then((value) => Navigator.of(context).pop())
+        .catchError((onError) => SAAlertDialog.displayAlertWithClose(context, "Error", onError));
   }
 }

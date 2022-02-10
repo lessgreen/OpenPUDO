@@ -24,7 +24,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:location/location.dart';
-import 'package:qui_green/models/address_model.dart';
 import 'package:qui_green/models/geo_marker.dart';
 import 'package:qui_green/models/pudo_profile.dart';
 import 'package:qui_green/resources/routes_enum.dart';
@@ -37,23 +36,17 @@ class MapsSearchControllerViewModel extends ChangeNotifier {
   var currentLatitude = 45.4642;
   var currentLongitude = 9.1900;
   var currentZoomLevel = 8;
-  PageController pageController =
-      PageController(viewportFraction: 0.95, initialPage: 0);
+  PageController pageController = PageController(viewportFraction: 0.95, initialPage: 0);
   MapController? mapController;
   Function(String)? showErrorDialog;
 
-  bool _isReloadingPudos = false;
+  late Function(MapsSearchControllerViewModel, LatLng) animateMapTo;
 
-  bool get isReloadingPudos => _isReloadingPudos;
+  List<GeoMarker> _addresses = [];
 
-  set isReloadingPudos(bool newVal) {
-    _isReloadingPudos = newVal;
-    notifyListeners();
-  }
+  List<GeoMarker> get addresses => _addresses;
 
-  List<AddressModel> _addresses = [];
-  List<AddressModel> get addresses => _addresses;
-  set addresses(List<AddressModel> newVal) {
+  set addresses(List<GeoMarker> newVal) {
     _addresses = newVal;
     notifyListeners();
   }
@@ -102,19 +95,18 @@ class MapsSearchControllerViewModel extends ChangeNotifier {
     }
 
     _locationData = await location.getLocation();
-    pos = LatLng(_locationData.latitude ?? 45.464664,
-        _locationData.longitude ?? 9.188540);
+    pos = LatLng(_locationData.latitude ?? 45.464664, _locationData.longitude ?? 9.188540);
+    WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
+      animateMapTo(this, pos);
+    });
     return _locationData;
   }
 
-  onPudoClick(BuildContext context, GeoMarker marker, LatLng position) {
-    NetworkManager.instance
-        .getPudoDetails(pudoId: marker.pudo!.pudoId.toString())
-        .then(
+  onPudoClick(BuildContext context, GeoMarker marker) {
+    NetworkManager.instance.getPudoDetails(pudoId: marker.pudo!.pudoId.toString()).then(
       (response) {
         if (response is PudoProfile) {
-          Navigator.of(context)
-              .pushNamed(Routes.pudoDetail, arguments: response);
+          Navigator.of(context).pushNamed(Routes.pudoDetail, arguments: response);
         } else {
           showErrorDialog?.call("Qualcosa e' andato storto");
         }
@@ -124,13 +116,12 @@ class MapsSearchControllerViewModel extends ChangeNotifier {
 
   onMapCreate(MapController mapController, LatLng center) {
     this.mapController = mapController;
-    NetworkManager.instance
-        .getSuggestedZoom(lat: center.latitude, lon: center.longitude)
-        .then((value) {
+    NetworkManager.instance.getSuggestedZoom(lat: center.latitude, lon: center.longitude).then((value) {
       if (value is int) {
         WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
           mapController.move(center, value.toDouble());
         });
+        tryGetUserLocation();
       }
     });
   }
@@ -157,23 +148,13 @@ class MapsSearchControllerViewModel extends ChangeNotifier {
   }
 
   loadPudos({bool requireZoomLevelRefresh = false}) {
-    NetworkManager.instance
-        .getSuggestedZoom(lat: currentLatitude, lon: currentLongitude)
-        .then((value) {
+    NetworkManager.instance.getSuggestedZoom(lat: currentLatitude, lon: currentLongitude).then((value) {
       if (value is int && requireZoomLevelRefresh) {
         currentZoomLevel = value;
         lastTriggeredZoom = currentZoomLevel;
       }
-      NetworkManager.instance
-          .getPudos(
-              lat: currentLatitude,
-              lon: currentLongitude,
-              zoom: currentZoomLevel)
-          .then((response) {
+      NetworkManager.instance.getPudos(lat: currentLatitude, lon: currentLongitude, zoom: currentZoomLevel).then((response) {
         if (response is List<GeoMarker>) {
-          if (pudos.isEmpty) {
-            showingCardPudo = response[0].pudo!.pudoId;
-          }
           pudos = smartPlacement(response);
         }
       }).catchError((onError) => showErrorDialog?.call(onError));
@@ -193,11 +174,7 @@ class MapsSearchControllerViewModel extends ChangeNotifier {
 
     if (oldPudos.length >= _maxLoadedPudos) {
       //removes oldest fetched pudos if oldPudos exceeds the maxLoaded
-      oldPudos.removeRange(
-          0,
-          newPudos.length > oldPudos.length
-              ? oldPudos.length - 1
-              : newPudos.length - 1);
+      oldPudos.removeRange(0, newPudos.length > oldPudos.length ? oldPudos.length - 1 : newPudos.length - 1);
     }
     for (GeoMarker i in newPudos) {
       //if never fetched add the newFetchedPudo
@@ -206,35 +183,6 @@ class MapsSearchControllerViewModel extends ChangeNotifier {
       }
     }
     return oldPudos;
-  }
-
-  selectPudo(BuildContext context, int? pudoId) {
-    if (pudoId == null) {
-      return;
-    }
-    isReloadingPudos = true;
-    for (var i = 0; i < pudos.length; i++) {
-      if (pudos[i].pudo?.pudoId == pudoId) {
-        pageController
-            .animateToPage(i,
-                duration: const Duration(milliseconds: 150),
-                curve: Curves.easeIn)
-            .then((value) {
-          isReloadingPudos = false;
-          showingCardPudo = pudoId;
-        });
-        return;
-      }
-    }
-  }
-
-  int _showingCardPudo = 0;
-
-  int get showingCardPudo => _showingCardPudo;
-
-  set showingCardPudo(int newVal) {
-    _showingCardPudo = newVal;
-    notifyListeners();
   }
 
   bool _isOpenListAddress = false;
@@ -259,10 +207,10 @@ class MapsSearchControllerViewModel extends ChangeNotifier {
 
   Future<void> fetchSuggestions(String val) async {
     if (val.trim().isNotEmpty) {
-      var res = await NetworkManager.instance.getAddresses(text: val);
+      var res = await NetworkManager.instance.getGeoMarkers(text: val);
       if (res is List<GeoMarker>) {
-        if (res.isNotEmpty && res.addresses != null) {
-          addresses = res.addresses!;
+        if (res.isNotEmpty) {
+          addresses = res;
           isOpenListAddress = true;
         } else {
           addresses = [];

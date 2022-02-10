@@ -1,5 +1,3 @@
-// ignore_for_file: prefer_const_constructors
-
 /*
  OpenPUDO - PUDO and Micro-delivery software for Last Mile Collaboration
  Copyright (C) 2020-2022 LESS SRL - https://less.green
@@ -59,7 +57,7 @@ class _ProfileControllerState extends State<ProfileController> with ConnectionAw
               onPressed: () => Navigator.of(context).pop(),
             ),
           ),
-          child: Column(children: [
+          child: ListView(children: [
             const SizedBox(height: 20),
             Center(
               child: ClipRRect(
@@ -70,14 +68,18 @@ class _ProfileControllerState extends State<ProfileController> with ConnectionAw
             const SizedBox(
               height: 10,
             ),
-            Text(
-              "${currentUser.user?.firstName ?? " "} ${currentUser.user?.lastName ?? " "}",
-              style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 20),
+            Center(
+              child: Text(
+                "${currentUser.user?.firstName ?? " "} ${currentUser.user?.lastName ?? " "}",
+                style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 20),
+              ),
             ),
             const SizedBox(height: 6),
-            Text(
-              'Utente dal ${currentUser.user?.createTms != null ? DateFormat('dd/MM/yyyy').format(DateTime.parse(currentUser.user!.createTms!)) : " "}',
-              style: const TextStyle(fontWeight: FontWeight.w300, fontSize: 14, color: AppColors.primaryTextColor),
+            Center(
+              child: Text(
+                'Utente dal ${currentUser.user?.createTms != null ? DateFormat('dd/MM/yyyy').format(DateTime.parse(currentUser.user!.createTms!)) : " "}',
+                style: const TextStyle(fontWeight: FontWeight.w300, fontSize: 14, color: AppColors.primaryTextColor),
+              ),
             ),
             const SizedBox(
               height: 20,
@@ -87,7 +89,7 @@ class _ProfileControllerState extends State<ProfileController> with ConnectionAw
               kgCO2Saved: 456,
             ),
             TableViewCell(
-                leading: Icon(
+                leading: const Icon(
                   Icons.person_pin_circle,
                   color: AppColors.cardColor,
                 ),
@@ -96,7 +98,7 @@ class _ProfileControllerState extends State<ProfileController> with ConnectionAw
                   Navigator.of(context).pushNamed(Routes.pudoList);
                 }),
             TableViewCell(
-              leading: Icon(
+              leading: const Icon(
                 Icons.new_label,
                 color: AppColors.cardColor,
               ),
@@ -104,7 +106,7 @@ class _ProfileControllerState extends State<ProfileController> with ConnectionAw
               onTap: () {},
             ),
             TableViewCell(
-                leading: Icon(
+                leading: const Icon(
                   Icons.logout,
                   color: AppColors.cardColor,
                 ),

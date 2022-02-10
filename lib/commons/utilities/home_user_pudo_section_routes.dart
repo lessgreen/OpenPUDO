@@ -31,6 +31,7 @@ import 'package:qui_green/controllers/home_onboarding/pudo_detail_controller.dar
 import 'package:qui_green/controllers/home_onboarding/registration_complete_controller.dart';
 import 'package:qui_green/controllers/home_onboarding/user_position_controller.dart';
 import 'package:qui_green/controllers/profile_controller.dart';
+import 'package:qui_green/controllers/pudo_list_controller.dart';
 import 'package:qui_green/controllers/pudo_tutorial_controller.dart';
 import 'package:qui_green/models/pudo_profile.dart';
 import 'package:qui_green/resources/routes_enum.dart';
@@ -41,8 +42,7 @@ dynamic routeHomeUserPudoSectionWithSetting(RouteSettings settings) {
   switch (settings.name) {
     case Routes.instruction:
       return CupertinoPageRoute(
-        builder: (context) => HomeInstructionController(
-            pudoDataModel: settings.arguments as PudoProfile?),
+        builder: (context) => HomeInstructionController(pudoDataModel: settings.arguments as PudoProfile?),
       );
     case Routes.registrationComplete:
       return CupertinoPageRoute(
@@ -52,8 +52,7 @@ dynamic routeHomeUserPudoSectionWithSetting(RouteSettings settings) {
       );
     case Routes.maps:
       return CupertinoPageRoute(
-        builder: (context) =>
-            HomeMapsController(initialPosition: settings.arguments as LatLng),
+        builder: (context) => HomeMapsController(initialPosition: settings.arguments as LatLng),
       );
     case Routes.insertAddress:
       return CupertinoPageRoute(
@@ -74,8 +73,12 @@ dynamic routeHomeUserPudoSectionWithSetting(RouteSettings settings) {
     case Routes.pudoDetail:
       return CupertinoPageRoute(
         builder: (context) => HomePudoDetailController(
-            dataModel: settings.arguments as PudoProfile),
+          dataModel: settings.arguments as PudoProfile,
+          continueOnRegistration: false,
+        ),
       );
+    case Routes.pudoList:
+      return CupertinoPageRoute(builder: (context) => const PudoListController());
     default:
       return CupertinoPageRoute(
         builder: (context) => const HomeMapsSearchController(),

@@ -28,7 +28,7 @@ import 'package:qui_green/models/pudo_profile.dart';
 import 'package:qui_green/resources/routes_enum.dart';
 import 'package:qui_green/singletons/network/network_manager.dart';
 
-class MapsControllerViewModel extends ChangeNotifier {
+class HomeMapsControllerViewModel extends ChangeNotifier {
   var lastTriggeredLatitude = 45.4642;
   var lastTriggeredLongitude = 9.1900;
   var lastTriggeredZoom = 8;
@@ -70,7 +70,7 @@ class MapsControllerViewModel extends ChangeNotifier {
     NetworkManager.instance.getPudoDetails(pudoId: marker.pudo!.pudoId.toString()).then(
       (response) {
         if (response is PudoProfile) {
-          Navigator.of(context).pushNamed(Routes.pudoDetail, arguments: response);
+          Navigator.of(context).pushNamed(Routes.pudoDetailOnBoarding, arguments: response);
         } else {
           showErrorDialog?.call("Qualcosa e' andato storto");
         }

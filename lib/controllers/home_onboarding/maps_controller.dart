@@ -30,12 +30,11 @@ import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
 import 'package:qui_green/models/geo_marker.dart';
 import 'package:qui_green/resources/res.dart';
 import 'package:qui_green/singletons/network/network_manager.dart';
-import 'package:qui_green/view_models/maps_controller_viewmodel.dart';
+import 'package:qui_green/view_models/home_onboarding/home_maps_controller_viewmodel.dart';
 import 'package:qui_green/widgets/sascaffold.dart';
 
 class HomeMapsController extends StatefulWidget {
-  const HomeMapsController({Key? key, required this.initialPosition})
-      : super(key: key);
+  const HomeMapsController({Key? key, required this.initialPosition}) : super(key: key);
   final LatLng initialPosition;
 
   @override
@@ -43,85 +42,70 @@ class HomeMapsController extends StatefulWidget {
 }
 
 class _HomeMapsControllerState extends State<HomeMapsController> {
-  void _showErrorDialog(BuildContext context, String val) =>
-      SAAlertDialog.displayAlertWithClose(context, "Error", val);
+  void _showErrorDialog(BuildContext context, String val) => SAAlertDialog.displayAlertWithClose(context, "Error", val);
 
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (context) => MapsControllerViewModel(),
-      child: Consumer<MapsControllerViewModel?>(
-        builder: (_, viewModel, __) {
-          viewModel?.showErrorDialog =
-              (String val) => _showErrorDialog(context, val);
-          return CupertinoPageScaffold(
-            navigationBar: CupertinoNavigationBar(
-                padding: const EdgeInsetsDirectional.all(0),
-                brightness: Brightness.dark,
-                backgroundColor: AppColors.primaryColorDark,
-                middle: Text(
-                  'Seleziona un pudo',
-                  style: Theme.of(context).textTheme.navBarTitle,
-                ),
-                leading: CupertinoNavigationBarBackButton(
-                  color: Colors.white,
-                  onPressed: () => Navigator.of(context).pop(),
-                )),
-            child: SAScaffold(
-              isLoading: NetworkManager.instance.networkActivity,
-              body: Stack(
-                children: [
-                  FlutterMap(
-                    mapController: viewModel!.mapController,
-                    options: MapOptions(
-                      center: widget.initialPosition,
-                      onMapCreated: (controller) {
-                        viewModel.onMapCreate(
-                            controller, widget.initialPosition);
-                        viewModel.loadPudos(requireZoomLevelRefresh: true);
-                      },
-                      interactiveFlags:
-                          InteractiveFlag.pinchZoom | InteractiveFlag.drag,
-                      onPositionChanged: (mapPosition, boolValue) {
-                        var mapVisibleMaxDistance = Geolocator.distanceBetween(
-                          mapPosition.bounds!.northEast!.latitude,
-                          mapPosition.bounds!.northEast!.longitude,
-                          mapPosition.bounds!.southWest!.latitude,
-                          mapPosition.bounds!.southWest!.longitude,
-                        );
-                        var visibleChangeDelta = mapVisibleMaxDistance -
-                            (mapVisibleMaxDistance * 50 / 100);
-                        var distance = Geolocator.distanceBetween(
-                            viewModel.lastTriggeredLatitude,
-                            viewModel.lastTriggeredLongitude,
-                            mapPosition.center!.latitude,
-                            mapPosition.center!.longitude);
+      create: (context) => HomeMapsControllerViewModel(),
+      child: Consumer<HomeMapsControllerViewModel?>(builder: (_, viewModel, __) {
+        viewModel?.showErrorDialog = (String val) => _showErrorDialog(context, val);
+        return CupertinoPageScaffold(
+          navigationBar: CupertinoNavigationBar(
+              padding: const EdgeInsetsDirectional.all(0),
+              brightness: Brightness.dark,
+              backgroundColor: AppColors.primaryColorDark,
+              middle: Text(
+                'Seleziona un pudo',
+                style: Theme.of(context).textTheme.navBarTitle,
+              ),
+              leading: CupertinoNavigationBarBackButton(
+                color: Colors.white,
+                onPressed: () => Navigator.of(context).pop(),
+              )),
+          child: SAScaffold(
+            isLoading: NetworkManager.instance.networkActivity,
+            body: Stack(children: [
+              FlutterMap(
+                  mapController: viewModel!.mapController,
+                  options: MapOptions(
+                    center: widget.initialPosition,
+                    onMapCreated: (controller) {
+                      viewModel.onMapCreate(controller, widget.initialPosition);
+                      viewModel.loadPudos(requireZoomLevelRefresh: true);
+                    },
+                    interactiveFlags: InteractiveFlag.pinchZoom | InteractiveFlag.drag,
+                    onPositionChanged: (mapPosition, boolValue) {
+                      var mapVisibleMaxDistance = Geolocator.distanceBetween(
+                        mapPosition.bounds!.northEast!.latitude,
+                        mapPosition.bounds!.northEast!.longitude,
+                        mapPosition.bounds!.southWest!.latitude,
+                        mapPosition.bounds!.southWest!.longitude,
+                      );
+                      var visibleChangeDelta = mapVisibleMaxDistance - (mapVisibleMaxDistance * 50 / 100);
+                      var distance = Geolocator.distanceBetween(viewModel.lastTriggeredLatitude, viewModel.lastTriggeredLongitude, mapPosition.center!.latitude, mapPosition.center!.longitude);
 
-                        if (mapPosition.center != null &&
-                            mapPosition.zoom != null) {
-                          viewModel.updateCurrentMapPosition(mapPosition);
-                        }
-                        if (distance > visibleChangeDelta ||
-                            viewModel.lastTriggeredZoom !=
-                                viewModel.currentZoomLevel) {
-                          viewModel.updateLastMapPosition(mapPosition);
-                          viewModel.loadPudos();
-                        }
-                      },
-                      maxZoom: 16,
-                      minZoom: 8,
-                      zoom: viewModel.currentZoomLevel.toDouble(),
-                      plugins: [
-                        MarkerClusterPlugin(),
-                      ],
+                      if (mapPosition.center != null && mapPosition.zoom != null) {
+                        viewModel.updateCurrentMapPosition(mapPosition);
+                      }
+                      if (distance > visibleChangeDelta || viewModel.lastTriggeredZoom != viewModel.currentZoomLevel) {
+                        viewModel.updateLastMapPosition(mapPosition);
+                        viewModel.loadPudos();
+                      }
+                    },
+                    maxZoom: 16,
+                    minZoom: 8,
+                    zoom: viewModel.currentZoomLevel.toDouble(),
+                    plugins: [
+                      MarkerClusterPlugin(),
+                    ],
+                  ),
+                  layers: [
+                    TileLayerOptions(
+                      urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                      subdomains: ['a', 'b', 'c'],
                     ),
-                    layers: [
-                      TileLayerOptions(
-                        urlTemplate:
-                            "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-                        subdomains: ['a', 'b', 'c'],
-                      ),
-                      MarkerClusterLayerOptions(
+                    MarkerClusterLayerOptions(
                         showPolygon: false,
                         maxClusterRadius: 120,
                         size: const Size(40, 40),
@@ -130,31 +114,21 @@ class _HomeMapsControllerState extends State<HomeMapsController> {
                         ),
                         markers: viewModel.pudos.markers(
                           (marker) {
-                            viewModel.onPudoClick(
-                                context, marker, widget.initialPosition);
+                            viewModel.onPudoClick(context, marker, widget.initialPosition);
                           },
-                          selectedMarker: 1,
                           tintColor: AppColors.primaryColorDark,
                         ),
                         builder: (context, markers) {
                           return FloatingActionButton(
-                            child: Text(markers.length.toString(),
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .caption
-                                    ?.copyWith(color: Colors.white)),
+                            child: Text(markers.length.toString(), style: Theme.of(context).textTheme.caption?.copyWith(color: Colors.white)),
                             onPressed: null,
                           );
-                        },
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          );
-        },
-      ),
+                        }),
+                  ]),
+            ]),
+          ),
+        );
+      }),
     );
   }
 }

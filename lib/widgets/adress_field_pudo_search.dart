@@ -4,14 +4,12 @@ import 'package:latlong2/latlong.dart';
 import 'package:qui_green/models/address_model.dart';
 import 'package:qui_green/resources/res.dart';
 import 'package:qui_green/view_models/maps_search_controller_viewmodel.dart';
-import 'package:qui_green/widgets/address_overlay.dart';
 import 'package:qui_green/widgets/adress_overlay_pudo_search.dart';
 
 class AdressFieldPudoSearch extends StatefulWidget {
   final MapsSearchControllerViewModel viewModel;
 
-  const AdressFieldPudoSearch({Key? key, required this.viewModel})
-      : super(key: key);
+  const AdressFieldPudoSearch({Key? key, required this.viewModel}) : super(key: key);
 
   @override
   _AdressFieldPudoSearchState createState() => _AdressFieldPudoSearchState();
@@ -30,19 +28,16 @@ class _AdressFieldPudoSearchState extends State<AdressFieldPudoSearch> {
       children: [
         CupertinoTextField(
           placeholder: 'Ricerca',
-          padding: EdgeInsets.all(Dimension.padding),
+          padding: const EdgeInsets.all(Dimension.padding),
           prefix: const Padding(
               padding: EdgeInsets.only(left: Dimension.paddingS),
               child: Icon(
                 CupertinoIcons.search,
                 color: AppColors.colorGrey,
               )),
-          placeholderStyle: TextStyle(color: AppColors.colorGrey),
+          placeholderStyle: const TextStyle(color: AppColors.colorGrey),
           controller: widget.viewModel.addressController,
-          decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius:
-                  BorderRadius.circular(Dimension.borderRadiusSearch)),
+          decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(Dimension.borderRadiusSearch)),
           autofocus: false,
           textInputAction: TextInputAction.done,
           onChanged: (newValue) {
