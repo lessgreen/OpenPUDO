@@ -187,6 +187,9 @@ public class MapService {
         List<GPSMarker> ret = new ArrayList<>(rs1.size() + rs2.size());
         ret.addAll(rs1);
         ret.addAll(rs2);
+        if (lat != null && lon != null) {
+            ret.sort(Comparator.comparing(GPSMarker::getDistanceFromOrigin));
+        }
         return ret;
     }
 
