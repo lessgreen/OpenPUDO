@@ -42,8 +42,7 @@ dynamic routeHomeUserPackagesSectionWithSetting(RouteSettings settings) {
   switch (settings.name) {
     case Routes.instruction:
       return CupertinoPageRoute(
-        builder: (context) => HomeInstructionController(
-            pudoDataModel: settings.arguments as PudoProfile?),
+        builder: (context) => HomeInstructionController(pudoDataModel: settings.arguments as PudoProfile?),
       );
     case Routes.registrationComplete:
       return CupertinoPageRoute(
@@ -53,8 +52,7 @@ dynamic routeHomeUserPackagesSectionWithSetting(RouteSettings settings) {
       );
     case Routes.maps:
       return CupertinoPageRoute(
-        builder: (context) =>
-            HomeMapsController(initialPosition: settings.arguments as LatLng),
+        builder: (context) => HomeMapsController(initialPosition: settings.arguments as LatLng),
       );
     case Routes.insertAddress:
       return CupertinoPageRoute(
@@ -68,17 +66,24 @@ dynamic routeHomeUserPackagesSectionWithSetting(RouteSettings settings) {
       return CupertinoPageRoute(
         builder: (context) => const PudoTutorialController(),
       );
+    case Routes.pudoDetailOnBoarding:
+      return CupertinoPageRoute(
+        builder: (context) => HomePudoDetailController(
+          dataModel: settings.arguments as PudoProfile,
+          continueOnRegistration: true,
+        ),
+      );
     case Routes.pudoDetail:
       return CupertinoPageRoute(
         builder: (context) => HomePudoDetailController(
-            dataModel: settings.arguments as PudoProfile),
+          dataModel: settings.arguments as PudoProfile,
+          continueOnRegistration: false,
+        ),
       );
     case Routes.profile:
-      return CupertinoPageRoute(
-          builder: (context) => const ProfileController());
+      return CupertinoPageRoute(builder: (context) => const ProfileController());
     case Routes.pudoList:
-      return CupertinoPageRoute(
-          builder: (context) => const PudoListController());
+      return CupertinoPageRoute(builder: (context) => const PudoListController());
     default:
       return CupertinoPageRoute(
         builder: (context) => const HomeUserPackages(),

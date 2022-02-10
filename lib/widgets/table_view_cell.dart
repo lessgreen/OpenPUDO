@@ -1,5 +1,3 @@
-// ignore_for_file: prefer_const_constructors
-
 /*
  OpenPUDO - PUDO and Micro-delivery software for Last Mile Collaboration
  Copyright (C) 2020-2022 LESS SRL - https://less.green
@@ -55,7 +53,7 @@ class TableViewCell extends StatelessWidget {
                       width: 30,
                       child: leading,
                     )
-                  : SizedBox(),
+                  : const SizedBox(),
               Expanded(
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -75,11 +73,11 @@ class TableViewCell extends StatelessWidget {
                       height: 24,
                       color: AppColors.colorGrey,
                     )
-                  : SizedBox(),
+                  : const SizedBox(),
             ],
           ),
-          Padding(
-            padding: const EdgeInsets.only(top: 8.0),
+          const Padding(
+            padding: EdgeInsets.only(top: 8.0),
             child: Divider(
               height: 1,
             ),

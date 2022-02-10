@@ -1,0 +1,51 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:latlong2/latlong.dart';
+import 'package:qui_green/models/address_model.dart';
+import 'package:qui_green/resources/res.dart';
+import 'package:qui_green/view_models/maps_search_controller_viewmodel.dart';
+import 'package:qui_green/widgets/adress_overlay_pudo_search.dart';
+
+class AdressFieldPudoSearch extends StatefulWidget {
+  final MapsSearchControllerViewModel viewModel;
+
+  const AdressFieldPudoSearch({Key? key, required this.viewModel}) : super(key: key);
+
+  @override
+  _AdressFieldPudoSearchState createState() => _AdressFieldPudoSearchState();
+
+  onAddressTap(AddressModel e) {
+    viewModel.position = LatLng(e.lat!, e.lon!);
+    viewModel.isOpenListAddress = false;
+    viewModel.mapController?.move(LatLng(e.lat!, e.lon!), 8);
+  }
+}
+
+class _AdressFieldPudoSearchState extends State<AdressFieldPudoSearch> {
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        CupertinoTextField(
+          placeholder: 'Ricerca',
+          padding: const EdgeInsets.all(Dimension.padding),
+          prefix: const Padding(
+              padding: EdgeInsets.only(left: Dimension.paddingS),
+              child: Icon(
+                CupertinoIcons.search,
+                color: AppColors.colorGrey,
+              )),
+          placeholderStyle: const TextStyle(color: AppColors.colorGrey),
+          controller: widget.viewModel.addressController,
+          decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(Dimension.borderRadiusSearch)),
+          autofocus: false,
+          textInputAction: TextInputAction.done,
+          onChanged: (newValue) {
+            widget.viewModel.onSearchChanged(newValue);
+          },
+        ),
+        AdressOverlayPudoSearch(viewModel: widget.viewModel),
+      ],
+    );
+  }
+}

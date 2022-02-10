@@ -54,11 +54,9 @@ class _PudoListControllerState extends State<PudoListController> {
           pudoList = value;
         });
       } else {
-        SAAlertDialog.displayAlertWithClose(
-            context, "Error", "Qualcosa è andato storto");
+        SAAlertDialog.displayAlertWithClose(context, "Error", "Qualcosa è andato storto");
       }
-    }).catchError((onError) =>
-        SAAlertDialog.displayAlertWithClose(context, "Error", onError));
+    }).catchError((onError) => SAAlertDialog.displayAlertWithClose(context, "Error", onError));
   }
 
   Widget _buildEmptyPudos() => Column(
@@ -72,18 +70,14 @@ class _PudoListControllerState extends State<PudoListController> {
           const SizedBox(
             height: Dimension.padding,
           ),
-          MainButton(
-              text: 'Vai',
-              onPressed: () =>
-                  Navigator.of(context).pushNamed(Routes.userPosition))
+          MainButton(text: 'Vai', onPressed: () => Navigator.of(context).pushNamed(Routes.userPosition))
         ],
       );
 
   Widget _buildPudos() => ListView(
         children: [
           const Padding(
-            padding: EdgeInsets.only(
-                left: Dimension.padding, top: Dimension.padding),
+            padding: EdgeInsets.only(left: Dimension.padding, top: Dimension.padding),
             child: Text(
               'I tuoi pudo:',
             ),
@@ -100,20 +94,13 @@ class _PudoListControllerState extends State<PudoListController> {
                   child: PudoCard(
                       pudo: pudoList![index],
                       onTap: () {
-                        NetworkManager.instance
-                            .getPudoDetails(
-                                pudoId: pudoList![index].pudoId.toString())
-                            .then((value) {
+                        NetworkManager.instance.getPudoDetails(pudoId: pudoList![index].pudoId.toString()).then((value) {
                           if (value is PudoProfile) {
-                            Navigator.of(context)
-                                .pushNamed(Routes.pudoDetail, arguments: value);
+                            Navigator.of(context).pushNamed(Routes.pudoDetail, arguments: value);
                           } else {
-                            SAAlertDialog.displayAlertWithClose(
-                                context, "Error", "Qualcosa è andato storto");
+                            SAAlertDialog.displayAlertWithClose(context, "Error", "Qualcosa è andato storto");
                           }
-                        }).catchError((onError) =>
-                                SAAlertDialog.displayAlertWithClose(
-                                    context, "Error", onError));
+                        }).catchError((onError) => SAAlertDialog.displayAlertWithClose(context, "Error", onError));
                       }),
                 );
               })
@@ -123,29 +110,28 @@ class _PudoListControllerState extends State<PudoListController> {
   @override
   Widget build(BuildContext context) {
     return Material(
-        child: SAScaffold(
-      isLoading: NetworkManager.instance.networkActivity,
-      body: CupertinoPageScaffold(
-          navigationBar: CupertinoNavigationBar(
-            padding: const EdgeInsetsDirectional.all(0),
-            brightness: Brightness.dark,
-            backgroundColor: AppColors.primaryColorDark,
-            middle: Text(
-              'Il tuoi pudo',
-              style: Theme.of(context).textTheme.navBarTitle,
-            ),
-            leading: CupertinoNavigationBarBackButton(
-              color: Colors.white,
-              onPressed: () => Navigator.of(context).pop(),
-            ),
+      child: CupertinoPageScaffold(
+        navigationBar: CupertinoNavigationBar(
+          padding: const EdgeInsetsDirectional.all(0),
+          brightness: Brightness.dark,
+          backgroundColor: AppColors.primaryColorDark,
+          middle: Text(
+            'Il tuoi pudo',
+            style: Theme.of(context).textTheme.navBarTitle,
           ),
-          child: SAScaffold(
-              isLoading: NetworkManager.instance.networkActivity,
-              body: pudoList == null
-                  ? Container()
-                  : pudoList!.isEmpty
-                      ? _buildEmptyPudos()
-                      : _buildPudos())),
-    ));
+          leading: CupertinoNavigationBarBackButton(
+            color: Colors.white,
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+        ),
+        child: SAScaffold(
+            isLoading: NetworkManager.instance.networkActivity,
+            body: pudoList == null
+                ? Container()
+                : pudoList!.isEmpty
+                    ? _buildEmptyPudos()
+                    : _buildPudos()),
+      ),
+    );
   }
 }
