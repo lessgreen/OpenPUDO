@@ -103,6 +103,7 @@ class _HomeMapsControllerState extends State<HomeMapsController> {
                   layers: [
                     TileLayerOptions(
                       urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                      retinaMode: true,
                       subdomains: ['a', 'b', 'c'],
                     ),
                     MarkerClusterLayerOptions(
