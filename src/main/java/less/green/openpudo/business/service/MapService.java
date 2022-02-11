@@ -147,8 +147,8 @@ public class MapService {
                 ret.sort(Comparator.comparingDouble(i -> i.getDistanceFromOrigin().doubleValue()));
             }
             // restricting results if necessary
-            if (ret.size() > MAX_PUDO_MARKER_COUNT_ON_MAP) {
-                ret = ret.subList(0, MAX_PUDO_MARKER_COUNT_ON_MAP);
+            if (ret.size() > MAX_SEARCH_RESULTS) {
+                ret = ret.subList(0, MAX_SEARCH_RESULTS);
             }
             return ret;
         } catch (RuntimeException ex) {
@@ -179,8 +179,8 @@ public class MapService {
             ret.sort(Comparator.comparingDouble(i -> i.getDistanceFromOrigin().doubleValue()));
         }
         // restricting results if necessary
-        if (ret.size() > MAX_PUDO_MARKER_COUNT_ON_MAP) {
-            ret = ret.subList(0, MAX_PUDO_MARKER_COUNT_ON_MAP);
+        if (ret.size() > MAX_SEARCH_RESULTS) {
+            ret = ret.subList(0, MAX_SEARCH_RESULTS);
         }
         return ret;
     }
