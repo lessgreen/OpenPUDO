@@ -128,6 +128,36 @@ public class MapResource {
     }
 
     @GET
+    @Path("/search/pudo")
+    @ProtectedAPI
+    @SecurityRequirement(name = "JWT")
+    @Operation(summary = "PUDO search based on user input autocompletion",
+            description = "Text length must be greater than 3 characters, to provide meaningful results.\n\n"
+                          + "Coordinates parameters are optional, but the client should provide them to speed up queries and obtain more pertinent results.\n\n"
+                          + "This API should be throttled to prevent excessive load.")
+    public PudoMarkerListResponse searchPudo(
+            @Parameter(description = "Query text", required = true) @QueryParam("text") String text,
+            @Parameter(description = "Latitude value of map center point") @QueryParam("lat") BigDecimal lat,
+            @Parameter(description = "Longitude value of map center point") @QueryParam("lon") BigDecimal lon) {
+        // sanitize input
+        if (isEmpty(text)) {
+            throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.empty_mandatory_field", "text"));
+        }
+
+        // more sanitizing
+        if (lat != null && lon != null) {
+            if (lat.compareTo(BigDecimal.valueOf(-90)) < 0 || lat.compareTo(BigDecimal.valueOf(90)) > 0) {
+                throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.invalid_field", "lat"));
+            } else if (lon.compareTo(BigDecimal.valueOf(-180)) < 0 || lat.compareTo(BigDecimal.valueOf(180)) > 0) {
+                throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.invalid_field", "lon"));
+            }
+        }
+
+        List<PudoMarker> ret = mapService.searchPudo(text.trim(), lat, lon);
+        return new PudoMarkerListResponse(context.getExecutionId(), ApiReturnCodes.OK, ret);
+    }
+
+    @GET
     @Path("/search")
     @ProtectedAPI
     @SecurityRequirement(name = "JWT")

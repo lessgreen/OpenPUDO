@@ -143,6 +143,7 @@ CREATE TABLE IF NOT EXISTS tb_pudo (
 	pudo_pic_id UUID REFERENCES tb_external_file(external_file_id),
 	business_name_search tsvector GENERATED ALWAYS AS (to_tsvector('simple', business_name)) STORED
 );
+CREATE INDEX tb_pudo_business_name_search_idx ON tb_pudo USING GIN (business_name_search);
 
 
 DROP TABLE IF EXISTS tb_address CASCADE;

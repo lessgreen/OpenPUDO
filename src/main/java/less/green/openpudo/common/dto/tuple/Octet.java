@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Octet<A, B, C, D, E, F, G> {
+public class Octet<A, B, C, D, E, F, G, H> {
 
     private A value0;
     private B value1;
@@ -16,5 +16,6 @@ public class Octet<A, B, C, D, E, F, G> {
     private E value4;
     private F value5;
     private G value6;
+    private H value7;
 
 }

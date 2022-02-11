@@ -116,7 +116,7 @@ public class MapService {
         if (ret.size() > 1) {
             ret.sort(Comparator.comparingDouble(i -> i.getDistanceFromOrigin().doubleValue()));
         }
-        // restricting results if necessary (unlikely)
+        // restricting results if necessary
         if (ret.size() > MAX_PUDO_MARKER_COUNT_ON_MAP) {
             ret = ret.subList(0, MAX_PUDO_MARKER_COUNT_ON_MAP);
         }
@@ -132,11 +132,6 @@ public class MapService {
         try {
             FeatureCollection fc = geocodeService.autocomplete(context.getLanguage(), text, lat, lon);
             List<Feature> rs = fc.getFeatures();
-            // restricting results if necessary (unlikely)
-            // since results are already ordered by relevance, we can truncate them before mapping
-            if (rs.size() > MAX_SEARCH_RESULTS) {
-                rs = rs.subList(0, MAX_SEARCH_RESULTS);
-            }
             List<AddressMarker> ret = new ArrayList<>(rs.size());
             for (var row : rs) {
                 AddressSearchResult address = dtoMapper.mapFeatureToAddressSearchResult(row);
@@ -147,6 +142,14 @@ public class MapService {
                 }
                 ret.add(dtoMapper.mapProjectionToAddressMarker(new Quintet<>(address, signature, address.getLat(), address.getLon(), distanceFromOrigin)));
             }
+            // ordering by distance
+            if (ret.size() > 1 && lat != null && lon != null) {
+                ret.sort(Comparator.comparingDouble(i -> i.getDistanceFromOrigin().doubleValue()));
+            }
+            // restricting results if necessary
+            if (ret.size() > MAX_PUDO_MARKER_COUNT_ON_MAP) {
+                ret = ret.subList(0, MAX_PUDO_MARKER_COUNT_ON_MAP);
+            }
             return ret;
         } catch (RuntimeException ex) {
             log.error("[{}] {}", context.getExecutionId(), ExceptionUtils.getRelevantStackTrace(ex));
@@ -154,14 +157,14 @@ public class MapService {
         }
     }
 
-    public List<PudoMarker> searchPudos(String text, BigDecimal lat, BigDecimal lon) {
+    public List<PudoMarker> searchPudo(String text, BigDecimal lat, BigDecimal lon) {
         // prevent returning meaningless results with too few characters, and removing charachters that can interfere with full etxt search
         if (text.trim().replaceAll("[\\*\\&\\:\\|\\(\\)]", "").length() <= 3) {
             return Collections.emptyList();
         }
         // tokenizing search string
         List<String> tokens = Arrays.asList(text.trim().split("\\s"));
-        List<Septet<Long, String, UUID, String, TbRating, BigDecimal, BigDecimal>> rs = pudoDao.searchPudos(tokens);
+        List<Septet<Long, String, UUID, String, TbRating, BigDecimal, BigDecimal>> rs = pudoDao.searchPudo(tokens);
         List<PudoMarker> ret = new ArrayList<>(rs.size());
         for (var row : rs) {
             PudoSummary pudo = dtoMapper.mapProjectionToPudoSummary(new Quintet<>(row.getValue0(), row.getValue1(), row.getValue2(), row.getValue3(), row.getValue4()));
@@ -171,19 +174,20 @@ public class MapService {
             }
             ret.add(dtoMapper.mapProjectionToPudoMarker(new Quartet<>(pudo, row.getValue5(), row.getValue6(), distanceFromOrigin)));
         }
-        // since results are unordered, we must eventually order and truncate after mapping
-        if (lat != null && lon != null) {
-            ret.sort(Comparator.comparing(PudoMarker::getDistanceFromOrigin));
+        // ordering by distance
+        if (ret.size() > 1 && lat != null && lon != null) {
+            ret.sort(Comparator.comparingDouble(i -> i.getDistanceFromOrigin().doubleValue()));
         }
-        if (ret.size() > MAX_SEARCH_RESULTS) {
-            ret = ret.subList(0, MAX_SEARCH_RESULTS);
+        // restricting results if necessary
+        if (ret.size() > MAX_PUDO_MARKER_COUNT_ON_MAP) {
+            ret = ret.subList(0, MAX_PUDO_MARKER_COUNT_ON_MAP);
         }
         return ret;
     }
 
     public List<GPSMarker> searchGlobal(String text, BigDecimal lat, BigDecimal lon) {
         List<AddressMarker> rs1 = searchAddress(text, lat, lon);
-        List<PudoMarker> rs2 = searchPudos(text, lat, lon);
+        List<PudoMarker> rs2 = searchPudo(text, lat, lon);
         List<GPSMarker> ret = new ArrayList<>(rs1.size() + rs2.size());
         ret.addAll(rs1);
         ret.addAll(rs2);
