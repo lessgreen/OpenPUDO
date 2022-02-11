@@ -279,7 +279,7 @@ public class UserService {
         notification.setPudoId(pudoId);
         notificationDao.persist(notification);
         notificationDao.flush();
-        log.info("[{}] Added PUDO: {} to user: {} favourites", context.getExecutionId(), pudoId, context.getUserId());
+        log.info("[{}] Added PUDO: {} to favourites of user: {}", context.getExecutionId(), pudoId, context.getUserId());
         return getCurrentUserPudos();
     }
 
@@ -304,7 +304,7 @@ public class UserService {
         userPudoRelation.setDeleteTms(new Date());
         userPudoRelationDao.flush();
         notificationDao.removeQueuedNotificationFavourite(context.getUserId(), pudo.getPudoId());
-        log.info("[{}] Removed PUDO: {} from user: {} favourites", context.getExecutionId(), pudoId, context.getUserId());
+        log.info("[{}] Removed PUDO: {} from favourites of user: {}", context.getExecutionId(), pudoId, context.getUserId());
         return getCurrentUserPudos();
     }
 
