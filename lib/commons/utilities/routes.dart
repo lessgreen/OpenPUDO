@@ -22,6 +22,7 @@ import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:qui_green/app.dart';
 import 'package:qui_green/controllers/about_you_controller.dart';
@@ -43,6 +44,7 @@ import 'package:qui_green/controllers/registration_complete_controller.dart';
 import 'package:qui_green/controllers/thanks_controller.dart';
 import 'package:qui_green/controllers/user_position_controller.dart';
 import 'package:qui_green/models/pudo_profile.dart';
+import 'package:qui_green/resources/res.dart';
 import 'package:qui_green/resources/routes_enum.dart';
 
 dynamic routeWithSetting(RouteSettings settings) {
@@ -87,28 +89,23 @@ dynamic routeWithSetting(RouteSettings settings) {
       );
     case Routes.maps:
       return CupertinoPageRoute(
-        builder: (context) =>
-            MapsController(initialPosition: settings.arguments as LatLng),
+        builder: (context) => MapsController(initialPosition: settings.arguments as LatLng),
       );
     case Routes.pudoDetail:
       return CupertinoPageRoute(
-        builder: (context) =>
-            PudoDetailController(dataModel: settings.arguments as PudoProfile),
+        builder: (context) => PudoDetailController(dataModel: settings.arguments as PudoProfile),
       );
     case Routes.personalData:
       return CupertinoPageRoute(
-        builder: (context) => PersonalDataController(
-            pudoDataModel: settings.arguments as PudoProfile?),
+        builder: (context) => PersonalDataController(pudoDataModel: settings.arguments as PudoProfile?),
       );
     case Routes.registrationComplete:
       return CupertinoPageRoute(
-        builder: (context) => RegistrationCompleteController(
-            pudoDataModel: settings.arguments as PudoProfile?),
+        builder: (context) => RegistrationCompleteController(pudoDataModel: settings.arguments as PudoProfile?),
       );
     case Routes.instruction:
       return CupertinoPageRoute(
-        builder: (context) => InstructionController(
-            pudoDataModel: settings.arguments as PudoProfile?),
+        builder: (context) => InstructionController(pudoDataModel: settings.arguments as PudoProfile?),
       );
     case Routes.thanks:
       return CupertinoPageRoute(
@@ -140,8 +137,13 @@ dynamic routeWithSetting(RouteSettings settings) {
       );
     default:
       return CupertinoPageRoute(
-        builder: (context) => const Scaffold(
-          body: Center(child: CircularProgressIndicator()),
+        builder: (context) => Scaffold(
+          body: Center(
+              child: SvgPicture.asset(
+            ImageSrc.launcherIcon,
+            width: 120,
+            height: 120,
+          )),
         ),
       );
   }

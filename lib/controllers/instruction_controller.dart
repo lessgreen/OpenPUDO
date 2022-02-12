@@ -136,7 +136,7 @@ class _InstructionControllerState extends State<InstructionController> with Conn
                         description: 'Riceverai una notifica quando il tuo pacco sarà giunto a destinazione presso il tuo PUDO.',
                         activeIndex: _currentPage,
                         pages: 2,
-                        bottomWidget: SvgPicture.asset(ImageSrc.aboutYouArt, semanticsLabel: 'Art Background')),
+                        bottomWidget: SvgPicture.asset(ImageSrc.notificationVectorArt, semanticsLabel: 'Art Background')),
                   ],
                 ),
               ),

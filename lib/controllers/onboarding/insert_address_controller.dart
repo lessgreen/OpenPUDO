@@ -66,36 +66,39 @@ class _InsertAddressControllerState extends State<InsertAddressController> with 
                     onPressed: () => Navigator.of(context).pop(),
                   ),
                 ),
-                body: Column(
+                body: Stack(
                   children: [
-                    Center(
-                      child: Text(
-                        'Inserisci il tuo indirizzo',
-                        style: Theme.of(context).textTheme.headline6,
-                      ),
-                    ),
-                    Padding(
-                        padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-                        child: AddressField(
-                          viewModel: viewModel!,
-                          node: _address,
-                        )),
-                    const Spacer(),
                     SvgPicture.asset(ImageSrc.userPositionArt, semanticsLabel: 'Art Background'),
-                    const Spacer(),
-                    const SizedBox(height: Dimension.padding),
-                    AnimatedCrossFade(
-                      crossFadeState: isKeyboardVisible
-                          ? CrossFadeState.showSecond
-                          : viewModel.hasSelected
-                              ? CrossFadeState.showFirst
-                              : CrossFadeState.showSecond,
-                      secondChild: const SizedBox(),
-                      firstChild: MainButton(
-                        onPressed: () => viewModel.onSendClick(context),
-                        text: 'Invia',
-                      ),
-                      duration: const Duration(milliseconds: 150),
+                    Column(
+                      children: [
+                        Center(
+                          child: Text(
+                            'Inserisci il tuo indirizzo',
+                            style: Theme.of(context).textTheme.headline6,
+                          ),
+                        ),
+                        Padding(
+                            padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+                            child: AddressField(
+                              viewModel: viewModel!,
+                              node: _address,
+                            )),
+                        const Spacer(),
+                        const SizedBox(height: Dimension.padding),
+                        AnimatedCrossFade(
+                          crossFadeState: isKeyboardVisible
+                              ? CrossFadeState.showSecond
+                              : viewModel.hasSelected
+                                  ? CrossFadeState.showFirst
+                                  : CrossFadeState.showSecond,
+                          secondChild: const SizedBox(),
+                          firstChild: MainButton(
+                            onPressed: () => viewModel.onSendClick(context),
+                            text: 'Invia',
+                          ),
+                          duration: const Duration(milliseconds: 150),
+                        ),
+                      ],
                     ),
                   ],
                 ),

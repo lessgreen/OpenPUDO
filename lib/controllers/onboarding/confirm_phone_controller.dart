@@ -92,73 +92,76 @@ class _ConfirmPhoneControllerState extends State<ConfirmPhoneController> with Co
             systemOverlayStyle: SystemUiOverlayStyle.dark,
             leading: const SizedBox(),
           ),
-          body: Column(
+          body: Stack(
             children: [
-              Center(
-                child: Text(
-                  'Inserisci il codice di conferma',
-                  style: Theme.of(context).textTheme.headline6,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
-                child: Center(
-                  child: Text(
-                    'Inserisci il codice di conferma che \n ti abbiamo appena inviato',
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.subtitle1,
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-                child: CupertinoTextField(
-                  decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Theme.of(context).primaryColor))),
-                  autofocus: false,
-                  focusNode: _confirmValueFocus,
-                  suffix: TextFieldButton(
-                    onPressed: () {
-                      setState(() {
-                        _confirmValueFocus.unfocus();
-                      });
-                    },
-                    text: isKeyboardVisible ? 'DONE' : "",
-                  ),
-                  keyboardType: TextInputType.phone,
-                  textInputAction: TextInputAction.done,
-                  onChanged: (newValue) {
-                    setState(() {
-                      _confirmValue = newValue;
-                    });
-                  },
-                  onTap: () {
-                    setState(() {});
-                  },
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      "non hai ricevuto il codice?",
-                      style: Theme.of(context).textTheme.caption?.copyWith(fontStyle: FontStyle.italic),
+              SvgPicture.asset(ImageSrc.smsArt),
+              Column(
+                children: [
+                  Center(
+                    child: Text(
+                      'Inserisci il codice di conferma',
+                      style: Theme.of(context).textTheme.headline6,
                     ),
-                    InkWell(
-                        onTap: retryOtp,
-                        splashColor: Colors.transparent,
-                        child: Text("inviane un'altro", style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.w500, color: AppColors.primaryColorDark)))
-                  ],
-                ),
-              ),
-              const Spacer(),
-              SvgPicture.asset(ImageSrc.smsArt, semanticsLabel: 'Art Background'),
-              const Spacer(),
-              MainButton(
-                onPressed: sendOtp,
-                text: 'Invia',
-                enabled: validateOtp,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+                    child: Center(
+                      child: Text(
+                        'Inserisci il codice di conferma che \n ti abbiamo appena inviato',
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context).textTheme.subtitle1,
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+                    child: CupertinoTextField(
+                      decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Theme.of(context).primaryColor))),
+                      autofocus: false,
+                      focusNode: _confirmValueFocus,
+                      suffix: TextFieldButton(
+                        onPressed: () {
+                          setState(() {
+                            _confirmValueFocus.unfocus();
+                          });
+                        },
+                        text: isKeyboardVisible ? 'DONE' : "",
+                      ),
+                      keyboardType: TextInputType.phone,
+                      textInputAction: TextInputAction.done,
+                      onChanged: (newValue) {
+                        setState(() {
+                          _confirmValue = newValue;
+                        });
+                      },
+                      onTap: () {
+                        setState(() {});
+                      },
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "non hai ricevuto il codice?",
+                          style: Theme.of(context).textTheme.caption?.copyWith(fontStyle: FontStyle.italic),
+                        ),
+                        InkWell(
+                            onTap: retryOtp,
+                            splashColor: Colors.transparent,
+                            child: Text("inviane un'altro", style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.w500, color: AppColors.primaryColorDark)))
+                      ],
+                    ),
+                  ),
+                  const Spacer(),
+                  MainButton(
+                    onPressed: sendOtp,
+                    text: 'Invia',
+                    enabled: validateOtp,
+                  ),
+                ],
               ),
             ],
           ),

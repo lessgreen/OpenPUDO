@@ -20,6 +20,7 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
@@ -89,26 +90,32 @@ class _ProfileControllerState extends State<ProfileController> with ConnectionAw
               kgCO2Saved: 456,
             ),
             TableViewCell(
-                leading: const Icon(
-                  Icons.person_pin_circle,
+                leading: SvgPicture.asset(
+                  ImageSrc.positionLeadingCell,
                   color: AppColors.cardColor,
+                  width: 36,
+                  height: 36,
                 ),
                 title: "I tuoi pudo",
                 onTap: () {
                   Navigator.of(context).pushNamed(Routes.pudoList);
                 }),
             TableViewCell(
-              leading: const Icon(
-                Icons.new_label,
+              leading: SvgPicture.asset(
+                ImageSrc.packReceivedLeadingIcon,
                 color: AppColors.cardColor,
+                width: 36,
+                height: 36,
               ),
               title: "Le tue spedizioni",
               onTap: () {},
             ),
             TableViewCell(
-                leading: const Icon(
-                  Icons.logout,
+                leading: SvgPicture.asset(
+                  ImageSrc.logoutIcon,
                   color: AppColors.cardColor,
+                  width: 36,
+                  height: 36,
                 ),
                 title: "Logout",
                 onTap: () {

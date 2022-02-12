@@ -46,7 +46,7 @@ class _LoginControllerState extends State<LoginController> with ConnectionAware 
         body: Stack(
           children: [
             Center(
-              child: SvgPicture.asset(ImageSrc.insertPhoneArt, semanticsLabel: 'Art Background'),
+              child: SvgPicture.asset(ImageSrc.welcomeScreen),
             ),
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
