@@ -33,12 +33,10 @@ class HomeInsertAddressController extends StatefulWidget {
   const HomeInsertAddressController({Key? key}) : super(key: key);
 
   @override
-  _HomeInsertAddressControllerState createState() =>
-      _HomeInsertAddressControllerState();
+  _HomeInsertAddressControllerState createState() => _HomeInsertAddressControllerState();
 }
 
-class _HomeInsertAddressControllerState
-    extends State<HomeInsertAddressController> {
+class _HomeInsertAddressControllerState extends State<HomeInsertAddressController> {
   final FocusNode _address = FocusNode();
 
   @override
@@ -53,10 +51,8 @@ class _HomeInsertAddressControllerState
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
         create: (context) => InsertAddressControllerViewModel(),
-        child: Consumer<InsertAddressControllerViewModel?>(
-            builder: (_, viewModel, __) {
-          return KeyboardVisibilityBuilder(
-              builder: (context, child, isKeyboardVisible) {
+        child: Consumer<InsertAddressControllerViewModel?>(builder: (_, viewModel, __) {
+          return KeyboardVisibilityBuilder(builder: (context, child, isKeyboardVisible) {
             return CupertinoPageScaffold(
               navigationBar: CupertinoNavigationBar(
                   padding: const EdgeInsetsDirectional.all(0),
@@ -74,12 +70,6 @@ class _HomeInsertAddressControllerState
                 child: Column(
                   children: [
                     const SizedBox(height: Dimension.padding),
-                    // Center(
-                    //   child: Text(
-                    //     'Inserisci il tuo indirizzo',
-                    //     style: Theme.of(context).textTheme.headline6,
-                    //   ),
-                    // ),
                     Padding(
                         padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
                         child: AddressField(
@@ -87,8 +77,7 @@ class _HomeInsertAddressControllerState
                           node: _address,
                         )),
                     const Spacer(),
-                    SvgPicture.asset(ImageSrc.userPositionArt,
-                        semanticsLabel: 'Art Background'),
+                    SvgPicture.asset(ImageSrc.userPositionArt, semanticsLabel: 'Art Background'),
                     const Spacer(),
                     const SizedBox(height: Dimension.padding),
                     AnimatedCrossFade(

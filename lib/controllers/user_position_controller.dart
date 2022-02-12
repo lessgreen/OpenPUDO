@@ -48,47 +48,50 @@ class _UserPositionControllerState extends State<UserPositionController> {
                 systemOverlayStyle: SystemUiOverlayStyle.dark,
                 leading: const SizedBox(),
               ),
-              body: Column(
+              body: Stack(
                 children: [
-                  Center(
-                    child: Text(
-                      'Vediamo dove ti trovi',
-                      style: Theme.of(context).textTheme.headline6,
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
-                    child: Center(
-                      child: Text(
-                        'Per poterti fornire informazioni rilevanti\nabbiamo bisogno di accedere alla tua posizione.',
-                        textAlign: TextAlign.center,
-                        style: Theme.of(context).textTheme.subtitle1,
-                      ),
-                    ),
-                  ),
-                  const Spacer(),
                   SvgPicture.asset(ImageSrc.userPositionArt, semanticsLabel: 'Art Background'),
-                  const Spacer(),
-                  MainButton(
-                    padding: const EdgeInsets.symmetric(horizontal: Dimension.padding),
-                    onPressed: () async {
-                      viewModel?.tryGetUserLocation().then((value) {
-                        if (value != null) {
-                          viewModel.onMapClick(context);
-                        }
-                      });
-                    },
-                    text: 'Ok, grazie!',
+                  Column(
+                    children: [
+                      Center(
+                        child: Text(
+                          'Vediamo dove ti trovi',
+                          style: Theme.of(context).textTheme.headline6,
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+                        child: Center(
+                          child: Text(
+                            'Per poterti fornire informazioni rilevanti\nabbiamo bisogno di accedere alla tua posizione.',
+                            textAlign: TextAlign.center,
+                            style: Theme.of(context).textTheme.subtitle1,
+                          ),
+                        ),
+                      ),
+                      const Spacer(),
+                      MainButton(
+                        padding: const EdgeInsets.symmetric(horizontal: Dimension.padding),
+                        onPressed: () async {
+                          viewModel?.tryGetUserLocation().then((value) {
+                            if (value != null) {
+                              viewModel.onMapClick(context);
+                            }
+                          });
+                        },
+                        text: 'Ok, grazie!',
+                      ),
+                      const SizedBox(height: Dimension.padding),
+                      MainButton(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: Dimension.padding,
+                        ),
+                        onPressed: () => viewModel?.onAddAddressClick(context),
+                        text: 'Inserisci indirizzo',
+                      ),
+                      const SizedBox(height: Dimension.paddingL)
+                    ],
                   ),
-                  const SizedBox(height: Dimension.padding),
-                  MainButton(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: Dimension.padding,
-                    ),
-                    onPressed: () => viewModel?.onAddAddressClick(context),
-                    text: 'Inserisci indirizzo',
-                  ),
-                  const SizedBox(height: Dimension.paddingL)
                 ],
               ),
             ),
