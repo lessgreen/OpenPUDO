@@ -26,6 +26,7 @@ import 'package:json_annotation/json_annotation.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:qui_green/models/address_model.dart';
 import 'package:qui_green/models/pudo_model.dart';
+import 'package:simple_shadow/simple_shadow.dart';
 
 import '../resources/res.dart';
 
@@ -83,18 +84,27 @@ extension PudoUtilities on List<GeoMarker> {
                 callback?.call(aRow);
               },
               child: aRow.pudo?.pudoId == selectedMarker
-                  ? SvgPicture.asset(
-                      ImageSrc.fillBox,
-                      color: tintColor,
+                  ? SimpleShadow(
+                      sigma: 4,
+                      offset: const Offset(2, 5),
+                      child: SvgPicture.asset(
+                        ImageSrc.fillBox,
+                      ),
                     )
                   : selectedMarker != null
-                      ? SvgPicture.asset(
-                          ImageSrc.emptyBox,
-                          color: tintColor,
+                      ? SimpleShadow(
+                          sigma: 4,
+                          offset: const Offset(2, 5),
+                          child: SvgPicture.asset(
+                            ImageSrc.emptyBox,
+                          ),
                         )
-                      : SvgPicture.asset(
-                          ImageSrc.fillBox,
-                          color: tintColor,
+                      : SimpleShadow(
+                          sigma: 4,
+                          offset: const Offset(2, 5),
+                          child: SvgPicture.asset(
+                            ImageSrc.fillBox,
+                          ),
                         ),
             ),
           ),

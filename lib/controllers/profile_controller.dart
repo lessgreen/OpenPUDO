@@ -111,18 +111,27 @@ class _ProfileControllerState extends State<ProfileController> with ConnectionAw
               onTap: () {},
             ),
             TableViewCell(
-                leading: SvgPicture.asset(
-                  ImageSrc.logoutIcon,
-                  color: AppColors.cardColor,
-                  width: 36,
-                  height: 36,
-                ),
-                title: "Logout",
-                onTap: () {
-                  Navigator.pop(context);
-                  NetworkManager.instance.setAccessToken(null);
-                  currentUser.refresh();
-                }),
+              leading: SvgPicture.asset(
+                ImageSrc.logoutIcon,
+                color: AppColors.cardColor,
+                width: 36,
+                height: 36,
+              ),
+              title: "Logout",
+              onTap: () {
+                Navigator.pop(context);
+                NetworkManager.instance.setAccessToken(null);
+                currentUser.refresh();
+              },
+            ),
+            TableViewCell(
+              title: "Elimina account",
+              textAlign: TextAlign.center,
+              textStyle: Theme.of(context).textTheme.bodyTextBold?.copyWith(
+                    color: Colors.red,
+                  ),
+              showTrailingChevron: false,
+            ),
           ]),
         ),
       );
