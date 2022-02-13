@@ -27,12 +27,16 @@ class TableViewCell extends StatelessWidget {
   final Widget? leading;
   final String? title;
   final bool showTrailingChevron;
+  final TextAlign textAlign;
+  final TextStyle? textStyle;
   final Function? onTap;
 
   const TableViewCell({
     Key? key,
     this.leading,
     this.title,
+    this.textAlign = TextAlign.left,
+    this.textStyle,
     this.showTrailingChevron = true,
     this.onTap,
   }) : super(key: key);
@@ -59,10 +63,12 @@ class TableViewCell extends StatelessWidget {
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
                     title ?? "",
-                    textAlign: TextAlign.left,
-                    style: Theme.of(context).textTheme.bodyTextLight?.copyWith(
-                          color: AppColors.primaryTextColor,
-                        ),
+                    textAlign: textAlign,
+                    style: (textStyle != null)
+                        ? textStyle
+                        : Theme.of(context).textTheme.bodyTextLight?.copyWith(
+                              color: AppColors.primaryTextColor,
+                            ),
                   ),
                 ),
               ),
