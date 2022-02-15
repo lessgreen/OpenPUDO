@@ -81,19 +81,37 @@ dynamic routeWithSetting(RouteSettings settings) {
       );
     case Routes.userPosition:
       return CupertinoPageRoute(
-        builder: (context) => const UserPositionController(),
+        builder: (context) => const UserPositionController(
+          canGoBack: false,
+          userCupertinoScaffold: false,
+        ),
       );
     case Routes.insertAddress:
       return CupertinoPageRoute(
-        builder: (context) => const InsertAddressController(),
+        builder: (context) => const InsertAddressController(
+          userCupertinoScaffold: false,
+        ),
       );
     case Routes.maps:
       return CupertinoPageRoute(
-        builder: (context) => MapsController(initialPosition: settings.arguments as LatLng),
+        builder: (context) => MapsController(
+          canGoBack: true,
+          initialPosition: settings.arguments as LatLng,
+          useCupertinoScaffold: false,
+          enableAddressSearch: false,
+          enablePudoCards: true,
+          getUserPosition: false,
+          title: "Ecco i punti di ritiro vicino a te",
+        ),
       );
     case Routes.pudoDetail:
       return CupertinoPageRoute(
-        builder: (context) => PudoDetailController(dataModel: settings.arguments as PudoProfile),
+        builder: (context) => PudoDetailController(
+          dataModel: settings.arguments as PudoProfile,
+          checkIsAlreadyAdded: false,
+          nextRoute: Routes.personalData,
+          userCupertinoScaffold: false,
+        ),
       );
     case Routes.personalData:
       return CupertinoPageRoute(
@@ -101,11 +119,15 @@ dynamic routeWithSetting(RouteSettings settings) {
       );
     case Routes.registrationComplete:
       return CupertinoPageRoute(
-        builder: (context) => RegistrationCompleteController(pudoDataModel: settings.arguments as PudoProfile?),
+        builder: (context) => RegistrationCompleteController(pudoDataModel: settings.arguments as PudoProfile?, useCupertinoScaffold: false, canGoBack: false),
       );
     case Routes.instruction:
       return CupertinoPageRoute(
-        builder: (context) => InstructionController(pudoDataModel: settings.arguments as PudoProfile?),
+        builder: (context) => InstructionController(
+          pudoDataModel: settings.arguments as PudoProfile?,
+          userCupertinoScaffold: false,
+          canGoBack: false,
+        ),
       );
     case Routes.thanks:
       return CupertinoPageRoute(

@@ -25,14 +25,14 @@ class TextFieldButton extends StatelessWidget {
   final String text;
   final EdgeInsets padding;
   final Function() onPressed;
-
-  const TextFieldButton({Key? key, required this.text, this.padding = EdgeInsets.zero, required this.onPressed}) : super(key: key);
+  final Color textColor;
+  const TextFieldButton({Key? key, required this.text, this.padding = EdgeInsets.zero, required this.onPressed, this.textColor = AppColors.primaryColorDark}) : super(key: key);
 
   @override
   Widget build(BuildContext context) => TextButton(
         child: Text(
           text,
-          style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.primaryColorDark),
+          style: Theme.of(context).textTheme.bodyText2?.copyWith(color: textColor),
         ),
         style: Theme.of(context).textButtonTheme.style?.copyWith(
             padding: MaterialStateProperty.all(padding),

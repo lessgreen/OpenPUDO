@@ -18,11 +18,17 @@
  If not, see <https://github.com/lessgreen/OpenPUDO>.
 */
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 extension AdditionalTextTheme on TextTheme {
   TextStyle? get navBarTitle => headline6?.copyWith(color: Colors.white, fontWeight: FontWeight.w400);
+
+  TextStyle? get navBarTitleDark => headline6?.copyWith(color: CupertinoColors.label, fontWeight: FontWeight.w400);
+
   TextStyle? get bodyTextLight => bodyText1?.copyWith(fontWeight: FontWeight.w300);
+
   TextStyle? get bodyTextBold => bodyText1?.copyWith(fontWeight: FontWeight.w500);
+
   TextStyle? get bodyTextItalic => bodyText1?.copyWith(fontStyle: FontStyle.italic);
 }

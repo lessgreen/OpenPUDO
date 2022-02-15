@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:qui_green/models/address_model.dart';
 import 'package:qui_green/resources/res.dart';
-import 'package:qui_green/view_models/maps_search_controller_viewmodel.dart';
+import 'package:qui_green/view_models/maps_controller_viewmodel.dart';
 import 'package:qui_green/widgets/adress_overlay_pudo_search.dart';
 
 class AdressFieldPudoSearch extends StatefulWidget {
-  final MapsSearchControllerViewModel viewModel;
+  final MapsControllerViewModel viewModel;
 
   const AdressFieldPudoSearch({Key? key, required this.viewModel}) : super(key: key);
 

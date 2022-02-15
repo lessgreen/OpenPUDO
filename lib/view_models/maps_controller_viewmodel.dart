@@ -23,6 +23,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:location/location.dart';
 import 'package:qui_green/models/geo_marker.dart';
 import 'package:qui_green/models/pudo_profile.dart';
 import 'package:qui_green/resources/routes_enum.dart';
@@ -38,6 +39,16 @@ class MapsControllerViewModel extends ChangeNotifier {
   PageController pageController = PageController(viewportFraction: 0.95, initialPage: 0);
   MapController? mapController;
   Function(String)? showErrorDialog;
+  late Function(MapsControllerViewModel, LatLng) animateMapTo;
+
+  List<GeoMarker> _addresses = [];
+
+  List<GeoMarker> get addresses => _addresses;
+
+  set addresses(List<GeoMarker> newVal) {
+    _addresses = newVal;
+    notifyListeners();
+  }
 
   bool _isReloadingPudos = false;
 
@@ -66,7 +77,7 @@ class MapsControllerViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  onPudoClick(BuildContext context, GeoMarker marker, LatLng position) {
+  onPudoClick(BuildContext context, GeoMarker marker) {
     NetworkManager.instance.getPudoDetails(pudoId: marker.pudo!.pudoId.toString()).then(
       (response) {
         if (response is PudoProfile) {
@@ -78,15 +89,49 @@ class MapsControllerViewModel extends ChangeNotifier {
     ).catchError((onError) => showErrorDialog?.call(onError));
   }
 
-  onMapCreate(MapController mapController, LatLng center) {
+  onMapCreate(MapController mapController, LatLng? center, bool getPosition) {
     this.mapController = mapController;
-    NetworkManager.instance.getSuggestedZoom(lat: center.latitude, lon: center.longitude).then((value) {
+    NetworkManager.instance.getSuggestedZoom(lat: center?.latitude ?? currentLatitude, lon: center?.longitude ?? currentLongitude).then((value) {
       if (value is int) {
         WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
-          mapController.move(center, value.toDouble());
+          mapController.move(center ?? LatLng(currentLatitude, currentLongitude), value.toDouble());
         });
+        if (getPosition) {
+          tryGetUserLocation();
+        }
       }
     });
+  }
+
+  Future<LocationData?> tryGetUserLocation() async {
+    Location location = Location();
+
+    bool _serviceEnabled;
+    PermissionStatus _permissionGranted;
+    LocationData _locationData;
+
+    _serviceEnabled = await location.serviceEnabled();
+    if (!_serviceEnabled) {
+      _serviceEnabled = await location.requestService();
+      if (!_serviceEnabled) {
+        return null;
+      }
+    }
+
+    _permissionGranted = await location.hasPermission();
+    if (_permissionGranted == PermissionStatus.denied) {
+      _permissionGranted = await location.requestPermission();
+      if (_permissionGranted != PermissionStatus.granted) {
+        return null;
+      }
+    }
+
+    _locationData = await location.getLocation();
+    position = LatLng(_locationData.latitude ?? 45.464664, _locationData.longitude ?? 9.188540);
+    WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
+      animateMapTo(this, position);
+    });
+    return _locationData;
   }
 
   Timer _debounce = Timer(const Duration(days: 1), () {});
@@ -153,19 +198,23 @@ class MapsControllerViewModel extends ChangeNotifier {
     return oldPudos;
   }
 
-  selectPudo(BuildContext context, int? pudoId) {
-    if (pudoId == null) {
+  selectPudo(BuildContext context, GeoMarker? marker, bool enabledCards) {
+    if (marker == null) {
       return;
     }
-    isReloadingPudos = true;
-    for (var i = 0; i < pudos.length; i++) {
-      if (pudos[i].pudo?.pudoId == pudoId) {
-        pageController.animateToPage(i, duration: const Duration(milliseconds: 150), curve: Curves.easeIn).then((value) {
-          isReloadingPudos = false;
-          showingCardPudo = pudoId;
-        });
-        return;
+    if (enabledCards) {
+      isReloadingPudos = true;
+      for (var i = 0; i < pudos.length; i++) {
+        if (pudos[i].pudo?.pudoId == marker.pudo!.pudoId) {
+          pageController.animateToPage(i, duration: const Duration(milliseconds: 150), curve: Curves.easeIn).then((value) {
+            isReloadingPudos = false;
+            showingCardPudo = marker.pudo!.pudoId;
+          });
+          return;
+        }
       }
+    } else {
+      onPudoClick(context, marker);
     }
   }
 
@@ -176,5 +225,44 @@ class MapsControllerViewModel extends ChangeNotifier {
   set showingCardPudo(int newVal) {
     _showingCardPudo = newVal;
     notifyListeners();
+  }
+
+  bool _isOpenListAddress = false;
+
+  bool get isOpenListAddress => _isOpenListAddress;
+
+  set isOpenListAddress(bool newVal) {
+    _isOpenListAddress = newVal;
+    notifyListeners();
+  }
+
+  LatLng position = LatLng(45.464664, 9.188540);
+
+  TextEditingController addressController = TextEditingController();
+
+  void onSearchChanged(String query) {
+    if (_debounce.isActive) _debounce.cancel();
+    _debounce = Timer(const Duration(milliseconds: 300), () {
+      fetchSuggestions(query);
+    });
+  }
+
+  Future<void> fetchSuggestions(String val) async {
+    if (val.trim().isNotEmpty) {
+      var res = await NetworkManager.instance.getGeoMarkers(text: val);
+      if (res is List<GeoMarker>) {
+        if (res.isNotEmpty) {
+          addresses = res;
+          isOpenListAddress = true;
+        } else {
+          addresses = [];
+          isOpenListAddress = false;
+        }
+        return;
+      }
+    } else {
+      addresses = [];
+      isOpenListAddress = false;
+    }
   }
 }
