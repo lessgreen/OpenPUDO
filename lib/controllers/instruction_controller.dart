@@ -18,20 +18,24 @@
  If not, see <https://github.com/lessgreen/OpenPUDO>.
 */
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
-import 'package:qui_green/singletons/network/network_manager.dart';
-import 'package:qui_green/widgets/main_button.dart';
-import 'package:qui_green/widgets/instruction_card.dart';
+import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
 import 'package:qui_green/models/pudo_profile.dart';
 import 'package:qui_green/resources/res.dart';
 import 'package:qui_green/singletons/current_user.dart';
+import 'package:qui_green/singletons/network/network_manager.dart';
+import 'package:qui_green/widgets/instruction_card.dart';
+import 'package:qui_green/widgets/main_button.dart';
 
 class InstructionController extends StatefulWidget {
+  const InstructionController({Key? key, this.pudoDataModel, required this.userCupertinoScaffold, required this.canGoBack}) : super(key: key);
+  final bool userCupertinoScaffold;
   final PudoProfile? pudoDataModel;
-  const InstructionController({Key? key, this.pudoDataModel}) : super(key: key);
+  final bool canGoBack;
 
   @override
   _InstructionControllerState createState() => _InstructionControllerState();
@@ -101,56 +105,81 @@ class _InstructionControllerState extends State<InstructionController> with Conn
         ],
       );
 
+  Widget _buildPageWithCupertinoScaffold(CurrentUser currentUser) => CupertinoPageScaffold(
+        navigationBar: CupertinoNavigationBar(
+            padding: const EdgeInsetsDirectional.all(0),
+            brightness: Brightness.dark,
+            backgroundColor: AppColors.primaryColorDark,
+            middle: Text(
+              'Istruzioni',
+              style: Theme.of(context).textTheme.navBarTitle,
+            ),
+            leading: widget.canGoBack
+                ? CupertinoNavigationBarBackButton(
+                    color: Colors.white,
+                    onPressed: () => Navigator.of(context).pop(),
+                  )
+                : null),
+        child: _buildBody(currentUser),
+      );
+
+  Widget _buildPageWithBaseScaffold(CurrentUser currentUser) => Scaffold(
+        resizeToAvoidBottomInset: false,
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          systemOverlayStyle: SystemUiOverlayStyle.dark,
+          leading: widget.canGoBack
+              ? CupertinoNavigationBarBackButton(
+                  color: AppColors.primaryColorDark,
+                  onPressed: () => Navigator.of(context).pop(),
+                )
+              : null,
+        ),
+        body: _buildBody(currentUser),
+      );
+
+  Widget _buildBody(CurrentUser currentUser) => SafeArea(
+        child: Column(
+          children: [
+            Expanded(
+              child: PageView(
+                physics: const ClampingScrollPhysics(),
+                controller: _pageController,
+                onPageChanged: (int page) {
+                  setState(() {
+                    _currentPage = page;
+                  });
+                },
+                children: [
+                  InstructionCard(
+                      title: "É semplicissimo!",
+                      description: 'Per poter ricevere il tuo pacco senza pensieri, utilizzando il tuo PUDO come destinatario ti basterà usare il seguente indirizzo di spedizione:',
+                      activeIndex: _currentPage,
+                      pages: 2,
+                      bottomWidget: _buildFirstPageWidget(currentUser.user!.userId.toString())),
+                  InstructionCard(
+                      title: "Notifica in tempo reale",
+                      description: 'Riceverai una notifica quando il tuo pacco sarà giunto a destinazione presso il tuo PUDO.',
+                      activeIndex: _currentPage,
+                      pages: 2,
+                      bottomWidget: SvgPicture.asset(ImageSrc.notificationVectorArt, semanticsLabel: 'Art Background')),
+                ],
+              ),
+            ),
+            MainButton(
+              onPressed: () => currentUser.refresh(),
+              text: 'Fine',
+            ),
+          ],
+        ),
+      );
+
   @override
   Widget build(BuildContext context) {
     return Consumer<CurrentUser>(
       builder: (_, currentUser, __) => WillPopScope(
         onWillPop: () async => false,
-        child: Scaffold(
-          resizeToAvoidBottomInset: false,
-          appBar: AppBar(
-            backgroundColor: Colors.transparent,
-            systemOverlayStyle: SystemUiOverlayStyle.dark,
-            leading: const SizedBox(),
-          ),
-          body: Column(
-            children: [
-              Expanded(
-                child: PageView(
-                  physics: const ClampingScrollPhysics(),
-                  controller: _pageController,
-                  onPageChanged: (int page) {
-                    setState(() {
-                      _currentPage = page;
-                    });
-                  },
-                  children: [
-                    InstructionCard(
-                        title: "É semplicissimo!",
-                        description: 'Per poter ricevere il tuo pacco senza pensieri, utilizzando il tuo PUDO come destinatario ti basterà usare il seguente indirizzo di spedizione:',
-                        activeIndex: _currentPage,
-                        pages: 2,
-                        bottomWidget: _buildFirstPageWidget(currentUser.user!.userId.toString())),
-                    InstructionCard(
-                        title: "Notifica in tempo reale",
-                        description: 'Riceverai una notifica quando il tuo pacco sarà giunto a destinazione presso il tuo PUDO.',
-                        activeIndex: _currentPage,
-                        pages: 2,
-                        bottomWidget: SvgPicture.asset(ImageSrc.notificationVectorArt, semanticsLabel: 'Art Background')),
-                  ],
-                ),
-              ),
-              MainButton(
-                onPressed: () => Provider.of<CurrentUser>(context, listen: false).refresh(),
-                text: 'Fine',
-              ),
-              // MainButton(
-              //   onPressed: () => Navigator.of(context).pop(),
-              //   text: 'Vai alla home',
-              // ),
-            ],
-          ),
-        ),
+        child: widget.userCupertinoScaffold ? _buildPageWithCupertinoScaffold(currentUser) : _buildPageWithBaseScaffold(currentUser),
       ),
     );
   }
