@@ -121,6 +121,7 @@ class _HomeMapsControllerState extends State<HomeMapsController> {
                         ),
                         builder: (context, markers) {
                           return FloatingActionButton(
+                            heroTag: Key(markers.length.toString() + markers.first.point.toSexagesimal()),
                             child: Text(markers.length.toString(), style: Theme.of(context).textTheme.caption?.copyWith(color: Colors.white)),
                             onPressed: null,
                           );
