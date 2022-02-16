@@ -48,21 +48,8 @@ class PudoMapCard extends StatelessWidget {
           height: 100,
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: const BorderRadius.all(
-                Radius.circular(Dimension.borderRadiusS)),
-            boxShadow: hasShadow
-                ? [
-                    BoxShadow(
-                      color: Theme.of(context).shadowColor.withAlpha(180),
-                      blurRadius: 15.0, // soften the shadow
-                      spreadRadius: 0.2, //extend the shadow
-                      offset: const Offset(
-                        0.0, // Move to right 10  horizontally
-                        0.0, // Move to bottom 10 Vertically
-                      ),
-                    )
-                  ]
-                : null,
+            borderRadius: const BorderRadius.all(Radius.circular(Dimension.borderRadiusS)),
+            boxShadow: hasShadow ? Shadows.baseShadow : null,
           ),
           child: Row(
             children: [
@@ -100,9 +87,7 @@ class PudoMapCard extends StatelessWidget {
                         5,
                         (index) => Icon(
                           Icons.star_rounded,
-                          color: (index + 1 <= stars)
-                              ? Colors.yellow.shade700
-                              : Colors.grey.shade200,
+                          color: (index + 1 <= stars) ? Colors.yellow.shade700 : Colors.grey.shade200,
                         ),
                       ),
                     ),

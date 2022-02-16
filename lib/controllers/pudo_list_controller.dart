@@ -47,6 +47,18 @@ class _PudoListControllerState extends State<PudoListController> {
 
   List<PudoSummary>? pudoList;
 
+  void deletePudo(PudoSummary pudoProfile) {
+    NetworkManager.instance.deletePudoFavorite(pudoProfile.pudoId.toString()).then((value) {
+      if (value is List<PudoSummary>) {
+        setState(() {
+          pudoList = value;
+        });
+      } else {
+        SAAlertDialog.displayAlertWithClose(context, "Error", "Qualcosa è andato storto");
+      }
+    }).catchError((onError) => SAAlertDialog.displayAlertWithClose(context, "Error", onError));
+  }
+
   void getPudos() async {
     NetworkManager.instance.getMyPudos().then((value) {
       if (value is List<PudoSummary>) {
@@ -87,22 +99,19 @@ class _PudoListControllerState extends State<PudoListController> {
               physics: const NeverScrollableScrollPhysics(),
               itemCount: pudoList!.length,
               itemBuilder: (BuildContext context, int index) {
-                return Padding(
-                  padding: const EdgeInsets.only(
-                    top: Dimension.padding,
-                  ),
-                  child: PudoCard(
-                      pudo: pudoList![index],
-                      onTap: () {
-                        NetworkManager.instance.getPudoDetails(pudoId: pudoList![index].pudoId.toString()).then((value) {
-                          if (value is PudoProfile) {
-                            Navigator.of(context).pushNamed(Routes.pudoDetail, arguments: value);
-                          } else {
-                            SAAlertDialog.displayAlertWithClose(context, "Error", "Qualcosa è andato storto");
-                          }
-                        }).catchError((onError) => SAAlertDialog.displayAlertWithClose(context, "Error", onError));
-                      }),
-                );
+                return PudoCard(
+                    maxWidth: MediaQuery.of(context).size.width / 3,
+                    onDelete: () => deletePudo(pudoList![index]),
+                    pudo: pudoList![index],
+                    onTap: () {
+                      NetworkManager.instance.getPudoDetails(pudoId: pudoList![index].pudoId.toString()).then((value) {
+                        if (value is PudoProfile) {
+                          Navigator.of(context).pushNamed(Routes.pudoDetail, arguments: value);
+                        } else {
+                          SAAlertDialog.displayAlertWithClose(context, "Error", "Qualcosa è andato storto");
+                        }
+                      }).catchError((onError) => SAAlertDialog.displayAlertWithClose(context, "Error", onError));
+                    });
               })
         ],
       );
@@ -111,27 +120,30 @@ class _PudoListControllerState extends State<PudoListController> {
   Widget build(BuildContext context) {
     return Material(
       child: CupertinoPageScaffold(
-        navigationBar: CupertinoNavigationBar(
-          padding: const EdgeInsetsDirectional.all(0),
-          brightness: Brightness.dark,
-          backgroundColor: AppColors.primaryColorDark,
-          middle: Text(
-            'Il tuoi pudo',
-            style: Theme.of(context).textTheme.navBarTitle,
+          navigationBar: CupertinoNavigationBar(
+            padding: const EdgeInsetsDirectional.all(0),
+            brightness: Brightness.dark,
+            backgroundColor: AppColors.primaryColorDark,
+            middle: Text(
+              'I tuoi pudo',
+              style: Theme.of(context).textTheme.navBarTitle,
+            ),
+            leading: CupertinoNavigationBarBackButton(
+              color: Colors.white,
+              onPressed: () => Navigator.of(context).pop(),
+            ),
           ),
-          leading: CupertinoNavigationBarBackButton(
-            color: Colors.white,
-            onPressed: () => Navigator.of(context).pop(),
-          ),
-        ),
-        child: SAScaffold(
-            isLoading: NetworkManager.instance.networkActivity,
-            body: pudoList == null
-                ? Container()
-                : pudoList!.isEmpty
-                    ? _buildEmptyPudos()
-                    : _buildPudos()),
-      ),
+          //ClipPath is used to avoid the scrolling cards to go outside the screen
+          //and being visible when popping the page
+          child: ClipPath(
+            child: SAScaffold(
+                isLoading: NetworkManager.instance.networkActivity,
+                body: pudoList == null
+                    ? const SizedBox()
+                    : pudoList!.isEmpty
+                        ? _buildEmptyPudos()
+                        : _buildPudos()),
+          )),
     );
   }
 }
