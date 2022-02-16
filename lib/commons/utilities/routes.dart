@@ -39,7 +39,6 @@ import 'package:qui_green/controllers/onboarding/personal_data_controller.dart';
 import 'package:qui_green/controllers/pudo_detail_controller.dart';
 import 'package:qui_green/controllers/pudo_home_controller.dart';
 import 'package:qui_green/controllers/pudo_list_controller.dart';
-import 'package:qui_green/controllers/pudo_tutorial_controller.dart';
 import 'package:qui_green/controllers/registration_complete_controller.dart';
 import 'package:qui_green/controllers/thanks_controller.dart';
 import 'package:qui_green/controllers/user_position_controller.dart';
@@ -102,6 +101,7 @@ dynamic routeWithSetting(RouteSettings settings) {
           enablePudoCards: true,
           getUserPosition: false,
           title: "Ecco i punti di ritiro vicino a te",
+          isOnboarding: false,
         ),
       );
     case Routes.pudoDetail:
@@ -143,8 +143,11 @@ dynamic routeWithSetting(RouteSettings settings) {
       );
     case Routes.pudoTutorial:
       return CupertinoPageRoute(
-        builder: (context) => const PudoTutorialController(),
-      );
+          builder: (context) => InstructionController(
+                canGoBack: false,
+                userCupertinoScaffold: false,
+                pudoDataModel: settings.arguments as PudoProfile,
+              ));
     case Routes.pudoList:
       return CupertinoPageRoute(
         builder: (context) => const PudoListController(),

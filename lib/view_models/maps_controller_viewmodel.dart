@@ -77,11 +77,16 @@ class MapsControllerViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  onPudoClick(BuildContext context, GeoMarker marker) {
+  onPudoClick(BuildContext context, GeoMarker marker, bool isOnboarding) {
     NetworkManager.instance.getPudoDetails(pudoId: marker.pudo!.pudoId.toString()).then(
       (response) {
         if (response is PudoProfile) {
-          Navigator.of(context).pushNamed(Routes.pudoDetail, arguments: response);
+          print(isOnboarding);
+          if (isOnboarding) {
+            Navigator.of(context).pushNamed(Routes.pudoDetailOnBoarding, arguments: response);
+          } else {
+            Navigator.of(context).pushNamed(Routes.pudoDetail, arguments: response);
+          }
         } else {
           showErrorDialog?.call("Qualcosa e' andato storto");
         }
@@ -201,7 +206,7 @@ class MapsControllerViewModel extends ChangeNotifier {
     return pudos;
   }
 
-  selectPudo(BuildContext context, GeoMarker? marker, bool enabledCards) {
+  selectPudo(BuildContext context, GeoMarker? marker, bool enabledCards, bool isOnboarding) {
     if (marker == null) {
       return;
     }
@@ -217,7 +222,7 @@ class MapsControllerViewModel extends ChangeNotifier {
         }
       }
     } else {
-      onPudoClick(context, marker);
+      onPudoClick(context, marker, isOnboarding);
     }
   }
 
