@@ -184,19 +184,21 @@ class MapsControllerViewModel extends ChangeNotifier {
   final int _maxLoadedPudos = 20;
 
   List<GeoMarker> smartPlacement(List<GeoMarker> newPudos) {
-    List<GeoMarker> oldPudos = List<GeoMarker>.from(pudos);
-
-    if (oldPudos.length >= _maxLoadedPudos) {
-      //removes oldest fetched pudos if oldPudos exceeds the maxLoaded
-      oldPudos.removeRange(0, newPudos.length > oldPudos.length ? oldPudos.length - 1 : newPudos.length - 1);
-    }
-    for (GeoMarker i in newPudos) {
-      //if never fetched add the newFetchedPudo
-      if (!oldPudos.any((element) => element.pudo?.pudoId == i.pudo?.pudoId)) {
-        oldPudos.add(i);
+    if (newPudos.isNotEmpty) {
+      List<GeoMarker> oldPudos = List<GeoMarker>.from(pudos);
+      if (oldPudos.length >= _maxLoadedPudos) {
+        //removes oldest fetched pudos if oldPudos exceeds the maxLoaded
+        oldPudos.removeRange(0, newPudos.length > oldPudos.length ? oldPudos.length - 1 : newPudos.length - 1);
       }
+      for (GeoMarker i in newPudos) {
+        //if never fetched add the newFetchedPudo
+        if (!oldPudos.any((element) => element.pudo?.pudoId == i.pudo?.pudoId)) {
+          oldPudos.add(i);
+        }
+      }
+      return oldPudos;
     }
-    return oldPudos;
+    return pudos;
   }
 
   selectPudo(BuildContext context, GeoMarker? marker, bool enabledCards) {
