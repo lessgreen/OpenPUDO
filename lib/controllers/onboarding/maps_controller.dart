@@ -293,7 +293,8 @@ class _MapsControllerState extends State<MapsController> with ConnectionAware, T
               fitBoundsOptions: const FitBoundsOptions(
                 padding: EdgeInsets.all(50),
               ),
-              maxClusterRadius: 120,
+              disableClusteringAtZoom: 15,
+              maxClusterRadius: 60,
               markers: viewModel.pudos.markers(
                 (marker) {
                   viewModel.selectPudo(context, marker, widget.enablePudoCards);
