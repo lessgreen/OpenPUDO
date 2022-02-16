@@ -48,34 +48,27 @@ class _PudoListControllerState extends State<PudoListController> {
   List<PudoSummary>? pudoList;
 
   void deletePudo(PudoSummary pudoProfile) {
-    NetworkManager.instance
-        .deletePudoFavorite(pudoProfile.pudoId.toString())
-        .then((value) {
+    NetworkManager.instance.deletePudoFavorite(pudoProfile.pudoId.toString()).then((value) {
       if (value is List<PudoSummary>) {
         setState(() {
           pudoList = value;
         });
       } else {
-        SAAlertDialog.displayAlertWithClose(
-            context, "Error", "Qualcosa è andato storto");
+        SAAlertDialog.displayAlertWithClose(context, "Error", "Qualcosa è andato storto");
       }
-    }).catchError((onError) =>
-            SAAlertDialog.displayAlertWithClose(context, "Error", onError));
+    }).catchError((onError) => SAAlertDialog.displayAlertWithClose(context, "Error", onError));
   }
 
   void getPudos() async {
-    print(NetworkManager.instance.accessToken);
     NetworkManager.instance.getMyPudos().then((value) {
       if (value is List<PudoSummary>) {
         setState(() {
           pudoList = value;
         });
       } else {
-        SAAlertDialog.displayAlertWithClose(
-            context, "Error", "Qualcosa è andato storto");
+        SAAlertDialog.displayAlertWithClose(context, "Error", "Qualcosa è andato storto");
       }
-    }).catchError((onError) =>
-        SAAlertDialog.displayAlertWithClose(context, "Error", onError));
+    }).catchError((onError) => SAAlertDialog.displayAlertWithClose(context, "Error", onError));
   }
 
   Widget _buildEmptyPudos() => Column(
@@ -89,18 +82,14 @@ class _PudoListControllerState extends State<PudoListController> {
           const SizedBox(
             height: Dimension.padding,
           ),
-          MainButton(
-              text: 'Vai',
-              onPressed: () =>
-                  Navigator.of(context).pushNamed(Routes.userPosition))
+          MainButton(text: 'Vai', onPressed: () => Navigator.of(context).pushNamed(Routes.userPosition))
         ],
       );
 
   Widget _buildPudos() => ListView(
         children: [
           const Padding(
-            padding: EdgeInsets.only(
-                left: Dimension.padding, top: Dimension.padding),
+            padding: EdgeInsets.only(left: Dimension.padding, top: Dimension.padding),
             child: Text(
               'I tuoi pudo:',
             ),
@@ -110,30 +99,19 @@ class _PudoListControllerState extends State<PudoListController> {
               physics: const NeverScrollableScrollPhysics(),
               itemCount: pudoList!.length,
               itemBuilder: (BuildContext context, int index) {
-                return Padding(
-                  padding: const EdgeInsets.only(
-                    top: Dimension.padding,
-                  ),
-                  child: PudoCard(
-                      onDelete: () => deletePudo(pudoList![index]),
-                      pudo: pudoList![index],
-                      onTap: () {
-                        NetworkManager.instance
-                            .getPudoDetails(
-                                pudoId: pudoList![index].pudoId.toString())
-                            .then((value) {
-                          if (value is PudoProfile) {
-                            Navigator.of(context)
-                                .pushNamed(Routes.pudoDetail, arguments: value);
-                          } else {
-                            SAAlertDialog.displayAlertWithClose(
-                                context, "Error", "Qualcosa è andato storto");
-                          }
-                        }).catchError((onError) =>
-                                SAAlertDialog.displayAlertWithClose(
-                                    context, "Error", onError));
-                      }),
-                );
+                return PudoCard(
+                    maxWidth: MediaQuery.of(context).size.width / 3,
+                    onDelete: () => deletePudo(pudoList![index]),
+                    pudo: pudoList![index],
+                    onTap: () {
+                      NetworkManager.instance.getPudoDetails(pudoId: pudoList![index].pudoId.toString()).then((value) {
+                        if (value is PudoProfile) {
+                          Navigator.of(context).pushNamed(Routes.pudoDetail, arguments: value);
+                        } else {
+                          SAAlertDialog.displayAlertWithClose(context, "Error", "Qualcosa è andato storto");
+                        }
+                      }).catchError((onError) => SAAlertDialog.displayAlertWithClose(context, "Error", onError));
+                    });
               })
         ],
       );
@@ -141,15 +119,13 @@ class _PudoListControllerState extends State<PudoListController> {
   @override
   Widget build(BuildContext context) {
     return Material(
-        child: SAScaffold(
-      isLoading: NetworkManager.instance.networkActivity,
-      body: CupertinoPageScaffold(
+      child: CupertinoPageScaffold(
           navigationBar: CupertinoNavigationBar(
             padding: const EdgeInsetsDirectional.all(0),
             brightness: Brightness.dark,
             backgroundColor: AppColors.primaryColorDark,
             middle: Text(
-              'Il tuoi pudo',
+              'I tuoi pudo',
               style: Theme.of(context).textTheme.navBarTitle,
             ),
             leading: CupertinoNavigationBarBackButton(
@@ -157,13 +133,17 @@ class _PudoListControllerState extends State<PudoListController> {
               onPressed: () => Navigator.of(context).pop(),
             ),
           ),
-          child: SAScaffold(
-              isLoading: NetworkManager.instance.networkActivity,
-              body: pudoList == null
-                  ? Container()
-                  : pudoList!.isEmpty
-                      ? _buildEmptyPudos()
-                      : _buildPudos())),
-    ));
+          //ClipPath is used to avoid the scrolling cards to go outside the screen
+          //and being visible when popping the page
+          child: ClipPath(
+            child: SAScaffold(
+                isLoading: NetworkManager.instance.networkActivity,
+                body: pudoList == null
+                    ? const SizedBox()
+                    : pudoList!.isEmpty
+                        ? _buildEmptyPudos()
+                        : _buildPudos()),
+          )),
+    );
   }
 }

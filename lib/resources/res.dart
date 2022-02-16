@@ -18,7 +18,7 @@
  If not, see <https://github.com/lessgreen/OpenPUDO>.
 */
 
-import 'package:flutter/material.dart' show Color;
+import 'package:flutter/material.dart' show BoxShadow, Color, Colors, Offset;
 
 class Dimension {
   static const paddingXS = 4.0;
@@ -85,4 +85,18 @@ class AppColors {
   static const primaryColorDark = Color(0xFFA0B92C);
   static const primaryTextColor = Color(0xFF363736);
   static const colorGrey = Color(0xFF979797);
+}
+
+class Shadows {
+  static final baseShadow = [
+    BoxShadow(
+      color: Colors.black.withAlpha(50),
+      blurRadius: 5.0,
+      spreadRadius: 0.2,
+      offset: const Offset(
+        0.0,
+        0.0,
+      ),
+    )
+  ];
 }
