@@ -45,6 +45,7 @@ class Dimension {
 
   static const borderRadiusS = 10.0;
   static const borderRadius = 30.0;
+  static const borderRadiusSearch = 25.0;
 
   static const chipIcon = 16.0;
   static const illustrationHeight = 120.0;
@@ -59,6 +60,7 @@ class Dimension {
 }
 
 class ImageSrc {
+  static const welcomeScreen = "assets/welcomeScreen.svg";
   static const smsArt = "assets/smsArt.svg";
   static const insertPhoneArt = "assets/insertPhoneArt.svg";
   static const aboutYouArt = "assets/aboutYouArt.svg";
@@ -74,6 +76,20 @@ class ImageSrc {
   static const chevronRight = "assets/chevron_right.svg";
   static const emptyBox = "assets/boxEmpty.svg";
   static const fillBox = "assets/boxFill.svg";
+
+  //new icons
+  static const positionLeadingCell = "assets/positionLeadingCell.svg";
+  static const packageDeliveredLeadingIcon = "assets/packageDeliveredLeadingIcon.svg";
+  static const waitingShipmentLeadingIcon = "assets/waitingShipmentLeadingIcon.svg";
+  static const packReceivedLeadingIcon = "assets/packReceivedLeadingIcon.svg";
+  static const shipmentLeadingCell = "assets/shipmentLeadingCell.svg";
+  static const launcherIcon = "assets/launcherIcon.svg";
+  static const logoutIcon = "assets/logoutIcon.svg";
+  static const doneUserOnboarding = "assets/doneUserOnboarding.svg";
+  static const notificationVectorArt = "assets/notificationVectorArt.svg";
+  static const noPudoYet = "assets/noPudoYet.svg";
+  static const noPackagesYet = "assets/noPackagesYet.svg";
+  static const welcomePudoOnboarding = "assets/welcomePudoOnboarding.svg";
 }
 
 class IconSrc {}

@@ -1,5 +1,3 @@
-// ignore_for_file: prefer_const_constructors
-
 /*
  OpenPUDO - PUDO and Micro-delivery software for Last Mile Collaboration
  Copyright (C) 2020-2022 LESS SRL - https://less.green
@@ -29,12 +27,16 @@ class TableViewCell extends StatelessWidget {
   final Widget? leading;
   final String? title;
   final bool showTrailingChevron;
+  final TextAlign textAlign;
+  final TextStyle? textStyle;
   final Function? onTap;
 
   const TableViewCell({
     Key? key,
     this.leading,
     this.title,
+    this.textAlign = TextAlign.left,
+    this.textStyle,
     this.showTrailingChevron = true,
     this.onTap,
   }) : super(key: key);
@@ -55,16 +57,18 @@ class TableViewCell extends StatelessWidget {
                       width: 30,
                       child: leading,
                     )
-                  : SizedBox(),
+                  : const SizedBox(),
               Expanded(
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
                     title ?? "",
-                    textAlign: TextAlign.left,
-                    style: Theme.of(context).textTheme.bodyTextLight?.copyWith(
-                          color: AppColors.primaryTextColor,
-                        ),
+                    textAlign: textAlign,
+                    style: (textStyle != null)
+                        ? textStyle
+                        : Theme.of(context).textTheme.bodyTextLight?.copyWith(
+                              color: AppColors.primaryTextColor,
+                            ),
                   ),
                 ),
               ),
@@ -75,11 +79,11 @@ class TableViewCell extends StatelessWidget {
                       height: 24,
                       color: AppColors.colorGrey,
                     )
-                  : SizedBox(),
+                  : const SizedBox(),
             ],
           ),
-          Padding(
-            padding: const EdgeInsets.only(top: 8.0),
+          const Padding(
+            padding: EdgeInsets.only(top: 8.0),
             child: Divider(
               height: 1,
             ),

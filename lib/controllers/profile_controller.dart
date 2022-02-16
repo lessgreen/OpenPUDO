@@ -1,5 +1,3 @@
-// ignore_for_file: prefer_const_constructors
-
 /*
  OpenPUDO - PUDO and Micro-delivery software for Last Mile Collaboration
  Copyright (C) 2020-2022 LESS SRL - https://less.green
@@ -22,6 +20,7 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
@@ -59,7 +58,7 @@ class _ProfileControllerState extends State<ProfileController> with ConnectionAw
               onPressed: () => Navigator.of(context).pop(),
             ),
           ),
-          child: Column(children: [
+          child: ListView(children: [
             const SizedBox(height: 20),
             Center(
               child: ClipRRect(
@@ -70,14 +69,18 @@ class _ProfileControllerState extends State<ProfileController> with ConnectionAw
             const SizedBox(
               height: 10,
             ),
-            Text(
-              "${currentUser.user?.firstName ?? " "} ${currentUser.user?.lastName ?? " "}",
-              style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 20),
+            Center(
+              child: Text(
+                "${currentUser.user?.firstName ?? " "} ${currentUser.user?.lastName ?? " "}",
+                style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 20),
+              ),
             ),
             const SizedBox(height: 6),
-            Text(
-              'Utente dal ${currentUser.user?.createTms != null ? DateFormat('dd/MM/yyyy').format(DateTime.parse(currentUser.user!.createTms!)) : " "}',
-              style: const TextStyle(fontWeight: FontWeight.w300, fontSize: 14, color: AppColors.primaryTextColor),
+            Center(
+              child: Text(
+                'Utente dal ${currentUser.user?.createTms != null ? DateFormat('dd/MM/yyyy').format(DateTime.parse(currentUser.user!.createTms!)) : " "}',
+                style: const TextStyle(fontWeight: FontWeight.w300, fontSize: 14, color: AppColors.primaryTextColor),
+              ),
             ),
             const SizedBox(
               height: 20,
@@ -87,33 +90,48 @@ class _ProfileControllerState extends State<ProfileController> with ConnectionAw
               kgCO2Saved: 456,
             ),
             TableViewCell(
-                leading: Icon(
-                  Icons.person_pin_circle,
+                leading: SvgPicture.asset(
+                  ImageSrc.positionLeadingCell,
                   color: AppColors.cardColor,
+                  width: 36,
+                  height: 36,
                 ),
                 title: "I tuoi pudo",
                 onTap: () {
                   Navigator.of(context).pushNamed(Routes.pudoList);
                 }),
             TableViewCell(
-              leading: Icon(
-                Icons.new_label,
+              leading: SvgPicture.asset(
+                ImageSrc.packReceivedLeadingIcon,
                 color: AppColors.cardColor,
+                width: 36,
+                height: 36,
               ),
               title: "Le tue spedizioni",
               onTap: () {},
             ),
             TableViewCell(
-                leading: Icon(
-                  Icons.logout,
-                  color: AppColors.cardColor,
-                ),
-                title: "Logout",
-                onTap: () {
-                  Navigator.pop(context);
-                  NetworkManager.instance.setAccessToken(null);
-                  currentUser.refresh();
-                }),
+              leading: SvgPicture.asset(
+                ImageSrc.logoutIcon,
+                color: AppColors.cardColor,
+                width: 36,
+                height: 36,
+              ),
+              title: "Logout",
+              onTap: () {
+                Navigator.pop(context);
+                NetworkManager.instance.setAccessToken(null);
+                currentUser.refresh();
+              },
+            ),
+            TableViewCell(
+              title: "Elimina account",
+              textAlign: TextAlign.center,
+              textStyle: Theme.of(context).textTheme.bodyTextBold?.copyWith(
+                    color: Colors.red,
+                  ),
+              showTrailingChevron: false,
+            ),
           ]),
         ),
       );

@@ -22,6 +22,7 @@ import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:qui_green/app.dart';
 import 'package:qui_green/controllers/about_you_controller.dart';
@@ -43,6 +44,7 @@ import 'package:qui_green/controllers/registration_complete_controller.dart';
 import 'package:qui_green/controllers/thanks_controller.dart';
 import 'package:qui_green/controllers/user_position_controller.dart';
 import 'package:qui_green/models/pudo_profile.dart';
+import 'package:qui_green/resources/res.dart';
 import 'package:qui_green/resources/routes_enum.dart';
 
 dynamic routeWithSetting(RouteSettings settings) {
@@ -79,36 +81,53 @@ dynamic routeWithSetting(RouteSettings settings) {
       );
     case Routes.userPosition:
       return CupertinoPageRoute(
-        builder: (context) => const UserPositionController(),
+        builder: (context) => const UserPositionController(
+          canGoBack: false,
+          userCupertinoScaffold: false,
+        ),
       );
     case Routes.insertAddress:
       return CupertinoPageRoute(
-        builder: (context) => const InsertAddressController(),
+        builder: (context) => const InsertAddressController(
+          userCupertinoScaffold: false,
+        ),
       );
     case Routes.maps:
       return CupertinoPageRoute(
-        builder: (context) =>
-            MapsController(initialPosition: settings.arguments as LatLng),
+        builder: (context) => MapsController(
+          canGoBack: true,
+          initialPosition: settings.arguments as LatLng,
+          useCupertinoScaffold: false,
+          enableAddressSearch: false,
+          enablePudoCards: true,
+          getUserPosition: false,
+          title: "Ecco i punti di ritiro vicino a te",
+        ),
       );
     case Routes.pudoDetail:
       return CupertinoPageRoute(
-        builder: (context) =>
-            PudoDetailController(dataModel: settings.arguments as PudoProfile),
+        builder: (context) => PudoDetailController(
+          dataModel: settings.arguments as PudoProfile,
+          checkIsAlreadyAdded: false,
+          nextRoute: Routes.personalData,
+          userCupertinoScaffold: false,
+        ),
       );
     case Routes.personalData:
       return CupertinoPageRoute(
-        builder: (context) => PersonalDataController(
-            pudoDataModel: settings.arguments as PudoProfile?),
+        builder: (context) => PersonalDataController(pudoDataModel: settings.arguments as PudoProfile?),
       );
     case Routes.registrationComplete:
       return CupertinoPageRoute(
-        builder: (context) => RegistrationCompleteController(
-            pudoDataModel: settings.arguments as PudoProfile?),
+        builder: (context) => RegistrationCompleteController(pudoDataModel: settings.arguments as PudoProfile?, useCupertinoScaffold: false, canGoBack: false),
       );
     case Routes.instruction:
       return CupertinoPageRoute(
         builder: (context) => InstructionController(
-            pudoDataModel: settings.arguments as PudoProfile?),
+          pudoDataModel: settings.arguments as PudoProfile?,
+          userCupertinoScaffold: false,
+          canGoBack: false,
+        ),
       );
     case Routes.thanks:
       return CupertinoPageRoute(
@@ -140,8 +159,13 @@ dynamic routeWithSetting(RouteSettings settings) {
       );
     default:
       return CupertinoPageRoute(
-        builder: (context) => const Scaffold(
-          body: Center(child: CircularProgressIndicator()),
+        builder: (context) => Scaffold(
+          body: Center(
+              child: SvgPicture.asset(
+            ImageSrc.launcherIcon,
+            width: 120,
+            height: 120,
+          )),
         ),
       );
   }

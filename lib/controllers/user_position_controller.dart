@@ -18,81 +18,117 @@
  If not, see <https://github.com/lessgreen/OpenPUDO>.
 */
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
-import 'package:qui_green/widgets/main_button.dart';
-import 'package:qui_green/view_models/user_position_controller_viewmodel.dart';
+import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
 import 'package:qui_green/resources/res.dart';
+import 'package:qui_green/view_models/user_position_controller_viewmodel.dart';
+import 'package:qui_green/widgets/main_button.dart';
 
 class UserPositionController extends StatefulWidget {
-  const UserPositionController({Key? key}) : super(key: key);
+  const UserPositionController({Key? key, required this.canGoBack, required this.userCupertinoScaffold}) : super(key: key);
+  final bool canGoBack;
+  final bool userCupertinoScaffold;
 
   @override
   _UserPositionControllerState createState() => _UserPositionControllerState();
 }
 
 class _UserPositionControllerState extends State<UserPositionController> {
-  @override
-  Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-        create: (context) => UserPositionControllerViewModel(),
-        child: Consumer<UserPositionControllerViewModel?>(builder: (_, viewModel, __) {
-          return WillPopScope(
-            onWillPop: () async => false,
-            child: Scaffold(
-              resizeToAvoidBottomInset: true,
-              appBar: AppBar(
-                backgroundColor: Colors.transparent,
-                systemOverlayStyle: SystemUiOverlayStyle.dark,
-                leading: const SizedBox(),
-              ),
-              body: Column(
-                children: [
+  Widget _buildPageWithCupertinoScaffold(UserPositionControllerViewModel viewModel) => CupertinoPageScaffold(
+      resizeToAvoidBottomInset: true,
+      navigationBar: CupertinoNavigationBar(
+        padding: const EdgeInsetsDirectional.all(0),
+        brightness: Brightness.dark,
+        backgroundColor: AppColors.primaryColorDark,
+        leading: widget.canGoBack
+            ? CupertinoNavigationBarBackButton(
+                color: Colors.white,
+                onPressed: () => Navigator.of(context).pop(),
+              )
+            : null,
+        middle: Text(
+          "Vediamo dove ti trovi",
+          style: Theme.of(context).textTheme.navBarTitle,
+          maxLines: 1,
+        ),
+      ),
+      child: _buildBody(viewModel));
+
+  Widget _buildPageWithBaseScaffold(UserPositionControllerViewModel viewModel) => Scaffold(
+      resizeToAvoidBottomInset: true,
+      appBar: AppBar(
+        backgroundColor: ThemeData.light().scaffoldBackgroundColor,
+        systemOverlayStyle: SystemUiOverlayStyle.dark,
+        leading: widget.canGoBack
+            ? CupertinoNavigationBarBackButton(
+                color: AppColors.primaryColorDark,
+                onPressed: () => Navigator.of(context).pop(),
+              )
+            : null,
+      ),
+      body: _buildBody(viewModel));
+
+  Widget _buildBody(UserPositionControllerViewModel viewModel) => SafeArea(
+        child: Stack(
+          children: [
+            SvgPicture.asset(ImageSrc.userPositionArt, semanticsLabel: 'Art Background'),
+            Column(
+              children: [
+                if (!widget.userCupertinoScaffold)
                   Center(
                     child: Text(
                       'Vediamo dove ti trovi',
                       style: Theme.of(context).textTheme.headline6,
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
-                    child: Center(
-                      child: Text(
-                        'Per poterti fornire informazioni rilevanti\nabbiamo bisogno di accedere alla tua posizione.',
-                        textAlign: TextAlign.center,
-                        style: Theme.of(context).textTheme.subtitle1,
-                      ),
+                if (widget.userCupertinoScaffold) const SizedBox(height: Dimension.padding),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+                  child: Center(
+                    child: Text(
+                      'Per poterti fornire informazioni rilevanti\nabbiamo bisogno di accedere alla tua posizione.',
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.subtitle1,
                     ),
                   ),
-                  const Spacer(),
-                  SvgPicture.asset(ImageSrc.userPositionArt, semanticsLabel: 'Art Background'),
-                  const Spacer(),
-                  MainButton(
-                    padding: const EdgeInsets.symmetric(horizontal: Dimension.padding),
-                    onPressed: () async {
-                      viewModel?.tryGetUserLocation().then((value) {
-                        if (value != null) {
-                          viewModel.onMapClick(context);
-                        }
-                      });
-                    },
-                    text: 'Ok, grazie!',
+                ),
+                const Spacer(),
+                MainButton(
+                  padding: const EdgeInsets.symmetric(horizontal: Dimension.padding),
+                  onPressed: () async {
+                    viewModel.tryGetUserLocation().then((value) {
+                      if (value != null) {
+                        viewModel.onMapClick(context);
+                      }
+                    });
+                  },
+                  text: 'Ok, grazie!',
+                ),
+                const SizedBox(height: Dimension.padding),
+                MainButton(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: Dimension.padding,
                   ),
-                  const SizedBox(height: Dimension.padding),
-                  MainButton(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: Dimension.padding,
-                    ),
-                    onPressed: () => viewModel?.onAddAddressClick(context),
-                    text: 'Inserisci indirizzo',
-                  ),
-                  const SizedBox(height: Dimension.paddingL)
-                ],
-              ),
+                  onPressed: () => viewModel.onAddAddressClick(context),
+                  text: 'Inserisci indirizzo',
+                ),
+                const SizedBox(height: Dimension.paddingL)
+              ],
             ),
-          );
+          ],
+        ),
+      );
+
+  @override
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider(
+        create: (context) => UserPositionControllerViewModel(),
+        child: Consumer<UserPositionControllerViewModel?>(builder: (_, viewModel, __) {
+          return WillPopScope(onWillPop: () async => false, child: widget.userCupertinoScaffold ? _buildPageWithCupertinoScaffold(viewModel!) : _buildPageWithBaseScaffold(viewModel!));
         }));
   }
 }

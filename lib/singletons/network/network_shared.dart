@@ -65,7 +65,9 @@ mixin NetworkGeneral {
   late SharedPreferences _sharedPreferences;
   AccessTokenData? _accessTokenData;
   bool _isOnline = true;
+
   bool get isOnline => _isOnline;
+
   set isOnline(bool newValue) {
     _isOnline = newValue;
   }
@@ -120,8 +122,7 @@ mixin NetworkGeneral {
         _networkActivity.value = true;
       });
       Response response = await r.retry(
-        () => post(Uri.parse(url), headers: _headers)
-            .timeout(Duration(seconds: _timeout)),
+        () => post(Uri.parse(url), headers: _headers).timeout(Duration(seconds: _timeout)),
         retryIf: (e) => e is SocketException || e is TimeoutException,
       );
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
@@ -139,8 +140,7 @@ mixin NetworkGeneral {
         return baseResponse;
       } else {
         _refreshTokenRetryCounter++;
-        throw ErrorDescription(
-            'Error ${baseResponse.returnCode}: ${baseResponse.message}');
+        throw ErrorDescription('Error ${baseResponse.returnCode}: ${baseResponse.message}');
       }
     } catch (e) {
       _refreshTokenRetryCounter++;
@@ -154,8 +154,7 @@ mixin NetworkGeneral {
     _accessTokenData = newVal;
   }
 
-  get accessTokenAccess =>
-      _accessTokenData == null ? "none" : _accessTokenData!.accessProfile;
+  get accessTokenAccess => _accessTokenData == null ? "none" : _accessTokenData!.accessProfile;
 
   void setAccessToken(String? accessToken) {
     if (accessToken != null) {
@@ -171,8 +170,7 @@ mixin NetworkGeneral {
     _sharedPreferences.remove('accessToken');
   }
 
-  bool _handleTokenRefresh(
-      OPBaseResponse baseResponse, Function? retryCallack) {
+  bool _handleTokenRefresh(OPBaseResponse baseResponse, Function? retryCallack) {
     if (baseResponse.returnCode == 401) {
       //try to refreshToken
       if (_refreshTokenRetryCounter > _maxRetryCounter) {
@@ -185,16 +183,14 @@ mixin NetworkGeneral {
           retryCallack?.call();
         });
       } else {
-        throw ErrorDescription(
-            'Error: ${baseResponse.returnCode} - ${baseResponse.message}');
+        throw ErrorDescription('Error: ${baseResponse.returnCode} - ${baseResponse.message}');
       }
       return true;
     }
     return false;
   }
 
-  Future<dynamic> getAddresses(
-      {double? lat, double? lon, required String text}) async {
+  Future<dynamic> getAddresses({double? lat, double? lon, required String text}) async {
     var queryString = "?text=$text";
     if (lat != null && lon != null) {
       queryString += "&lat=$lat&lon=$lon";
@@ -210,8 +206,7 @@ mixin NetworkGeneral {
         _networkActivity.value = true;
       });
       Response response = await r.retry(
-        () => get(Uri.parse(url), headers: _headers)
-            .timeout(Duration(seconds: _timeout)),
+        () => get(Uri.parse(url), headers: _headers).timeout(Duration(seconds: _timeout)),
         retryIf: (e) => e is SocketException || e is TimeoutException,
       );
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
@@ -225,21 +220,68 @@ mixin NetworkGeneral {
       var needHandleTokenRefresh = _handleTokenRefresh(
         baseResponse,
         () {
-          getAddresses(lat: lat, lon: lon, text: text)
-              .catchError((onError) => throw onError);
+          getAddresses(lat: lat, lon: lon, text: text).catchError((onError) => throw onError);
         },
       );
       if (needHandleTokenRefresh == false) {
-        if (baseResponse.returnCode == 0 &&
-            baseResponse.payload != null &&
-            baseResponse.payload is List) {
+        if (baseResponse.returnCode == 0 && baseResponse.payload != null && baseResponse.payload is List) {
           for (dynamic aRow in baseResponse.payload) {
             pudos.add(GeoMarker.fromJson(aRow));
           }
           return pudos;
         } else {
-          throw ErrorDescription(
-              'Error ${baseResponse.returnCode}: ${baseResponse.message}');
+          throw ErrorDescription('Error ${baseResponse.returnCode}: ${baseResponse.message}');
+        }
+      }
+    } catch (e) {
+      safePrint('ERROR - getAddress: $e');
+      _refreshTokenRetryCounter = 0;
+      _networkActivity.value = false;
+      return e;
+    }
+  }
+
+  Future<dynamic> getGeoMarkers({double? lat, double? lon, required String text}) async {
+    var queryString = "?text=$text";
+    if (lat != null && lon != null) {
+      queryString += "&lat=$lat&lon=$lon";
+    }
+    if (_accessToken != null) {
+      _headers['Authorization'] = 'Bearer $_accessToken';
+    }
+
+    var url = _baseURL + '/api/v2/map/search/$queryString';
+
+    try {
+      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+        _networkActivity.value = true;
+      });
+      Response response = await r.retry(
+        () => get(Uri.parse(url), headers: _headers).timeout(Duration(seconds: _timeout)),
+        retryIf: (e) => e is SocketException || e is TimeoutException,
+      );
+      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+        _networkActivity.value = false;
+      });
+      final codeUnits = response.body.codeUnits;
+      var decodedUTF8 = const Utf8Decoder().convert(codeUnits);
+      var json = jsonDecode(decodedUTF8);
+      var baseResponse = OPBaseResponse.fromJson(json);
+      List<GeoMarker> pudos = <GeoMarker>[];
+      var needHandleTokenRefresh = _handleTokenRefresh(
+        baseResponse,
+        () {
+          getAddresses(lat: lat, lon: lon, text: text).catchError((onError) => throw onError);
+        },
+      );
+      if (needHandleTokenRefresh == false) {
+        if (baseResponse.returnCode == 0 && baseResponse.payload != null && baseResponse.payload is List) {
+          for (dynamic aRow in baseResponse.payload) {
+            pudos.add(GeoMarker.fromJson(aRow));
+          }
+          return pudos;
+        } else {
+          throw ErrorDescription('Error ${baseResponse.returnCode}: ${baseResponse.message}');
         }
       }
     } catch (e) {
@@ -255,10 +297,7 @@ mixin NetworkGeneral {
       _headers['Authorization'] = 'Bearer $_accessToken';
     }
 
-    var url = _baseURL +
-        ((isPudo != null && isPudo == true)
-            ? '/api/v2/pudo/me/picture'
-            : '/api/v2/user/me/picture');
+    var url = _baseURL + ((isPudo != null && isPudo == true) ? '/api/v2/pudo/me/picture' : '/api/v2/user/me/picture');
     var uri = Uri.parse(url);
 
     // create multipart request
@@ -290,15 +329,13 @@ mixin NetworkGeneral {
       var baseResponse = OPBaseResponse.fromJson(json);
 
       var needHandleTokenRefresh = _handleTokenRefresh(baseResponse, () {
-        photoUpload(anImage, isPudo: isPudo)
-            .catchError((onError) => throw onError);
+        photoUpload(anImage, isPudo: isPudo).catchError((onError) => throw onError);
       });
       if (needHandleTokenRefresh == false) {
         if (baseResponse.returnCode == 0) {
           return null;
         } else {
-          throw ErrorDescription(
-              'Error ${baseResponse.returnCode}: ${baseResponse.message}');
+          throw ErrorDescription('Error ${baseResponse.returnCode}: ${baseResponse.message}');
         }
       }
     } catch (e) {
@@ -322,8 +359,7 @@ mixin NetworkGeneral {
         _networkActivity.value = true;
       });
       Response response = await r.retry(
-        () => post(Uri.parse(url), body: body, headers: _headers)
-            .timeout(Duration(seconds: _timeout)),
+        () => post(Uri.parse(url), body: body, headers: _headers).timeout(Duration(seconds: _timeout)),
         retryIf: (e) => e is SocketException || e is TimeoutException,
       );
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
@@ -337,18 +373,14 @@ mixin NetworkGeneral {
       var needHandleTokenRefresh = _handleTokenRefresh(
         baseResponse,
         () {
-          setDeviceInfo(infoRequest: infoRequest)
-              .catchError((onError) => throw onError);
+          setDeviceInfo(infoRequest: infoRequest).catchError((onError) => throw onError);
         },
       );
       if (needHandleTokenRefresh == false) {
-        if (baseResponse.returnCode == 0 &&
-            baseResponse.payload != null &&
-            baseResponse.payload is Map) {
+        if (baseResponse.returnCode == 0 && baseResponse.payload != null && baseResponse.payload is Map) {
           return UserProfile.fromJson(baseResponse.payload);
         } else {
-          throw ErrorDescription(
-              'Error ${baseResponse.returnCode}: ${baseResponse.message}');
+          throw ErrorDescription('Error ${baseResponse.returnCode}: ${baseResponse.message}');
         }
       }
     } catch (e) {

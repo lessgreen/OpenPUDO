@@ -23,15 +23,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
+import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
 import 'package:qui_green/commons/utilities/keyboard_visibility.dart';
+import 'package:qui_green/resources/res.dart';
 import 'package:qui_green/singletons/network/network_manager.dart';
-import 'package:qui_green/widgets/main_button.dart';
 import 'package:qui_green/view_models/insert_address_controller_viewmodel.dart';
 import 'package:qui_green/widgets/address_field.dart';
-import 'package:qui_green/resources/res.dart';
+import 'package:qui_green/widgets/main_button.dart';
 
 class InsertAddressController extends StatefulWidget {
-  const InsertAddressController({Key? key}) : super(key: key);
+  const InsertAddressController({Key? key, required this.userCupertinoScaffold}) : super(key: key);
+  final bool userCupertinoScaffold;
 
   @override
   _InsertAddressControllerState createState() => _InsertAddressControllerState();
@@ -48,6 +50,70 @@ class _InsertAddressControllerState extends State<InsertAddressController> with 
     });
   }
 
+  Widget _buildPageWithCupertinoScaffold(InsertAddressControllerViewModel viewModel, bool isKeyboardVisible) => CupertinoPageScaffold(
+      navigationBar: CupertinoNavigationBar(
+        padding: const EdgeInsetsDirectional.all(0),
+        brightness: Brightness.dark,
+        backgroundColor: AppColors.primaryColorDark,
+        middle: Text(
+          'Inserisci il tuo indirizzo',
+          style: Theme.of(context).textTheme.navBarTitle,
+        ),
+        leading: CupertinoNavigationBarBackButton(
+          color: Colors.white,
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+      ),
+      child: _buildBody(viewModel, isKeyboardVisible));
+
+  Widget _buildPageWithBaseScaffold(InsertAddressControllerViewModel viewModel, bool isKeyboardVisible) => Scaffold(
+        resizeToAvoidBottomInset: false,
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          systemOverlayStyle: SystemUiOverlayStyle.dark,
+          leading: CupertinoNavigationBarBackButton(
+            color: AppColors.primaryColorDark,
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+        ),
+        body: _buildBody(viewModel, isKeyboardVisible),
+      );
+
+  Widget _buildBody(InsertAddressControllerViewModel viewModel, bool isKeyboardVisible) => Stack(children: [
+        SvgPicture.asset(ImageSrc.userPositionArt, semanticsLabel: 'Art Background'),
+        Column(children: [
+          if (!widget.userCupertinoScaffold)
+            Center(
+              child: Text(
+                'Inserisci il tuo indirizzo',
+                style: Theme.of(context).textTheme.headline6,
+              ),
+            ),
+          if (widget.userCupertinoScaffold) const SizedBox(height: Dimension.padding),
+          Padding(
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+              child: AddressField(
+                viewModel: viewModel,
+                node: _address,
+              )),
+          const Spacer(),
+          const SizedBox(height: Dimension.padding),
+          AnimatedCrossFade(
+            crossFadeState: isKeyboardVisible
+                ? CrossFadeState.showSecond
+                : viewModel.hasSelected
+                    ? CrossFadeState.showFirst
+                    : CrossFadeState.showSecond,
+            secondChild: const SizedBox(),
+            firstChild: MainButton(
+              onPressed: () => viewModel.onSendClick(context),
+              text: 'Invia',
+            ),
+            duration: const Duration(milliseconds: 150),
+          ),
+        ]),
+      ]);
+
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
@@ -56,50 +122,7 @@ class _InsertAddressControllerState extends State<InsertAddressController> with 
           return KeyboardVisibilityBuilder(builder: (context, child, isKeyboardVisible) {
             return WillPopScope(
               onWillPop: () async => false,
-              child: Scaffold(
-                resizeToAvoidBottomInset: false,
-                appBar: AppBar(
-                  backgroundColor: Colors.transparent,
-                  systemOverlayStyle: SystemUiOverlayStyle.dark,
-                  leading: CupertinoNavigationBarBackButton(
-                    color: AppColors.primaryColorDark,
-                    onPressed: () => Navigator.of(context).pop(),
-                  ),
-                ),
-                body: Column(
-                  children: [
-                    Center(
-                      child: Text(
-                        'Inserisci il tuo indirizzo',
-                        style: Theme.of(context).textTheme.headline6,
-                      ),
-                    ),
-                    Padding(
-                        padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-                        child: AddressField(
-                          viewModel: viewModel!,
-                          node: _address,
-                        )),
-                    const Spacer(),
-                    SvgPicture.asset(ImageSrc.userPositionArt, semanticsLabel: 'Art Background'),
-                    const Spacer(),
-                    const SizedBox(height: Dimension.padding),
-                    AnimatedCrossFade(
-                      crossFadeState: isKeyboardVisible
-                          ? CrossFadeState.showSecond
-                          : viewModel.hasSelected
-                              ? CrossFadeState.showFirst
-                              : CrossFadeState.showSecond,
-                      secondChild: const SizedBox(),
-                      firstChild: MainButton(
-                        onPressed: () => viewModel.onSendClick(context),
-                        text: 'Invia',
-                      ),
-                      duration: const Duration(milliseconds: 150),
-                    ),
-                  ],
-                ),
-              ),
+              child: widget.userCupertinoScaffold ? _buildPageWithCupertinoScaffold(viewModel!, isKeyboardVisible) : _buildPageWithBaseScaffold(viewModel!, isKeyboardVisible),
             );
           });
         }));

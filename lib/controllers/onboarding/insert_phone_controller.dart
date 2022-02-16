@@ -71,54 +71,57 @@ class _InsertPhoneControllerState extends State<InsertPhoneController> with Conn
               systemOverlayStyle: SystemUiOverlayStyle.dark,
               leading: const SizedBox(),
             ),
-            body: Column(
+            body: Stack(
               children: [
-                Center(
-                  child: Text(
-                    'Inserisci il tuo numero telefonico',
-                    style: Theme.of(context).textTheme.headline6,
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
-                  child: Center(
-                    child: Text(
-                      'Ti invieremo un sms di conferma\nper assicurarci che sei tu.',
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.subtitle1,
+                SvgPicture.asset(ImageSrc.insertPhoneArt, semanticsLabel: 'Art Background'),
+                Column(
+                  children: [
+                    Center(
+                      child: Text(
+                        'Inserisci il tuo numero telefonico',
+                        style: Theme.of(context).textTheme.headline6,
+                      ),
                     ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-                  child: CupertinoTextField(
-                    decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Theme.of(context).primaryColor))),
-                    autofocus: false,
-                    focusNode: _phoneNumber,
-                    suffix: TextFieldButton(
-                      onPressed: () {
-                        setState(() {
-                          _phoneNumber.unfocus();
-                        });
-                      },
-                      text: isKeyboardVisible ? 'DONE' : "",
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+                      child: Center(
+                        child: Text(
+                          'Ti invieremo un sms di conferma\nper assicurarci che sei tu.',
+                          textAlign: TextAlign.center,
+                          style: Theme.of(context).textTheme.subtitle1,
+                        ),
+                      ),
                     ),
-                    keyboardType: TextInputType.phone,
-                    textInputAction: TextInputAction.done,
-                    onChanged: (newValue) {
-                      setState(() {
-                        _phoneNumberValue = newValue;
-                      });
-                    },
-                  ),
-                ),
-                const Spacer(),
-                SvgPicture.asset(ImageSrc.smsArt, semanticsLabel: 'Art Background'),
-                const Spacer(),
-                MainButton(
-                  onPressed: sendRequest,
-                  text: 'Invia',
-                  enabled: _phoneNumberValue.isValidPhoneNumber(),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+                      child: CupertinoTextField(
+                        decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Theme.of(context).primaryColor))),
+                        autofocus: false,
+                        focusNode: _phoneNumber,
+                        suffix: TextFieldButton(
+                          onPressed: () {
+                            setState(() {
+                              _phoneNumber.unfocus();
+                            });
+                          },
+                          text: isKeyboardVisible ? 'DONE' : "",
+                        ),
+                        keyboardType: TextInputType.phone,
+                        textInputAction: TextInputAction.done,
+                        onChanged: (newValue) {
+                          setState(() {
+                            _phoneNumberValue = newValue;
+                          });
+                        },
+                      ),
+                    ),
+                    const Spacer(),
+                    MainButton(
+                      onPressed: sendRequest,
+                      text: 'Invia',
+                      enabled: _phoneNumberValue.isValidPhoneNumber(),
+                    ),
+                  ],
                 ),
               ],
             ),
