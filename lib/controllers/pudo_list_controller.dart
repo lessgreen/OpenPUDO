@@ -59,7 +59,7 @@ class _PudoListControllerState extends State<PudoListController> {
     }).catchError((onError) => SAAlertDialog.displayAlertWithClose(context, "Error", onError));
   }
 
-  void getPudos() async {
+  Future<void> getPudos() async {
     NetworkManager.instance.getMyPudos().then((value) {
       if (value is List<PudoSummary>) {
         setState(() {
@@ -71,20 +71,31 @@ class _PudoListControllerState extends State<PudoListController> {
     }).catchError((onError) => SAAlertDialog.displayAlertWithClose(context, "Error", onError));
   }
 
-  Widget _buildEmptyPudos() => Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            'Non hai ancora aggiunto un pudo per le tue consegne!',
-            textAlign: TextAlign.center,
-            style: TextStyle(color: Colors.grey.shade600),
+  Widget _buildEmptyPudos() => LayoutBuilder(builder: (context, constraints) {
+        return RefreshIndicator(
+          onRefresh: () => getPudos(),
+          child: SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            child: SizedBox(
+              height: constraints.maxHeight,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'Non hai ancora aggiunto un pudo per le tue consegne!',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: Colors.grey.shade600),
+                  ),
+                  const SizedBox(
+                    height: Dimension.padding,
+                  ),
+                  MainButton(text: 'Vai', onPressed: () => Navigator.of(context).pushNamed(Routes.userPosition))
+                ],
+              ),
+            ),
           ),
-          const SizedBox(
-            height: Dimension.padding,
-          ),
-          MainButton(text: 'Vai', onPressed: () => Navigator.of(context).pushNamed(Routes.userPosition))
-        ],
-      );
+        );
+      });
 
   Widget _buildPudos() => ListView(
         children: [

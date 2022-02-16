@@ -321,13 +321,17 @@ class _MapsControllerState extends State<MapsController> with ConnectionAware, T
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
       create: (context) => MapsControllerViewModel(),
-      child: Consumer<MapsControllerViewModel?>(
-        builder: (_, viewModel, __) {
-          viewModel?.animateMapTo = animateMapTo;
-          viewModel?.showErrorDialog = (String val) => _showErrorDialog(context, val);
-          return WillPopScope(onWillPop: () async => false, child: widget.useCupertinoScaffold ? _buildPageWithCupertinoScaffold(viewModel!) : _buildPageWithCustomSpecificScaffold(viewModel!));
-        },
-      ),
+      child: Consumer<MapsControllerViewModel?>(builder: (_, viewModel, __) {
+        viewModel?.animateMapTo = animateMapTo;
+        viewModel?.showErrorDialog = (String val) => _showErrorDialog(context, val);
+        if (widget.canGoBack) {
+          return widget.useCupertinoScaffold ? _buildPageWithCupertinoScaffold(viewModel!) : _buildPageWithCustomSpecificScaffold(viewModel!);
+        }
+        return WillPopScope(
+          onWillPop: () async => false,
+          child: widget.useCupertinoScaffold ? _buildPageWithCupertinoScaffold(viewModel!) : _buildPageWithCustomSpecificScaffold(viewModel!),
+        );
+      }),
     );
   }
 }
