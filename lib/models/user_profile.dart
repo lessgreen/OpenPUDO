@@ -31,8 +31,9 @@ class UserProfile {
   String? profilePicId;
   final int? userId;
   bool? pudoOwner;
+  final int? packageCount;
 
-  UserProfile({required this.firstName, required this.lastName, this.ssn, this.createTms, this.profilePicId, this.userId, this.pudoOwner});
+  UserProfile({required this.firstName, required this.lastName, this.ssn, this.createTms, this.profilePicId, this.userId, this.pudoOwner, this.packageCount});
 
   factory UserProfile.fromJson(Map<String, dynamic> json) => _$UserProfileFromJson(json);
 

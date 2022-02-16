@@ -14,6 +14,7 @@ UserProfile _$UserProfileFromJson(Map<String, dynamic> json) => UserProfile(
       profilePicId: json['profilePicId'] as String?,
       userId: json['userId'] as int?,
       pudoOwner: json['pudoOwner'] as bool?,
+      packageCount: json['packageCount'] as int?,
     );
 
 Map<String, dynamic> _$UserProfileToJson(UserProfile instance) =>
@@ -25,4 +26,5 @@ Map<String, dynamic> _$UserProfileToJson(UserProfile instance) =>
       'profilePicId': instance.profilePicId,
       'userId': instance.userId,
       'pudoOwner': instance.pudoOwner,
+      'packageCount': instance.packageCount,
     };
