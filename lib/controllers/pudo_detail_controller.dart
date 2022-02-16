@@ -56,25 +56,23 @@ class _PudoDetailControllerState extends State<PudoDetailController> with Connec
         padding: const EdgeInsets.symmetric(horizontal: Dimension.padding),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           const SizedBox(height: Dimension.padding),
-          Row(
-            children: [
-              Text(
-                widget.dataModel.businessName,
-                style: const TextStyle(fontSize: 18),
-              ),
-              const SizedBox(
-                width: Dimension.paddingS,
-              ),
-              Row(
-                children: List<Widget>.generate(
-                  5,
-                  (index) => Icon(
-                    Icons.star_rounded,
-                    color: (index + 1 <= (widget.dataModel.rating?.stars ?? 0)) ? Colors.yellow.shade700 : Colors.grey.shade200,
+          RichText(
+            textAlign: TextAlign.start,
+            text: TextSpan(style: Theme.of(context).textTheme.headline6, children: [
+              TextSpan(text: widget.dataModel.businessName),
+              WidgetSpan(
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: List<Widget>.generate(
+                    5,
+                    (index) => Icon(
+                      Icons.star_rounded,
+                      color: (index + 1 <= (widget.dataModel.rating?.stars ?? 0)) ? Colors.yellow.shade700 : Colors.grey.shade200,
+                    ),
                   ),
                 ),
               ),
-            ],
+            ]),
           ),
           const SizedBox(height: Dimension.paddingS),
           RichText(
@@ -166,6 +164,7 @@ class _PudoDetailControllerState extends State<PudoDetailController> with Connec
         middle: Text(
           widget.dataModel.businessName,
           style: Theme.of(context).textTheme.navBarTitle,
+          overflow: TextOverflow.ellipsis,
           maxLines: 1,
         ),
         trailing: !nextVisible
@@ -186,6 +185,7 @@ class _PudoDetailControllerState extends State<PudoDetailController> with Connec
         title: Text(
           widget.dataModel.businessName,
           style: Theme.of(context).textTheme.navBarTitleDark,
+          overflow: TextOverflow.ellipsis,
           maxLines: 1,
         ),
         centerTitle: true,
