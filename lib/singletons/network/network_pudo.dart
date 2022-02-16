@@ -22,8 +22,7 @@ part of 'network_shared.dart';
 
 mixin NetworkManagerPudo on NetworkGeneral {
   //TODO: implement API calls (pudo related)
-  Future<dynamic> getSuggestedZoom(
-      {required double lat, required double lon}) async {
+  Future<dynamic> getSuggestedZoom({required double lat, required double lon, bool showNetworkActivity = false}) async {
     try {
       if (!isOnline) {
         throw ("Network is offline");
@@ -35,17 +34,20 @@ mixin NetworkManagerPudo on NetworkGeneral {
       var queryString = "?lat=$lat&lon=$lon";
 
       var url = _baseURL + '/api/v2/map/suggested-zoom$queryString';
-      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
-        _networkActivity.value = true;
-      });
+      if (showNetworkActivity) {
+        WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+          _networkActivity.value = true;
+        });
+      }
       Response response = await r.retry(
-        () => get(Uri.parse(url), headers: _headers)
-            .timeout(Duration(seconds: _timeout)),
+        () => get(Uri.parse(url), headers: _headers).timeout(Duration(seconds: _timeout)),
         retryIf: (e) => e is SocketException || e is TimeoutException,
       );
-      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
-        _networkActivity.value = false;
-      });
+      if (showNetworkActivity) {
+        WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+          _networkActivity.value = false;
+        });
+      }
 
       final codeUnits = response.body.codeUnits;
       var decodedUTF8 = const Utf8Decoder().convert(codeUnits);
@@ -55,18 +57,14 @@ mixin NetworkManagerPudo on NetworkGeneral {
       var needHandleTokenRefresh = _handleTokenRefresh(
         baseResponse,
         () {
-          getSuggestedZoom(lat: lat, lon: lon)
-              .catchError((onError) => throw onError);
+          getSuggestedZoom(lat: lat, lon: lon).catchError((onError) => throw onError);
         },
       );
       if (needHandleTokenRefresh == false) {
-        if (baseResponse.returnCode == 0 &&
-            baseResponse.payload != null &&
-            baseResponse.payload is int) {
+        if (baseResponse.returnCode == 0 && baseResponse.payload != null && baseResponse.payload is int) {
           return baseResponse.payload;
         } else {
-          throw ErrorDescription(
-              'Error ${baseResponse.returnCode}: ${baseResponse.message}');
+          throw ErrorDescription('Error ${baseResponse.returnCode}: ${baseResponse.message}');
         }
       }
     } catch (e) {
@@ -91,8 +89,7 @@ mixin NetworkManagerPudo on NetworkGeneral {
         _networkActivity.value = true;
       });
       Response response = await r.retry(
-        () => get(Uri.parse(url), headers: _headers)
-            .timeout(Duration(seconds: _timeout)),
+        () => get(Uri.parse(url), headers: _headers).timeout(Duration(seconds: _timeout)),
         retryIf: (e) => e is SocketException || e is TimeoutException,
       );
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
@@ -110,13 +107,10 @@ mixin NetworkManagerPudo on NetworkGeneral {
         },
       );
       if (needHandleTokenRefresh == false) {
-        if (baseResponse.returnCode == 0 &&
-            baseResponse.payload != null &&
-            baseResponse.payload is Map) {
+        if (baseResponse.returnCode == 0 && baseResponse.payload != null && baseResponse.payload is Map) {
           return PudoProfile.fromJson(baseResponse.payload);
         } else {
-          throw ErrorDescription(
-              'Error ${baseResponse.returnCode}: ${baseResponse.message}');
+          throw ErrorDescription('Error ${baseResponse.returnCode}: ${baseResponse.message}');
         }
       }
     } catch (e) {
@@ -127,8 +121,7 @@ mixin NetworkManagerPudo on NetworkGeneral {
     }
   }
 
-  Future<dynamic> getPudos(
-      {double? lat, double? lon, int? zoom, String? text}) async {
+  Future<dynamic> getPudos({double? lat, double? lon, int? zoom, String? text, bool showNetworkActivity = false}) async {
     try {
       if (!isOnline) {
         throw ("Network is offline");
@@ -144,17 +137,20 @@ mixin NetworkManagerPudo on NetworkGeneral {
       }
 
       var url = _baseURL + '/api/v2/map/pudos$queryString';
-      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
-        _networkActivity.value = true;
-      });
+      if (showNetworkActivity) {
+        WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+          _networkActivity.value = true;
+        });
+      }
       Response response = await r.retry(
-        () => get(Uri.parse(url), headers: _headers)
-            .timeout(Duration(seconds: _timeout)),
+        () => get(Uri.parse(url), headers: _headers).timeout(Duration(seconds: _timeout)),
         retryIf: (e) => e is SocketException || e is TimeoutException,
       );
-      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
-        _networkActivity.value = false;
-      });
+      if (showNetworkActivity) {
+        WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+          _networkActivity.value = false;
+        });
+      }
       final codeUnits = response.body.codeUnits;
       var decodedUTF8 = const Utf8Decoder().convert(codeUnits);
       var json = jsonDecode(decodedUTF8);
@@ -164,21 +160,17 @@ mixin NetworkManagerPudo on NetworkGeneral {
       var needHandleTokenRefresh = _handleTokenRefresh(
         baseResponse,
         () {
-          getPudos(lat: lat, lon: lon, zoom: zoom)
-              .catchError((onError) => throw onError);
+          getPudos(lat: lat, lon: lon, zoom: zoom, showNetworkActivity: showNetworkActivity).catchError((onError) => throw onError);
         },
       );
       if (needHandleTokenRefresh == false) {
-        if (baseResponse.returnCode == 0 &&
-            baseResponse.payload != null &&
-            baseResponse.payload is List) {
+        if (baseResponse.returnCode == 0 && baseResponse.payload != null && baseResponse.payload is List) {
           for (dynamic aRow in baseResponse.payload) {
             pudos.add(GeoMarker.fromJson(aRow));
           }
           return pudos;
         } else {
-          throw ErrorDescription(
-              'Error ${baseResponse.returnCode}: ${baseResponse.message}');
+          throw ErrorDescription('Error ${baseResponse.returnCode}: ${baseResponse.message}');
         }
       }
     } catch (e) {
