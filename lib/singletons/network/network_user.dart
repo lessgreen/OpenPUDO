@@ -290,6 +290,54 @@ mixin NetworkManagerUser on NetworkGeneral {
     }
   }
 
+  Future<dynamic> deletePudoFavorite(String id) async {
+    try {
+      if (!isOnline) {
+        throw ("Network is offline");
+      }
+      if (_accessToken != null) {
+        _headers['Authorization'] = 'Bearer $_accessToken';
+      }
+
+      var url = _baseURL + '/api/v2/user/me/pudos/' + id;
+      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+        _networkActivity.value = true;
+      });
+      Response response = await delete(Uri.parse(url), headers: _headers)
+          .timeout(Duration(seconds: _timeout));
+      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+        _networkActivity.value = false;
+      });
+      final codeUnits = response.body.codeUnits;
+      var decodedUTF8 = const Utf8Decoder().convert(codeUnits);
+      var json = jsonDecode(decodedUTF8);
+      var baseResponse = OPBaseResponse.fromJson(json);
+      List<PudoSummary> myPudos = <PudoSummary>[];
+
+      var needHandleTokenRefresh = _handleTokenRefresh(baseResponse, () {
+        deletePudoFavorite(id).catchError((onError) => throw onError);
+      });
+      if (needHandleTokenRefresh == false) {
+        if (baseResponse.returnCode == 0 &&
+            baseResponse.payload != null &&
+            baseResponse.payload is List) {
+          for (dynamic aRow in baseResponse.payload) {
+            myPudos.add(PudoSummary.fromJson(aRow));
+          }
+          return myPudos;
+        } else {
+          throw ErrorDescription(
+              'Error ${baseResponse.returnCode}: ${baseResponse.message}');
+        }
+      }
+    } catch (e) {
+      safePrint('ERROR - deletePudoFavorite: $e');
+      _refreshTokenRetryCounter = 0;
+      _networkActivity.value = false;
+      return e;
+    }
+  }
+
   Future<dynamic> deleteProfilePic({bool? isPudo = false}) async {
     try {
       if (!isOnline) {

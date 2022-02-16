@@ -119,8 +119,12 @@ class SAAlertDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text(title),
-      content: Text(description),
+      title: Center(child: Text(title)),
+      content: Text(
+        description,
+        textAlign: TextAlign.center,
+      ),
+      actionsAlignment: MainAxisAlignment.center,
       actions: actions,
     );
   }

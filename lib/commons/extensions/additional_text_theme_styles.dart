@@ -20,6 +20,7 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:qui_green/resources/res.dart';
 
 extension AdditionalTextTheme on TextTheme {
   TextStyle? get navBarTitle => headline6?.copyWith(color: Colors.white, fontWeight: FontWeight.w400);
@@ -31,4 +32,6 @@ extension AdditionalTextTheme on TextTheme {
   TextStyle? get bodyTextBold => bodyText1?.copyWith(fontWeight: FontWeight.w500);
 
   TextStyle? get bodyTextItalic => bodyText1?.copyWith(fontStyle: FontStyle.italic);
+  TextStyle? get dialogButtonRefuse => headline6?.copyWith(fontWeight: FontWeight.w500);
+  TextStyle? get dialogButtonAccept => headline6?.copyWith(color: AppColors.primaryColorDark, fontWeight: FontWeight.w500);
 }
