@@ -83,13 +83,13 @@ dynamic routeWithSetting(RouteSettings settings) {
       return CupertinoPageRoute(
         builder: (context) => const UserPositionController(
           canGoBack: false,
-          userCupertinoScaffold: false,
+          useCupertinoScaffold: false,
         ),
       );
     case Routes.insertAddress:
       return CupertinoPageRoute(
         builder: (context) => const InsertAddressController(
-          userCupertinoScaffold: false,
+          useCupertinoScaffold: false,
         ),
       );
     case Routes.maps:
@@ -110,7 +110,7 @@ dynamic routeWithSetting(RouteSettings settings) {
           dataModel: settings.arguments as PudoProfile,
           checkIsAlreadyAdded: false,
           nextRoute: Routes.personalData,
-          userCupertinoScaffold: false,
+          useCupertinoScaffold: false,
         ),
       );
     case Routes.personalData:
@@ -125,7 +125,7 @@ dynamic routeWithSetting(RouteSettings settings) {
       return CupertinoPageRoute(
         builder: (context) => InstructionController(
           pudoDataModel: settings.arguments as PudoProfile?,
-          userCupertinoScaffold: false,
+          useCupertinoScaffold: false,
           canGoBack: false,
         ),
       );

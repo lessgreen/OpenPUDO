@@ -29,9 +29,9 @@ import 'package:qui_green/view_models/user_position_controller_viewmodel.dart';
 import 'package:qui_green/widgets/main_button.dart';
 
 class UserPositionController extends StatefulWidget {
-  const UserPositionController({Key? key, required this.canGoBack, required this.userCupertinoScaffold}) : super(key: key);
+  const UserPositionController({Key? key, required this.canGoBack, required this.useCupertinoScaffold}) : super(key: key);
   final bool canGoBack;
-  final bool userCupertinoScaffold;
+  final bool useCupertinoScaffold;
 
   @override
   _UserPositionControllerState createState() => _UserPositionControllerState();
@@ -78,14 +78,14 @@ class _UserPositionControllerState extends State<UserPositionController> {
             SvgPicture.asset(ImageSrc.userPositionArt, semanticsLabel: 'Art Background'),
             Column(
               children: [
-                if (!widget.userCupertinoScaffold)
+                if (!widget.useCupertinoScaffold)
                   Center(
                     child: Text(
                       'Vediamo dove ti trovi',
                       style: Theme.of(context).textTheme.headline6,
                     ),
                   ),
-                if (widget.userCupertinoScaffold) const SizedBox(height: Dimension.padding),
+                if (widget.useCupertinoScaffold) const SizedBox(height: Dimension.padding),
                 Padding(
                   padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
                   child: Center(
@@ -128,7 +128,13 @@ class _UserPositionControllerState extends State<UserPositionController> {
     return ChangeNotifierProvider(
         create: (context) => UserPositionControllerViewModel(),
         child: Consumer<UserPositionControllerViewModel?>(builder: (_, viewModel, __) {
-          return WillPopScope(onWillPop: () async => false, child: widget.userCupertinoScaffold ? _buildPageWithCupertinoScaffold(viewModel!) : _buildPageWithBaseScaffold(viewModel!));
+          if (widget.canGoBack) {
+            return widget.useCupertinoScaffold ? _buildPageWithCupertinoScaffold(viewModel!) : _buildPageWithBaseScaffold(viewModel!);
+          }
+          return WillPopScope(
+            onWillPop: () async => false,
+            child: widget.useCupertinoScaffold ? _buildPageWithCupertinoScaffold(viewModel!) : _buildPageWithBaseScaffold(viewModel!),
+          );
         }));
   }
 }

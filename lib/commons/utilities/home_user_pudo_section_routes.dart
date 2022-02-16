@@ -43,7 +43,7 @@ dynamic routeHomeUserPudoSectionWithSetting(RouteSettings settings) {
       return CupertinoPageRoute(
         builder: (context) => InstructionController(
           pudoDataModel: settings.arguments as PudoProfile?,
-          userCupertinoScaffold: true,
+          useCupertinoScaffold: true,
           canGoBack: true,
         ),
       );
@@ -71,14 +71,14 @@ dynamic routeHomeUserPudoSectionWithSetting(RouteSettings settings) {
     case Routes.insertAddress:
       return CupertinoPageRoute(
         builder: (context) => const InsertAddressController(
-          userCupertinoScaffold: true,
+          useCupertinoScaffold: true,
         ),
       );
     case Routes.userPosition:
       return CupertinoPageRoute(
         builder: (context) => const UserPositionController(
           canGoBack: true,
-          userCupertinoScaffold: true,
+          useCupertinoScaffold: true,
         ),
       );
     case Routes.pudoTutorial:
@@ -92,7 +92,7 @@ dynamic routeHomeUserPudoSectionWithSetting(RouteSettings settings) {
     case Routes.pudoDetail:
       return CupertinoPageRoute(
         builder: (context) => PudoDetailController(
-          userCupertinoScaffold: true,
+          useCupertinoScaffold: true,
           dataModel: settings.arguments as PudoProfile,
           checkIsAlreadyAdded: true,
         ),
