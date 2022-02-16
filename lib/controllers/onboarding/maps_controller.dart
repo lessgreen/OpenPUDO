@@ -49,7 +49,8 @@ class MapsController extends StatefulWidget {
       required this.useCupertinoScaffold,
       required this.title,
       required this.canGoBack,
-      this.canOpenProfilePage = false})
+      this.canOpenProfilePage = false,
+      required this.isOnboarding})
       : super(key: key);
   final LatLng? initialPosition;
   final bool getUserPosition;
@@ -59,6 +60,7 @@ class MapsController extends StatefulWidget {
   final bool canOpenProfilePage;
   final String title;
   final bool canGoBack;
+  final bool isOnboarding;
 
   @override
   _MapsControllerState createState() => _MapsControllerState();
@@ -233,7 +235,7 @@ class _MapsControllerState extends State<MapsController> with ConnectionAware, T
                 stars: viewModel.pudos[index].pudo?.rating?.reviewCount ?? 0,
                 hasShadow: true,
                 onTap: () {
-                  viewModel.onPudoClick(context, viewModel.pudos[index]);
+                  viewModel.onPudoClick(context, viewModel.pudos[index], widget.isOnboarding);
                 },
                 image: viewModel.pudos[index].pudo?.pudoPicId),
           ),
@@ -297,7 +299,7 @@ class _MapsControllerState extends State<MapsController> with ConnectionAware, T
               maxClusterRadius: 60,
               markers: viewModel.pudos.markers(
                 (marker) {
-                  viewModel.selectPudo(context, marker, widget.enablePudoCards);
+                  viewModel.selectPudo(context, marker, widget.enablePudoCards, widget.isOnboarding);
                 },
                 selectedMarker: widget.enablePudoCards ? viewModel.showingCardPudo : null,
                 tintColor: AppColors.primaryColorDark,
