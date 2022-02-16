@@ -108,7 +108,6 @@ class MapsControllerViewModel extends ChangeNotifier {
 
     bool _serviceEnabled;
     PermissionStatus _permissionGranted;
-    LocationData _locationData;
 
     _serviceEnabled = await location.serviceEnabled();
     if (!_serviceEnabled) {
@@ -125,13 +124,15 @@ class MapsControllerViewModel extends ChangeNotifier {
         return null;
       }
     }
-
-    _locationData = await location.getLocation();
-    position = LatLng(_locationData.latitude ?? 45.464664, _locationData.longitude ?? 9.188540);
-    WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
-      animateMapTo(this, position);
+    return location.getLocation().then((value) {
+      position = LatLng(value.latitude ?? 45.464664, value.longitude ?? 9.188540);
+      WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
+        animateMapTo(this, position);
+      });
+      return Future.value(value);
+    }).timeout(const Duration(seconds: 2), onTimeout: () {
+      return Future.error("Errore nella localizzazione.\nSi prega di riprovare");
     });
-    return _locationData;
   }
 
   Timer _debounce = Timer(const Duration(days: 1), () {});
