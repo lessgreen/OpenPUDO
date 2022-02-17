@@ -145,7 +145,7 @@ dynamic routeWithSetting(RouteSettings settings) {
       return CupertinoPageRoute(
           builder: (context) => InstructionController(
                 canGoBack: false,
-                userCupertinoScaffold: false,
+                useCupertinoScaffold: false,
                 pudoDataModel: settings.arguments as PudoProfile,
               ));
     case Routes.pudoList:

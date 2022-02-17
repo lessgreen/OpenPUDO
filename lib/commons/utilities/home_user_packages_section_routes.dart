@@ -86,7 +86,7 @@ dynamic routeHomeUserPackagesSectionWithSetting(RouteSettings settings) {
       return CupertinoPageRoute(
         builder: (context) => InstructionController(
           canGoBack: true,
-          userCupertinoScaffold: true,
+          useCupertinoScaffold: true,
           pudoDataModel: settings.arguments as PudoProfile,
         ),
       );
