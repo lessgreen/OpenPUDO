@@ -29,8 +29,9 @@ import 'package:qui_green/resources/res.dart';
 import 'package:qui_green/resources/routes_enum.dart';
 import 'package:qui_green/singletons/current_user.dart';
 import 'package:qui_green/singletons/network/network_manager.dart';
+import 'package:qui_green/widgets/deleteble_listview.dart';
 import 'package:qui_green/widgets/main_button.dart';
-import 'package:qui_green/widgets/pudo_card.dart';
+import 'package:qui_green/widgets/pudo_map_card.dart';
 import 'package:qui_green/widgets/sascaffold.dart';
 
 class PudoListController extends StatefulWidget {
@@ -57,6 +58,14 @@ class _PudoListControllerState extends State<PudoListController> {
       }
     }).catchError((onError) => SAAlertDialog.displayAlertWithClose(context, "Error", onError));
   }
+
+  void openPudo(PudoSummary pudoSummary) => NetworkManager.instance.getPudoDetails(pudoId: pudoSummary.pudoId.toString()).then((value) {
+        if (value is PudoProfile) {
+          Navigator.of(context).pushNamed(Routes.pudoDetail, arguments: value);
+        } else {
+          SAAlertDialog.displayAlertWithClose(context, "Error", "Qualcosa è andato storto");
+        }
+      }).catchError((onError) => SAAlertDialog.displayAlertWithClose(context, "Error", onError));
 
   Future<void> getPudos() {
     return NetworkManager.instance.getMyPudos().then((value) {
@@ -91,36 +100,20 @@ class _PudoListControllerState extends State<PudoListController> {
         ),
       );
 
-  Widget _buildPudos() => ListView(
-        physics: const AlwaysScrollableScrollPhysics(),
-        children: [
-          const Padding(
-            padding: EdgeInsets.only(left: Dimension.padding, top: Dimension.padding),
-            child: Text(
-              'I tuoi pudo:',
-            ),
+  Widget _buildPudos() => DeletableListView<PudoSummary>(
+      title: 'I tuoi pudo:',
+      itemBuilder: (PudoSummary pudo) => PudoMapCard(
+            name: pudo.businessName,
+            address: pudo.label ?? "",
+            stars: (pudo.rating?.stars ?? 0).toInt(),
+            image: pudo.pudoPicId,
+            onTap: () => openPudo(pudo),
+            hasShadow: true,
           ),
-          ListView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: pudoList!.length,
-              itemBuilder: (BuildContext context, int index) {
-                return PudoCard(
-                    maxWidth: MediaQuery.of(context).size.width / 3,
-                    onDelete: () => deletePudo(pudoList![index]),
-                    pudo: pudoList![index],
-                    onTap: () {
-                      NetworkManager.instance.getPudoDetails(pudoId: pudoList![index].pudoId.toString()).then((value) {
-                        if (value is PudoProfile) {
-                          Navigator.of(context).pushNamed(Routes.pudoDetail, arguments: value);
-                        } else {
-                          SAAlertDialog.displayAlertWithClose(context, "Error", "Qualcosa è andato storto");
-                        }
-                      }).catchError((onError) => SAAlertDialog.displayAlertWithClose(context, "Error", onError));
-                    });
-              })
-        ],
-      );
+      items: pudoList!,
+      idGetter: (PudoSummary pudo) => pudo.pudoId!,
+      onDelete: (PudoSummary pudo) => deletePudo(pudo),
+      alertDeleteText: "Sei sicuro di voler rimuovere questo pudo?\nSe continui non riceverai ulteriori notifiche per i pacchi non ancora consegnati");
 
   @override
   Widget build(BuildContext context) {
