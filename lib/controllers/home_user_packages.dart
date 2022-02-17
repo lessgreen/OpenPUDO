@@ -70,7 +70,6 @@ class _HomeUserPackagesState extends State<HomeUserPackages> with ConnectionAwar
   }
 
   Future<void> initPage() async {
-    print("init");
     _canFetchMore = true;
     availablePackages.clear();
     hasPackages = (Provider.of<CurrentUser>(context, listen: false).user?.packageCount ?? 0) > 0;
