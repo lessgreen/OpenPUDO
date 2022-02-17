@@ -68,6 +68,7 @@ class _PudoListControllerState extends State<PudoListController> {
     }).catchError((onError) => SAAlertDialog.displayAlertWithClose(context, "Error", onError));
   }
 
+
   Widget _buildEmptyPudos() => LayoutBuilder(
         builder: (context, constraints) => SingleChildScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
@@ -99,27 +100,27 @@ class _PudoListControllerState extends State<PudoListController> {
             child: Text(
               'I tuoi pudo:',
             ),
-          ),
-          ListView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: pudoList!.length,
-              itemBuilder: (BuildContext context, int index) {
-                return PudoCard(
-                    maxWidth: MediaQuery.of(context).size.width / 3,
-                    onDelete: () => deletePudo(pudoList![index]),
-                    pudo: pudoList![index],
-                    onTap: () {
-                      NetworkManager.instance.getPudoDetails(pudoId: pudoList![index].pudoId.toString()).then((value) {
-                        if (value is PudoProfile) {
-                          Navigator.of(context).pushNamed(Routes.pudoDetail, arguments: value);
-                        } else {
-                          SAAlertDialog.displayAlertWithClose(context, "Error", "Qualcosa è andato storto");
-                        }
-                      }).catchError((onError) => SAAlertDialog.displayAlertWithClose(context, "Error", onError));
-                    });
-              })
-        ],
+            ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: pudoList!.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return PudoCard(
+                      maxWidth: MediaQuery.of(context).size.width / 3,
+                      onDelete: () => deletePudo(pudoList![index]),
+                      pudo: pudoList![index],
+                      onTap: () {
+                        NetworkManager.instance.getPudoDetails(pudoId: pudoList![index].pudoId.toString()).then((value) {
+                          if (value is PudoProfile) {
+                            Navigator.of(context).pushNamed(Routes.pudoDetail, arguments: value);
+                          } else {
+                            SAAlertDialog.displayAlertWithClose(context, "Error", "Qualcosa è andato storto");
+                          }
+                        }).catchError((onError) => SAAlertDialog.displayAlertWithClose(context, "Error", onError));
+                      });
+                })
+          ],
+        ),
       );
 
   @override

@@ -32,8 +32,8 @@ import 'package:qui_green/widgets/address_field.dart';
 import 'package:qui_green/widgets/main_button.dart';
 
 class InsertAddressController extends StatefulWidget {
-  const InsertAddressController({Key? key, required this.userCupertinoScaffold}) : super(key: key);
-  final bool userCupertinoScaffold;
+  const InsertAddressController({Key? key, required this.useCupertinoScaffold}) : super(key: key);
+  final bool useCupertinoScaffold;
 
   @override
   _InsertAddressControllerState createState() => _InsertAddressControllerState();
@@ -82,14 +82,14 @@ class _InsertAddressControllerState extends State<InsertAddressController> with 
   Widget _buildBody(InsertAddressControllerViewModel viewModel, bool isKeyboardVisible) => Stack(children: [
         SvgPicture.asset(ImageSrc.userPositionArt, semanticsLabel: 'Art Background'),
         Column(children: [
-          if (!widget.userCupertinoScaffold)
+          if (!widget.useCupertinoScaffold)
             Center(
               child: Text(
                 'Inserisci il tuo indirizzo',
                 style: Theme.of(context).textTheme.headline6,
               ),
             ),
-          if (widget.userCupertinoScaffold) const SizedBox(height: Dimension.padding),
+          if (widget.useCupertinoScaffold) const SizedBox(height: Dimension.padding),
           Padding(
               padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
               child: AddressField(
@@ -120,10 +120,7 @@ class _InsertAddressControllerState extends State<InsertAddressController> with 
         create: (context) => InsertAddressControllerViewModel(),
         child: Consumer<InsertAddressControllerViewModel?>(builder: (_, viewModel, __) {
           return KeyboardVisibilityBuilder(builder: (context, child, isKeyboardVisible) {
-            return WillPopScope(
-              onWillPop: () async => false,
-              child: widget.userCupertinoScaffold ? _buildPageWithCupertinoScaffold(viewModel!, isKeyboardVisible) : _buildPageWithBaseScaffold(viewModel!, isKeyboardVisible),
-            );
+            return widget.useCupertinoScaffold ? _buildPageWithCupertinoScaffold(viewModel!, isKeyboardVisible) : _buildPageWithBaseScaffold(viewModel!, isKeyboardVisible);
           });
         }));
   }

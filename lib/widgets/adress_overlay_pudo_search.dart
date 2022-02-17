@@ -18,7 +18,7 @@ class AdressOverlayPudoSearch extends StatefulWidget {
 class _AdressOverlayPudoSearchState extends State<AdressOverlayPudoSearch> {
   void onAddressTap(GeoMarker e) {
     if (e.pudo != null) {
-      widget.viewModel.onPudoClick(context, e);
+      widget.viewModel.onPudoClick(context, e, false);
     } else {
       widget.viewModel.isOpenListAddress = false;
       widget.viewModel.animateMapTo(widget.viewModel, LatLng(e.lat!, e.lon!));

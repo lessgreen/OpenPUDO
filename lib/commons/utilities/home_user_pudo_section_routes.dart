@@ -29,7 +29,6 @@ import 'package:qui_green/controllers/onboarding/maps_controller.dart';
 import 'package:qui_green/controllers/profile_controller.dart';
 import 'package:qui_green/controllers/pudo_detail_controller.dart';
 import 'package:qui_green/controllers/pudo_list_controller.dart';
-import 'package:qui_green/controllers/pudo_tutorial_controller.dart';
 import 'package:qui_green/controllers/registration_complete_controller.dart';
 import 'package:qui_green/controllers/user_position_controller.dart';
 import 'package:qui_green/models/pudo_profile.dart';
@@ -43,7 +42,7 @@ dynamic routeHomeUserPudoSectionWithSetting(RouteSettings settings) {
       return CupertinoPageRoute(
         builder: (context) => InstructionController(
           pudoDataModel: settings.arguments as PudoProfile?,
-          userCupertinoScaffold: true,
+          useCupertinoScaffold: true,
           canGoBack: true,
         ),
       );
@@ -62,37 +61,50 @@ dynamic routeHomeUserPudoSectionWithSetting(RouteSettings settings) {
           initialPosition: settings.arguments as LatLng,
           useCupertinoScaffold: true,
           enableAddressSearch: false,
-          enablePudoCards: true,
+          enablePudoCards: false,
           getUserPosition: false,
           canOpenProfilePage: false,
           title: "Seleziona un pudo",
+          isOnboarding: true,
         ),
       );
     case Routes.insertAddress:
       return CupertinoPageRoute(
         builder: (context) => const InsertAddressController(
-          userCupertinoScaffold: true,
+          useCupertinoScaffold: true,
         ),
       );
     case Routes.userPosition:
       return CupertinoPageRoute(
         builder: (context) => const UserPositionController(
           canGoBack: true,
-          userCupertinoScaffold: true,
+          useCupertinoScaffold: true,
         ),
       );
     case Routes.pudoTutorial:
       return CupertinoPageRoute(
-        builder: (context) => const PudoTutorialController(),
-      );
+          builder: (context) => InstructionController(
+                canGoBack: true,
+                userCupertinoScaffold: true,
+                pudoDataModel: settings.arguments as PudoProfile,
+              ));
     case Routes.profile:
       return CupertinoPageRoute(
         builder: (context) => const ProfileController(),
       );
+    case Routes.pudoDetailOnBoarding:
+      return CupertinoPageRoute(
+        builder: (context) => PudoDetailController(
+          dataModel: settings.arguments as PudoProfile,
+          nextRoute: Routes.registrationComplete,
+          checkIsAlreadyAdded: true,
+          userCupertinoScaffold: true,
+        ),
+      );
     case Routes.pudoDetail:
       return CupertinoPageRoute(
         builder: (context) => PudoDetailController(
-          userCupertinoScaffold: true,
+          useCupertinoScaffold: true,
           dataModel: settings.arguments as PudoProfile,
           checkIsAlreadyAdded: true,
         ),
@@ -108,6 +120,7 @@ dynamic routeHomeUserPudoSectionWithSetting(RouteSettings settings) {
           enablePudoCards: false,
           getUserPosition: true,
           canOpenProfilePage: true,
+          isOnboarding: false,
           title: "QuiGreen",
         ),
       );

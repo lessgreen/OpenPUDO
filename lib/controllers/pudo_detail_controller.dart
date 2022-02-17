@@ -33,11 +33,11 @@ import 'package:qui_green/singletons/network/network_manager.dart';
 import 'package:qui_green/widgets/text_field_button.dart';
 
 class PudoDetailController extends StatefulWidget {
-  const PudoDetailController({Key? key, required this.dataModel, required this.checkIsAlreadyAdded, this.nextRoute, required this.userCupertinoScaffold}) : super(key: key);
+  const PudoDetailController({Key? key, required this.dataModel, required this.checkIsAlreadyAdded, this.nextRoute, required this.useCupertinoScaffold}) : super(key: key);
   final PudoProfile dataModel;
   final bool checkIsAlreadyAdded;
   final String? nextRoute;
-  final bool userCupertinoScaffold;
+  final bool useCupertinoScaffold;
 
   @override
   _PudoDetailControllerState createState() => _PudoDetailControllerState();
@@ -267,10 +267,7 @@ class _PudoDetailControllerState extends State<PudoDetailController> with Connec
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async => true,
-      child: widget.userCupertinoScaffold ? _buildPageWithCupertinoScaffold() : _buildPageWithBaseScaffold(),
-    );
+    return widget.useCupertinoScaffold ? _buildPageWithCupertinoScaffold() : _buildPageWithBaseScaffold();
   }
 
   bool nextVisible = false;

@@ -32,8 +32,8 @@ import 'package:qui_green/widgets/instruction_card.dart';
 import 'package:qui_green/widgets/main_button.dart';
 
 class InstructionController extends StatefulWidget {
-  const InstructionController({Key? key, this.pudoDataModel, required this.userCupertinoScaffold, required this.canGoBack}) : super(key: key);
-  final bool userCupertinoScaffold;
+  const InstructionController({Key? key, this.pudoDataModel, required this.useCupertinoScaffold, required this.canGoBack}) : super(key: key);
+  final bool useCupertinoScaffold;
   final PudoProfile? pudoDataModel;
   final bool canGoBack;
 
@@ -176,11 +176,14 @@ class _InstructionControllerState extends State<InstructionController> with Conn
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<CurrentUser>(
-      builder: (_, currentUser, __) => WillPopScope(
+    return Consumer<CurrentUser>(builder: (_, currentUser, __) {
+      if (widget.canGoBack) {
+        return widget.useCupertinoScaffold ? _buildPageWithCupertinoScaffold(currentUser) : _buildPageWithBaseScaffold(currentUser);
+      }
+      return WillPopScope(
         onWillPop: () async => false,
-        child: widget.userCupertinoScaffold ? _buildPageWithCupertinoScaffold(currentUser) : _buildPageWithBaseScaffold(currentUser),
-      ),
-    );
+        child: widget.useCupertinoScaffold ? _buildPageWithCupertinoScaffold(currentUser) : _buildPageWithBaseScaffold(currentUser),
+      );
+    });
   }
 }

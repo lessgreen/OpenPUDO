@@ -192,9 +192,13 @@ class _RegistrationCompleteControllerState extends State<RegistrationCompleteCon
           viewModel?.showErrorDialog = (dynamic val) => _showErrorDialog(context, val);
           return KeyboardVisibilityBuilder(
             builder: (context, child, isKeyboardVisible) {
+              if (widget.canGoBack) {
+                return widget.useCupertinoScaffold ? _buildPageWithCupertinoScaffold(viewModel!, isKeyboardVisible) : _buildPageWithBaseScaffold(viewModel!, isKeyboardVisible);
+              }
               return WillPopScope(
-                  onWillPop: () async => false,
-                  child: widget.useCupertinoScaffold ? _buildPageWithCupertinoScaffold(viewModel!, isKeyboardVisible) : _buildPageWithBaseScaffold(viewModel!, isKeyboardVisible));
+                onWillPop: () async => false,
+                child: widget.useCupertinoScaffold ? _buildPageWithCupertinoScaffold(viewModel!, isKeyboardVisible) : _buildPageWithBaseScaffold(viewModel!, isKeyboardVisible),
+              );
             },
           );
         },
