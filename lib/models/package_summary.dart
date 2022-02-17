@@ -25,31 +25,31 @@ part 'package_summary.g.dart';
 @JsonSerializable()
 class PackageSummary {
   final int packageId;
-  final DateTime createTms;
-  final String packagePicId;
-  final String packageName;
-  final PackageStatus packageStatus;
-  final int pudoId;
-  final String businessName;
-  final String label;
-  final int userId;
-  final String firstName;
-  final String lastName;
-  final String customerSuffix;
+  final DateTime? createTms;
+  final String? packagePicId;
+  final String? packageName;
+  final PackageStatus? packageStatus;
+  final int? pudoId;
+  final String? businessName;
+  final String? label;
+  final int? userId;
+  final String? firstName;
+  final String? lastName;
+  final String? customerSuffix;
 
   PackageSummary(
       {required this.packageId,
-      required this.createTms,
-      required this.packagePicId,
-      required this.packageName,
-      required this.packageStatus,
-      required this.pudoId,
-      required this.businessName,
-      required this.label,
-      required this.userId,
-      required this.firstName,
-      required this.lastName,
-      required this.customerSuffix});
+      this.createTms,
+      this.packagePicId,
+      this.packageName,
+      this.packageStatus,
+      this.pudoId,
+      this.businessName,
+      this.label,
+      this.userId,
+      this.firstName,
+      this.lastName,
+      this.customerSuffix});
 
   factory PackageSummary.fromJson(Map<String, dynamic> json) => _$PackageSummaryFromJson(json);
 
@@ -59,7 +59,7 @@ class PackageSummary {
 enum PackageStatus {
   @JsonValue("delivered")
   delivered,
-  @JsonValue("motor-notify_sent")
+  @JsonValue("notify_sent")
   notifySent,
   @JsonValue("notified")
   notified,
