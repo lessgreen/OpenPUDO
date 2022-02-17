@@ -25,13 +25,14 @@ import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:qui_green/commons/alert_dialog.dart';
 import 'package:qui_green/commons/utilities/keyboard_visibility.dart';
-import 'package:qui_green/widgets/main_button.dart';
-import 'package:qui_green/widgets/sascaffold.dart';
-import 'package:qui_green/widgets/text_field_button.dart';
+import 'package:qui_green/commons/utilities/network_error_helper.dart';
 import 'package:qui_green/resources/res.dart';
 import 'package:qui_green/resources/routes_enum.dart';
 import 'package:qui_green/singletons/current_user.dart';
 import 'package:qui_green/singletons/network/network_manager.dart';
+import 'package:qui_green/widgets/main_button.dart';
+import 'package:qui_green/widgets/sascaffold.dart';
+import 'package:qui_green/widgets/text_field_button.dart';
 
 class ConfirmPhoneController extends StatefulWidget {
   const ConfirmPhoneController({Key? key, required this.phoneNumber}) : super(key: key);
@@ -71,7 +72,7 @@ class _ConfirmPhoneControllerState extends State<ConfirmPhoneController> with Co
           Navigator.of(context).pushReplacementNamed(Routes.aboutYou);
           break;
         default:
-          SAAlertDialog.displayAlertWithClose(context, "Error", "Qualcosa è andato storto");
+          NetworkErrorHelper.helper(context, value);
           break;
       }
     }).catchError((onError) {
