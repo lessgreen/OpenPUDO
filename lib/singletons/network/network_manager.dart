@@ -56,7 +56,6 @@ class NetworkManager with NetworkGeneral, NetworkManagerUser, NetworkManagerNoti
       });
     });
     _inst.networkActivity = ValueNotifier(false);
-    _inst.shouldReload = ValueNotifier(false);
     _inst.config = config;
     _inst.baseURL = config.host;
     _inst.headers = {

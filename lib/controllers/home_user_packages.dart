@@ -95,113 +95,102 @@ class _HomeUserPackagesState extends State<HomeUserPackages> with ConnectionAwar
     }
   }
 
-  /*Widget _buildUndecise() => LayoutBuilder(builder: (context, constraints) {
-        return RefreshIndicator(
-          onRefresh: initPage,
-          child: SingleChildScrollView(
-            physics: const AlwaysScrollableScrollPhysics(),
-            child: Container(
-              height: constraints.maxHeight,
-            ),
+  Widget _buildUndecise() => LayoutBuilder(builder: (context, constraints) {
+        return SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: Container(
+            height: constraints.maxHeight,
           ),
         );
-      });*/
+      });
 
   Widget _buildNoPudos() => LayoutBuilder(builder: (context, constraints) {
-        return RefreshIndicator(
-          onRefresh: initPage,
-          child: SingleChildScrollView(
-            physics: const AlwaysScrollableScrollPhysics(),
-            child: SizedBox(
-              child: Column(
-                children: [
-                  Flexible(
-                    flex: 2,
-                    child: Center(
-                      child: Text(
-                        'Non hai ancora aggiunto un pudo\nper le tue consegne!',
-                        style: Theme.of(context).textTheme.bodyTextLight,
-                        textAlign: TextAlign.center,
-                      ),
+        return SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: SizedBox(
+            child: Column(
+              children: [
+                Flexible(
+                  flex: 2,
+                  child: Center(
+                    child: Text(
+                      'Non hai ancora aggiunto un pudo\nper le tue consegne!',
+                      style: Theme.of(context).textTheme.bodyTextLight,
+                      textAlign: TextAlign.center,
                     ),
                   ),
-                  Flexible(
-                    flex: 6,
-                    child: Opacity(opacity: 0.5, child: SvgPicture.asset(ImageSrc.noPudoYet)),
-                  ),
-                  const Spacer(flex: 2),
-                ],
-              ),
-              width: constraints.maxWidth,
-              height: constraints.maxHeight,
+                ),
+                Flexible(
+                  flex: 6,
+                  child: Opacity(opacity: 0.5, child: SvgPicture.asset(ImageSrc.noPudoYet)),
+                ),
+                const Spacer(flex: 2),
+              ],
             ),
+            width: constraints.maxWidth,
+            height: constraints.maxHeight,
           ),
         );
       });
 
   Widget _buildNoPackages() => LayoutBuilder(builder: (context, constraints) {
-        return RefreshIndicator(
-          onRefresh: initPage,
-          child: SingleChildScrollView(
-            physics: const AlwaysScrollableScrollPhysics(),
-            child: SizedBox(
-              child: Column(
-                children: [
-                  Flexible(
-                    flex: 2,
-                    child: Center(
-                      child: Text(
-                        'Non ci sono ancora consegne\nin attesa per te!',
-                        style: Theme.of(context).textTheme.bodyTextLight,
-                        textAlign: TextAlign.center,
-                      ),
+        return SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: SizedBox(
+            child: Column(
+              children: [
+                Flexible(
+                  flex: 2,
+                  child: Center(
+                    child: Text(
+                      'Non ci sono ancora consegne\nin attesa per te!',
+                      style: Theme.of(context).textTheme.bodyTextLight,
+                      textAlign: TextAlign.center,
                     ),
                   ),
-                  Flexible(
-                    flex: 6,
-                    child: Opacity(opacity: 0.5, child: SvgPicture.asset(ImageSrc.noPackagesYet)),
-                  ),
-                ],
-              ),
-              width: constraints.maxWidth,
-              height: constraints.maxHeight,
+                ),
+                Flexible(
+                  flex: 6,
+                  child: Opacity(opacity: 0.5, child: SvgPicture.asset(ImageSrc.noPackagesYet)),
+                ),
+              ],
             ),
+            width: constraints.maxWidth,
+            height: constraints.maxHeight,
           ),
         );
       });
 
-  Widget _buildPackages() => RefreshIndicator(
-        onRefresh: initPage,
-        child: ListViewHeader(
-            itemPadding: const EdgeInsets.only(bottom: Dimension.paddingS),
-            title: 'I tuoi pacchi:',
-            endText: _canFetchMore ? 'Non ci sono altri pacchi' : '',
-            shrinkWrap: false,
-            itemCount: availablePackages.length,
-            scrollController: _scrollController,
-            itemBuilder: (BuildContext context, int index) {
-              return PackageCard(
-                name: availablePackages[index].businessName ?? "",
-                address: availablePackages[index].label ?? "",
-                //TODO no pudo rating on PackageSummary
-                stars: 0,
-                onTap: () => null,
-                isRead: true,
-                deliveryDate: availablePackages[index].createTms,
-                image: availablePackages[index].packagePicId ?? "",
-              );
-            }),
-      );
+  Widget _buildPackages() => ListViewHeader(
+      itemPadding: const EdgeInsets.only(bottom: Dimension.paddingS),
+      title: 'I tuoi pacchi:',
+      endText: _canFetchMore ? 'Non ci sono altri pacchi' : '',
+      shrinkWrap: true,
+      itemCount: availablePackages.length,
+      scrollController: _scrollController,
+      itemBuilder: (BuildContext context, int index) {
+        return PackageCard(
+          name: availablePackages[index].businessName,
+          address: availablePackages[index].label,
+          //TODO no pudo rating on PackageSummary
+          stars: 0,
+          onTap: () => null,
+          isRead: true,
+          deliveryDate: availablePackages[index].createTms.toString(),
+          image: availablePackages[index].packagePicId,
+        );
+      });
 
   Widget _buildCorrectPage() {
     if (!hasPudos) {
       return _buildNoPudos();
     }
     if (hasPackages) {
-      return _buildPackages();
+      _buildPackages();
     } else {
       return _buildNoPackages();
     }
+    return _buildUndecise();
   }
 
   @override
@@ -223,11 +212,7 @@ class _HomeUserPackagesState extends State<HomeUserPackages> with ConnectionAwar
             ),
           ),
           child: SafeArea(
-            child: SAScaffold(
-                isLoading: NetworkManager.instance.networkActivity,
-                shouldReload: NetworkManager.instance.shouldReload,
-                onReload: initPage,
-                body: RefreshIndicator(onRefresh: () => initPage(), child: _buildCorrectPage())),
+            child: SAScaffold(isLoading: NetworkManager.instance.networkActivity, body: RefreshIndicator(onRefresh: () => initPage(), child: _buildCorrectPage())),
           ),
         ),
       );

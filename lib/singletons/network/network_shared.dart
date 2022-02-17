@@ -63,7 +63,6 @@ mixin NetworkGeneral {
   int _refreshTokenRetryCounter = 0;
   final int _maxRetryCounter = 3;
   late ValueNotifier<bool> _networkActivity;
-  late ValueNotifier<bool> _shouldReload;
   late SharedPreferences _sharedPreferences;
   AccessTokenData? _accessTokenData;
   bool _isOnline = true;
@@ -100,20 +99,6 @@ mixin NetworkGeneral {
 
   set networkActivity(ValueNotifier<bool> newVal) {
     _networkActivity = newVal;
-  }
-
-  ValueNotifier<bool> get shouldReload {
-    return _shouldReload;
-  }
-
-  set shouldReload(ValueNotifier<bool> newVal) {
-    _shouldReload = newVal;
-  }
-
-  void triggerReload() {
-    _shouldReload.value = true;
-    //Delayed is used to gave the new value to be notified everywhere
-    Future.delayed(const Duration(milliseconds: 100), () => _shouldReload.value = false);
   }
 
   get baseURL {

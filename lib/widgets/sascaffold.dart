@@ -31,8 +31,6 @@ class SAScaffold extends StatelessWidget {
   final Color? backgroundColor;
   final ValueNotifier? isLoading;
   final bool extendBodyBehindAppBar;
-  final Function()? onReload;
-  final ValueNotifier? shouldReload;
 
   const SAScaffold(
       {Key? key,
@@ -44,60 +42,52 @@ class SAScaffold extends StatelessWidget {
       this.floatingActionButton,
       this.floatingActionButtonLocation,
       this.isLoading,
-      this.extendBodyBehindAppBar = false,
-      this.shouldReload,
-      this.onReload})
+      this.extendBodyBehindAppBar = false})
       : super(key: key);
-
-  Widget _buildBaseScaffold(BuildContext context) => Scaffold(
-        backgroundColor: backgroundColor,
-        bottomSheet: bottomSheet,
-        resizeToAvoidBottomInset: resizeToAvoidBottomInset ?? true,
-        appBar: appBar,
-        body: body,
-        floatingActionButton: floatingActionButton,
-      );
-
-  Widget _buildPageWithLoader(BuildContext context, Widget child) => ValueListenableBuilder(
-        valueListenable: isLoading!,
-        builder: (context, newValue, _) {
-          return Stack(
-            children: [
-              child,
-              newValue == true
-                  ? Container(
-                      color: Theme.of(context).cardColor.withAlpha(120),
-                      child: SpinKitThreeBounce(
-                        color: Theme.of(context).primaryColor,
-                        size: 24.0,
-                      ),
-                    )
-                  : const SizedBox()
-            ],
-          );
-        },
-      );
-
-  Widget _buildPageWithReload(BuildContext context, Widget child) => ValueListenableBuilder(
-        valueListenable: shouldReload!,
-        builder: (context, newValue, _) {
-          if (newValue != null) {
-            if (newValue == true) {
-              if (onReload != null) {
-                onReload!();
-              }
-            }
-          }
-          return child;
-        },
-      );
 
   @override
   Widget build(BuildContext context) {
-    return shouldReload != null
-        ? _buildPageWithReload(context, isLoading != null ? _buildPageWithLoader(context, _buildBaseScaffold(context)) : _buildBaseScaffold(context))
-        : isLoading != null
-            ? _buildPageWithLoader(context, _buildBaseScaffold(context))
-            : _buildBaseScaffold(context);
+    Color backgroundLoadingColor = Theme.of(context).cardColor.withAlpha(120);
+    return isLoading != null
+        ? ValueListenableBuilder(
+            valueListenable: isLoading!,
+            builder: (context, newValue, _) {
+              return Stack(
+                children: [
+                  Scaffold(
+                    extendBodyBehindAppBar: extendBodyBehindAppBar,
+                    backgroundColor: backgroundColor,
+                    bottomSheet: bottomSheet,
+                    resizeToAvoidBottomInset: resizeToAvoidBottomInset ?? true,
+                    appBar: appBar,
+                    body: body,
+                    floatingActionButton: floatingActionButton,
+                    floatingActionButtonLocation: floatingActionButtonLocation,
+                  ),
+                  newValue == true
+                      ? Container(
+                          color: backgroundLoadingColor,
+                          child: SpinKitThreeBounce(
+                            color: Theme.of(context).primaryColor,
+                            size: 24.0,
+                          ),
+                        )
+                      : const SizedBox()
+                ],
+              );
+            },
+          )
+        : Stack(
+            children: [
+              Scaffold(
+                backgroundColor: backgroundColor ?? Theme.of(context).backgroundColor,
+                bottomSheet: bottomSheet,
+                resizeToAvoidBottomInset: resizeToAvoidBottomInset ?? true,
+                appBar: appBar,
+                body: body,
+                floatingActionButton: floatingActionButton,
+              ),
+            ],
+          );
   }
 }
