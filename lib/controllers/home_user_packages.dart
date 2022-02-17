@@ -53,7 +53,6 @@ class _HomeUserPackagesState extends State<HomeUserPackages> with ConnectionAwar
   @override
   void initState() {
     super.initState();
-    initPage();
   }
 
   void fetchPackages() {
@@ -84,7 +83,6 @@ class _HomeUserPackagesState extends State<HomeUserPackages> with ConnectionAwar
         _scrollController.removeListener(scrollListener);
       }
     }
-    setState(() {});
   }
 
   void scrollListener() {
@@ -94,15 +92,6 @@ class _HomeUserPackagesState extends State<HomeUserPackages> with ConnectionAwar
       }
     }
   }
-
-  Widget _buildUndecise() => LayoutBuilder(builder: (context, constraints) {
-        return SingleChildScrollView(
-          physics: const AlwaysScrollableScrollPhysics(),
-          child: Container(
-            height: constraints.maxHeight,
-          ),
-        );
-      });
 
   Widget _buildNoPudos() => LayoutBuilder(builder: (context, constraints) {
         return SingleChildScrollView(
@@ -162,21 +151,22 @@ class _HomeUserPackagesState extends State<HomeUserPackages> with ConnectionAwar
       });
 
   Widget _buildPackages() => ListViewHeader(
+      physics: const AlwaysScrollableScrollPhysics(),
       itemPadding: const EdgeInsets.only(bottom: Dimension.paddingS),
       title: 'I tuoi pacchi:',
-      endText: _canFetchMore ? 'Non ci sono altri pacchi' : '',
+      endText: _canFetchMore ? '' : 'Non ci sono altri pacchi',
       shrinkWrap: true,
       itemCount: availablePackages.length,
       scrollController: _scrollController,
       itemBuilder: (BuildContext context, int index) {
         return PackageCard(
-          name: availablePackages[index].businessName,
-          address: availablePackages[index].label,
+          name: availablePackages[index].businessName ?? '',
+          address: availablePackages[index].label ?? '',
           //TODO no pudo rating on PackageSummary
           stars: 0,
           onTap: () => null,
           isRead: true,
-          deliveryDate: availablePackages[index].createTms.toString(),
+          deliveryDate: availablePackages[index].createTms,
           image: availablePackages[index].packagePicId,
         );
       });
@@ -186,33 +176,35 @@ class _HomeUserPackagesState extends State<HomeUserPackages> with ConnectionAwar
       return _buildNoPudos();
     }
     if (hasPackages) {
-      _buildPackages();
+      return _buildPackages();
     } else {
       return _buildNoPackages();
     }
-    return _buildUndecise();
   }
 
   @override
   Widget build(BuildContext context) {
     return Consumer<CurrentUser>(builder: (_, currentUser, __) {
-      return Material(
-        child: CupertinoPageScaffold(
-          navigationBar: CupertinoNavigationBar(
-            padding: const EdgeInsetsDirectional.all(0),
-            brightness: Brightness.dark,
-            backgroundColor: AppColors.primaryColorDark,
-            middle: Text(
-              'Home',
-              style: Theme.of(context).textTheme.navBarTitle,
+      return FutureBuilder<void>(
+        future: initPage(),
+        builder: (context, snapshot) => Material(
+          child: CupertinoPageScaffold(
+            navigationBar: CupertinoNavigationBar(
+              padding: const EdgeInsetsDirectional.all(0),
+              brightness: Brightness.dark,
+              backgroundColor: AppColors.primaryColorDark,
+              middle: Text(
+                'Home',
+                style: Theme.of(context).textTheme.navBarTitle,
+              ),
+              trailing: InkWell(
+                onTap: () => Navigator.of(context).pushNamed(Routes.profile),
+                child: Container(margin: const EdgeInsets.only(right: Dimension.paddingS), width: 40, child: SvgPicture.asset(ImageSrc.profileArt, color: Colors.white)),
+              ),
             ),
-            trailing: InkWell(
-              onTap: () => Navigator.of(context).pushNamed(Routes.profile),
-              child: Container(margin: const EdgeInsets.only(right: Dimension.paddingS), width: 40, child: SvgPicture.asset(ImageSrc.profileArt, color: Colors.white)),
+            child: SafeArea(
+              child: SAScaffold(isLoading: NetworkManager.instance.networkActivity, body: RefreshIndicator(onRefresh: () async => currentUser.triggerReload(), child: _buildCorrectPage())),
             ),
-          ),
-          child: SafeArea(
-            child: SAScaffold(isLoading: NetworkManager.instance.networkActivity, body: RefreshIndicator(onRefresh: () => initPage(), child: _buildCorrectPage())),
           ),
         ),
       );

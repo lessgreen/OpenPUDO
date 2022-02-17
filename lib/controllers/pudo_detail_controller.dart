@@ -21,12 +21,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 import 'package:qui_green/commons/alert_dialog.dart';
 import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
 import 'package:qui_green/commons/ui/custom_network_image.dart';
 import 'package:qui_green/models/pudo_profile.dart';
 import 'package:qui_green/resources/res.dart';
 import 'package:qui_green/resources/routes_enum.dart';
+import 'package:qui_green/singletons/current_user.dart';
 import 'package:qui_green/singletons/network/network_manager.dart';
 import 'package:qui_green/widgets/text_field_button.dart';
 
@@ -313,10 +315,10 @@ class _PudoDetailControllerState extends State<PudoDetailController> with Connec
   }
 
   void selectPudo() {
-    NetworkManager.instance
-        .addPudoFavorite(widget.dataModel.pudoId.toString())
-        .then((value) => Navigator.of(context).pop())
-        .catchError((onError) => SAAlertDialog.displayAlertWithClose(context, "Error", onError));
+    NetworkManager.instance.addPudoFavorite(widget.dataModel.pudoId.toString()).then((value) {
+      Provider.of<CurrentUser>(context, listen: false).triggerReload();
+      Navigator.of(context).pop();
+    }).catchError((onError) => SAAlertDialog.displayAlertWithClose(context, "Error", onError));
   }
 
   void goToPersonalData() {

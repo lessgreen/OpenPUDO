@@ -9,23 +9,26 @@ part of 'package_summary.dart';
 PackageSummary _$PackageSummaryFromJson(Map<String, dynamic> json) =>
     PackageSummary(
       packageId: json['packageId'] as int,
-      createTms: DateTime.parse(json['createTms'] as String),
-      packagePicId: json['packagePicId'] as String,
-      packageName: json['packageName'] as String,
-      packageStatus: $enumDecode(_$PackageStatusEnumMap, json['packageStatus']),
-      pudoId: json['pudoId'] as int,
-      businessName: json['businessName'] as String,
-      label: json['label'] as String,
-      userId: json['userId'] as int,
-      firstName: json['firstName'] as String,
-      lastName: json['lastName'] as String,
-      customerSuffix: json['customerSuffix'] as String,
+      createTms: json['createTms'] == null
+          ? null
+          : DateTime.parse(json['createTms'] as String),
+      packagePicId: json['packagePicId'] as String?,
+      packageName: json['packageName'] as String?,
+      packageStatus:
+          $enumDecodeNullable(_$PackageStatusEnumMap, json['packageStatus']),
+      pudoId: json['pudoId'] as int?,
+      businessName: json['businessName'] as String?,
+      label: json['label'] as String?,
+      userId: json['userId'] as int?,
+      firstName: json['firstName'] as String?,
+      lastName: json['lastName'] as String?,
+      customerSuffix: json['customerSuffix'] as String?,
     );
 
 Map<String, dynamic> _$PackageSummaryToJson(PackageSummary instance) =>
     <String, dynamic>{
       'packageId': instance.packageId,
-      'createTms': instance.createTms.toIso8601String(),
+      'createTms': instance.createTms?.toIso8601String(),
       'packagePicId': instance.packagePicId,
       'packageName': instance.packageName,
       'packageStatus': _$PackageStatusEnumMap[instance.packageStatus],
@@ -40,7 +43,7 @@ Map<String, dynamic> _$PackageSummaryToJson(PackageSummary instance) =>
 
 const _$PackageStatusEnumMap = {
   PackageStatus.delivered: 'delivered',
-  PackageStatus.notifySent: 'motor-notify_sent',
+  PackageStatus.notifySent: 'notify_sent',
   PackageStatus.notified: 'notified',
   PackageStatus.collected: 'collected',
   PackageStatus.accepted: 'accepted',

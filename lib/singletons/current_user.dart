@@ -48,7 +48,7 @@ class CurrentUser with ChangeNotifier {
     if (sharedPreferences?.getString('accessToken') != null) {
       var oldToken = sharedPreferences?.getString('accessToken');
       NetworkManager.instance.renewToken(accessToken: oldToken!).then((response) {
-        if(response is OPBaseResponse) {
+        if (response is OPBaseResponse) {
           switch (NetworkManager.instance.accessTokenAccess) {
             case "customer":
               NetworkManager.instance.getMyProfile().then((profile) {
@@ -81,7 +81,7 @@ class CurrentUser with ChangeNotifier {
               safePrint("wrong access type");
               break;
           }
-        } else if (response is ErrorDescription){
+        } else if (response is ErrorDescription) {
           user = null;
           pudoProfile = null;
           pushPage(Routes.login);
@@ -116,5 +116,9 @@ class CurrentUser with ChangeNotifier {
 
   PudoProfile? get pudoProfile {
     return _pudo;
+  }
+
+  void triggerReload() {
+    notifyListeners();
   }
 }
