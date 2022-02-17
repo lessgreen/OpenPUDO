@@ -191,9 +191,28 @@ class _MapsControllerState extends State<MapsController> with ConnectionAware, T
         ),
       );
 
-  Widget _buildBody(MapsControllerViewModel viewModel) => Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [if (widget.enableAddressSearch) _buildSearch(viewModel), const Spacer(), if (widget.enablePudoCards) _buildCards(viewModel)],
+  Widget _buildBody(MapsControllerViewModel viewModel) => Stack(
+        children: [
+          if (widget.enableAddressSearch)
+            GestureDetector(
+              onTap: viewModel.isOpenListAddress ? () => viewModel.isOpenListAddress = false : null,
+              child: IgnorePointer(
+                ignoring: viewModel.isOpenListAddress ? false : true,
+                child: AnimatedContainer(
+                  color: viewModel.isOpenListAddress ? Colors.black.withAlpha(100) : Colors.transparent,
+                  duration: const Duration(milliseconds: 100),
+                ),
+              ),
+            ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              if (widget.enableAddressSearch) _buildSearch(viewModel),
+              const Spacer(),
+              if (widget.enablePudoCards) _buildCards(viewModel),
+            ],
+          ),
+        ],
       );
 
   Widget _buildSearch(MapsControllerViewModel viewModel) => Padding(
