@@ -273,7 +273,7 @@ mixin NetworkManagerPackages on NetworkGeneral {
 
       var queryString = "?history=$history&limit=$limit&offset=$offset";
 
-      var url = _baseURL + '/api/v1/packages$queryString';
+      var url = _baseURL + '/api/v2/user/me/packages$queryString';
 
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
@@ -289,7 +289,7 @@ mixin NetworkManagerPackages on NetworkGeneral {
       var decodedUTF8 = const Utf8Decoder().convert(codeUnits);
       var json = jsonDecode(decodedUTF8);
       var baseResponse = OPBaseResponse.fromJson(json);
-      List<PudoPackage> myPackages = <PudoPackage>[];
+      List<PackageSummary> myPackages = <PackageSummary>[];
 
       var needHandleTokenRefresh = _handleTokenRefresh(
         baseResponse,
@@ -304,7 +304,7 @@ mixin NetworkManagerPackages on NetworkGeneral {
       if (needHandleTokenRefresh == false) {
         if (baseResponse.returnCode == 0 && baseResponse.payload != null && baseResponse.payload is List) {
           for (dynamic aRow in baseResponse.payload) {
-            myPackages.add(PudoPackage.fromJson(aRow));
+            myPackages.add(PackageSummary.fromJson(aRow));
           }
           return myPackages;
         } else {

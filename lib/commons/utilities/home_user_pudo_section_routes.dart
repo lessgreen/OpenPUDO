@@ -85,7 +85,7 @@ dynamic routeHomeUserPudoSectionWithSetting(RouteSettings settings) {
       return CupertinoPageRoute(
           builder: (context) => InstructionController(
                 canGoBack: true,
-                userCupertinoScaffold: true,
+                useCupertinoScaffold: true,
                 pudoDataModel: settings.arguments as PudoProfile,
               ));
     case Routes.profile:
@@ -98,7 +98,7 @@ dynamic routeHomeUserPudoSectionWithSetting(RouteSettings settings) {
           dataModel: settings.arguments as PudoProfile,
           nextRoute: Routes.registrationComplete,
           checkIsAlreadyAdded: true,
-          userCupertinoScaffold: true,
+          useCupertinoScaffold: true,
         ),
       );
     case Routes.pudoDetail:

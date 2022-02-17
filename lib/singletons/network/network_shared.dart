@@ -37,6 +37,7 @@ import 'package:qui_green/models/delivery_package_request.dart';
 import 'package:qui_green/models/device_info_model.dart';
 import 'package:qui_green/models/geo_marker.dart';
 import 'package:qui_green/models/login_request.dart';
+import 'package:qui_green/models/package_summary.dart';
 import 'package:qui_green/models/pudo_notification.dart';
 import 'package:qui_green/models/pudo_package.dart';
 import 'package:qui_green/models/pudo_package_event.dart';
@@ -61,7 +62,7 @@ mixin NetworkGeneral {
   final int _timeout = 30;
   int _refreshTokenRetryCounter = 0;
   final int _maxRetryCounter = 3;
-  late ValueNotifier _networkActivity;
+  late ValueNotifier<bool> _networkActivity;
   late SharedPreferences _sharedPreferences;
   AccessTokenData? _accessTokenData;
   bool _isOnline = true;
@@ -92,11 +93,11 @@ mixin NetworkGeneral {
     _headers = newVal;
   }
 
-  get networkActivity {
+  ValueNotifier<bool> get networkActivity {
     return _networkActivity;
   }
 
-  set networkActivity(newVal) {
+  set networkActivity(ValueNotifier<bool> newVal) {
     _networkActivity = newVal;
   }
 

@@ -10,7 +10,10 @@ class ListViewHeader extends StatelessWidget {
     this.physics,
     this.itemPadding = EdgeInsets.zero,
     required this.title,
-  }) : super(key: key);
+    this.scrollController,
+    required this.endText,
+  })  : actualItemCount = itemCount + 2,
+        super(key: key);
 
   final int itemCount;
   final bool shrinkWrap;
@@ -18,12 +21,17 @@ class ListViewHeader extends StatelessWidget {
   final ScrollPhysics? physics;
   final String title;
   final EdgeInsets itemPadding;
+  final ScrollController? scrollController;
+  final String endText;
+  final int actualItemCount;
 
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
+      controller: scrollController,
       itemBuilder: (context, index) {
         if (index == 0) {
+          //Start
           return Container(
               padding: const EdgeInsets.symmetric(horizontal: Dimension.padding, vertical: Dimension.padding),
               alignment: Alignment.centerLeft,
@@ -31,14 +39,23 @@ class ListViewHeader extends StatelessWidget {
                 title,
                 style: TextStyle(color: Colors.grey.shade800),
               ));
+        } else if (index == actualItemCount - 1) {
+          //No more items
+          return Container(
+              alignment: Alignment.center,
+              child: Text(
+                endText,
+                style: TextStyle(color: Colors.grey.shade800),
+              ));
         } else {
+          //Actual item
           return Padding(
             padding: itemPadding,
             child: itemBuilder(context, index - 1),
           );
         }
       },
-      itemCount: itemCount + 1,
+      itemCount: actualItemCount,
       physics: physics,
       shrinkWrap: shrinkWrap,
     );

@@ -1,3 +1,5 @@
+// ignore_for_file: invalid_use_of_protected_member
+
 /*
  OpenPUDO - PUDO and Micro-delivery software for Last Mile Collaboration
  Copyright (C) 2020-2022 LESS SRL - https://less.green
@@ -22,13 +24,16 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
+import 'package:qui_green/commons/alert_dialog.dart';
 import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
+import 'package:qui_green/models/package_summary.dart';
 import 'package:qui_green/resources/res.dart';
 import 'package:qui_green/resources/routes_enum.dart';
 import 'package:qui_green/singletons/current_user.dart';
 import 'package:qui_green/singletons/network/network_manager.dart';
 import 'package:qui_green/widgets/listview_header.dart';
 import 'package:qui_green/widgets/package_card.dart';
+import 'package:qui_green/widgets/sascaffold.dart';
 
 class HomeUserPackages extends StatefulWidget {
   const HomeUserPackages({Key? key}) : super(key: key);
@@ -37,64 +42,170 @@ class HomeUserPackages extends StatefulWidget {
   _HomeUserPackagesState createState() => _HomeUserPackagesState();
 }
 
-class _HomeUserPackagesState extends State<HomeUserPackages>
-    with ConnectionAware {
+class _HomeUserPackagesState extends State<HomeUserPackages> with ConnectionAware {
+  final ScrollController _scrollController = ScrollController();
+  bool _canFetchMore = true;
+  final int _fetchLimit = 20;
+  List<PackageSummary> availablePackages = [];
+  bool hasPackages = false;
+  bool hasPudos = false;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  Future fetchPackages() {
+    return NetworkManager.instance.getMyPackages(limit: _fetchLimit, offset: availablePackages.length).then((value) {
+      if (value is List<PackageSummary>) {
+        availablePackages.addAll(value);
+        didChangeDependencies();
+        if (value.length < _fetchLimit) {
+          _canFetchMore = false;
+        }
+      } else {
+        SAAlertDialog.displayAlertWithClose(context, "Error", "Qualcosa è andato storto");
+      }
+    }).catchError((onError) => SAAlertDialog.displayAlertWithClose(context, "Error", onError));
+  }
+
+  Future<void> initPage() async {
+    _canFetchMore = true;
+    availablePackages.clear();
+    hasPackages = (Provider.of<CurrentUser>(context, listen: false).user?.packageCount ?? 0) > 0;
+    hasPudos = await NetworkManager.instance.getMyPudos().then((value) => (value as List).isNotEmpty).catchError((onError) => false);
+    if (hasPackages) {
+      await fetchPackages();
+      if (!_scrollController.hasListeners) {
+        _scrollController.addListener(scrollListener);
+      } else {
+        _scrollController.removeListener(scrollListener);
+      }
+    }
+  }
+
+  void scrollListener() {
+    if (_scrollController.position.atEdge) {
+      if (_scrollController.position.pixels != 0 && !NetworkManager.instance.networkActivity.value && _canFetchMore) {
+        fetchPackages();
+      }
+    }
+  }
+
+  Widget _buildNoPudos() => LayoutBuilder(builder: (context, constraints) {
+        return SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: SizedBox(
+            child: Column(
+              children: [
+                Flexible(
+                  flex: 2,
+                  child: Center(
+                    child: Text(
+                      'Non hai ancora aggiunto un pudo\nper le tue consegne!',
+                      style: Theme.of(context).textTheme.bodyTextLight,
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
+                Flexible(
+                  flex: 6,
+                  child: Opacity(opacity: 0.5, child: SvgPicture.asset(ImageSrc.noPudoYet)),
+                ),
+                const Spacer(flex: 2),
+              ],
+            ),
+            width: constraints.maxWidth,
+            height: constraints.maxHeight,
+          ),
+        );
+      });
+
+  Widget _buildNoPackages() => LayoutBuilder(builder: (context, constraints) {
+        return SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: SizedBox(
+            child: Column(
+              children: [
+                Flexible(
+                  flex: 2,
+                  child: Center(
+                    child: Text(
+                      'Non ci sono ancora consegne\nin attesa per te!',
+                      style: Theme.of(context).textTheme.bodyTextLight,
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
+                Flexible(
+                  flex: 6,
+                  child: Opacity(opacity: 0.5, child: SvgPicture.asset(ImageSrc.noPackagesYet)),
+                ),
+              ],
+            ),
+            width: constraints.maxWidth,
+            height: constraints.maxHeight,
+          ),
+        );
+      });
+
+  Widget _buildPackages() => ListViewHeader(
+      physics: const AlwaysScrollableScrollPhysics(),
+      itemPadding: const EdgeInsets.only(bottom: Dimension.paddingS),
+      title: 'I tuoi pacchi:',
+      endText: _canFetchMore ? '' : 'Non ci sono altri pacchi',
+      itemCount: availablePackages.length,
+      scrollController: _scrollController,
+      itemBuilder: (BuildContext context, int index) {
+        return PackageCard(
+          name: availablePackages[index].businessName ?? '',
+          address: availablePackages[index].label ?? '',
+          //TODO no pudo rating on PackageSummary
+          stars: 0,
+          onTap: () => null,
+          isRead: true,
+          deliveryDate: availablePackages[index].createTms,
+          image: availablePackages[index].packagePicId,
+        );
+      });
+
+  Widget _buildCorrectPage() {
+    if (!hasPudos) {
+      return _buildNoPudos();
+    }
+    if (hasPackages) {
+      return _buildPackages();
+    } else {
+      return _buildNoPackages();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<CurrentUser>(builder: (_, currentUser, __) {
-      return Material(
+      return FutureBuilder<void>(
+        future: initPage(),
+        builder: (context, snapshot) => Material(
           child: CupertinoPageScaffold(
-              navigationBar: CupertinoNavigationBar(
-                padding: const EdgeInsetsDirectional.all(0),
-                brightness: Brightness.dark,
-                backgroundColor: AppColors.primaryColorDark,
-                middle: Text(
-                  'Home',
-                  style: Theme.of(context).textTheme.navBarTitle,
-                ),
-                trailing: InkWell(
-                  onTap: () => Navigator.of(context).pushNamed(Routes.profile),
-                  child: Container(
-                      margin: const EdgeInsets.only(right: Dimension.paddingS),
-                      width: 40,
-                      child: SvgPicture.asset(ImageSrc.profileArt,
-                          color: Colors.white)),
-                ),
+            navigationBar: CupertinoNavigationBar(
+              padding: const EdgeInsetsDirectional.all(0),
+              brightness: Brightness.dark,
+              backgroundColor: AppColors.primaryColorDark,
+              middle: Text(
+                'Home',
+                style: Theme.of(context).textTheme.navBarTitle,
               ),
-              child: SafeArea(
-                child: Column(
-                  children: [
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.all(Dimension.paddingS),
-                      decoration: BoxDecoration(
-                        color: Colors.orange.shade100,
-                      ),
-                      child: const Text('Hai dei ritiri in attesa!'),
-                    ),
-                    Expanded(
-                      child: ListViewHeader(
-                          itemPadding:
-                              const EdgeInsets.only(bottom: Dimension.paddingS),
-                          title: 'I tuoi pacchi:',
-                          shrinkWrap: true,
-                          itemCount: 10,
-                          itemBuilder: (BuildContext context, int index) {
-                            return PackageCard(
-                              name: "Bar - La pinta",
-                              address: "",
-                              stars: 3,
-                              onTap: () => null,
-                              isRead: false,
-                              deliveryDate: '12/12/2021',
-                              image:
-                                  'https://i0.wp.com/www.dailycal.org/assets/uploads/2021/04/package_gusler_cc-900x580.jpg',
-                            );
-                          }),
-                    ),
-                  ],
-                ),
-              )));
+              trailing: InkWell(
+                onTap: () => Navigator.of(context).pushNamed(Routes.profile),
+                child: Container(margin: const EdgeInsets.only(right: Dimension.paddingS), width: 40, child: SvgPicture.asset(ImageSrc.profileArt, color: Colors.white)),
+              ),
+            ),
+            child: SafeArea(
+              child: SAScaffold(isLoading: NetworkManager.instance.networkActivity, body: RefreshIndicator(onRefresh: () async => currentUser.triggerReload(), child: _buildCorrectPage())),
+            ),
+          ),
+        ),
+      );
     });
   }
 }
