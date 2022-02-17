@@ -55,15 +55,14 @@ class _HomeUserPackagesState extends State<HomeUserPackages> with ConnectionAwar
     super.initState();
   }
 
-  void fetchPackages() {
-    NetworkManager.instance.getMyPackages(limit: _fetchLimit, offset: availablePackages.length).then((value) {
+  Future fetchPackages() {
+    return NetworkManager.instance.getMyPackages(limit: _fetchLimit, offset: availablePackages.length).then((value) {
       if (value is List<PackageSummary>) {
-        setState(() {
-          availablePackages.addAll(value);
-          if (value.length < _fetchLimit) {
-            _canFetchMore = false;
-          }
-        });
+        availablePackages.addAll(value);
+        didChangeDependencies();
+        if (value.length < _fetchLimit) {
+          _canFetchMore = false;
+        }
       } else {
         SAAlertDialog.displayAlertWithClose(context, "Error", "Qualcosa è andato storto");
       }
@@ -71,12 +70,13 @@ class _HomeUserPackagesState extends State<HomeUserPackages> with ConnectionAwar
   }
 
   Future<void> initPage() async {
+    print("init");
     _canFetchMore = true;
     availablePackages.clear();
     hasPackages = (Provider.of<CurrentUser>(context, listen: false).user?.packageCount ?? 0) > 0;
     hasPudos = await NetworkManager.instance.getMyPudos().then((value) => (value as List).isNotEmpty).catchError((onError) => false);
     if (hasPackages) {
-      fetchPackages();
+      await fetchPackages();
       if (!_scrollController.hasListeners) {
         _scrollController.addListener(scrollListener);
       } else {
@@ -155,7 +155,6 @@ class _HomeUserPackagesState extends State<HomeUserPackages> with ConnectionAwar
       itemPadding: const EdgeInsets.only(bottom: Dimension.paddingS),
       title: 'I tuoi pacchi:',
       endText: _canFetchMore ? '' : 'Non ci sono altri pacchi',
-      shrinkWrap: true,
       itemCount: availablePackages.length,
       scrollController: _scrollController,
       itemBuilder: (BuildContext context, int index) {
