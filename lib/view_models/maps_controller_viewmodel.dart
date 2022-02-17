@@ -81,7 +81,6 @@ class MapsControllerViewModel extends ChangeNotifier {
     NetworkManager.instance.getPudoDetails(pudoId: marker.pudo!.pudoId.toString()).then(
       (response) {
         if (response is PudoProfile) {
-          print(isOnboarding);
           if (isOnboarding) {
             Navigator.of(context).pushNamed(Routes.pudoDetailOnBoarding, arguments: response);
           } else {
