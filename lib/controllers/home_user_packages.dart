@@ -175,7 +175,7 @@ class _HomeUserPackagesState extends State<HomeUserPackages> with ConnectionAwar
         child: ListViewHeader(
             itemPadding: const EdgeInsets.only(bottom: Dimension.paddingS),
             title: 'I tuoi pacchi:',
-            endText: _canFetchMore ? '' : 'Non ci sono altri pacchi',
+            endText: _canFetchMore ? 'Non ci sono altri pacchi' : '',
             shrinkWrap: false,
             itemCount: availablePackages.length,
             scrollController: _scrollController,

@@ -12,8 +12,7 @@ class ListViewHeader extends StatelessWidget {
     required this.title,
     this.scrollController,
     required this.endText,
-  })  : actualItemCount = itemCount + 2,
-        super(key: key);
+  }) : super(key: key);
 
   final int itemCount;
   final bool shrinkWrap;
@@ -23,7 +22,6 @@ class ListViewHeader extends StatelessWidget {
   final EdgeInsets itemPadding;
   final ScrollController? scrollController;
   final String endText;
-  final int actualItemCount;
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +37,7 @@ class ListViewHeader extends StatelessWidget {
                 title,
                 style: TextStyle(color: Colors.grey.shade800),
               ));
-        } else if (index == actualItemCount - 1) {
+        } else if (index == (itemCount + 2) - 1) {
           //No more items
           return Container(
               alignment: Alignment.center,
@@ -55,7 +53,7 @@ class ListViewHeader extends StatelessWidget {
           );
         }
       },
-      itemCount: actualItemCount,
+      itemCount: itemCount + 2,
       physics: physics,
       shrinkWrap: shrinkWrap,
     );
