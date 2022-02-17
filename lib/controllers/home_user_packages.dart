@@ -26,6 +26,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:qui_green/commons/alert_dialog.dart';
 import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
+import 'package:qui_green/commons/utilities/network_error_helper.dart';
 import 'package:qui_green/models/package_summary.dart';
 import 'package:qui_green/resources/res.dart';
 import 'package:qui_green/resources/routes_enum.dart';
@@ -64,7 +65,7 @@ class _HomeUserPackagesState extends State<HomeUserPackages> with ConnectionAwar
           _canFetchMore = false;
         }
       } else {
-        SAAlertDialog.displayAlertWithClose(context, "Error", "Qualcosa è andato storto");
+        NetworkErrorHelper.helper(context, value);
       }
     }).catchError((onError) => SAAlertDialog.displayAlertWithClose(context, "Error", onError));
   }

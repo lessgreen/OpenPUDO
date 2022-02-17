@@ -23,6 +23,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:qui_green/commons/alert_dialog.dart';
 import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
+import 'package:qui_green/commons/utilities/network_error_helper.dart';
 import 'package:qui_green/models/pudo_profile.dart';
 import 'package:qui_green/models/pudo_summary.dart';
 import 'package:qui_green/resources/res.dart';
@@ -54,7 +55,7 @@ class _PudoListControllerState extends State<PudoListController> {
       if (value is List<PudoSummary>) {
         Provider.of<CurrentUser>(context, listen: false).triggerReload();
       } else {
-        SAAlertDialog.displayAlertWithClose(context, "Error", "Qualcosa è andato storto");
+        NetworkErrorHelper.helper(context, value);
       }
     }).catchError((onError) => SAAlertDialog.displayAlertWithClose(context, "Error", onError));
   }
@@ -63,7 +64,7 @@ class _PudoListControllerState extends State<PudoListController> {
         if (value is PudoProfile) {
           Navigator.of(context).pushNamed(Routes.pudoDetail, arguments: value);
         } else {
-          SAAlertDialog.displayAlertWithClose(context, "Error", "Qualcosa è andato storto");
+          NetworkErrorHelper.helper(context, value);
         }
       }).catchError((onError) => SAAlertDialog.displayAlertWithClose(context, "Error", onError));
 
@@ -72,7 +73,7 @@ class _PudoListControllerState extends State<PudoListController> {
       if (value is List<PudoSummary>) {
         pudoList = value;
       } else {
-        SAAlertDialog.displayAlertWithClose(context, "Error", "Qualcosa è andato storto");
+        NetworkErrorHelper.helper(context, value);
       }
     }).catchError((onError) => SAAlertDialog.displayAlertWithClose(context, "Error", onError));
   }

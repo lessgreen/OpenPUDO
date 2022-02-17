@@ -26,23 +26,22 @@ class DeletableCard extends StatefulWidget {
   final Function() onDelete;
   final int id;
   final double maxWidth;
-  final Function(bool) onOpenStateChange;
-  final bool isOpened;
+  final Function() onOpenStateChange;
+  final int? openedId;
   final Widget card;
 
-  const DeletableCard({Key? key, required this.id, required this.onDelete, required this.onOpenStateChange, required this.isOpened, this.maxWidth = 100, required this.card}) : super(key: key);
+  const DeletableCard({Key? key, required this.id, required this.onDelete, required this.onOpenStateChange, required this.openedId, this.maxWidth = 100, required this.card}) : super(key: key);
 
   @override
-  State<DeletableCard> createState() => _DeletableCardState();
+  State<DeletableCard> createState() => DeletableCardState();
 }
 
-class _DeletableCardState extends State<DeletableCard> with TickerProviderStateMixin {
+class DeletableCardState extends State<DeletableCard> with TickerProviderStateMixin {
   double deleteSize = 0;
   double maxSize = 100;
   Offset? start;
   Offset? end;
   ScrollDirection? direction;
-  int? _oldId;
 
   @override
   void initState() {
@@ -55,13 +54,20 @@ class _DeletableCardState extends State<DeletableCard> with TickerProviderStateM
     super.dispose();
   }
 
-  void animateDelete(bool open) {
-    widget.onOpenStateChange(open);
+  void closeCard() {
+    animateDelete(false, notify: false);
+  }
+
+  void animateDelete(bool open, {bool notify = true}) {
+    if (notify) {
+      widget.onOpenStateChange();
+    }
+
     final _zoomTween = Tween<double>(begin: deleteSize, end: open ? maxSize : 0);
     var controller = AnimationController(duration: const Duration(milliseconds: 100), vsync: this);
     Animation<double> animation = CurvedAnimation(
       parent: controller,
-      curve: Curves.fastOutSlowIn,
+      curve: open ? Curves.easeIn : Curves.easeOut,
     );
     controller.addListener(() {
       setState(() {
@@ -82,20 +88,20 @@ class _DeletableCardState extends State<DeletableCard> with TickerProviderStateM
 
   void triggerCorrectActionForOpen(double size) {
     if (size == 100) {
-      widget.onOpenStateChange(true);
+      widget.onOpenStateChange();
     } else if (size == 0) {
-      widget.onOpenStateChange(false);
+      widget.onOpenStateChange();
+    }
+  }
+
+  void safeAnimate(bool open, {bool notify = true}) {
+    if (start == null) {
+      animateDelete(open, notify: notify);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    if (_oldId != null) {
-      if (_oldId! != widget.id) {
-        animateDelete(widget.isOpened);
-      }
-    }
-    _oldId = widget.id;
     return GestureDetector(
       onHorizontalDragStart: (DragStartDetails startDetails) {
         start = startDetails.localPosition;
@@ -108,7 +114,7 @@ class _DeletableCardState extends State<DeletableCard> with TickerProviderStateM
         if (deleteSize <= maxSize / 2 && deleteSize >= 0) {
           animateDelete(false);
         }
-        end = start;
+        start = null;
         direction = null;
       },
       onHorizontalDragUpdate: (DragUpdateDetails updateDetails) {

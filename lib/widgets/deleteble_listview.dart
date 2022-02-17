@@ -26,19 +26,18 @@ class DeletableListView<T> extends StatefulWidget {
 }
 
 class _DeletableListViewState<T> extends State<DeletableListView<T>> {
-  List<int> openedTiles = [];
+  int? openedTile;
+  List<GlobalKey<DeletableCardState>> tilesState = [];
 
-  void handlingOpenChange(int id, bool status) {
-    if (status) {
-      //Open
-      if (!openedTiles.contains(id)) {
-        openedTiles.add(id);
-      }
-    } else {
-      //Closed
-      if (openedTiles.contains(id)) {
-        openedTiles.remove(id);
-      }
+  @override
+  void initState() {
+    super.initState();
+    tilesState = List.generate(widget.items.length, (index) => GlobalKey<DeletableCardState>());
+  }
+
+  void handlingOpenChange() {
+    for (GlobalKey<DeletableCardState> element in tilesState) {
+      element.currentState!.closeCard();
     }
   }
 
@@ -60,6 +59,7 @@ class _DeletableListViewState<T> extends State<DeletableListView<T>> {
             itemCount: widget.items.length,
             itemBuilder: (BuildContext context, int index) {
               return DeletableCard(
+                key: tilesState[index],
                 maxWidth: MediaQuery.of(context).size.width / 3,
                 id: widget.idGetter(widget.items[index]),
                 onDelete: () {
@@ -73,7 +73,7 @@ class _DeletableListViewState<T> extends State<DeletableListView<T>> {
                     ),
                     MaterialButton(
                         onPressed: () {
-                          handlingOpenChange(widget.idGetter(widget.items[index]), false);
+                          handlingOpenChange();
                           widget.onDelete(widget.items[index]);
                         },
                         child: Text(
@@ -82,8 +82,8 @@ class _DeletableListViewState<T> extends State<DeletableListView<T>> {
                         )),
                   ]);
                 },
-                onOpenStateChange: (bool val) => handlingOpenChange(widget.idGetter(widget.items[index]), val),
-                isOpened: openedTiles.contains(widget.idGetter(widget.items[index])),
+                onOpenStateChange: () => handlingOpenChange(),
+                openedId: openedTile,
                 card: widget.itemBuilder(widget.items[index]),
               );
             })
