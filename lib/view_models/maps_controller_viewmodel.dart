@@ -207,6 +207,22 @@ class MapsControllerViewModel extends ChangeNotifier {
     return pudos;
   }
 
+  orderPlacementFromListOfMarker(List<GeoMarker> markers) {
+    List<GeoMarker> orderedMarkers = List<GeoMarker>.from(pudos);
+    int firstMarkerIndex = orderedMarkers.indexWhere((element) => element.signature == markers.first.signature);
+    if (firstMarkerIndex > -1) {
+      print(orderedMarkers.length);
+      for (GeoMarker marker in markers) {
+        //removeMarkers
+        orderedMarkers.removeWhere((element) => LatLng(element.lat!, element.lon!) == LatLng(marker.lat!, marker.lon!));
+      }
+      print(orderedMarkers.length);
+      orderedMarkers.insertAll(firstMarkerIndex, markers);
+      print(orderedMarkers.length);
+      pudos = orderedMarkers;
+    }
+  }
+
   selectPudo(BuildContext context, GeoMarker? marker, bool enabledCards, bool isOnboarding) {
     if (marker == null) {
       return;

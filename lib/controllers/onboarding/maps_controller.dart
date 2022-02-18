@@ -326,11 +326,21 @@ class _MapsControllerState extends State<MapsController> with ConnectionAware, T
               disableClusteringAtZoom: 15,
               maxClusterRadius: 60,
               onClusterTap: (cluster) {
+                List<GeoMarker> markers = [];
+                for (var marker in cluster.markers) {
+                  int index = viewModel.pudos.indexWhere((element) => LatLng(element.lat!, element.lon!) == marker.point);
+                  if (index > -1) {
+                    markers.add(viewModel.pudos[index]);
+                  }
+                }
+                viewModel.orderPlacementFromListOfMarker(markers);
                 int index = viewModel.pudos.indexWhere((element) => LatLng(element.lat!, element.lon!) == cluster.markers.first.point);
                 if (index > -1) {
                   viewModel.showingCardPudo = viewModel.pudos[index].pudo!.pudoId;
                   viewModel.isReloadingPudos = true;
-                  viewModel.pageController.animateToPage(index, duration: const Duration(milliseconds: 150), curve: Curves.easeIn).then((value) => viewModel.isReloadingPudos = false);
+                  if (viewModel.pageController.positions.isNotEmpty) {
+                    viewModel.pageController.animateToPage(index, duration: const Duration(milliseconds: 150), curve: Curves.easeIn).then((value) => viewModel.isReloadingPudos = false);
+                  }
                 }
               },
               markers: viewModel.pudos.markers(
