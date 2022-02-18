@@ -31,6 +31,7 @@ import 'package:qui_green/resources/routes_enum.dart';
 import 'package:qui_green/singletons/current_user.dart';
 import 'package:qui_green/singletons/network/network_manager.dart';
 import 'package:qui_green/widgets/text_field_button.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class PudoDetailController extends StatefulWidget {
   const PudoDetailController({Key? key, required this.dataModel, required this.checkIsAlreadyAdded, this.nextRoute, required this.useCupertinoScaffold}) : super(key: key);
@@ -52,6 +53,48 @@ class _PudoDetailControllerState extends State<PudoDetailController> with Connec
     } else {
       nextVisible = true;
     }
+  }
+
+  void _launchURL(String type, String phoneNumber, {bool addEndSlashes = true}) async {
+    if (!await launch('$type:${addEndSlashes ? '//' : ''}$phoneNumber')) throw 'Could not launch $type:$phoneNumber';
+  }
+
+  void openModal() {
+    showCupertinoModalPopup<void>(
+      context: context,
+      builder: (BuildContext context) => CupertinoActionSheet(
+        title: const Text("Scegli un'azione"),
+        cancelButton: CupertinoActionSheetAction(
+          child: const Text('Cancel'),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        actions: <CupertinoActionSheetAction>[
+          CupertinoActionSheetAction(
+            child: const Text('Chiama al telefono'),
+            onPressed: () {
+              Navigator.pop(context);
+              _launchURL('tel', (widget.dataModel.publicPhoneNumber!).replaceAll('+', ''));
+            },
+          ),
+          CupertinoActionSheetAction(
+            child: const Text('Invia un messaggio'),
+            onPressed: () {
+              Navigator.pop(context);
+              _launchURL('sms', widget.dataModel.publicPhoneNumber!);
+            },
+          ),
+          CupertinoActionSheetAction(
+            child: const Text('Invia un WhatsApp'),
+            onPressed: () {
+              Navigator.pop(context);
+              _launchURL('https://wa.me/', widget.dataModel.publicPhoneNumber!, addEndSlashes: false);
+            },
+          )
+        ],
+      ),
+    );
   }
 
   Widget _buildPudoDetail() => Padding(
@@ -169,13 +212,18 @@ class _PudoDetailControllerState extends State<PudoDetailController> with Connec
           overflow: TextOverflow.ellipsis,
           maxLines: 1,
         ),
-        trailing: !nextVisible
-            ? const SizedBox()
-            : TextFieldButton(
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (nextVisible)
+              TextFieldButton(
                 onPressed: handleSelect,
                 text: 'Scegli',
                 textColor: Colors.white,
               ),
+            if (widget.dataModel.publicPhoneNumber != null) IconButton(onPressed: () => openModal(), icon: const Icon(Icons.phone_outlined, color: Colors.white))
+          ],
+        ),
       ),
       child: _buildBody());
 

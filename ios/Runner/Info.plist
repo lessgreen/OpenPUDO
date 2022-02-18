@@ -49,5 +49,13 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
+	<key>LSApplicationQueriesSchemes</key>
+    <array>
+      <string>https</string>
+      <string>http</string>
+      <string>tel</string>
+      <string>sms</string>
+      <string>whatsapp</string>
+    </array>
 </dict>
 </plist>
