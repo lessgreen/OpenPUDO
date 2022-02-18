@@ -36,6 +36,7 @@ class MapsControllerViewModel extends ChangeNotifier {
   var currentLatitude = 45.4642;
   var currentLongitude = 9.1900;
   var currentZoomLevel = 8;
+  MapPosition? currentMapPosition;
   PageController pageController = PageController(viewportFraction: 0.95, initialPage: 0);
   MapController? mapController;
   Function(String)? showErrorDialog;
@@ -152,6 +153,7 @@ class MapsControllerViewModel extends ChangeNotifier {
     currentLatitude = mapPosition.center!.latitude;
     currentLongitude = mapPosition.center!.longitude;
     currentZoomLevel = mapPosition.zoom!.toInt();
+    currentMapPosition = mapPosition;
   }
 
   updateLastMapPosition(MapPosition mapPosition) {

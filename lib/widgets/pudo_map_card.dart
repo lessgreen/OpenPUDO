@@ -75,11 +75,13 @@ class PudoMapCard extends StatelessWidget {
                   children: [
                     Text(
                       name,
+                      maxLines: 2,
                       style: const TextStyle(fontSize: 16),
                     ),
                     const SizedBox(height: Dimension.paddingXS),
                     Text(
                       address,
+                      maxLines: 2,
                       style: const TextStyle(fontSize: 12),
                     ),
                     Row(
