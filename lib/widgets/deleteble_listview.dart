@@ -37,12 +37,15 @@ class _DeletableListViewState<T> extends State<DeletableListView<T>> {
 
   void handlingOpenChange() {
     for (GlobalKey<DeletableCardState> element in tilesState) {
-      element.currentState!.closeCard();
+      element.currentState?.closeCard();
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    if (widget.items.length != tilesState.length) {
+      tilesState = List.generate(widget.items.length, (index) => GlobalKey<DeletableCardState>());
+    }
     return ListView(
       physics: const AlwaysScrollableScrollPhysics(),
       children: [
