@@ -36,6 +36,7 @@ class MapsControllerViewModel extends ChangeNotifier {
   var currentLatitude = 45.4642;
   var currentLongitude = 9.1900;
   var currentZoomLevel = 8;
+  MapPosition? currentMapPosition;
   PageController pageController = PageController(viewportFraction: 0.95, initialPage: 0);
   MapController? mapController;
   Function(String)? showErrorDialog;
@@ -152,6 +153,7 @@ class MapsControllerViewModel extends ChangeNotifier {
     currentLatitude = mapPosition.center!.latitude;
     currentLongitude = mapPosition.center!.longitude;
     currentZoomLevel = mapPosition.zoom!.toInt();
+    currentMapPosition = mapPosition;
   }
 
   updateLastMapPosition(MapPosition mapPosition) {
@@ -203,6 +205,22 @@ class MapsControllerViewModel extends ChangeNotifier {
       return oldPudos;
     }
     return pudos;
+  }
+
+  orderPlacementFromListOfMarker(List<GeoMarker> markers) {
+    List<GeoMarker> orderedMarkers = List<GeoMarker>.from(pudos);
+    int firstMarkerIndex = orderedMarkers.indexWhere((element) => element.signature == markers.first.signature);
+    if (firstMarkerIndex > -1) {
+      print(orderedMarkers.length);
+      for (GeoMarker marker in markers) {
+        //removeMarkers
+        orderedMarkers.removeWhere((element) => LatLng(element.lat!, element.lon!) == LatLng(marker.lat!, marker.lon!));
+      }
+      print(orderedMarkers.length);
+      orderedMarkers.insertAll(firstMarkerIndex, markers);
+      print(orderedMarkers.length);
+      pudos = orderedMarkers;
+    }
   }
 
   selectPudo(BuildContext context, GeoMarker? marker, bool enabledCards, bool isOnboarding) {

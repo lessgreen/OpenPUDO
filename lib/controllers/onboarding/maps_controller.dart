@@ -69,7 +69,7 @@ class MapsController extends StatefulWidget {
 class _MapsControllerState extends State<MapsController> with ConnectionAware, TickerProviderStateMixin {
   void _showErrorDialog(BuildContext context, String val) => SAAlertDialog.displayAlertWithClose(context, "Error", val);
 
-  void animateMapTo(MapsControllerViewModel viewModel, LatLng pos) {
+  void animateMapTo(MapsControllerViewModel viewModel, LatLng pos, {bool forceZoom = false}) {
     final _latTween = Tween<double>(
       begin: viewModel.mapController?.center.latitude,
       end: pos.latitude,
@@ -78,7 +78,15 @@ class _MapsControllerState extends State<MapsController> with ConnectionAware, T
       begin: viewModel.mapController?.center.longitude,
       end: pos.longitude,
     );
-    final _zoomTween = Tween<double>(begin: viewModel.mapController?.zoom, end: 16);
+    Tween<double> _zoomTween;
+    if (!viewModel.currentMapPosition!.bounds!.contains(pos)) {
+      LatLngBounds newBounds = viewModel.currentMapPosition!.bounds!;
+      newBounds.extend(pos);
+      CenterZoom? newZoom = viewModel.mapController?.centerZoomFitBounds(newBounds);
+      _zoomTween = Tween<double>(begin: viewModel.mapController?.zoom, end: newZoom!.zoom < 13 ? 13 : newZoom.zoom);
+    } else {
+      _zoomTween = Tween<double>(begin: viewModel.mapController?.zoom, end: forceZoom ? 16 : viewModel.mapController?.zoom);
+    }
 
     var controller = AnimationController(duration: const Duration(milliseconds: 500), vsync: this);
     Animation<double> animation = CurvedAnimation(
@@ -224,7 +232,7 @@ class _MapsControllerState extends State<MapsController> with ConnectionAware, T
 
   Widget _buildCards(MapsControllerViewModel viewModel) => AnimatedCrossFade(
       duration: const Duration(milliseconds: 100),
-      crossFadeState: viewModel.pudos.isEmpty || viewModel.currentZoomLevel < 14 ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+      crossFadeState: viewModel.pudos.isEmpty || viewModel.currentZoomLevel < 13 ? CrossFadeState.showFirst : CrossFadeState.showSecond,
       firstChild: SizedBox(
         width: MediaQuery.of(context).size.width,
         height: 0,
@@ -232,10 +240,10 @@ class _MapsControllerState extends State<MapsController> with ConnectionAware, T
       secondChild: SizedBox(
         height: 100 + (Dimension.paddingM * 2),
         child: PageView.builder(
+          physics: const BouncingScrollPhysics(),
           itemCount: viewModel.pudos.length,
           controller: viewModel.pageController,
           onPageChanged: (value) async {
-            //Check if is fetching something (image not included)
             if (!viewModel.isReloadingPudos) {
               animateMapTo(viewModel, LatLng(viewModel.pudos[value].lat ?? 0, viewModel.pudos[value].lon ?? 0));
               viewModel.showingCardPudo = viewModel.pudos[value].pudo!.pudoId;
@@ -273,6 +281,7 @@ class _MapsControllerState extends State<MapsController> with ConnectionAware, T
             },
             interactiveFlags: InteractiveFlag.pinchZoom | InteractiveFlag.drag,
             onPositionChanged: (mapPosition, boolValue) {
+              //viewModel.sortPudos(mapPosition);
               var mapVisibleMaxDistance = Geolocator.distanceBetween(
                 mapPosition.bounds!.northEast!.latitude,
                 mapPosition.bounds!.northEast!.longitude,
@@ -316,8 +325,27 @@ class _MapsControllerState extends State<MapsController> with ConnectionAware, T
               ),
               disableClusteringAtZoom: 15,
               maxClusterRadius: 60,
+              onClusterTap: (cluster) {
+                List<GeoMarker> markers = [];
+                for (var marker in cluster.markers) {
+                  int index = viewModel.pudos.indexWhere((element) => LatLng(element.lat!, element.lon!) == marker.point);
+                  if (index > -1) {
+                    markers.add(viewModel.pudos[index]);
+                  }
+                }
+                viewModel.orderPlacementFromListOfMarker(markers);
+                int index = viewModel.pudos.indexWhere((element) => LatLng(element.lat!, element.lon!) == cluster.markers.first.point);
+                if (index > -1) {
+                  viewModel.showingCardPudo = viewModel.pudos[index].pudo!.pudoId;
+                  viewModel.isReloadingPudos = true;
+                  if (viewModel.pageController.positions.isNotEmpty) {
+                    viewModel.pageController.animateToPage(index, duration: const Duration(milliseconds: 150), curve: Curves.easeIn).then((value) => viewModel.isReloadingPudos = false);
+                  }
+                }
+              },
               markers: viewModel.pudos.markers(
                 (marker) {
+                  viewModel.animateMapTo(viewModel, LatLng(marker.lat!, marker.lon!));
                   viewModel.selectPudo(context, marker, widget.enablePudoCards, widget.isOnboarding);
                 },
                 selectedMarker: widget.enablePudoCards ? viewModel.showingCardPudo : null,
