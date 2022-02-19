@@ -221,7 +221,7 @@ class _PudoDetailControllerState extends State<PudoDetailController> with Connec
                     text: 'Scegli',
                     textColor: Colors.white,
                   ),
-                if (widget.dataModel.publicPhoneNumber != null) IconButton(onPressed: () => openModal(), icon: const Icon(Icons.phone_outlined, color: Colors.white))
+                if (widget.dataModel.publicPhoneNumber != null && !nextVisible) IconButton(onPressed: () => openModal(), icon: const Icon(Icons.phone_outlined, color: Colors.white))
               ],
             ),
           ),
@@ -250,12 +250,14 @@ class _PudoDetailControllerState extends State<PudoDetailController> with Connec
               onPressed: () => Navigator.of(context).pop(),
             ),
             actions: [
-              !nextVisible
-                  ? const SizedBox()
-                  : TextFieldButton(
-                onPressed: handleSelect,
-                text: 'Scegli',
-              )
+              if (nextVisible)
+                TextFieldButton(
+                  onPressed: handleSelect,
+                  text: 'Scegli',
+                  textColor: AppColors.primaryColorDark,
+                ),
+              if (widget.dataModel.publicPhoneNumber != null && !nextVisible) IconButton(onPressed: () => openModal(), icon: const Icon(Icons.phone_outlined, color: AppColors.primaryColorDark))
+
             ],
           ),
           body: _buildBody());
