@@ -277,7 +277,6 @@ class MapsControllerViewModel extends ChangeNotifier {
       var res = await NetworkManager.instance.getGeoMarkers(lat: currentLatitude,lon:currentLongitude,text: val);
       if (res is List<GeoMarker>) {
         if (res.isNotEmpty) {
-          res.sort((a,b)=>(a.distanceFromOrigin??0).compareTo((b.distanceFromOrigin??0)));
           addresses = res;
           isOpenListAddress = true;
         } else {
