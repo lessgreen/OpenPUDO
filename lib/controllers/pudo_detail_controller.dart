@@ -25,6 +25,7 @@ import 'package:provider/provider.dart';
 import 'package:qui_green/commons/alert_dialog.dart';
 import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
 import 'package:qui_green/commons/ui/custom_network_image.dart';
+import 'package:qui_green/commons/utilities/url_launcher_helper.dart';
 import 'package:qui_green/models/pudo_profile.dart';
 import 'package:qui_green/resources/res.dart';
 import 'package:qui_green/resources/routes_enum.dart';
@@ -54,23 +55,52 @@ class _PudoDetailControllerState extends State<PudoDetailController> with Connec
     }
   }
 
-  Widget _buildPudoDetail() => Padding(
+
+  void openModal() {
+    SAAlertDialog.displayModalWithButtons(context, "Scegli un'azione", [
+      CupertinoActionSheetAction(
+        child: const Text('Chiama al telefono'),
+        onPressed: () {
+          UrlLauncherHelper.launchUrl(UrlTypes.tel, widget.dataModel.publicPhoneNumber!);
+        },
+      ),
+      CupertinoActionSheetAction(
+        child: const Text('Invia un messaggio'),
+        onPressed: () {
+          UrlLauncherHelper.launchUrl(UrlTypes.sms, widget.dataModel.publicPhoneNumber!);
+        },
+      ),
+      CupertinoActionSheetAction(
+        child: const Text('Invia un WhatsApp'),
+        onPressed: () {
+          UrlLauncherHelper.launchUrl(UrlTypes.whatsapp, widget.dataModel.publicPhoneNumber!);
+        },
+      )
+    ]);
+  }
+
+  Widget _buildPudoDetail() =>
+      Padding(
         padding: const EdgeInsets.symmetric(horizontal: Dimension.padding),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           const SizedBox(height: Dimension.padding),
           RichText(
             textAlign: TextAlign.start,
-            text: TextSpan(style: Theme.of(context).textTheme.headline6, children: [
+            text: TextSpan(style: Theme
+                .of(context)
+                .textTheme
+                .headline6, children: [
               TextSpan(text: widget.dataModel.businessName),
               WidgetSpan(
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: List<Widget>.generate(
                     5,
-                    (index) => Icon(
-                      Icons.star_rounded,
-                      color: (index + 1 <= (widget.dataModel.rating?.stars ?? 0)) ? Colors.yellow.shade700 : Colors.grey.shade200,
-                    ),
+                        (index) =>
+                        Icon(
+                          Icons.star_rounded,
+                          color: (index + 1 <= (widget.dataModel.rating?.stars ?? 0)) ? Colors.yellow.shade700 : Colors.grey.shade200,
+                        ),
                   ),
                 ),
               ),
@@ -81,7 +111,10 @@ class _PudoDetailControllerState extends State<PudoDetailController> with Connec
             textAlign: TextAlign.start,
             text: TextSpan(
               text: '',
-              style: Theme.of(context).textTheme.bodyText2,
+              style: Theme
+                  .of(context)
+                  .textTheme
+                  .bodyText2,
               children: [
                 const WidgetSpan(
                   alignment: PlaceholderAlignment.middle,
@@ -105,7 +138,10 @@ class _PudoDetailControllerState extends State<PudoDetailController> with Connec
               textAlign: TextAlign.start,
               text: TextSpan(
                 text: '',
-                style: Theme.of(context).textTheme.bodyText2,
+                style: Theme
+                    .of(context)
+                    .textTheme
+                    .bodyText2,
                 children: [
                   const WidgetSpan(
                     alignment: PlaceholderAlignment.middle,
@@ -128,7 +164,10 @@ class _PudoDetailControllerState extends State<PudoDetailController> with Connec
             textAlign: TextAlign.start,
             text: TextSpan(
               text: '',
-              style: Theme.of(context).textTheme.bodyText2,
+              style: Theme
+                  .of(context)
+                  .textTheme
+                  .bodyText2,
               children: [
                 const WidgetSpan(
                   alignment: PlaceholderAlignment.middle,
@@ -153,60 +192,78 @@ class _PudoDetailControllerState extends State<PudoDetailController> with Connec
         ]),
       );
 
-  Widget _buildPageWithCupertinoScaffold() => CupertinoPageScaffold(
-      resizeToAvoidBottomInset: true,
-      navigationBar: CupertinoNavigationBar(
-        padding: const EdgeInsetsDirectional.all(0),
-        brightness: Brightness.dark,
-        backgroundColor: AppColors.primaryColorDark,
-        leading: CupertinoNavigationBarBackButton(
-          color: Colors.white,
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-        middle: Text(
-          widget.dataModel.businessName,
-          style: Theme.of(context).textTheme.navBarTitle,
-          overflow: TextOverflow.ellipsis,
-          maxLines: 1,
-        ),
-        trailing: !nextVisible
-            ? const SizedBox()
-            : TextFieldButton(
-                onPressed: handleSelect,
-                text: 'Scegli',
-                textColor: Colors.white,
-              ),
-      ),
-      child: _buildBody());
+  Widget _buildPageWithCupertinoScaffold() =>
+      CupertinoPageScaffold(
+          resizeToAvoidBottomInset: true,
+          navigationBar: CupertinoNavigationBar(
+            padding: const EdgeInsetsDirectional.all(0),
+            brightness: Brightness.dark,
+            backgroundColor: AppColors.primaryColorDark,
+            leading: CupertinoNavigationBarBackButton(
+              color: Colors.white,
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+            middle: Text(
+              widget.dataModel.businessName,
+              style: Theme
+                  .of(context)
+                  .textTheme
+                  .navBarTitle,
+              overflow: TextOverflow.ellipsis,
+              maxLines: 1,
+            ),
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (nextVisible)
+                  TextFieldButton(
+                    onPressed: handleSelect,
+                    text: 'Scegli',
+                    textColor: Colors.white,
+                  ),
+                if (widget.dataModel.publicPhoneNumber != null && !nextVisible) IconButton(onPressed: () => openModal(), icon: const Icon(Icons.phone_outlined, color: Colors.white))
+              ],
+            ),
+          ),
+          child: _buildBody());
 
-  Widget _buildPageWithBaseScaffold() => Scaffold(
-      resizeToAvoidBottomInset: true,
-      appBar: AppBar(
-        backgroundColor: ThemeData.light().scaffoldBackgroundColor,
-        systemOverlayStyle: SystemUiOverlayStyle.dark,
-        title: Text(
-          widget.dataModel.businessName,
-          style: Theme.of(context).textTheme.navBarTitleDark,
-          overflow: TextOverflow.ellipsis,
-          maxLines: 1,
-        ),
-        centerTitle: true,
-        leading: CupertinoNavigationBarBackButton(
-          color: AppColors.primaryColorDark,
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-        actions: [
-          !nextVisible
-              ? const SizedBox()
-              : TextFieldButton(
+  Widget _buildPageWithBaseScaffold() =>
+      Scaffold(
+          resizeToAvoidBottomInset: true,
+          appBar: AppBar(
+            backgroundColor: ThemeData
+                .light()
+                .scaffoldBackgroundColor,
+            systemOverlayStyle: SystemUiOverlayStyle.dark,
+            title: Text(
+              widget.dataModel.businessName,
+              style: Theme
+                  .of(context)
+                  .textTheme
+                  .navBarTitleDark,
+              overflow: TextOverflow.ellipsis,
+              maxLines: 1,
+            ),
+            centerTitle: true,
+            leading: CupertinoNavigationBarBackButton(
+              color: AppColors.primaryColorDark,
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+            actions: [
+              if (nextVisible)
+                TextFieldButton(
                   onPressed: handleSelect,
                   text: 'Scegli',
-                )
-        ],
-      ),
-      body: _buildBody());
+                  textColor: AppColors.primaryColorDark,
+                ),
+              if (widget.dataModel.publicPhoneNumber != null && !nextVisible) IconButton(onPressed: () => openModal(), icon: const Icon(Icons.phone_outlined, color: AppColors.primaryColorDark))
 
-  Widget _buildBody() => ListView(
+            ],
+          ),
+          body: _buildBody());
+
+  Widget _buildBody() =>
+      ListView(
         children: [
           Container(
             padding: const EdgeInsets.only(bottom: Dimension.padding),
@@ -222,7 +279,10 @@ class _PudoDetailControllerState extends State<PudoDetailController> with Connec
                 _buildPudoDetail(),
                 const SizedBox(height: Dimension.padding),
                 Container(
-                  width: MediaQuery.of(context).size.width / 2,
+                  width: MediaQuery
+                      .of(context)
+                      .size
+                      .width / 2,
                   height: 1,
                   color: Colors.grey.shade400,
                 ),
@@ -239,23 +299,34 @@ class _PudoDetailControllerState extends State<PudoDetailController> with Connec
                     ),
                     Text(
                       'Per utilizzare QuiGreen in questo locale è richiesto:',
-                      style: Theme.of(context).textTheme.caption?.copyWith(
-                            fontStyle: FontStyle.italic,
-                            fontWeight: FontWeight.w300,
-                          ),
+                      style: Theme
+                          .of(context)
+                          .textTheme
+                          .caption
+                          ?.copyWith(
+                        fontStyle: FontStyle.italic,
+                        fontWeight: FontWeight.w300,
+                      ),
                     ),
                   ],
                 ),
                 const SizedBox(height: 10),
                 SizedBox(
-                  width: MediaQuery.of(context).size.width / 3 * 2,
+                  width: MediaQuery
+                      .of(context)
+                      .size
+                      .width / 3 * 2,
                   child: Text(
                     '“${widget.dataModel.rewardMessage ?? ""}”',
-                    style: Theme.of(context).textTheme.subtitle1?.copyWith(
-                          height: 2,
-                          fontStyle: FontStyle.italic,
-                          fontWeight: FontWeight.w300,
-                        ),
+                    style: Theme
+                        .of(context)
+                        .textTheme
+                        .subtitle1
+                        ?.copyWith(
+                      height: 2,
+                      fontStyle: FontStyle.italic,
+                      fontWeight: FontWeight.w300,
+                    ),
                     textAlign: TextAlign.center,
                   ),
                 ),
@@ -304,10 +375,11 @@ class _PudoDetailControllerState extends State<PudoDetailController> with Connec
   void goToRegistration() {
     NetworkManager.instance
         .addPudoFavorite(widget.dataModel.pudoId.toString())
-        .then((value) => Navigator.of(context).pushNamed(
-              Routes.registrationComplete,
-              arguments: widget.dataModel,
-            ))
+        .then((value) =>
+        Navigator.of(context).pushNamed(
+          Routes.registrationComplete,
+          arguments: widget.dataModel,
+        ))
         .catchError((onError) => SAAlertDialog.displayAlertWithClose(context, "Error", onError));
   }
 

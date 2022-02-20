@@ -21,6 +21,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:html_unescape/html_unescape_small.dart';
 import 'package:qui_green/commons/utilities/localization.dart';
@@ -38,6 +39,52 @@ class SAAlertDialog extends StatelessWidget {
     required this.description,
     required this.actions,
   }) : super(key: key);
+
+  static displayModalWithButtons(BuildContext context, String title, List<CupertinoActionSheetAction> actions) {
+    if (isAlreadyShown) {
+      return;
+    }
+    isAlreadyShown = true;
+    showCupertinoModalPopup<void>(
+      context: context,
+      builder: (BuildContext subContext) {
+        List<CupertinoActionSheetAction> modifiedActions = actions
+            .asMap()
+            .map((key, value) {
+          return MapEntry(
+            key,
+            CupertinoActionSheetAction(
+              child: value.child,
+              onPressed: () {
+                isAlreadyShown = false;
+                value.onPressed.call();
+                if (Navigator.of(subContext).canPop() == true) {
+                  Navigator.of(subContext).pop();
+                }
+              },
+            ),
+          );
+        })
+            .values
+            .toList();
+        return CupertinoActionSheet(
+          title: Text(title),
+          cancelButton: CupertinoActionSheetAction(
+            child: const Text('Cancel'),
+            onPressed: () {
+              isAlreadyShown = false;
+              if (Navigator.of(subContext).canPop() == true) {
+                Navigator.of(subContext).pop();
+              }
+            },
+          ),
+          actions: modifiedActions,
+        );
+      }
+    ).then((value) {
+      isAlreadyShown = false;
+    });
+  }
 
   static displayAlertWithButtons(BuildContext context, String title, String description, List<MaterialButton> actions) {
     if (isAlreadyShown) {
