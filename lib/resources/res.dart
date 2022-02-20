@@ -90,6 +90,8 @@ class ImageSrc {
   static const noPudoYet = "assets/noPudoYet.svg";
   static const noPackagesYet = "assets/noPackagesYet.svg";
   static const welcomePudoOnboarding = "assets/welcomePudoOnboarding.svg";
+  static const phoneIcon = "assets/phoneIcon.svg";
+  static const phoneIconFill = "assets/phoneIconFill.svg";
 }
 
 class IconSrc {}
