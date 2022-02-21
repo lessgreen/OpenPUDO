@@ -41,7 +41,7 @@ public class PushNotificationCronService extends BaseCronService {
                 log.info("[{}] Favourite queued notifications sent: {}", context.getExecutionId(), rs.size());
             }
         } catch (Exception ex) {
-            log.error("[{}] {}", context.getExecutionId(), ExceptionUtils.getRelevantStackTrace(ex));
+            log.error("[{}] {}", context.getExecutionId(), ExceptionUtils.getCanonicalFormWithStackTrace(ex));
         } finally {
             releaseLock(context.getExecutionId(), NOTIFICATION_FAVOURITE_LOCK);
         }

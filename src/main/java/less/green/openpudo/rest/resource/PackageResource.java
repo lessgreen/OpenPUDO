@@ -4,6 +4,7 @@ import less.green.openpudo.business.service.PackageService;
 import less.green.openpudo.cdi.ExecutionContext;
 import less.green.openpudo.cdi.service.LocalizationService;
 import less.green.openpudo.common.ApiReturnCodes;
+import less.green.openpudo.common.ExceptionUtils;
 import less.green.openpudo.common.MultipartUtils;
 import less.green.openpudo.common.dto.tuple.Pair;
 import less.green.openpudo.rest.config.annotation.BinaryAPI;
@@ -93,7 +94,7 @@ public class PackageResource {
         try {
             uploadedFile = MultipartUtils.readUploadedFile(req);
         } catch (IOException ex) {
-            log.error(ex.getMessage());
+            log.error("[{}] {}", context.getExecutionId(), ExceptionUtils.getCanonicalFormWithStackTrace(ex));
             throw new ApiException(ApiReturnCodes.SERVICE_UNAVAILABLE, localizationService.getMessage(context.getLanguage(), "error.service_unavailable"));
         }
 

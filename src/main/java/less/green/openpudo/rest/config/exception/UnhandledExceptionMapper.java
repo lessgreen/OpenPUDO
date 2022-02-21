@@ -39,11 +39,11 @@ public class UnhandledExceptionMapper implements ExceptionMapper<Exception> {
         }
         if (ex instanceof NotAllowedException || ex instanceof NotAcceptableException || ex instanceof NotSupportedException || ex instanceof JsonMappingException || ex instanceof JsonParseException) {
             String msg = ex.getMessage().split("\n")[0];
-            log.error(msg);
+            log.error("[{}] {}", context.getExecutionId(), ExceptionUtils.getCanonicalFormWithStackTrace(ex));
             BaseResponse res = new BaseResponse(context.getExecutionId(), ApiReturnCodes.BAD_REQUEST, msg);
             return Response.status(Response.Status.BAD_REQUEST).entity(res).build();
         }
-        log.error("[{}] {}", context.getExecutionId(), ExceptionUtils.getRelevantStackTrace(ex));
+        log.error("[{}] {}", context.getExecutionId(), ExceptionUtils.getCanonicalFormWithStackTrace(ex));
         BaseResponse res = new BaseResponse(context.getExecutionId(), ApiReturnCodes.INTERNAL_SERVER_ERROR, Response.Status.INTERNAL_SERVER_ERROR.getReasonPhrase());
         return Response.serverError().entity(res).build();
     }

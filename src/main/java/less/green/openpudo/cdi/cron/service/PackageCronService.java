@@ -43,7 +43,7 @@ public class PackageCronService extends BaseCronService {
                 log.info("[{}] Packages NOTIFY_SENT: {}", context.getExecutionId(), rs.size());
             }
         } catch (Exception ex) {
-            log.error("[{}] {}", context.getExecutionId(), ExceptionUtils.getRelevantStackTrace(ex));
+            log.error("[{}] {}", context.getExecutionId(), ExceptionUtils.getCanonicalFormWithStackTrace(ex));
         } finally {
             releaseLock(context.getExecutionId(), PACKAGE_NOTIFY_SENT_LOCK);
         }
@@ -68,7 +68,7 @@ public class PackageCronService extends BaseCronService {
                 log.info("[{}] Packages ACCEPTED: {}", context.getExecutionId(), rs.size());
             }
         } catch (Exception ex) {
-            log.error("[{}] {}", context.getExecutionId(), ExceptionUtils.getRelevantStackTrace(ex));
+            log.error("[{}] {}", context.getExecutionId(), ExceptionUtils.getCanonicalFormWithStackTrace(ex));
         } finally {
             releaseLock(context.getExecutionId(), PACKAGE_ACCEPTED_LOCK);
         }
@@ -93,7 +93,7 @@ public class PackageCronService extends BaseCronService {
                 log.info("[{}] Packages EXPIRED: {}", context.getExecutionId(), rs.size());
             }
         } catch (Exception ex) {
-            log.error("[{}] {}", context.getExecutionId(), ExceptionUtils.getRelevantStackTrace(ex));
+            log.error("[{}] {}", context.getExecutionId(), ExceptionUtils.getCanonicalFormWithStackTrace(ex));
         } finally {
             releaseLock(context.getExecutionId(), PACKAGE_EXPIRED_LOCK);
         }

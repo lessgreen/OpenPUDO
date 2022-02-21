@@ -15,20 +15,27 @@ public class ExceptionUtils {
     private ExceptionUtils() {
     }
 
-    public static String getCanonicalForm(Throwable throwable) {
+    public static String getCanonicalFormWithoutCause(Throwable throwable) {
         return throwable.getClass().getSimpleName() + ": " + throwable.getMessage();
     }
 
     public static String getCanonicalFormWithCause(Throwable throwable, Throwable rootCause) {
-        return getCanonicalForm(throwable) + " [caused by " + getCanonicalForm(rootCause) + "]";
+        return getCanonicalFormWithoutCause(throwable) + " [caused by " + getCanonicalFormWithoutCause(rootCause) + "]";
     }
 
-    public static String getCanonicalFormWithRootCause(Throwable throwable) {
+    public static String getCanonicalForm(Throwable throwable) {
+        if (throwable.getCause() == null) {
+            return getCanonicalFormWithoutCause(throwable);
+        }
         Throwable rootCause = getRootCause(throwable);
         if (rootCause != null && rootCause != throwable) {
             return getCanonicalFormWithCause(throwable, rootCause);
         }
-        return getCanonicalForm(throwable);
+        return getCanonicalFormWithoutCause(throwable);
+    }
+
+    public static String getCanonicalFormWithStackTrace(Throwable throwable) {
+        return getCanonicalForm(throwable) + "\n" + getRelevantStackTrace(throwable);
     }
 
     public static List<Throwable> getThrowableList(Throwable throwable) {
