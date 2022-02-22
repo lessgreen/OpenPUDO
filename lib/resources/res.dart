@@ -103,6 +103,8 @@ class AppColors {
   static const primaryColorDark = Color(0xFFA0B92C);
   static const primaryTextColor = Color(0xFF363736);
   static const colorGrey = Color(0xFF979797);
+  static const labelLightDark = Color(0x23373737);
+  static const labelDark = Color(0xFF373737);
 }
 
 class Shadows {

@@ -29,13 +29,13 @@ import 'package:qui_green/controllers/about_you_controller.dart';
 import 'package:qui_green/controllers/home_controller.dart';
 import 'package:qui_green/controllers/instruction_controller.dart';
 import 'package:qui_green/controllers/onboarding/confirm_phone_controller.dart';
-import 'package:qui_green/controllers/onboarding/exchange_controller.dart';
 import 'package:qui_green/controllers/onboarding/insert_address_controller.dart';
 import 'package:qui_green/controllers/onboarding/insert_phone_controller.dart';
 import 'package:qui_green/controllers/onboarding/login_controller.dart';
 import 'package:qui_green/controllers/onboarding/maps_controller.dart';
 import 'package:qui_green/controllers/onboarding/personal_data_business_controller.dart';
 import 'package:qui_green/controllers/onboarding/personal_data_controller.dart';
+import 'package:qui_green/controllers/onboarding/reward_policy_controller.dart';
 import 'package:qui_green/controllers/pudo_detail_controller.dart';
 import 'package:qui_green/controllers/pudo_home_controller.dart';
 import 'package:qui_green/controllers/pudo_list_controller.dart';
@@ -133,13 +133,13 @@ dynamic routeWithSetting(RouteSettings settings) {
       return CupertinoPageRoute(
         builder: (context) => const ThanksController(),
       );
+    case Routes.rewardPolicy:
+      return CupertinoPageRoute(
+        builder: (context) => const RewardPolicyController(),
+      );
     case Routes.personalDataBusiness:
       return CupertinoPageRoute(
         builder: (context) => const PersonalDataBusinessController(),
-      );
-    case Routes.exchange:
-      return CupertinoPageRoute(
-        builder: (context) => const ExchangeController(),
       );
     case Routes.pudoTutorial:
       return CupertinoPageRoute(

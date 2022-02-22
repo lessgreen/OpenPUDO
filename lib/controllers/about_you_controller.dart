@@ -80,7 +80,7 @@ class _AboutYouControllerState extends State<AboutYouController> {
                 horizontal: Dimension.padding,
               ),
               onPressed: () {
-                Navigator.of(context).pushReplacementNamed(Routes.home);
+                Navigator.of(context).pushReplacementNamed(Routes.personalDataBusiness);
               },
               text: 'Voglio fornire un servizio',
             ),

@@ -44,6 +44,7 @@ import 'package:qui_green/models/pudo_package_event.dart';
 import 'package:qui_green/models/pudo_profile.dart';
 import 'package:qui_green/models/pudo_summary.dart';
 import 'package:qui_green/models/registration_request.dart';
+import 'package:qui_green/models/reward_option.dart';
 import 'package:qui_green/models/user_preferences.dart';
 import 'package:qui_green/models/user_profile.dart';
 import 'package:qui_green/resources/app_config.dart';

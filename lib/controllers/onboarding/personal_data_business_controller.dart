@@ -22,9 +22,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:qui_green/commons/utilities/keyboard_visibility.dart';
+import 'package:qui_green/resources/routes_enum.dart';
 import 'package:qui_green/widgets/main_button.dart';
 import 'package:qui_green/resources/res.dart';
-import 'package:qui_green/resources/routes_enum.dart';
 
 class PersonalDataBusinessController extends StatefulWidget {
   const PersonalDataBusinessController({Key? key}) : super(key: key);
@@ -145,7 +145,7 @@ class _PersonalDataBusinessControllerState extends State<PersonalDataBusinessCon
                 crossFadeState: isKeyboardVisible ? CrossFadeState.showSecond : CrossFadeState.showFirst,
                 secondChild: const SizedBox(),
                 firstChild: MainButton(
-                  onPressed: () => Navigator.of(context).pushReplacementNamed(Routes.exchange),
+                  onPressed: () => Navigator.of(context).pushReplacementNamed(Routes.rewardPolicy),
                   text: 'Avanti',
                 ),
                 duration: const Duration(milliseconds: 150),
