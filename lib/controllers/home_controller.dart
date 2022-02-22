@@ -22,6 +22,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:qui_green/commons/utilities/home_user_packages_section_routes.dart';
+import 'package:qui_green/commons/utilities/home_user_profile_section_routes.dart';
 import 'package:qui_green/commons/utilities/home_user_pudo_section_routes.dart';
 import 'package:qui_green/resources/res.dart';
 import 'package:qui_green/singletons/network/network_manager.dart';
@@ -42,6 +43,7 @@ class _HomeControllerState extends State<HomeController> with ConnectionAware {
     super.initState();
     _navigatorObservers.add(NavigatorObserver());
     _navigatorObservers.add(NavigatorObserver());
+    _navigatorObservers.add(NavigatorObserver());
   }
 
   @override
@@ -59,11 +61,18 @@ class _HomeControllerState extends State<HomeController> with ConnectionAware {
             BottomNavigationBarItem(
                 icon: SvgPicture.asset(ImageSrc.homeArt, color: Colors.grey.shade400), activeIcon: SvgPicture.asset(ImageSrc.homeArt, color: AppColors.primaryColorDark), label: 'Home'),
             BottomNavigationBarItem(
-                icon: SvgPicture.asset(ImageSrc.mapsArt, color: Colors.grey.shade400), activeIcon: SvgPicture.asset(ImageSrc.mapsArt, color: AppColors.primaryColorDark), label: 'Pudo'),
+                icon: SvgPicture.asset(ImageSrc.mapsArt, color: Colors.grey.shade400), activeIcon: SvgPicture.asset(ImageSrc.mapsArt, color: AppColors.primaryColorDark), label: 'Map'),
+            BottomNavigationBarItem(
+                icon: SvgPicture.asset(ImageSrc.profileArt, color: Colors.grey.shade400), activeIcon: SvgPicture.asset(ImageSrc.profileArt, color: AppColors.primaryColorDark), label: 'Profile'),
           ],
         ),
         tabBuilder: (innerContext, index) {
           switch (index) {
+            case 2:
+              return CupertinoTabView(
+                navigatorObservers: [_navigatorObservers[2]],
+                onGenerateRoute: (RouteSettings settings) => routeHomeUserProfileSectionWithSetting(settings),
+              );
             case 1:
               return CupertinoTabView(
                 navigatorObservers: [_navigatorObservers[1]],

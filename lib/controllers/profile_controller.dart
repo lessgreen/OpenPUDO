@@ -53,9 +53,21 @@ class _ProfileControllerState extends State<ProfileController> with ConnectionAw
               'Il tuo profilo',
               style: Theme.of(context).textTheme.navBarTitle,
             ),
-            leading: CupertinoNavigationBarBackButton(
-              color: Colors.white,
-              onPressed: () => Navigator.of(context).pop(),
+            trailing: Padding(
+              padding: const EdgeInsets.only(right:Dimension.paddingS),
+              child: InkWell(
+                onTap: () {
+                  Navigator.pop(context);
+                  NetworkManager.instance.setAccessToken(null);
+                  currentUser.refresh();
+                },
+                child: SvgPicture.asset(
+                  ImageSrc.logoutIcon,
+                  color: Colors.white,
+                  width: 29,
+                  height: 29,
+                ),
+              ),
             ),
           ),
           child: ListView(children: [
@@ -109,20 +121,6 @@ class _ProfileControllerState extends State<ProfileController> with ConnectionAw
               ),
               title: "Le tue spedizioni",
               onTap: () {},
-            ),
-            TableViewCell(
-              leading: SvgPicture.asset(
-                ImageSrc.logoutIcon,
-                color: AppColors.cardColor,
-                width: 36,
-                height: 36,
-              ),
-              title: "Logout",
-              onTap: () {
-                Navigator.pop(context);
-                NetworkManager.instance.setAccessToken(null);
-                currentUser.refresh();
-              },
             ),
             TableViewCell(
               title: "Elimina account",
