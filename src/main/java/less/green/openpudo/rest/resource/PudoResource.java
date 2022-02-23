@@ -115,7 +115,7 @@ public class PudoResource {
     @GET
     @Path("/me/reward-policy")
     @SecurityRequirement(name = "JWT")
-    @Operation(summary = "Get PUDO reward policy")
+    @Operation(summary = "Get reward policy for current PUDO")
     public RewardOptionListResponse getCurrentPudoRewardPolicy() {
         List<RewardOption> ret = pudoService.getCurrentPudoRewardPolicy();
         return new RewardOptionListResponse(context.getExecutionId(), ApiReturnCodes.OK, ret);
@@ -124,7 +124,7 @@ public class PudoResource {
     @POST
     @Path("/me/reward-policy")
     @SecurityRequirement(name = "JWT")
-    @Operation(summary = "Get PUDO reward policy")
+    @Operation(summary = "Update reward policy for current PUDO")
     public RewardOptionListResponse updateCurrentPudoRewardPolicy(List<RewardOption> rewardPolicy) {
         List<RewardOption> ret = pudoService.updateCurrentPudoRewardPolicy(rewardPolicy);
         return new RewardOptionListResponse(context.getExecutionId(), ApiReturnCodes.OK, ret);
