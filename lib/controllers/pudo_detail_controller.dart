@@ -46,6 +46,8 @@ class PudoDetailController extends StatefulWidget {
 }
 
 class _PudoDetailControllerState extends State<PudoDetailController> with ConnectionAware {
+  bool checkComplete = false;
+
   @override
   void initState() {
     super.initState();
@@ -53,6 +55,7 @@ class _PudoDetailControllerState extends State<PudoDetailController> with Connec
       getIfPudoAlreadySelected();
     } else {
       nextVisible = true;
+      checkComplete = true;
     }
   }
 
@@ -182,42 +185,49 @@ class _PudoDetailControllerState extends State<PudoDetailController> with Connec
   Widget _buildPageWithCupertinoScaffold() => CupertinoPageScaffold(
       resizeToAvoidBottomInset: true,
       navigationBar: CupertinoNavigationBar(
-        padding: const EdgeInsetsDirectional.all(0),
-        brightness: Brightness.dark,
-        backgroundColor: AppColors.primaryColorDark,
-        leading: CupertinoNavigationBarBackButton(
-          color: Colors.white,
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-        middle: Text(
-          widget.dataModel.businessName,
-          style: Theme.of(context).textTheme.navBarTitle,
-          overflow: TextOverflow.ellipsis,
-          maxLines: 1,
-        ),
-        trailing: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            nextVisible
-                ? TextFieldButton(
-                    onPressed: handleSelect,
-                    text: 'Scegli',
-                    textColor: Colors.white,
-                  )
-                : (widget.dataModel.publicPhoneNumber != null && !nextVisible)
-                    ? IconButton(
-                        onPressed: () => openModal(),
-                        icon: SvgPicture.asset(
-                          ImageSrc.phoneIcon,
-                          color: Colors.white,
-                          width: 26,
-                          height: 26,
-                        ),
-                      )
-                    : const SizedBox()
-          ],
-        ),
-      ),
+          padding: const EdgeInsetsDirectional.all(0),
+          brightness: Brightness.dark,
+          backgroundColor: AppColors.primaryColorDark,
+          leading: CupertinoNavigationBarBackButton(
+            color: Colors.white,
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+          middle: AnimatedCrossFade(
+              firstChild: const SizedBox(
+                height: 30,
+                width: double.infinity,
+              ),
+              secondChild: Text(
+                widget.dataModel.businessName,
+                style: Theme.of(context).textTheme.navBarTitle,
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
+              ),
+              crossFadeState: checkComplete ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+              duration: const Duration(milliseconds: 100)),
+          trailing: AnimatedCrossFade(
+              firstChild: const SizedBox(
+                height: 26,
+              ),
+              secondChild: nextVisible
+                  ? TextFieldButton(
+                      onPressed: handleSelect,
+                      text: 'Scegli',
+                      textColor: Colors.white,
+                    )
+                  : widget.dataModel.publicPhoneNumber != null
+                      ? IconButton(
+                          onPressed: () => openModal(),
+                          icon: SvgPicture.asset(
+                            ImageSrc.phoneIcon,
+                            color: Colors.white,
+                            width: 26,
+                            height: 26,
+                          ),
+                        )
+                      : const SizedBox(),
+              crossFadeState: checkComplete ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+              duration: const Duration(milliseconds: 100))),
       child: _buildBody());
 
   Widget _buildPageWithBaseScaffold() => Scaffold(
@@ -225,25 +235,48 @@ class _PudoDetailControllerState extends State<PudoDetailController> with Connec
       appBar: AppBar(
         backgroundColor: ThemeData.light().scaffoldBackgroundColor,
         systemOverlayStyle: SystemUiOverlayStyle.dark,
-        title: Text(
-          widget.dataModel.businessName,
-          style: Theme.of(context).textTheme.navBarTitleDark,
-          overflow: TextOverflow.ellipsis,
-          maxLines: 1,
-        ),
+        title: AnimatedCrossFade(
+            firstChild: const SizedBox(
+              height: 30,
+              width: double.infinity,
+            ),
+            secondChild: Text(
+              widget.dataModel.businessName,
+              style: Theme.of(context).textTheme.navBarTitleDark,
+              overflow: TextOverflow.ellipsis,
+              maxLines: 1,
+            ),
+            crossFadeState: checkComplete ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+            duration: const Duration(milliseconds: 100)),
         centerTitle: true,
         leading: CupertinoNavigationBarBackButton(
           color: AppColors.primaryColorDark,
           onPressed: () => Navigator.of(context).pop(),
         ),
         actions: [
-          if (nextVisible)
-            TextFieldButton(
-              onPressed: handleSelect,
-              text: 'Scegli',
-              textColor: AppColors.primaryColorDark,
-            ),
-          if (widget.dataModel.publicPhoneNumber != null && !nextVisible) IconButton(onPressed: () => openModal(), icon: const Icon(Icons.phone_outlined, color: AppColors.primaryColorDark))
+          AnimatedCrossFade(
+              firstChild: const SizedBox(
+                height: 30,
+              ),
+              secondChild: nextVisible
+                  ? TextFieldButton(
+                      onPressed: handleSelect,
+                      text: 'Scegli',
+                      textColor: AppColors.primaryColorDark,
+                    )
+                  : widget.dataModel.publicPhoneNumber != null
+                      ? IconButton(
+                          onPressed: () => openModal(),
+                          icon: SvgPicture.asset(
+                            ImageSrc.phoneIcon,
+                            color: AppColors.primaryColorDark,
+                            width: 26,
+                            height: 26,
+                          ),
+                        )
+                      : const SizedBox(),
+              crossFadeState: checkComplete ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+              duration: const Duration(milliseconds: 100))
         ],
       ),
       body: _buildBody());
@@ -319,10 +352,12 @@ class _PudoDetailControllerState extends State<PudoDetailController> with Connec
       final index = value.indexWhere((element) => element.pudoId == widget.dataModel.pudoId);
       if (index > -1) {
         setState(() {
+          checkComplete = true;
           nextVisible = false;
         });
       } else {
         setState(() {
+          checkComplete = true;
           nextVisible = true;
         });
       }
