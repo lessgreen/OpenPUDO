@@ -161,13 +161,13 @@ public class PudoService {
         members.setExtraInfo(membersExtraInfo);
 
         // buy
-        RewardOption buy = new RewardOption("buy", localizationService.getMessage(context.getLanguage(), "label.reward.buy"), RewardIcon.BAG, false, null);
+        RewardOption buy = new RewardOption("buy", localizationService.getMessage(context.getLanguage(), "label.reward.buy"), RewardIcon.BAG, false, false);
         ret.add(buy);
         ExtraInfoText buyExtraInfo = new ExtraInfoText("buy.text", localizationService.getMessage(context.getLanguage(), "label.reward.buy.text"), ExtraInfoType.TEXT, false, null);
         buy.setExtraInfo(buyExtraInfo);
 
         // fee
-        RewardOption fee = new RewardOption("fee", localizationService.getMessage(context.getLanguage(), "label.reward.fee"), RewardIcon.MONEY, false, null);
+        RewardOption fee = new RewardOption("fee", localizationService.getMessage(context.getLanguage(), "label.reward.fee"), RewardIcon.MONEY, false, false);
         ret.add(fee);
         ExtraInfoDecimal feeExtraInfo = new ExtraInfoDecimal("fee.price", localizationService.getMessage(context.getLanguage(), "label.reward.fee.price"), ExtraInfoType.DECIMAL, true,
                 BigDecimal.valueOf(0.1), BigDecimal.valueOf(2.0), 2, BigDecimal.valueOf(0.1), null);
