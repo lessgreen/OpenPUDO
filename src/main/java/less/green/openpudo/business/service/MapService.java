@@ -124,7 +124,7 @@ public class MapService {
     }
 
     @Transactional(Transactional.TxType.NOT_SUPPORTED)
-    public List<AddressMarker> searchAddress(String text, BigDecimal lat, BigDecimal lon) {
+    public List<AddressMarker> searchAddress(String text, BigDecimal lat, BigDecimal lon, Boolean precise) {
         // prevent returning meaningless results with too few characters
         if (text.trim().length() <= 3) {
             return Collections.emptyList();
@@ -135,6 +135,10 @@ public class MapService {
             List<AddressMarker> ret = new ArrayList<>(rs.size());
             for (var row : rs) {
                 AddressSearchResult address = dtoMapper.mapFeatureToAddressSearchResult(row);
+                // remove results not suitable for pudo address
+                if (precise && (address.getLabel() == null || address.getStreet() == null || address.getCity() == null || address.getProvince() == null || address.getCountry() == null)) {
+                    continue;
+                }
                 String signature = cryptoService.signObject(address);
                 BigDecimal distanceFromOrigin = null;
                 if (lat != null && lon != null) {
@@ -186,7 +190,7 @@ public class MapService {
     }
 
     public List<GPSMarker> searchGlobal(String text, BigDecimal lat, BigDecimal lon) {
-        List<AddressMarker> rs1 = searchAddress(text, lat, lon);
+        List<AddressMarker> rs1 = searchAddress(text, lat, lon, false);
         List<PudoMarker> rs2 = searchPudo(text, lat, lon);
         List<GPSMarker> ret = new ArrayList<>(rs1.size() + rs2.size());
         ret.addAll(rs1);

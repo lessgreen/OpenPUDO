@@ -108,7 +108,8 @@ public class MapResource {
     public AddressMarkerListResponse searchAddress(
             @Parameter(description = "Query text", required = true) @QueryParam("text") String text,
             @Parameter(description = "Latitude value of map center point") @QueryParam("lat") BigDecimal lat,
-            @Parameter(description = "Longitude value of map center point") @QueryParam("lon") BigDecimal lon) {
+            @Parameter(description = "Longitude value of map center point") @QueryParam("lon") BigDecimal lon,
+            @Parameter(description = "Force results to be at street level, precise enough to be user as PUDO address") @DefaultValue("false") @QueryParam("precise") Boolean precise) {
         // sanitize input
         if (isEmpty(text)) {
             throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.empty_mandatory_field", "text"));
@@ -123,7 +124,7 @@ public class MapResource {
             }
         }
 
-        List<AddressMarker> ret = mapService.searchAddress(text.trim(), lat, lon);
+        List<AddressMarker> ret = mapService.searchAddress(text.trim(), lat, lon, precise);
         return new AddressMarkerListResponse(context.getExecutionId(), ApiReturnCodes.OK, ret);
     }
 
