@@ -134,6 +134,10 @@ public class AuthResource {
             throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.empty_mandatory_field", "addressMarker"));
         } else if (req.getAddressMarker().getAddress() == null) {
             throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.empty_mandatory_field", "address"));
+        } else if (req.getAddressMarker().getAddress().getLabel() == null || req.getAddressMarker().getAddress().getStreet() == null
+                   || req.getAddressMarker().getAddress().getCity() == null || req.getAddressMarker().getAddress().getProvince() == null
+                   || req.getAddressMarker().getAddress().getCountry() == null) {
+            throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.invalid_field", "address"));
         } else if (isEmpty(req.getAddressMarker().getSignature())) {
             throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.empty_mandatory_field", "signature"));
         } else if (!cryptoService.isValidSignature(req.getAddressMarker().getAddress(), req.getAddressMarker().getSignature())) {
