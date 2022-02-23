@@ -4,7 +4,7 @@
 
     <groupId>less.green.openpudo</groupId>
     <artifactId>openpudo</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
     <packaging>jar</packaging>
     <name>OpenPUDO REST server</name>
 
