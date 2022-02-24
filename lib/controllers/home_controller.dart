@@ -75,10 +75,17 @@ class _HomeControllerState extends State<HomeController> with ConnectionAware {
                   icon: SvgPicture.asset(ImageSrc.homeArt, color: Colors.grey.shade400), activeIcon: SvgPicture.asset(ImageSrc.homeArt, color: AppColors.primaryColorDark), label: 'Home'),
               BottomNavigationBarItem(
                   icon: SvgPicture.asset(ImageSrc.mapsArt, color: Colors.grey.shade400), activeIcon: SvgPicture.asset(ImageSrc.mapsArt, color: AppColors.primaryColorDark), label: 'Pudo'),
+              BottomNavigationBarItem(
+                  icon: SvgPicture.asset(ImageSrc.profileArt, color: Colors.grey.shade400), activeIcon: SvgPicture.asset(ImageSrc.profileArt, color: AppColors.primaryColorDark), label: 'Profile'),
             ],
           ),
           tabBuilder: (innerContext, index) {
             switch (index) {
+              case 2:
+                return CupertinoTabView(
+                  navigatorObservers: [_navigatorObservers[2]],
+                  onGenerateRoute: (RouteSettings settings) => routeHomeUserProfileSectionWithSetting(settings),
+                );
               case 1:
                 return CupertinoTabView(
                   navigatorObservers: [_navigatorObservers[1]],
