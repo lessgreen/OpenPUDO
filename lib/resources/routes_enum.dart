@@ -40,4 +40,5 @@ class Routes {
   static const profile = '/profile';
   static const pudoList = '/pudoList';
   static const pudoHome = "/pudoHome";
+  static const packagePickup = "/packagePickup";
 }

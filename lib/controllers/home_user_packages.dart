@@ -28,6 +28,7 @@ import 'package:qui_green/commons/alert_dialog.dart';
 import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
 import 'package:qui_green/commons/utilities/network_error_helper.dart';
 import 'package:qui_green/models/package_summary.dart';
+import 'package:qui_green/models/pudo_package.dart';
 import 'package:qui_green/resources/res.dart';
 import 'package:qui_green/resources/routes_enum.dart';
 import 'package:qui_green/singletons/current_user.dart';
@@ -54,6 +55,18 @@ class _HomeUserPackagesState extends State<HomeUserPackages> with ConnectionAwar
   @override
   void initState() {
     super.initState();
+  }
+
+  void onPackageCard(PackageSummary package) {
+    NetworkManager.instance.getPackageDetails(packageId: package.packageId).then(
+      (response) {
+        if (response is PudoPackage) {
+          Navigator.of(context).pushNamed(Routes.packagePickup, arguments: response);
+        } else {
+          SAAlertDialog.displayAlertWithClose(context, "Error", "Qualcosa e' andato storto");
+        }
+      },
+    ).catchError((onError) => SAAlertDialog.displayAlertWithClose(context, "Error", onError));
   }
 
   Future fetchPackages() {
@@ -163,7 +176,7 @@ class _HomeUserPackagesState extends State<HomeUserPackages> with ConnectionAwar
           address: availablePackages[index].label ?? '',
           //TODO no pudo rating on PackageSummary
           stars: 0,
-          onTap: () => null,
+          onTap: () => onPackageCard(availablePackages[index]),
           isRead: true,
           deliveryDate: availablePackages[index].createTms,
           image: availablePackages[index].packagePicId,

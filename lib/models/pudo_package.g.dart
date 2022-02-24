@@ -16,6 +16,7 @@ PudoPackage _$PudoPackageFromJson(Map<String, dynamic> json) => PudoPackage(
       events: (json['events'] as List<dynamic>?)
           ?.map((e) => PudoPackageEvent.fromJson(e as Map<String, dynamic>))
           .toList(),
+      shareLink: json['shareLink'] as String?,
     );
 
 Map<String, dynamic> _$PudoPackageToJson(PudoPackage instance) =>
@@ -27,4 +28,5 @@ Map<String, dynamic> _$PudoPackageToJson(PudoPackage instance) =>
       'updateTms': instance.updateTms,
       'userId': instance.userId,
       'events': instance.events,
+      'shareLink': instance.shareLink,
     };
