@@ -271,7 +271,7 @@ class MapsControllerViewModel extends ChangeNotifier {
 
   Future<void> fetchSuggestions(String val) async {
     if (val.trim().isNotEmpty) {
-      var res = await NetworkManager.instance.getGeoMarkers(text: val);
+      var res = await NetworkManager.instance.getGeoMarkers(lat: currentLatitude,lon:currentLongitude,text: val);
       if (res is List<GeoMarker>) {
         if (res.isNotEmpty) {
           addresses = res;
