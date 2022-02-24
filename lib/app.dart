@@ -80,43 +80,37 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        MoveToBackground.moveTaskToBack();
-        return false;
-      },
-      child: MultiProvider(
-        providers: [
-          ChangeNotifierProvider(create: (_) => CurrentUser(config.sharedPreferencesInstance, pushPage: pushPage)),
-        ],
-        child: Consumer<CurrentUser>(
-          builder: (context, currentUser, _) {
-            return MaterialApp(
-              navigatorKey: navigatorKey,
-              debugShowCheckedModeBanner: false,
-              title: 'Qui Green',
-              supportedLocales: const [
-                Locale('en'),
-                Locale('it'),
-                Locale('de'),
-                Locale('es'),
-                Locale('fr'),
-              ],
-              localizationsDelegates: [
-                LocalizationManagerDelegate(config.sharedPreferencesInstance!),
-                GlobalMaterialLocalizations.delegate,
-                GlobalCupertinoLocalizations.delegate,
-                GlobalWidgetsLocalizations.delegate
-              ],
-              theme: MyAppTheme.themeData(context),
-              darkTheme: MyAppTheme.themeData(context),
-              initialRoute: NetworkManager.instance.accessToken.isEmpty ? Routes.login : "/",
-              onGenerateRoute: (settings) {
-                return routeWithSetting(settings);
-              },
-            );
-          },
-        ),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => CurrentUser(config.sharedPreferencesInstance, pushPage: pushPage)),
+      ],
+      child: Consumer<CurrentUser>(
+        builder: (context, currentUser, _) {
+          return MaterialApp(
+            navigatorKey: navigatorKey,
+            debugShowCheckedModeBanner: false,
+            title: 'Qui Green',
+            supportedLocales: const [
+              Locale('en'),
+              Locale('it'),
+              Locale('de'),
+              Locale('es'),
+              Locale('fr'),
+            ],
+            localizationsDelegates: [
+              LocalizationManagerDelegate(config.sharedPreferencesInstance!),
+              GlobalMaterialLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate
+            ],
+            theme: MyAppTheme.themeData(context),
+            darkTheme: MyAppTheme.themeData(context),
+            initialRoute: NetworkManager.instance.accessToken.isEmpty ? Routes.login : "/",
+            onGenerateRoute: (settings) {
+              return routeWithSetting(settings);
+            },
+          );
+        },
       ),
     );
   }
