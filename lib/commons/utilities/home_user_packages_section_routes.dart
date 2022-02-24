@@ -23,6 +23,7 @@ import 'dart:developer';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:qui_green/app.dart';
+import 'package:qui_green/commons/utilities/page_route_helper.dart';
 import 'package:qui_green/controllers/home_user_packages.dart';
 import 'package:qui_green/controllers/package_pickup_controller.dart';
 import 'package:qui_green/models/pudo_package.dart';
@@ -33,27 +34,10 @@ dynamic routeHomeUserPackagesSectionWithSetting(RouteSettings settings) {
   currentRouteName.value = settings.name ?? '/main';
   switch (settings.name) {
     case Routes.packagePickup:
-      return PageRouteBuilder(
-        settings: settings,
-        opaque: true,
-        transitionDuration: const Duration(milliseconds: 120),
-        pageBuilder: (BuildContext context, _, __) {
-          return PackagePickupController(packageModel: settings.arguments as PudoPackage);
-        },
-        transitionsBuilder: (_, Animation<double> animation, __, Widget child) {
-          return SlideTransition(
-            transformHitTests: false,
-            child: child,
-            position: Tween<Offset>(
-              begin: const Offset(1.0, 0.0),
-              end: Offset.zero,
-            ).animate(animation),
-          );
-        },
-      );
+      return PageRouteHelper.buildPage(PackagePickupController(packageModel: settings.arguments as PudoPackage));
     default:
-      return MaterialPageRoute(
-        builder: (context) => const HomeUserPackages(),
+      return PageRouteHelper.buildPage(
+        const HomeUserPackages(),
       );
   }
 }
