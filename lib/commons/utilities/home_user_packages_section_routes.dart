@@ -33,7 +33,24 @@ dynamic routeHomeUserPackagesSectionWithSetting(RouteSettings settings) {
   currentRouteName.value = settings.name ?? '/main';
   switch (settings.name) {
     case Routes.packagePickup:
-      return MaterialPageRoute(builder: (context) => PackagePickupController(packageModel: settings.arguments as PudoPackage));
+      return PageRouteBuilder(
+        settings: settings,
+        opaque: true,
+        transitionDuration: const Duration(milliseconds: 120),
+        pageBuilder: (BuildContext context, _, __) {
+          return PackagePickupController(packageModel: settings.arguments as PudoPackage);
+        },
+        transitionsBuilder: (_, Animation<double> animation, __, Widget child) {
+          return SlideTransition(
+            transformHitTests: false,
+            child: child,
+            position: Tween<Offset>(
+              begin: const Offset(1.0, 0.0),
+              end: Offset.zero,
+            ).animate(animation),
+          );
+        },
+      );
     default:
       return MaterialPageRoute(
         builder: (context) => const HomeUserPackages(),
