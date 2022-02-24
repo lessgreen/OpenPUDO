@@ -196,10 +196,6 @@ class _HomeUserPackagesState extends State<HomeUserPackages> with ConnectionAwar
                 'Home',
                 style: Theme.of(context).textTheme.navBarTitle,
               ),
-              trailing: InkWell(
-                onTap: () => Navigator.of(context).pushNamed(Routes.profile),
-                child: Container(margin: const EdgeInsets.only(right: Dimension.paddingS), width: 40, child: SvgPicture.asset(ImageSrc.profileArt, color: Colors.white)),
-              ),
             ),
             child: SafeArea(
               child: SAScaffold(isLoading: NetworkManager.instance.networkActivity, body: RefreshIndicator(onRefresh: () async => currentUser.triggerReload(), child: _buildCorrectPage())),

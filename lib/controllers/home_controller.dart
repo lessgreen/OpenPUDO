@@ -23,6 +23,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:move_to_background/move_to_background.dart';
 import 'package:qui_green/commons/utilities/home_user_packages_section_routes.dart';
+import 'package:qui_green/commons/utilities/home_user_profile_section_routes.dart';
 import 'package:qui_green/commons/utilities/home_user_pudo_section_routes.dart';
 import 'package:qui_green/resources/res.dart';
 import 'package:qui_green/singletons/network/network_manager.dart';
@@ -41,6 +42,7 @@ class _HomeControllerState extends State<HomeController> with ConnectionAware {
   @override
   void initState() {
     super.initState();
+    _navigatorObservers.add(NavigatorObserver());
     _navigatorObservers.add(NavigatorObserver());
     _navigatorObservers.add(NavigatorObserver());
   }
