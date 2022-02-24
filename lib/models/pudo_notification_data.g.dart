@@ -28,13 +28,12 @@ Map<String, dynamic> _$PudoNotificationDataToJson(
     };
 
 const _$PudoPackageStatusEnumMap = {
-  PudoPackageStatus.ACCEPTED: 'ACCEPTED',
-  PudoPackageStatus.COLLECTED: 'COLLECTED',
-  PudoPackageStatus.DELIVERED: 'DELIVERED',
-  PudoPackageStatus.EXPIRED: 'EXPIRED',
-  PudoPackageStatus.NOTIFIED: 'NOTIFIED',
-  PudoPackageStatus.RETURNED: 'RETURNED',
-  PudoPackageStatus.NOTIFY_SENT: 'NOTIFY_SENT',
+  PudoPackageStatus.delivered: 'delivered',
+  PudoPackageStatus.notifySent: 'notify_sent',
+  PudoPackageStatus.notified: 'notified',
+  PudoPackageStatus.collected: 'collected',
+  PudoPackageStatus.accepted: 'accepted',
+  PudoPackageStatus.expired: 'expired',
 };
 
 const _$PudoNotificationTypeEnumMap = {

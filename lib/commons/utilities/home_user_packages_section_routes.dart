@@ -27,11 +27,13 @@ import 'package:qui_green/controllers/home_user_packages.dart';
 import 'package:qui_green/controllers/instruction_controller.dart';
 import 'package:qui_green/controllers/onboarding/insert_address_controller.dart';
 import 'package:qui_green/controllers/onboarding/maps_controller.dart';
+import 'package:qui_green/controllers/package_pickup_controller.dart';
 import 'package:qui_green/controllers/profile_controller.dart';
 import 'package:qui_green/controllers/pudo_detail_controller.dart';
 import 'package:qui_green/controllers/pudo_list_controller.dart';
 import 'package:qui_green/controllers/registration_complete_controller.dart';
 import 'package:qui_green/controllers/user_position_controller.dart';
+import 'package:qui_green/models/pudo_package.dart';
 import 'package:qui_green/models/pudo_profile.dart';
 import 'package:qui_green/resources/routes_enum.dart';
 
