@@ -46,7 +46,7 @@ class _PackagePickupControllerState extends State<PackagePickupController> {
     super.initState();
   }
 
-  void sharePackage() => Share.share(NetworkManager.instance.baseURL + "/share/${widget.packageModel.shareLink ?? ""}");
+  void sharePackage() => Share.share(NetworkManager.instance.baseURL + "/api/v2/share/${widget.packageModel.shareLink ?? ""}");
 
   Widget _buildQr() => Column(
         crossAxisAlignment: CrossAxisAlignment.center,
