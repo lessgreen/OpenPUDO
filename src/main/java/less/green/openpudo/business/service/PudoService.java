@@ -271,7 +271,7 @@ public class PudoService {
         if (tbRewardPolicy.getCustomerChecked()) {
             String msg = localizationService.getMessage(context.getLanguage(), "label.reward.customers");
             if (!tbRewardPolicy.getCustomerSelectitem().equals("other")) {
-                msg += " (" + localizationService.getMessage(context.getLanguage(), "label.reward.customers.select." + tbRewardPolicy.getCustomerSelectitem()) + ")";
+                msg += " (" + localizationService.getMessage(context.getLanguage(), "label.reward." + tbRewardPolicy.getCustomerSelectitem()) + ")";
             } else {
                 msg += " (" + tbRewardPolicy.getCustomerSelectitemText() + ")";
             }
