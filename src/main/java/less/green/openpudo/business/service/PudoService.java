@@ -355,10 +355,10 @@ public class PudoService {
         RewardOption fee = rewardPolicy.stream().filter(i -> i.getName().equals("fee")).findFirst().orElseThrow(() -> new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.invalid_field", "rewardPolicy")));
 
         // some quantity checks
-        if (free.getChecked() && rewardPolicy.stream().filter(i -> i.getChecked()).count() > 1) {
+        if (free.getChecked() && rewardPolicy.stream().filter(RewardOption::getChecked).count() > 1) {
             throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.invalid_field", "rewardPolicy"));
         }
-        if (rewardPolicy.stream().noneMatch(i -> i.getChecked())) {
+        if (rewardPolicy.stream().noneMatch(RewardOption::getChecked)) {
             throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.invalid_field", "rewardPolicy"));
         }
 
@@ -395,10 +395,10 @@ public class PudoService {
                     throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.invalid_field", "rewardPolicy"));
                 }
             }
-            if (values.stream().filter(i -> i.getChecked()).count() > 1) {
+            if (values.stream().filter(ExtraInfoSelectItem::getChecked).count() > 1) {
                 throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.invalid_field", "rewardPolicy"));
             }
-            ExtraInfoSelectItem selectedValue = values.stream().filter(i -> i.getChecked()).findFirst().get();
+            ExtraInfoSelectItem selectedValue = values.stream().filter(ExtraInfoSelectItem::getChecked).findFirst().get();
             ret.setCustomerSelectitem(selectedValue.getName());
             if ("customers.select.other".equals(selectedValue.getName())) {
                 if (selectedValue.getExtraInfo() == null || !(selectedValue.getExtraInfo() instanceof ExtraInfoText)) {
