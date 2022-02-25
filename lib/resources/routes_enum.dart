@@ -42,4 +42,5 @@ class Routes {
   static const pudoHome = "/pudoHome";
   static const rewardPolicy = "/rewardPolicy";
   static const pudoRegistrationPreview = "/pudoRegistrationPreview";
+  static const packagePickup = "/packagePickup";
 }

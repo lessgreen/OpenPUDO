@@ -31,7 +31,7 @@ mixin NetworkManagerPackages on NetworkGeneral {
         _headers['Authorization'] = 'Bearer $_accessToken';
       }
 
-      var url = _baseURL + '/api/v1/packages/$packageId';
+      var url = _baseURL + '/api/v2/package/$packageId';
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
@@ -81,13 +81,13 @@ mixin NetworkManagerPackages on NetworkGeneral {
 
       var url = _baseURL;
 
-      if (newStatus == PudoPackageStatus.ACCEPTED) {
+      if (newStatus == PudoPackageStatus.accepted) {
         url = _baseURL + '/api/v1/packages/$packageId/accepted';
-      } else if (newStatus == PudoPackageStatus.COLLECTED) {
+      } else if (newStatus == PudoPackageStatus.collected) {
         url = _baseURL + '/api/v1/packages/$packageId/collected';
-      } else if (newStatus == PudoPackageStatus.NOTIFIED) {
+      } else if (newStatus == PudoPackageStatus.notified) {
         url = _baseURL + '/api/v1/packages/$packageId/notified';
-      } else if (newStatus == PudoPackageStatus.NOTIFY_SENT) {
+      } else if (newStatus == PudoPackageStatus.notifySent) {
         url = _baseURL + '/api/v1/packages/$packageId/notified';
       } else {
         return ErrorDescription('Error Unsupported PackageStatus specified.');

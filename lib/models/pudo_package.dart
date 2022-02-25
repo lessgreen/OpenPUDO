@@ -32,6 +32,7 @@ class PudoPackage {
   String? updateTms;
   int? userId;
   List<PudoPackageEvent>? events;
+  String? shareLink;
 
   PudoPackage({
     required this.packageId,
@@ -41,7 +42,10 @@ class PudoPackage {
     this.updateTms,
     this.userId,
     this.events,
+    this.shareLink,
   });
+
   factory PudoPackage.fromJson(Map<String, dynamic> json) => _$PudoPackageFromJson(json);
+
   Map<String, dynamic> toJson() => _$PudoPackageToJson(this);
 }

@@ -21,16 +21,10 @@
 import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
-import 'package:latlong2/latlong.dart';
 import 'package:qui_green/app.dart';
-import 'package:qui_green/controllers/instruction_controller.dart';
-import 'package:qui_green/controllers/onboarding/insert_address_controller.dart';
+import 'package:qui_green/commons/utilities/page_route_helper.dart';
 import 'package:qui_green/controllers/onboarding/maps_controller.dart';
-import 'package:qui_green/controllers/profile_controller.dart';
 import 'package:qui_green/controllers/pudo_detail_controller.dart';
-import 'package:qui_green/controllers/pudo_list_controller.dart';
-import 'package:qui_green/controllers/registration_complete_controller.dart';
-import 'package:qui_green/controllers/user_position_controller.dart';
 import 'package:qui_green/models/pudo_profile.dart';
 import 'package:qui_green/resources/routes_enum.dart';
 
@@ -38,88 +32,21 @@ dynamic routeHomeUserPudoSectionWithSetting(RouteSettings settings) {
   log("current route name: ${settings.name}");
   currentRouteName.value = settings.name ?? '/main';
   switch (settings.name) {
-    case Routes.instruction:
-      return CupertinoPageRoute(
-        builder: (context) => InstructionController(
-          pudoDataModel: settings.arguments as PudoProfile?,
-          useCupertinoScaffold: true,
-          canGoBack: true,
-        ),
-      );
-    case Routes.registrationComplete:
-      return CupertinoPageRoute(
-        builder: (context) => RegistrationCompleteController(
-          pudoDataModel: settings.arguments as PudoProfile,
-          useCupertinoScaffold: true,
-          canGoBack: true,
-        ),
-      );
-    case Routes.maps:
-      return CupertinoPageRoute(
-        builder: (context) => MapsController(
-          canGoBack: true,
-          initialPosition: settings.arguments as LatLng,
-          useCupertinoScaffold: true,
-          enableAddressSearch: false,
-          enablePudoCards: false,
-          getUserPosition: false,
-          canOpenProfilePage: false,
-          title: "Seleziona un pudo",
-          isOnboarding: true,
-        ),
-      );
-    case Routes.insertAddress:
-      return CupertinoPageRoute(
-        builder: (context) => const InsertAddressController(
-          useCupertinoScaffold: true,
-        ),
-      );
-    case Routes.userPosition:
-      return CupertinoPageRoute(
-        builder: (context) => const UserPositionController(
-          canGoBack: true,
-          useCupertinoScaffold: true,
-        ),
-      );
-    case Routes.userPudoTutorial:
-      return CupertinoPageRoute(
-          builder: (context) => InstructionController(
-                canGoBack: true,
-                useCupertinoScaffold: true,
-                pudoDataModel: settings.arguments as PudoProfile,
-              ));
-    case Routes.profile:
-      return CupertinoPageRoute(
-        builder: (context) => const ProfileController(),
-      );
-    case Routes.pudoDetailOnBoarding:
-      return CupertinoPageRoute(
-        builder: (context) => PudoDetailController(
-          dataModel: settings.arguments as PudoProfile,
-          nextRoute: Routes.registrationComplete,
-          checkIsAlreadyAdded: true,
-          useCupertinoScaffold: true,
-        ),
-      );
     case Routes.pudoDetail:
-      return CupertinoPageRoute(
-        builder: (context) => PudoDetailController(
-          useCupertinoScaffold: true,
-          dataModel: settings.arguments as PudoProfile,
-          checkIsAlreadyAdded: true,
-        ),
-      );
-    case Routes.pudoList:
-      return CupertinoPageRoute(builder: (context) => const PudoListController());
+      return PageRouteHelper.buildPage(PudoDetailController(
+        useCupertinoScaffold: true,
+        dataModel: settings.arguments as PudoProfile,
+        checkIsAlreadyAdded: true,
+      ));
     default:
-      return CupertinoPageRoute(
-        builder: (context) => const MapsController(
+      return PageRouteHelper.buildPage(
+        const MapsController(
           canGoBack: false,
           useCupertinoScaffold: true,
           enableAddressSearch: true,
           enablePudoCards: false,
           getUserPosition: true,
-          canOpenProfilePage: true,
+          canOpenProfilePage: false,
           isOnboarding: false,
           title: "QuiGreen",
         ),

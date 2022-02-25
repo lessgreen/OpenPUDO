@@ -25,29 +25,28 @@ import 'package:json_annotation/json_annotation.dart';
 part 'pudo_package_event.g.dart';
 
 enum PudoPackageStatus {
-  @JsonValue("ACCEPTED")
-  ACCEPTED,
-  @JsonValue("COLLECTED")
-  COLLECTED,
-  @JsonValue("DELIVERED")
-  DELIVERED,
-  @JsonValue("EXPIRED")
-  EXPIRED,
-  @JsonValue("NOTIFIED")
-  NOTIFIED,
-  @JsonValue("RETURNED")
-  RETURNED,
-  @JsonValue("NOTIFY_SENT")
-  NOTIFY_SENT
+@JsonValue("delivered")
+delivered,
+@JsonValue("notify_sent")
+notifySent,
+@JsonValue("notified")
+notified,
+@JsonValue("collected")
+collected,
+@JsonValue("accepted")
+accepted,
+@JsonValue("expired")
+expired,
 }
 
 @JsonSerializable()
 class PudoPackageEvent {
   final int packageEventId;
   final int packageId;
-  String? createTms;
+  DateTime? createTms;
   String? notes;
   PudoPackageStatus? packageStatus;
+  bool? autoFlag;
 
   PudoPackageEvent({
     required this.packageEventId,
@@ -55,6 +54,7 @@ class PudoPackageEvent {
     this.createTms,
     this.notes,
     this.packageStatus,
+    this.autoFlag
   });
 
   factory PudoPackageEvent.fromJson(Map<String, dynamic> json) => _$PudoPackageEventFromJson(json);

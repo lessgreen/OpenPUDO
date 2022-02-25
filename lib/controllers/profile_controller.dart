@@ -53,10 +53,6 @@ class _ProfileControllerState extends State<ProfileController> with ConnectionAw
               'Il tuo profilo',
               style: Theme.of(context).textTheme.navBarTitle,
             ),
-            leading: CupertinoNavigationBarBackButton(
-              color: Colors.white,
-              onPressed: () => Navigator.of(context).pop(),
-            ),
           ),
           child: ListView(children: [
             const SizedBox(height: 20),

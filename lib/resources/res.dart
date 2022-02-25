@@ -105,6 +105,9 @@ class AppColors {
   static const colorGrey = Color(0xFF979797);
   static const labelLightDark = Color(0x23373737);
   static const labelDark = Color(0xFF373737);
+  static const boxGrey = Color(0x29D8D8D8);
+  static const boxGreyNoOp = Color(0xFFFAFAFA);
+  static const scaffoldBackgroundColor = Color(0xFFFEFEFE);
 }
 
 class Shadows {

@@ -28,6 +28,7 @@ import 'package:qui_green/commons/alert_dialog.dart';
 import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
 import 'package:qui_green/commons/utilities/network_error_helper.dart';
 import 'package:qui_green/models/package_summary.dart';
+import 'package:qui_green/models/pudo_package.dart';
 import 'package:qui_green/resources/res.dart';
 import 'package:qui_green/resources/routes_enum.dart';
 import 'package:qui_green/singletons/current_user.dart';
@@ -54,6 +55,18 @@ class _HomeUserPackagesState extends State<HomeUserPackages> with ConnectionAwar
   @override
   void initState() {
     super.initState();
+  }
+
+  void onPackageCard(PackageSummary package) {
+    NetworkManager.instance.getPackageDetails(packageId: package.packageId).then(
+      (response) {
+        if (response is PudoPackage) {
+          Navigator.of(context).pushNamed(Routes.packagePickup, arguments: response);
+        } else {
+          SAAlertDialog.displayAlertWithClose(context, "Error", "Qualcosa e' andato storto");
+        }
+      },
+    ).catchError((onError) => SAAlertDialog.displayAlertWithClose(context, "Error", onError));
   }
 
   Future fetchPackages() {
@@ -154,7 +167,7 @@ class _HomeUserPackagesState extends State<HomeUserPackages> with ConnectionAwar
       physics: const AlwaysScrollableScrollPhysics(),
       itemPadding: const EdgeInsets.only(bottom: Dimension.paddingS),
       title: 'I tuoi pacchi:',
-      endText: _canFetchMore ? '' : 'Non ci sono altri pacchi',
+      endText: '',
       itemCount: availablePackages.length,
       scrollController: _scrollController,
       itemBuilder: (BuildContext context, int index) {
@@ -163,7 +176,7 @@ class _HomeUserPackagesState extends State<HomeUserPackages> with ConnectionAwar
           address: availablePackages[index].label ?? '',
           //TODO no pudo rating on PackageSummary
           stars: 0,
-          onTap: () => null,
+          onTap: () => onPackageCard(availablePackages[index]),
           isRead: true,
           deliveryDate: availablePackages[index].createTms,
           image: availablePackages[index].packagePicId,
@@ -193,12 +206,8 @@ class _HomeUserPackagesState extends State<HomeUserPackages> with ConnectionAwar
               brightness: Brightness.dark,
               backgroundColor: AppColors.primaryColorDark,
               middle: Text(
-                'Home',
+                'QuiGreen',
                 style: Theme.of(context).textTheme.navBarTitle,
-              ),
-              trailing: InkWell(
-                onTap: () => Navigator.of(context).pushNamed(Routes.profile),
-                child: Container(margin: const EdgeInsets.only(right: Dimension.paddingS), width: 40, child: SvgPicture.asset(ImageSrc.profileArt, color: Colors.white)),
               ),
             ),
             child: SafeArea(
