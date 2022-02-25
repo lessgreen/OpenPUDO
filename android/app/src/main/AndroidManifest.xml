@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.qui_green">
+    package="green.less.openpudoquigreen">
     <queries>
         <!-- If your app opens https URLs -->
         <intent>
@@ -23,7 +23,7 @@
         </intent>
     </queries>
    <application
-        android:label="qui_green"
+        android:label="QuiGreen"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

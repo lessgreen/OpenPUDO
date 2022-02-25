@@ -37,14 +37,38 @@ class HomeController extends StatefulWidget {
 
 class _HomeControllerState extends State<HomeController> with ConnectionAware {
   int _oldIndex = 0;
-  final List<NavigatorObserver> _navigatorObservers = [];
+  final CupertinoTabController _tabController = CupertinoTabController();
+  List<TabControllerContainer> _controllers = [];
 
   @override
   void initState() {
     super.initState();
-    _navigatorObservers.add(NavigatorObserver());
-    _navigatorObservers.add(NavigatorObserver());
-    _navigatorObservers.add(NavigatorObserver());
+    _controllers = [
+      TabControllerContainer(
+        tabView: CupertinoTabView(
+          navigatorKey: GlobalKey(),
+          onGenerateRoute: (RouteSettings settings) => routeHomeUserPackagesSectionWithSetting(settings),
+        ),
+        bottomView: BottomNavigationBarItem(
+            icon: SvgPicture.asset(ImageSrc.homeArt, color: Colors.grey.shade400), activeIcon: SvgPicture.asset(ImageSrc.homeArt, color: AppColors.primaryColorDark), label: 'Home'),
+      ),
+      TabControllerContainer(
+        tabView: CupertinoTabView(
+          navigatorKey: GlobalKey(),
+          onGenerateRoute: (RouteSettings settings) => routeHomeUserPudoSectionWithSetting(settings),
+        ),
+        bottomView: BottomNavigationBarItem(
+            icon: SvgPicture.asset(ImageSrc.mapsArt, color: Colors.grey.shade400), activeIcon: SvgPicture.asset(ImageSrc.mapsArt, color: AppColors.primaryColorDark), label: 'Pudo'),
+      ),
+      TabControllerContainer(
+        tabView: CupertinoTabView(
+          navigatorKey: GlobalKey(),
+          onGenerateRoute: (RouteSettings settings) => routeHomeUserProfileSectionWithSetting(settings),
+        ),
+        bottomView: BottomNavigationBarItem(
+            icon: SvgPicture.asset(ImageSrc.profileArt, color: Colors.grey.shade400), activeIcon: SvgPicture.asset(ImageSrc.profileArt, color: AppColors.primaryColorDark), label: 'Profile'),
+      )
+    ];
   }
 
   @override
@@ -52,8 +76,9 @@ class _HomeControllerState extends State<HomeController> with ConnectionAware {
     return Material(
       child: WillPopScope(
         onWillPop: () async {
-          var currentNavigator = _navigatorObservers[_oldIndex];
-          var currentContext = currentNavigator.navigator?.context;
+          var currentIndex = _tabController.index;
+          var currentTab = _controllers[currentIndex].tabView;
+          var currentContext = currentTab.navigatorKey?.currentContext;
           if (currentContext != null) {
             if (Navigator.of(currentContext).canPop()) {
               return !await Navigator.of(currentContext).maybePop();
@@ -63,43 +88,36 @@ class _HomeControllerState extends State<HomeController> with ConnectionAware {
           return false;
         },
         child: CupertinoTabScaffold(
+          controller: _tabController,
           tabBar: CupertinoTabBar(
             onTap: (selectedIndex) {
               if (selectedIndex == _oldIndex) {
-                _navigatorObservers[selectedIndex].navigator?.popUntil((Route<dynamic> route) => route.isFirst);
+                var currentContext = _controllers[selectedIndex].tabView.navigatorKey?.currentContext;
+                if (currentContext != null) {
+                  Navigator.of(currentContext).popUntil((Route<dynamic> route) => route.isFirst);
+                }
               }
               _oldIndex = selectedIndex;
             },
-            items: [
-              BottomNavigationBarItem(
-                  icon: SvgPicture.asset(ImageSrc.homeArt, color: Colors.grey.shade400), activeIcon: SvgPicture.asset(ImageSrc.homeArt, color: AppColors.primaryColorDark), label: 'Home'),
-              BottomNavigationBarItem(
-                  icon: SvgPicture.asset(ImageSrc.mapsArt, color: Colors.grey.shade400), activeIcon: SvgPicture.asset(ImageSrc.mapsArt, color: AppColors.primaryColorDark), label: 'Pudo'),
-              BottomNavigationBarItem(
-                  icon: SvgPicture.asset(ImageSrc.profileArt, color: Colors.grey.shade400), activeIcon: SvgPicture.asset(ImageSrc.profileArt, color: AppColors.primaryColorDark), label: 'Profile'),
-            ],
+            items: _controllers
+                .asMap()
+                .map((index, aChild) {
+                  return MapEntry(index, aChild.bottomView);
+                })
+                .values
+                .toList(),
           ),
           tabBuilder: (innerContext, index) {
-            switch (index) {
-              case 2:
-                return CupertinoTabView(
-                  navigatorObservers: [_navigatorObservers[2]],
-                  onGenerateRoute: (RouteSettings settings) => routeHomeUserProfileSectionWithSetting(settings),
-                );
-              case 1:
-                return CupertinoTabView(
-                  navigatorObservers: [_navigatorObservers[1]],
-                  onGenerateRoute: (RouteSettings settings) => routeHomeUserPudoSectionWithSetting(settings),
-                );
-              default:
-                return CupertinoTabView(
-                  navigatorObservers: [_navigatorObservers[0]],
-                  onGenerateRoute: (RouteSettings settings) => routeHomeUserPackagesSectionWithSetting(settings),
-                );
-            }
+            return _controllers[index].tabView;
           },
         ),
       ),
     );
   }
+}
+
+class TabControllerContainer {
+  final CupertinoTabView tabView;
+  final BottomNavigationBarItem bottomView;
+  const TabControllerContainer({required this.tabView, required this.bottomView});
 }

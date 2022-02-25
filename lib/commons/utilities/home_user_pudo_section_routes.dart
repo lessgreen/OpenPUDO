@@ -22,6 +22,7 @@ import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
 import 'package:qui_green/app.dart';
+import 'package:qui_green/commons/utilities/page_route_helper.dart';
 import 'package:qui_green/controllers/onboarding/maps_controller.dart';
 import 'package:qui_green/controllers/pudo_detail_controller.dart';
 import 'package:qui_green/models/pudo_profile.dart';
@@ -32,16 +33,14 @@ dynamic routeHomeUserPudoSectionWithSetting(RouteSettings settings) {
   currentRouteName.value = settings.name ?? '/main';
   switch (settings.name) {
     case Routes.pudoDetail:
-      return CupertinoPageRoute(
-        builder: (context) => PudoDetailController(
-          useCupertinoScaffold: true,
-          dataModel: settings.arguments as PudoProfile,
-          checkIsAlreadyAdded: true,
-        ),
-      );
+      return PageRouteHelper.buildPage(PudoDetailController(
+        useCupertinoScaffold: true,
+        dataModel: settings.arguments as PudoProfile,
+        checkIsAlreadyAdded: true,
+      ));
     default:
-      return CupertinoPageRoute(
-        builder: (context) => const MapsController(
+      return PageRouteHelper.buildPage(
+        const MapsController(
           canGoBack: false,
           useCupertinoScaffold: true,
           enableAddressSearch: true,

@@ -23,6 +23,7 @@ import 'dart:developer';
 import 'package:flutter/cupertino.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:qui_green/app.dart';
+import 'package:qui_green/commons/utilities/page_route_helper.dart';
 import 'package:qui_green/controllers/instruction_controller.dart';
 import 'package:qui_green/controllers/onboarding/insert_address_controller.dart';
 import 'package:qui_green/controllers/onboarding/maps_controller.dart';
@@ -39,24 +40,21 @@ dynamic routeHomeUserProfileSectionWithSetting(RouteSettings settings) {
   currentRouteName.value = settings.name ?? '/main';
   switch (settings.name) {
     case Routes.instruction:
-      return CupertinoPageRoute(
-        builder: (context) => InstructionController(
+      return PageRouteHelper.buildPage(InstructionController(
           pudoDataModel: settings.arguments as PudoProfile?,
           canGoBack: true,
           useCupertinoScaffold: true,
         ),
       );
     case Routes.registrationComplete:
-      return CupertinoPageRoute(
-        builder: (context) => RegistrationCompleteController(
+      return PageRouteHelper.buildPage(RegistrationCompleteController(
           pudoDataModel: settings.arguments as PudoProfile,
           useCupertinoScaffold: true,
           canGoBack: true,
         ),
       );
     case Routes.maps:
-      return CupertinoPageRoute(
-        builder: (context) => MapsController(
+      return PageRouteHelper.buildPage(MapsController(
           initialPosition: settings.arguments as LatLng,
           canGoBack: true,
           useCupertinoScaffold: true,
@@ -69,29 +67,25 @@ dynamic routeHomeUserProfileSectionWithSetting(RouteSettings settings) {
         ),
       );
     case Routes.insertAddress:
-      return CupertinoPageRoute(
-        builder: (context) => const InsertAddressController(
+      return PageRouteHelper.buildPage(const InsertAddressController(
           useCupertinoScaffold: true,
         ),
       );
     case Routes.userPosition:
-      return CupertinoPageRoute(
-        builder: (context) => const UserPositionController(
+      return PageRouteHelper.buildPage(const UserPositionController(
           canGoBack: true,
           useCupertinoScaffold: true,
         ),
       );
     case Routes.pudoTutorial:
-      return CupertinoPageRoute(
-        builder: (context) => InstructionController(
+      return PageRouteHelper.buildPage(InstructionController(
           canGoBack: true,
           useCupertinoScaffold: true,
           pudoDataModel: settings.arguments as PudoProfile,
         ),
       );
     case Routes.pudoDetailOnBoarding:
-      return CupertinoPageRoute(
-        builder: (context) => PudoDetailController(
+      return PageRouteHelper.buildPage(PudoDetailController(
           dataModel: settings.arguments as PudoProfile,
           nextRoute: Routes.registrationComplete,
           checkIsAlreadyAdded: true,
@@ -99,18 +93,16 @@ dynamic routeHomeUserProfileSectionWithSetting(RouteSettings settings) {
         ),
       );
     case Routes.pudoDetail:
-      return CupertinoPageRoute(
-        builder: (context) => PudoDetailController(
+      return PageRouteHelper.buildPage(PudoDetailController(
           dataModel: settings.arguments as PudoProfile,
           checkIsAlreadyAdded: true,
           useCupertinoScaffold: true,
         ),
       );
     case Routes.pudoList:
-      return CupertinoPageRoute(builder: (context) => const PudoListController());
+      return PageRouteHelper.buildPage(const PudoListController());
     default:
-      return CupertinoPageRoute(
-        builder: (context) => const ProfileController(),
+      return PageRouteHelper.buildPage(const ProfileController(),
       );
   }
 }

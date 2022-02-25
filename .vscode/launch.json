@@ -4,17 +4,20 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
+
         {
             "name": "qui_green - Dev",
             "request": "launch",
             "type": "dart",
             "program": "lib/dev/main.dart",
+            "flutterMode": "debug"
         },
         {
             "name": "qui_green - Prod",
             "request": "launch",
             "type": "dart",
             "program": "lib/dev/main.dart",
+            "flutterMode": "release"
         },
         {
             "name": "qui_green (profile mode)",
