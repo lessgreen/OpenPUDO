@@ -96,7 +96,7 @@ class MapsControllerViewModel extends ChangeNotifier {
 
   onMapCreate(MapController mapController, LatLng? center, bool getPosition) async {
     this.mapController = mapController;
-    if(getPosition) {
+    if (getPosition) {
       LocationData? data = await tryGetUserLocation();
       if (data != null) {
         center = LatLng(data.latitude!, data.longitude!);
@@ -104,9 +104,7 @@ class MapsControllerViewModel extends ChangeNotifier {
     }
     NetworkManager.instance.getSuggestedZoom(lat: center?.latitude ?? currentLatitude, lon: center?.longitude ?? currentLongitude).then((value) {
       if (value is int) {
-        WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
-          mapController.move(center ?? LatLng(currentLatitude, currentLongitude), value.toDouble());
-        });
+        mapController.move(center ?? LatLng(currentLatitude, currentLongitude), value.toDouble());
       }
     });
   }
