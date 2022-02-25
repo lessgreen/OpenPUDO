@@ -23,7 +23,6 @@ import 'dart:developer';
 import 'package:flutter/cupertino.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:qui_green/app.dart';
-import 'package:qui_green/controllers/home_user_packages.dart';
 import 'package:qui_green/controllers/instruction_controller.dart';
 import 'package:qui_green/controllers/onboarding/insert_address_controller.dart';
 import 'package:qui_green/controllers/onboarding/maps_controller.dart';

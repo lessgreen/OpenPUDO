@@ -43,9 +43,10 @@ class PackageCard extends StatelessWidget {
             Container(
               margin: const EdgeInsets.symmetric(horizontal: Dimension.padding),
               height: 100,
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.all(Radius.circular(Dimension.borderRadiusS)),
+              decoration: BoxDecoration(
+                color: AppColors.boxGreyNoOp,
+                boxShadow: Shadows.baseShadow,
+                borderRadius: const BorderRadius.all(Radius.circular(Dimension.borderRadiusS)),
               ),
               child: Row(
                 children: [
@@ -60,25 +61,25 @@ class PackageCard extends StatelessWidget {
                   ),
                   Expanded(
                     child: Padding(
-                      padding: const EdgeInsets.only(left: Dimension.padding),
+                      padding: const EdgeInsets.only(left: Dimension.padding,right: Dimension.paddingXS),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          const Spacer(),
+                          if (deliveryDate != null) const SizedBox(height: Dimension.paddingS),
                           if (deliveryDate != null)
                             Text(
                               'Pacco consegnato il ' + deliveryDate!.ddmmyyyy,
-                              style: const TextStyle(fontSize: 10),
+                              style: Theme.of(context).textTheme.labelSmall,
                             ),
-                          if (deliveryDate != null) const SizedBox(height: Dimension.paddingXS),
+                          if (deliveryDate != null) const SizedBox(height: Dimension.padding),
                           Text(
                             name,
-                            style: const TextStyle(fontSize: 16),
+                            style: Theme.of(context).textTheme.titleMedium,
                           ),
                           const SizedBox(height: Dimension.paddingXS),
                           Text(
                             address,
-                            style: const TextStyle(fontSize: 12),
+                            style: Theme.of(context).textTheme.labelSmall,
                           ),
                           Row(
                             children: List<Widget>.generate(

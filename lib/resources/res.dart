@@ -104,6 +104,7 @@ class AppColors {
   static const primaryTextColor = Color(0xFF363736);
   static const colorGrey = Color(0xFF979797);
   static const boxGrey = Color(0x29D8D8D8);
+  static const boxGreyNoOp = Color(0xFFFAFAFA);
   static const scaffoldBackgroundColor = Color(0xFFFEFEFE);
 }
 

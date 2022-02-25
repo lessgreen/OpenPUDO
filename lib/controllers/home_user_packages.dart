@@ -167,7 +167,7 @@ class _HomeUserPackagesState extends State<HomeUserPackages> with ConnectionAwar
       physics: const AlwaysScrollableScrollPhysics(),
       itemPadding: const EdgeInsets.only(bottom: Dimension.paddingS),
       title: 'I tuoi pacchi:',
-      endText: _canFetchMore ? '' : 'Non ci sono altri pacchi',
+      endText: '',
       itemCount: availablePackages.length,
       scrollController: _scrollController,
       itemBuilder: (BuildContext context, int index) {
@@ -206,7 +206,7 @@ class _HomeUserPackagesState extends State<HomeUserPackages> with ConnectionAwar
               brightness: Brightness.dark,
               backgroundColor: AppColors.primaryColorDark,
               middle: Text(
-                'Home',
+                'QuiGreen',
                 style: Theme.of(context).textTheme.navBarTitle,
               ),
             ),
