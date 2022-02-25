@@ -22,15 +22,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:qui_green/commons/utilities/keyboard_visibility.dart';
-import 'package:qui_green/singletons/network/network_manager.dart';
-import 'package:qui_green/widgets/main_button.dart';
-import 'package:qui_green/view_models/reward_policy_controller_viewmodel.dart';
+import 'package:qui_green/models/registration_pudo_model.dart';
 import 'package:qui_green/resources/res.dart';
+import 'package:qui_green/singletons/network/network_manager.dart';
+import 'package:qui_green/view_models/reward_policy_controller_viewmodel.dart';
+import 'package:qui_green/widgets/main_button.dart';
 import 'package:qui_green/widgets/reward_option_widget.dart';
 import 'package:qui_green/widgets/sascaffold.dart';
 
 class RewardPolicyController extends StatefulWidget {
-  const RewardPolicyController({Key? key}) : super(key: key);
+  const RewardPolicyController({Key? key, required this.pudoRegistrationModel}) : super(key: key);
+  final RegistrationPudoModel pudoRegistrationModel;
 
   @override
   _RewardPolicyControllerState createState() => _RewardPolicyControllerState();
@@ -97,7 +99,7 @@ class _RewardPolicyControllerState extends State<RewardPolicyController> {
                         },
                         blendMode: BlendMode.dstOut,
                         child: ListView.builder(
-                          itemCount: viewModel?.options.length,
+                          itemCount: viewModel?.dataSource.length,
                           itemBuilder: (context, index) {
                             return RewardOptionWidget(
                               index: index,
@@ -133,7 +135,8 @@ class _RewardPolicyControllerState extends State<RewardPolicyController> {
                             ),
                           )),
                       firstChild: MainButton(
-                        onPressed: () => viewModel!.onSendClick(context),
+                        enabled: viewModel!.mandatoryFulfilled,
+                        onPressed: () => viewModel.onSendClick(context,widget.pudoRegistrationModel),
                         text: 'Avanti',
                       ),
                       duration: const Duration(milliseconds: 150),

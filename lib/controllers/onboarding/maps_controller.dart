@@ -122,7 +122,7 @@ class _MapsControllerState extends State<MapsController> with ConnectionAware, T
                 color: Colors.white,
                 onPressed: () => Navigator.of(context).pop(),
               )
-            : null,
+            : const SizedBox(),
         middle: Text(
           widget.title,
           style: Theme.of(context).textTheme.navBarTitle,

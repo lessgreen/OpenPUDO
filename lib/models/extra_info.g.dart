@@ -21,18 +21,28 @@ ExtraInfo _$ExtraInfoFromJson(Map<String, dynamic> json) => ExtraInfo(
           .toList(),
     );
 
-Map<String, dynamic> _$ExtraInfoToJson(ExtraInfo instance) => <String, dynamic>{
-      'name': instance.name,
-      'text': instance.text,
-      'type': _$ExtraInfoTypeEnumMap[instance.type],
-      'mandatoryValue': instance.mandatoryValue,
-      'value': instance.value,
-      'min': instance.min,
-      'max': instance.max,
-      'scale': instance.scale,
-      'step': instance.step,
-      'values': instance.values,
-    };
+Map<String, dynamic> _$ExtraInfoToJson(ExtraInfo instance) {
+  final val = <String, dynamic>{
+    'name': instance.name,
+    'text': instance.text,
+    'type': _$ExtraInfoTypeEnumMap[instance.type],
+    'mandatoryValue': instance.mandatoryValue,
+  };
+
+  void writeNotNull(String key, dynamic value) {
+    if (value != null) {
+      val[key] = value;
+    }
+  }
+
+  writeNotNull('value', instance.value);
+  writeNotNull('min', instance.min);
+  writeNotNull('max', instance.max);
+  writeNotNull('scale', instance.scale);
+  writeNotNull('step', instance.step);
+  writeNotNull('values', instance.values);
+  return val;
+}
 
 const _$ExtraInfoTypeEnumMap = {
   ExtraInfoType.decimal: 'decimal',
@@ -50,11 +60,19 @@ ExtraInfoSelectItem _$ExtraInfoSelectItemFromJson(Map<String, dynamic> json) =>
           : ExtraInfo.fromJson(json['extraInfo'] as Map<String, dynamic>),
     );
 
-Map<String, dynamic> _$ExtraInfoSelectItemToJson(
-        ExtraInfoSelectItem instance) =>
-    <String, dynamic>{
-      'name': instance.name,
-      'text': instance.text,
-      'checked': instance.checked,
-      'extraInfo': instance.extraInfo,
-    };
+Map<String, dynamic> _$ExtraInfoSelectItemToJson(ExtraInfoSelectItem instance) {
+  final val = <String, dynamic>{
+    'name': instance.name,
+    'text': instance.text,
+  };
+
+  void writeNotNull(String key, dynamic value) {
+    if (value != null) {
+      val[key] = value;
+    }
+  }
+
+  writeNotNull('checked', instance.checked);
+  writeNotNull('extraInfo', instance.extraInfo);
+  return val;
+}

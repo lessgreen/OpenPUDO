@@ -62,7 +62,7 @@ class _RegistrationCompleteControllerState extends State<RegistrationCompleteCon
                     color: Colors.white,
                     onPressed: () => Navigator.of(context).pop(),
                   )
-                : null),
+                : const SizedBox()),
         child: _buildBody(viewModel, isKeyboardVisible),
       );
 
@@ -77,7 +77,7 @@ class _RegistrationCompleteControllerState extends State<RegistrationCompleteCon
                   color: AppColors.primaryColorDark,
                   onPressed: () => Navigator.of(context).pop(),
                 )
-              : null,
+              : const SizedBox(),
         ),
         body: _buildBody(viewModel, isKeyboardVisible),
       );

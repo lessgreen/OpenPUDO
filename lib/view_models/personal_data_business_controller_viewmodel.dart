@@ -18,21 +18,21 @@
  If not, see <https://github.com/lessgreen/OpenPUDO>.
 */
 
+import 'dart:async';
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:location/location.dart';
-import 'package:provider/provider.dart';
+import 'package:qui_green/commons/extensions/formfields_validators.dart';
 import 'package:qui_green/commons/utilities/print_helper.dart';
-import 'package:qui_green/models/address_model.dart';
+import 'package:qui_green/models/geo_marker.dart';
 import 'package:qui_green/models/pudo_profile.dart';
-import 'package:qui_green/models/user_profile.dart';
-import 'package:qui_green/resources/routes_enum.dart';
-import 'package:qui_green/singletons/current_user.dart';
+import 'package:qui_green/models/registration_pudo_model.dart';
+import 'package:qui_green/models/registration_pudo_request.dart';
 import 'package:qui_green/singletons/network/network_manager.dart';
 
-class PersonalDataControllerViewModel extends ChangeNotifier {
+class PersonalDataBusinessControllerViewModel extends ChangeNotifier {
   Function(String)? showErrorDialog;
 
   String _name = "";
@@ -44,12 +44,12 @@ class PersonalDataControllerViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  String _surname = "";
+  String _phoneNumber = "";
 
-  String get surname => _surname;
+  String get phoneNumber => _phoneNumber;
 
-  set surname(String newVal) {
-    _surname = newVal;
+  set phoneNumber(String newVal) {
+    _phoneNumber = newVal;
     notifyListeners();
   }
 
@@ -63,55 +63,36 @@ class PersonalDataControllerViewModel extends ChangeNotifier {
   }
 
   get isValid {
-    if (_image != null) {
-      return true;
+    if (_image == null) {
+      return false;
     }
     if (_name.isEmpty) {
       return false;
     }
-    if (_surname.isEmpty) {
+    if (_phoneNumber.isEmpty || !_phoneNumber.isValidPhoneNumber()) {
+      return false;
+    }
+    if (_address == null) {
       return false;
     }
     return true;
   }
 
-  // ************ Navigation *****
-  onSendClick(BuildContext context, PudoProfile? pudoModel) {
-    NetworkManager.instance.registerUser(name: name, surname: surname).then((value) {
-      if (value != null) {
-        NetworkManager.instance.getMyProfile().then((user) {
-          if (user is UserProfile) {
-            Provider.of<CurrentUser>(context, listen: false).user = user;
-            if (image != null) {
-              NetworkManager.instance.photoUpload(image!).catchError((onError) => showErrorDialog?.call(onError));
-            }
-            if (pudoModel != null) {
-              NetworkManager.instance.addPudoFavorite(pudoModel.pudoId.toString()).catchError((onError) => showErrorDialog?.call(onError));
-            }
-            if (pudoModel != null) {
-              Navigator.of(context).pushReplacementNamed(Routes.registrationComplete, arguments: pudoModel);
-            } else {
-              Navigator.of(context).pushReplacementNamed(Routes.userPudoTutorial,
-                  arguments: PudoProfile(
-                      businessName: "Bar - La pinta",
-                      address: AddressModel(
-                        label: "Via ippolito,8",
-                        city: "Milano",
-                        province: "Mi",
-                        zipCode: "21100",
-                        street: "Via ippolito",
-                        streetNum: "8",
-                      )));
-            }
-          } else {
-            showErrorDialog?.call("Qualcosa è andato storto");
-          }
-        }).catchError((onError) => showErrorDialog?.call(onError));
-      } else {
-        showErrorDialog?.call("Qualcosa è andato storto");
-      }
-    }).catchError((onError) => showErrorDialog?.call(onError));
+  PudoAddressMarker? _address;
+
+  PudoAddressMarker? get address => _address;
+
+  PudoAddressMarker convertGeoMarker(GeoMarker marker) {
+    return PudoAddressMarker(signature: marker.signature!, address: marker.address!);
   }
+
+  set address(PudoAddressMarker? newVal) {
+    _address = newVal;
+    notifyListeners();
+  }
+
+  // ************ Navigation *****
+  onSendClick(BuildContext context, PudoProfile? pudoModel) {}
 
   // ************ Location *******
 
@@ -155,5 +136,62 @@ class PersonalDataControllerViewModel extends ChangeNotifier {
     } else {
       // User canceled the picker
     }
+  }
+
+  List<GeoMarker> _addresses = [];
+
+  List<GeoMarker> get addresses => _addresses;
+
+  set addresses(List<GeoMarker> newVal) {
+    _addresses = newVal;
+    notifyListeners();
+  }
+
+  bool _isOpenListAddress = false;
+
+  bool get isOpenListAddress => _isOpenListAddress;
+
+  set isOpenListAddress(bool newVal) {
+    _isOpenListAddress = newVal;
+    notifyListeners();
+  }
+
+  TextEditingController addressController = TextEditingController();
+
+  Timer _debounce = Timer(const Duration(days: 1), () {});
+
+  String lastSearchQuery = "";
+
+  void onSearchChanged(String query) {
+    if (query != lastSearchQuery && query != (address?.address.label ?? "")) {
+      address = null;
+      if (_debounce.isActive) _debounce.cancel();
+      _debounce = Timer(const Duration(milliseconds: 300), () {
+        fetchSuggestions(query);
+      });
+    }
+  }
+
+  Future<void> fetchSuggestions(String val) async {
+    if (val.trim().isNotEmpty) {
+      var res = await NetworkManager.instance.getAddresses(text: val,precise: true);
+      if (res is List<GeoMarker>) {
+        if (res.isNotEmpty) {
+          addresses = res;
+          isOpenListAddress = true;
+        } else {
+          addresses = [];
+          isOpenListAddress = false;
+        }
+        return;
+      }
+    } else {
+      addresses = [];
+      isOpenListAddress = false;
+    }
+  }
+
+  RegistrationPudoModel buildRequest() {
+    return RegistrationPudoModel(profilePic: image, businessName: name, publicPhoneNumber: "+39" + phoneNumber, addressMarker: address!, rewardPolicy: null);
   }
 }

@@ -81,7 +81,7 @@ dynamic routeHomeUserPudoSectionWithSetting(RouteSettings settings) {
           useCupertinoScaffold: true,
         ),
       );
-    case Routes.pudoTutorial:
+    case Routes.userPudoTutorial:
       return CupertinoPageRoute(
           builder: (context) => InstructionController(
                 canGoBack: true,

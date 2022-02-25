@@ -18,60 +18,59 @@
  If not, see <https://github.com/lessgreen/OpenPUDO>.
 */
 
-import 'dart:developer';
+import 'dart:async';
+import 'dart:io';
 
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:qui_green/commons/alert_dialog.dart';
-import 'package:qui_green/commons/utilities/network_error_helper.dart';
-import 'package:qui_green/models/base_response.dart';
+import 'package:qui_green/commons/utilities/print_helper.dart';
 import 'package:qui_green/models/extra_info.dart';
+import 'package:qui_green/models/geo_marker.dart';
 import 'package:qui_green/models/pudo_profile.dart';
 import 'package:qui_green/models/registration_pudo_model.dart';
+import 'package:qui_green/models/registration_pudo_request.dart';
 import 'package:qui_green/models/reward_option.dart';
 import 'package:qui_green/resources/routes_enum.dart';
-import 'package:qui_green/singletons/current_user.dart';
 import 'package:qui_green/singletons/network/network_manager.dart';
 
-class RewardPolicyControllerViewModel extends ChangeNotifier {
-  RewardPolicyControllerViewModel(BuildContext context) {
-    NetworkManager.instance.getPudoRewardSchema().then((value) {
-      if (value is List<RewardOption>) {
-        dataSource = value;
-      } else {
-        SAAlertDialog.displayAlertWithClose(context, "Error", "Qualcosa è andato storto");
-      }
-    }).catchError((error) => SAAlertDialog.displayAlertWithClose(context, "Error", error));
+class PudoRegistrationPreviewControllerViewModel extends ChangeNotifier {
+  PudoRegistrationPreviewControllerViewModel(RegistrationPudoModel model) {
+    dataModel = model;
+    _dataSource = model.rewardPolicy ?? [];
+    businessNameController.text = dataModel.businessName ?? "";
+    phoneController.text = dataModel.publicPhoneNumber ?? "";
+    addressController.text = dataModel.addressMarker!.address.label ?? "";
   }
+
+  late RegistrationPudoModel dataModel;
 
   // ************ Navigation *****
   onSendClick(BuildContext context, RegistrationPudoModel requestModel) {
-    NetworkManager.instance.registerPudo(requestModel.copyWith(rewardPolicy: dataSource)).then((value) {
-      if (value != null && value is OPBaseResponse) {
-        if (value.returnCode == 0) {
-          NetworkManager.instance.photoUpload(requestModel.profilePic!, isPudo: true).then((value) {
-            if (value == null) {
-              NetworkManager.instance.getMyPudoProfile().then((profile) {
-                if (profile is PudoProfile) {
-                  Provider.of<CurrentUser>(context, listen: false).pudoProfile = profile;
-                  Navigator.of(context).pushReplacementNamed(Routes.pudoRegistrationPreview, arguments: requestModel.copyWith(rewardPolicy: dataSource));
-                } else {
-                  NetworkErrorHelper.helper(context, value);
-                }
-              }).catchError((onError) => SAAlertDialog.displayAlertWithClose(context, "Error", onError));
-            } else {
-              log("Error photo2");
-              NetworkErrorHelper.helper(context, value);
-            }
-          }).catchError((onError) => SAAlertDialog.displayAlertWithClose(context, "Error", onError));
-        } else {
-          NetworkErrorHelper.helper(context, value);
-        }
-      } else {
-        NetworkErrorHelper.helper(context, value);
-      }
-    }).catchError((onError) => SAAlertDialog.displayAlertWithClose(context, "Error", onError));
+    Navigator.of(context).pushReplacementNamed(Routes.pudoRegistrationPreview, arguments: requestModel.copyWith(rewardPolicy: dataSource));
   }
+
+  bool _editEnabled = false;
+
+  bool get editEnabled => _editEnabled;
+
+  void handleEdit() {
+    if (!_editEnabled) {
+      _editEnabled = true;
+      notifyListeners();
+    } else {
+      _editEnabled = false;
+      notifyListeners();
+      //TODO implement proper save
+      /*if (isValid) {
+        _editEnabled = false;
+        notifyListeners();
+      }*/
+    }
+  }
+
+  TextEditingController businessNameController = TextEditingController();
+
+  TextEditingController phoneController = TextEditingController();
 
   List<RewardOption> _dataSource = [];
 
@@ -216,5 +215,136 @@ class RewardPolicyControllerViewModel extends ChangeNotifier {
       }
     }
     return false;
+  }
+
+  String _name = "";
+
+  String get name => _name;
+
+  set name(String newVal) {
+    _name = newVal;
+    notifyListeners();
+  }
+
+  String _phoneNumber = "";
+
+  String get phoneNumber => _phoneNumber;
+
+  set phoneNumber(String newVal) {
+    _phoneNumber = newVal;
+    notifyListeners();
+  }
+
+  File? _image;
+
+  File? get image => _image;
+
+  set image(File? newVal) {
+    _image = newVal;
+    notifyListeners();
+  }
+
+  get isValid {
+    if (_image == null) {
+      return false;
+    }
+    if (_name.isEmpty) {
+      return false;
+    }
+    if (_phoneNumber.isEmpty) {
+      return false;
+    }
+    if (_address == null) {
+      return false;
+    }
+    return true;
+  }
+
+  PudoAddressMarker? _address;
+
+  PudoAddressMarker? get address => _address;
+
+  PudoAddressMarker convertGeoMarker(GeoMarker marker) {
+    return PudoAddressMarker(signature: marker.signature!, address: marker.address!);
+  }
+
+  set address(PudoAddressMarker? newVal) {
+    _address = newVal;
+    notifyListeners();
+  }
+
+  // ************ Navigation *****
+  //onSendClick(BuildContext context, PudoProfile? pudoModel) {}
+
+  pickFile() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(allowMultiple: false, type: FileType.media);
+    if (result != null) {
+      try {
+        File file = File(result.files.first.path ?? "");
+        image = file;
+      } catch (e) {
+        //showErrorDialog?.call(e.toString());
+        safePrint(e.toString());
+      }
+    } else {
+      // User canceled the picker
+    }
+  }
+
+  List<GeoMarker> _addresses = [];
+
+  List<GeoMarker> get addresses => _addresses;
+
+  set addresses(List<GeoMarker> newVal) {
+    _addresses = newVal;
+    notifyListeners();
+  }
+
+  bool _isOpenListAddress = false;
+
+  bool get isOpenListAddress => _isOpenListAddress;
+
+  set isOpenListAddress(bool newVal) {
+    _isOpenListAddress = newVal;
+    notifyListeners();
+  }
+
+  TextEditingController addressController = TextEditingController();
+
+  Timer _debounce = Timer(const Duration(days: 1), () {});
+
+  String lastSearchQuery = "";
+
+  void onSearchChanged(String query) {
+    if (query != lastSearchQuery && query != (address?.address.label ?? "")) {
+      address = null;
+      if (_debounce.isActive) _debounce.cancel();
+      _debounce = Timer(const Duration(milliseconds: 300), () {
+        fetchSuggestions(query);
+      });
+    }
+  }
+
+  Future<void> fetchSuggestions(String val) async {
+    if (val.trim().isNotEmpty) {
+      var res = await NetworkManager.instance.getAddresses(text: val);
+      if (res is List<GeoMarker>) {
+        if (res.isNotEmpty) {
+          addresses = res;
+          isOpenListAddress = true;
+        } else {
+          addresses = [];
+          isOpenListAddress = false;
+        }
+        return;
+      }
+    } else {
+      addresses = [];
+      isOpenListAddress = false;
+    }
+  }
+
+  void goToInstructions(BuildContext context, PudoProfile profile) {
+    Navigator.of(context).pushReplacementNamed(Routes.pudoTutorial, arguments: profile);
   }
 }

@@ -43,6 +43,7 @@ import 'package:qui_green/models/pudo_package.dart';
 import 'package:qui_green/models/pudo_package_event.dart';
 import 'package:qui_green/models/pudo_profile.dart';
 import 'package:qui_green/models/pudo_summary.dart';
+import 'package:qui_green/models/registration_pudo_model.dart';
 import 'package:qui_green/models/registration_request.dart';
 import 'package:qui_green/models/reward_option.dart';
 import 'package:qui_green/models/user_preferences.dart';
@@ -192,15 +193,17 @@ mixin NetworkGeneral {
     return false;
   }
 
-  Future<dynamic> getAddresses({double? lat, double? lon, required String text}) async {
+  Future<dynamic> getAddresses({double? lat, double? lon, required String text,precise = false}) async {
     var queryString = "?text=$text";
     if (lat != null && lon != null) {
       queryString += "&lat=$lat&lon=$lon";
     }
+    if(precise){
+      queryString += "&precise=$precise";
+    }
     if (_accessToken != null) {
       _headers['Authorization'] = 'Bearer $_accessToken';
     }
-
     var url = _baseURL + '/api/v2/map/search/address$queryString';
 
     try {

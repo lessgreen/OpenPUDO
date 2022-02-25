@@ -36,12 +36,19 @@ class ExtraInfo {
   final String name;
   final String text;
   final ExtraInfoType type;
+  @JsonKey(includeIfNull: false)
   final bool mandatoryValue;
+  @JsonKey(includeIfNull: false)
   dynamic value;
+  @JsonKey(includeIfNull: false)
   final double? min;
+  @JsonKey(includeIfNull: false)
   final double? max;
+  @JsonKey(includeIfNull: false)
   final double? scale;
+  @JsonKey(includeIfNull: false)
   final double? step;
+  @JsonKey(includeIfNull: false)
   final List<ExtraInfoSelectItem>? values;
 
   ExtraInfo({
@@ -66,7 +73,9 @@ class ExtraInfo {
 class ExtraInfoSelectItem {
   final String name;
   final String text;
+  @JsonKey(defaultValue: false,includeIfNull: false)
   bool? checked;
+  @JsonKey(includeIfNull: false)
   final ExtraInfo? extraInfo;
 
   ExtraInfoSelectItem({

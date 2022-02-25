@@ -264,7 +264,7 @@ class _PudoDetailControllerState extends State<PudoDetailController> with Connec
                 _buildPudoDetail(),
                 const SizedBox(height: Dimension.padding),
                 Container(
-                  width: MediaQuery.of(context).size.width / 2,
+                  width: MediaQuery.of(context).size.width / 3 * 2,
                   height: 1,
                   color: Colors.grey.shade400,
                 ),

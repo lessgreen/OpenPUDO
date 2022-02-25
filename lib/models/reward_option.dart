@@ -42,8 +42,11 @@ class RewardOption {
   final String name;
   final String text;
   final IconInfoType icon;
+  @JsonKey(includeIfNull: false)
   final bool? exclusive;
+  @JsonKey(defaultValue: false,includeIfNull: false)
   bool? checked;
+  @JsonKey(includeIfNull: false)
   final ExtraInfo? extraInfo;
 
   RewardOption({

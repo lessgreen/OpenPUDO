@@ -27,8 +27,8 @@ class InstructionCard extends StatelessWidget {
   final int activeIndex;
   final int pages;
   final Widget bottomWidget;
-
-  const InstructionCard({Key? key, required this.title, required this.description, required this.activeIndex, required this.pages, required this.bottomWidget}) : super(key: key);
+  final bool indicatorOnTop;
+  const InstructionCard({Key? key, required this.title, required this.description, required this.activeIndex, required this.pages, required this.bottomWidget,this.indicatorOnTop = true}) : super(key: key);
 
   Widget _indicator(bool isActive) {
     return AnimatedContainer(
@@ -62,19 +62,22 @@ class InstructionCard extends StatelessWidget {
             flex: 2,
             child: Container(
                 padding: const EdgeInsets.only(left: Dimension.padding, right: Dimension.padding),
+                alignment: Alignment.center,
                 child: Text(
                   description,
                   textAlign: TextAlign.center,
-                  style: const TextStyle(fontSize: 18),
+                  style: Theme.of(context).textTheme.subtitle1,
                 )),
           ),
           const SizedBox(
             height: Dimension.padding,
           ),
+          if(indicatorOnTop)
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: List<Widget>.generate(pages, (index) => index == activeIndex ? _indicator(true) : _indicator(false)),
           ),
+          if(indicatorOnTop)
           const SizedBox(
             height: Dimension.padding,
           ),
@@ -86,6 +89,15 @@ class InstructionCard extends StatelessWidget {
           const SizedBox(
             height: Dimension.paddingL,
           ),
+          if(!indicatorOnTop)
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: List<Widget>.generate(pages, (index) => index == activeIndex ? _indicator(true) : _indicator(false)),
+            ),
+          if(!indicatorOnTop)
+            const SizedBox(
+              height: Dimension.paddingM,
+            ),
         ],
       );
 }

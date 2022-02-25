@@ -33,6 +33,7 @@ class Routes {
   static const thanks = '/thanks';
   static const personalDataBusiness = '/personalDataBusiness';
   static const pudoTutorial = '/pudoTutorial';
+  static const userPudoTutorial = '/userPudoTutorial';
   static const pudoDetailOnBoarding = '/pudoDetailOnBoarding';
   static const home = '/home';
   static const homePudo = '/homePudo';
@@ -40,4 +41,5 @@ class Routes {
   static const pudoList = '/pudoList';
   static const pudoHome = "/pudoHome";
   static const rewardPolicy = "/rewardPolicy";
+  static const pudoRegistrationPreview = "/pudoRegistrationPreview";
 }

@@ -35,6 +35,7 @@ import 'package:qui_green/controllers/onboarding/login_controller.dart';
 import 'package:qui_green/controllers/onboarding/maps_controller.dart';
 import 'package:qui_green/controllers/onboarding/personal_data_business_controller.dart';
 import 'package:qui_green/controllers/onboarding/personal_data_controller.dart';
+import 'package:qui_green/controllers/onboarding/pudo_registration_preview_controller.dart';
 import 'package:qui_green/controllers/onboarding/reward_policy_controller.dart';
 import 'package:qui_green/controllers/pudo_detail_controller.dart';
 import 'package:qui_green/controllers/pudo_home_controller.dart';
@@ -43,6 +44,7 @@ import 'package:qui_green/controllers/registration_complete_controller.dart';
 import 'package:qui_green/controllers/thanks_controller.dart';
 import 'package:qui_green/controllers/user_position_controller.dart';
 import 'package:qui_green/models/pudo_profile.dart';
+import 'package:qui_green/models/registration_pudo_model.dart';
 import 'package:qui_green/resources/res.dart';
 import 'package:qui_green/resources/routes_enum.dart';
 
@@ -133,21 +135,33 @@ dynamic routeWithSetting(RouteSettings settings) {
       return CupertinoPageRoute(
         builder: (context) => const ThanksController(),
       );
+    case Routes.pudoRegistrationPreview:
+      return CupertinoPageRoute(builder: (context) => PudoRegistrationPreviewController(dataModel: settings.arguments as RegistrationPudoModel));
     case Routes.rewardPolicy:
       return CupertinoPageRoute(
-        builder: (context) => const RewardPolicyController(),
+        builder: (context) => RewardPolicyController(
+          pudoRegistrationModel: settings.arguments as RegistrationPudoModel,
+        ),
       );
     case Routes.personalDataBusiness:
       return CupertinoPageRoute(
         builder: (context) => const PersonalDataBusinessController(),
       );
-    case Routes.pudoTutorial:
+    case Routes.userPudoTutorial:
       return CupertinoPageRoute(
           builder: (context) => InstructionController(
                 canGoBack: false,
                 useCupertinoScaffold: false,
                 pudoDataModel: settings.arguments as PudoProfile,
               ));
+    case Routes.pudoTutorial:
+      return CupertinoPageRoute(
+          builder: (context) => InstructionController(
+            canGoBack: false,
+            useCupertinoScaffold: false,
+            pudoDataModel: settings.arguments as PudoProfile,
+            isForPudo: true,
+          ));
     case Routes.pudoList:
       return CupertinoPageRoute(
         builder: (context) => const PudoListController(),

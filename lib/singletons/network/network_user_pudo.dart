@@ -21,42 +21,21 @@
 part of 'network_shared.dart';
 
 mixin NetworkManagerUserPudo on NetworkGeneral {
-  Future<dynamic> registerPudo({
-    required String password,
-    required String firstName,
-    required String lastName,
-    required String businessName,
-    String? email,
-    String? phoneNumber,
-    String? username,
-    String? vat,
-    String? contactNotes,
-    String? businessPhone,
-  }) async {
-    /*PudoProfile pudoProfile = PudoProfile(
-      businessName: businessName,
-      contactNotes: contactNotes,
-      vat: vat,
-      phoneNumber: businessPhone,
-    );
-    UserProfile userProfile = UserProfile(
-      firstName: firstName,
-      lastName: lastName,
-    );
-    RegistrationRequest aRequest = RegistrationRequest(
-      phoneNumber: phoneNumber,
-    );
-
-    var url = _baseURL + '/api/v1/auth/register';
-    var body = jsonEncode(aRequest.toJson());
-
+  Future<dynamic> registerPudo(RegistrationPudoModel requestModel) async {
     try {
+      if (!isOnline) {
+        throw ("Network is offline");
+      }
+      var url = _baseURL + '/api/v2/auth/register/pudo';
+      var body = jsonEncode(requestModel.toRequest().toJson());
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
-      Response response =
-          await post(Uri.parse(url), body: body, headers: _headers)
-              .timeout(Duration(seconds: _timeout));
+      Response response = await r.retry(
+            () => post(Uri.parse(url), body: body, headers: _headers)
+            .timeout(Duration(seconds: _timeout)),
+        retryIf: (e) => e is SocketException || e is TimeoutException,
+      );
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = false;
       });
@@ -64,13 +43,18 @@ mixin NetworkManagerUserPudo on NetworkGeneral {
       var decodedUTF8 = const Utf8Decoder().convert(codeUnits);
       var json = jsonDecode(decodedUTF8);
       var baseResponse = OPBaseResponse.fromJson(json);
+      if (baseResponse.returnCode == 0 && baseResponse.payload != null) {
+        var accessTokenData = AccessTokenData.fromJson(baseResponse.payload);
+        setAccessTokenData(accessTokenData);
+        setAccessToken(accessTokenData.accessToken);
+      }
       return baseResponse;
     } catch (e) {
-      safePrint('ERROR - registerPudo: $e');
+      safePrint('ERROR - registerUser: $e');
       _refreshTokenRetryCounter = 0;
       _networkActivity.value = false;
       return e;
-    }*/
+    }
   }
 
   Future<dynamic> getMyPudoUsers() async {
