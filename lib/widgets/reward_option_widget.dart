@@ -61,7 +61,7 @@ class RewardOptionWidget extends StatelessWidget {
                               alignment: PlaceholderAlignment.middle,
                               child: Icon(
                                 dataSource.iconData,
-                                color: AppColors.cardColor,
+                                color: (viewModel!.isExclusiveSelected) ? (dataSource.checked??false) ?AppColors.cardColor:AppColors.colorGrey:AppColors.cardColor,
                               ),
                             ),
                             const WidgetSpan(

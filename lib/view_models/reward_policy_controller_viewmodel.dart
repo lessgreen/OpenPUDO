@@ -18,8 +18,6 @@
  If not, see <https://github.com/lessgreen/OpenPUDO>.
 */
 
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:qui_green/commons/alert_dialog.dart';
@@ -49,18 +47,16 @@ class RewardPolicyControllerViewModel extends ChangeNotifier {
     NetworkManager.instance.registerPudo(requestModel.copyWith(rewardPolicy: dataSource)).then((value) {
       if (value != null && value is OPBaseResponse) {
         if (value.returnCode == 0) {
-          NetworkManager.instance.photoUpload(requestModel.profilePic!, isPudo: true).then((value) {
-            if (value == null) {
-              NetworkManager.instance.getMyPudoProfile().then((profile) {
-                if (profile is PudoProfile) {
-                  Provider.of<CurrentUser>(context, listen: false).pudoProfile = profile;
-                  Navigator.of(context).pushReplacementNamed(Routes.pudoRegistrationPreview, arguments: requestModel.copyWith(rewardPolicy: dataSource));
-                } else {
-                  NetworkErrorHelper.helper(context, value);
-                }
-              }).catchError((onError) => SAAlertDialog.displayAlertWithClose(context, "Error", onError));
+          if (requestModel.profilePic != null) {
+            NetworkManager.instance.photoUpload(requestModel.profilePic!, isPudo: true).catchError((onError) => SAAlertDialog.displayAlertWithClose(context, "Error", onError));
+          }
+          NetworkManager.instance.getMyPudoProfile().then((profile) {
+            if (profile is PudoProfile) {
+              Provider
+                  .of<CurrentUser>(context, listen: false)
+                  .pudoProfile = profile;
+              Navigator.of(context).pushReplacementNamed(Routes.pudoRegistrationPreview, arguments: requestModel.copyWith(rewardPolicy: dataSource));
             } else {
-              log("Error photo2");
               NetworkErrorHelper.helper(context, value);
             }
           }).catchError((onError) => SAAlertDialog.displayAlertWithClose(context, "Error", onError));
@@ -128,12 +124,29 @@ class RewardPolicyControllerViewModel extends ChangeNotifier {
         return;
       }
     }
-    dataSource[index].checked = value;
+    if (dataSource[index].exclusive ?? false) {
+      for (int i = 0; i < dataSource.length; i++) {
+        if (i == index) {
+          dataSource[index].checked = value;
+        } else {
+          dataSource[i].checked = false;
+        }
+      }
+    } else {
+      dataSource[index].checked = value;
+    }
     notifyListeners();
   }
 
   void onSubSelectValueChange(int rowIndex, int optionIndex, bool value) {
-    dataSource[rowIndex].extraInfo?.values?[optionIndex].checked = value;
+    int length = dataSource[rowIndex].extraInfo?.values?.length ?? 0;
+    for (int i = 0; i < length; i++) {
+      if (i == optionIndex) {
+        dataSource[rowIndex].extraInfo?.values ? [optionIndex].checked = value;
+      } else {
+        dataSource[rowIndex].extraInfo?.values ? [i].checked = false;
+      }
+    }
     notifyListeners();
   }
 
@@ -157,7 +170,7 @@ class RewardPolicyControllerViewModel extends ChangeNotifier {
     if (aRow.extraInfo == null || aRow.extraInfo!.values == null || optionIndex >= aRow.extraInfo!.values!.length) {
       return;
     }
-    ExtraInfoSelectItem? subItem = aRow.extraInfo?.values?[optionIndex];
+    ExtraInfoSelectItem? subItem = aRow.extraInfo?.values ? [optionIndex];
     if (subItem == null) {
       return;
     }

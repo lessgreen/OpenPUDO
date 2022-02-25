@@ -60,9 +60,13 @@ class _RewardPolicyControllerState extends State<RewardPolicyController> {
                   backgroundColor: Colors.transparent,
                   systemOverlayStyle: SystemUiOverlayStyle.dark,
                   leading: const SizedBox(),
+                  toolbarHeight: 0,
                 ),
                 body: Column(
                   children: [
+                    const SizedBox(
+                      height: Dimension.paddingM,
+                    ),
                     Center(
                       child: Text(
                         'Desideri qualcosa in cambio?',

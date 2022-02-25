@@ -33,6 +33,11 @@ import 'package:qui_green/models/registration_pudo_request.dart';
 import 'package:qui_green/singletons/network/network_manager.dart';
 
 class PersonalDataBusinessControllerViewModel extends ChangeNotifier {
+  PersonalDataBusinessControllerViewModel(String phoneNumber){
+    this.phoneNumber = phoneNumber;
+    phoneNumberController.text=phoneNumber;
+  }
+
   Function(String)? showErrorDialog;
 
   String _name = "";
@@ -43,6 +48,8 @@ class PersonalDataBusinessControllerViewModel extends ChangeNotifier {
     _name = newVal;
     notifyListeners();
   }
+
+  TextEditingController phoneNumberController = TextEditingController(text: "");
 
   String _phoneNumber = "";
 
@@ -63,13 +70,10 @@ class PersonalDataBusinessControllerViewModel extends ChangeNotifier {
   }
 
   get isValid {
-    if (_image == null) {
-      return false;
-    }
     if (_name.isEmpty) {
       return false;
     }
-    if (_phoneNumber.isEmpty || !_phoneNumber.isValidPhoneNumber()) {
+    if (_phoneNumber.isEmpty || !_phoneNumber.replaceAll("+39","").isValidPhoneNumber()) {
       return false;
     }
     if (_address == null) {
@@ -192,6 +196,6 @@ class PersonalDataBusinessControllerViewModel extends ChangeNotifier {
   }
 
   RegistrationPudoModel buildRequest() {
-    return RegistrationPudoModel(profilePic: image, businessName: name, publicPhoneNumber: "+39" + phoneNumber, addressMarker: address!, rewardPolicy: null);
+    return RegistrationPudoModel(profilePic: image, businessName: name, publicPhoneNumber: phoneNumber, addressMarker: address!, rewardPolicy: null);
   }
 }

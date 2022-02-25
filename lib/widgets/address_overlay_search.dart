@@ -7,7 +7,8 @@ import 'package:qui_green/resources/res.dart';
 class AddressOverlaySearch extends StatefulWidget {
   final List<GeoMarker> addresses;
   final Function(GeoMarker) onTap;
-  const AddressOverlaySearch({Key? key, required this.addresses,required this.onTap}) : super(key: key);
+  final BorderRadius? borderRadius;
+  const AddressOverlaySearch({Key? key, required this.addresses,required this.onTap,this.borderRadius}) : super(key: key);
 
   @override
   _AddressOverlaySearchState createState() => _AddressOverlaySearchState();
@@ -58,7 +59,7 @@ class _AddressOverlaySearchState extends State<AddressOverlaySearch> {
     return Container(
       padding: const EdgeInsets.all(Dimension.paddingS),
       margin: const EdgeInsets.only(top: Dimension.paddingXS),
-      decoration: BoxDecoration(color: Colors.white.withOpacity(0.9), borderRadius: BorderRadius.circular(Dimension.borderRadiusSearch)),
+      decoration: BoxDecoration(color: Colors.white.withOpacity(0.9), borderRadius: widget.borderRadius??BorderRadius.circular(Dimension.borderRadiusSearch)),
       child: ListView(
         physics: const NeverScrollableScrollPhysics(),
         shrinkWrap: true,

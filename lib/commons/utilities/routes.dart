@@ -77,7 +77,7 @@ dynamic routeWithSetting(RouteSettings settings) {
       );
     case Routes.aboutYou:
       return PageRouteHelper.buildPage(
-        const AboutYouController(),
+        AboutYouController(phoneNumber: settings.arguments as String),
       );
     case Routes.userPosition:
       return PageRouteHelper.buildPage(
@@ -137,27 +137,30 @@ dynamic routeWithSetting(RouteSettings settings) {
     case Routes.pudoRegistrationPreview:
       return PageRouteHelper.buildPage(PudoRegistrationPreviewController(dataModel: settings.arguments as RegistrationPudoModel));
     case Routes.rewardPolicy:
-      return PageRouteHelper.buildPage(RewardPolicyController(
+      return PageRouteHelper.buildPage(
+        RewardPolicyController(
           pudoRegistrationModel: settings.arguments as RegistrationPudoModel,
         ),
       );
     case Routes.personalDataBusiness:
       return PageRouteHelper.buildPage(
-        const PersonalDataBusinessController(),
+        PersonalDataBusinessController(
+          phoneNumber: settings.arguments as String,
+        ),
       );
     case Routes.userPudoTutorial:
       return PageRouteHelper.buildPage(InstructionController(
-                canGoBack: false,
-                useCupertinoScaffold: false,
-                pudoDataModel: settings.arguments as PudoProfile,
-              ));
+        canGoBack: false,
+        useCupertinoScaffold: false,
+        pudoDataModel: settings.arguments as PudoProfile,
+      ));
     case Routes.pudoTutorial:
       return PageRouteHelper.buildPage(InstructionController(
-            canGoBack: false,
-            useCupertinoScaffold: false,
-            pudoDataModel: settings.arguments as PudoProfile,
-            isForPudo: true,
-          ));
+        canGoBack: false,
+        useCupertinoScaffold: false,
+        pudoDataModel: settings.arguments as PudoProfile,
+        isForPudo: true,
+      ));
     case Routes.pudoList:
       return PageRouteHelper.buildPage(
         const PudoListController(),
