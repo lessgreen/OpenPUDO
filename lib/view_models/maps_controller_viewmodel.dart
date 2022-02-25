@@ -94,16 +94,19 @@ class MapsControllerViewModel extends ChangeNotifier {
     ).catchError((onError) => showErrorDialog?.call(onError));
   }
 
-  onMapCreate(MapController mapController, LatLng? center, bool getPosition) {
+  onMapCreate(MapController mapController, LatLng? center, bool getPosition) async {
     this.mapController = mapController;
+    if(getPosition) {
+      LocationData? data = await tryGetUserLocation();
+      if (data != null) {
+        center = LatLng(data.latitude!, data.longitude!);
+      }
+    }
     NetworkManager.instance.getSuggestedZoom(lat: center?.latitude ?? currentLatitude, lon: center?.longitude ?? currentLongitude).then((value) {
       if (value is int) {
         WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
           mapController.move(center ?? LatLng(currentLatitude, currentLongitude), value.toDouble());
         });
-        if (getPosition) {
-          tryGetUserLocation();
-        }
       }
     });
   }
@@ -271,7 +274,7 @@ class MapsControllerViewModel extends ChangeNotifier {
 
   Future<void> fetchSuggestions(String val) async {
     if (val.trim().isNotEmpty) {
-      var res = await NetworkManager.instance.getGeoMarkers(lat: currentLatitude,lon:currentLongitude,text: val);
+      var res = await NetworkManager.instance.getGeoMarkers(lat: currentLatitude, lon: currentLongitude, text: val);
       if (res is List<GeoMarker>) {
         if (res.isNotEmpty) {
           addresses = res;
