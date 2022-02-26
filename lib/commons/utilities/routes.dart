@@ -32,7 +32,7 @@ import 'package:qui_green/controllers/onboarding/confirm_phone_controller.dart';
 import 'package:qui_green/controllers/onboarding/insert_address_controller.dart';
 import 'package:qui_green/controllers/onboarding/insert_phone_controller.dart';
 import 'package:qui_green/controllers/onboarding/login_controller.dart';
-import 'package:qui_green/controllers/onboarding/maps_controller.dart';
+import 'package:qui_green/controllers/onboarding/map_controller.dart';
 import 'package:qui_green/controllers/onboarding/personal_data_business_controller.dart';
 import 'package:qui_green/controllers/onboarding/personal_data_controller.dart';
 import 'package:qui_green/controllers/onboarding/pudo_registration_preview_controller.dart';
@@ -94,7 +94,7 @@ dynamic routeWithSetting(RouteSettings settings) {
       );
     case Routes.maps:
       return PageRouteHelper.buildPage(
-        MapsController(
+        MapController(
           canGoBack: true,
           initialPosition: settings.arguments as LatLng,
           useCupertinoScaffold: false,

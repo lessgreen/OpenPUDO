@@ -73,39 +73,41 @@ class _AdressOverlayPudoSearchState extends State<AdressOverlayPudoSearch> {
       height: widget.viewModel.isOpenListAddress ? MediaQuery.of(context).size.height / 3 : 0,
       child: ListView(
         padding: EdgeInsets.zero,
-        children: widget.viewModel.addresses.map((e) {
-          return Material(
-            color: Colors.transparent,
-            child: InkWell(
-              onTap: () => onAddressTap(e),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  const SizedBox(
-                    height: Dimension.paddingS,
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const SizedBox(
-                        height: Dimension.paddingXS,
-                      ),
-                      if (e.pudo != null) _buildPudo(e),
-                      if (e.pudo == null) _buildAddress(e),
-                      const SizedBox(
-                        height: Dimension.paddingXS,
-                      ),
-                    ],
-                  ),
-                  const SizedBox(
-                    height: Dimension.paddingS,
-                  ),
-                  Divider(color: Colors.grey.shade400, height: 1),
-                ],
+        children: widget.viewModel.addresses.map(
+          (e) {
+            return Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: () => onAddressTap(e),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    const SizedBox(
+                      height: Dimension.paddingS,
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(
+                          height: Dimension.paddingXS,
+                        ),
+                        if (e.pudo != null) _buildPudo(e),
+                        if (e.pudo == null) _buildAddress(e),
+                        const SizedBox(
+                          height: Dimension.paddingXS,
+                        ),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: Dimension.paddingS,
+                    ),
+                    Divider(color: Colors.grey.shade400, height: 1),
+                  ],
+                ),
               ),
-            ),
-          );
-        }).toList(),
+            );
+          },
+        ).toList(),
       ),
     );
   }

@@ -26,7 +26,7 @@ import 'package:qui_green/app.dart';
 import 'package:qui_green/commons/utilities/page_route_helper.dart';
 import 'package:qui_green/controllers/instruction_controller.dart';
 import 'package:qui_green/controllers/onboarding/insert_address_controller.dart';
-import 'package:qui_green/controllers/onboarding/maps_controller.dart';
+import 'package:qui_green/controllers/onboarding/map_controller.dart';
 import 'package:qui_green/controllers/package_pickup_controller.dart';
 import 'package:qui_green/controllers/profile_controller.dart';
 import 'package:qui_green/controllers/pudo_detail_controller.dart';
@@ -69,7 +69,7 @@ dynamic homeUserRouteWithSetting(RouteSettings settings) {
       );
     case Routes.maps:
       return PageRouteHelper.buildPage(
-        MapsController(
+        MapController(
           initialPosition: settings.arguments as LatLng,
           canGoBack: true,
           useCupertinoScaffold: true,

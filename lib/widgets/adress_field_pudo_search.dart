@@ -30,11 +30,12 @@ class _AdressFieldPudoSearchState extends State<AdressFieldPudoSearch> {
           placeholder: 'Ricerca',
           padding: const EdgeInsets.all(Dimension.padding),
           prefix: const Padding(
-              padding: EdgeInsets.only(left: Dimension.paddingS),
-              child: Icon(
-                CupertinoIcons.search,
-                color: AppColors.colorGrey,
-              )),
+            padding: EdgeInsets.only(left: Dimension.paddingS),
+            child: Icon(
+              CupertinoIcons.search,
+              color: AppColors.colorGrey,
+            ),
+          ),
           placeholderStyle: const TextStyle(color: AppColors.colorGrey),
           controller: widget.viewModel.addressController,
           decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(Dimension.borderRadiusSearch)),

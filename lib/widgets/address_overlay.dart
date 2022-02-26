@@ -31,14 +31,7 @@ class AddressOverlay extends StatefulWidget {
   final Function(AddressModel) onSelect;
   final Function() removeOverlay;
 
-  const AddressOverlay(
-      {Key? key,
-      required this.viewModel,
-      required this.positionTop,
-      required this.positionLeft,
-      required this.width,
-      required this.removeOverlay,
-      required this.onSelect})
+  const AddressOverlay({Key? key, required this.viewModel, required this.positionTop, required this.positionLeft, required this.width, required this.removeOverlay, required this.onSelect})
       : super(key: key);
 
   @override
@@ -52,52 +45,55 @@ class _AddressOverlayState extends State<AddressOverlay> {
       widget.removeOverlay();
     }
     return Positioned(
-        left: widget.positionLeft,
-        top: widget.positionTop,
-        child: Material(
-            elevation: 0,
-            color: Colors.white.withOpacity(0.9),
-            child: Container(
-                alignment: Alignment.bottomRight,
-                width: widget.width,
-                height: (MediaQuery.of(context).size.height / 3),
-                child: Padding(
-                  padding: const EdgeInsets.all(Dimension.paddingS),
-                  child: ListView(
-                    padding: EdgeInsets.zero,
-                    children: widget.viewModel.addresses.map((e) {
-                      return Material(
-                        color: Colors.transparent,
-                        child: InkWell(
-                          onTap: () => widget.onSelect(e),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              const SizedBox(
-                                height: Dimension.paddingS,
-                              ),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const SizedBox(
-                                    height: Dimension.paddingXS,
-                                  ),
-                                  Text(e.label ?? ""),
-                                  const SizedBox(
-                                    height: Dimension.paddingXS,
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(
-                                height: Dimension.paddingS,
-                              ),
-                              Divider(color: Colors.grey.shade400, height: 1),
-                            ],
-                          ),
+      left: widget.positionLeft,
+      top: widget.positionTop,
+      child: Material(
+        elevation: 0,
+        color: Colors.white.withOpacity(0.9),
+        child: Container(
+          alignment: Alignment.bottomRight,
+          width: widget.width,
+          height: (MediaQuery.of(context).size.height / 3),
+          child: Padding(
+            padding: const EdgeInsets.all(Dimension.paddingS),
+            child: ListView(
+              padding: EdgeInsets.zero,
+              children: widget.viewModel.addresses.map((e) {
+                return Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    onTap: () => widget.onSelect(e),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        const SizedBox(
+                          height: Dimension.paddingS,
                         ),
-                      );
-                    }).toList(),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const SizedBox(
+                              height: Dimension.paddingXS,
+                            ),
+                            Text(e.label ?? ""),
+                            const SizedBox(
+                              height: Dimension.paddingXS,
+                            ),
+                          ],
+                        ),
+                        const SizedBox(
+                          height: Dimension.paddingS,
+                        ),
+                        Divider(color: Colors.grey.shade400, height: 1),
+                      ],
+                    ),
                   ),
-                ))));
+                );
+              }).toList(),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }
