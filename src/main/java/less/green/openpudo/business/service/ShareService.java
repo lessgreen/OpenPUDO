@@ -16,6 +16,7 @@ import less.green.openpudo.common.dto.tuple.Pair;
 import less.green.openpudo.common.dto.tuple.Quartet;
 import less.green.openpudo.rest.dto.DtoMapper;
 import less.green.openpudo.rest.dto.pack.Package;
+import less.green.openpudo.rest.dto.pack.PackageEvent;
 import lombok.extern.log4j.Log4j2;
 
 import javax.enterprise.context.RequestScoped;
@@ -27,6 +28,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequestScoped
 @Transactional(Transactional.TxType.REQUIRED)
@@ -35,6 +37,9 @@ public class ShareService {
 
     @Inject
     CryptoService cryptoService;
+
+    @Inject
+    PackageService packageService;
 
     @Inject
     PackageDao packageDao;
@@ -55,7 +60,8 @@ public class ShareService {
             return Response.status(Response.Status.NOT_FOUND).entity(Response.Status.NOT_FOUND.getReasonPhrase()).build();
         }
 
-        Package ret = dtoMapper.mapPackageEntityToDto(new Quartet<>(rs.getValue0(), rs.getValue1(), cryptoService.hashidEncodeShort(packageId), cryptoService.hashidEncodeLong(packageId)));
+        List<PackageEvent> events = rs.getValue1().stream().map(i -> dtoMapper.mapPackageEventEntityToDto(new Pair<>(i, packageService.getPackageStatusMessage(i.getPackageStatus())))).collect(Collectors.toList());
+        Package ret = dtoMapper.mapPackageEntityToDto(new Quartet<>(rs.getValue0(), events, cryptoService.hashidEncodeShort(packageId), cryptoService.hashidEncodeLong(packageId)));
         TemplateInstance templateInstance = packageTemplate.data("package", ret);
         return Response.ok(templateInstance.render()).build();
     }

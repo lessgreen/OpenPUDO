@@ -16,16 +16,15 @@ import less.green.openpudo.common.dto.tuple.Septet;
 import less.green.openpudo.common.dto.tuple.Sextet;
 import less.green.openpudo.rest.config.exception.ApiException;
 import less.green.openpudo.rest.dto.DtoMapper;
-import less.green.openpudo.rest.dto.pack.ChangePackageStatusRequest;
-import less.green.openpudo.rest.dto.pack.DeliveredPackageRequest;
 import less.green.openpudo.rest.dto.pack.Package;
-import less.green.openpudo.rest.dto.pack.PackageSummary;
+import less.green.openpudo.rest.dto.pack.*;
 import lombok.extern.log4j.Log4j2;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static less.green.openpudo.common.StringUtils.sanitizeString;
 
@@ -87,7 +86,8 @@ public class PackageService {
         } else {
             throw new AssertionError("Unsupported AccountType: " + caller.getAccountType());
         }
-        return dtoMapper.mapPackageEntityToDto(new Quartet<>(rs.getValue0(), rs.getValue1(), cryptoService.hashidEncodeShort(packageId), cryptoService.hashidEncodeLong(packageId)));
+        List<PackageEvent> events = rs.getValue1().stream().map(i -> dtoMapper.mapPackageEventEntityToDto(new Pair<>(i, getPackageStatusMessage(i.getPackageStatus())))).collect(Collectors.toList());
+        return dtoMapper.mapPackageEntityToDto(new Quartet<>(rs.getValue0(), events, cryptoService.hashidEncodeShort(packageId), cryptoService.hashidEncodeLong(packageId)));
     }
 
     public Package getPackageByShareLink(String shareLink) {
@@ -113,6 +113,25 @@ public class PackageService {
             ret.add(dtoMapper.mapProjectionToPackageSummary(new Septet<>(row.getValue0(), row.getValue1(), row.getValue2(), row.getValue3(), row.getValue4(), row.getValue5(), cryptoService.hashidEncodeShort(row.getValue0().getPackageId()))));
         }
         return ret;
+    }
+
+    protected String getPackageStatusMessage(PackageStatus packageStatus) {
+        switch (packageStatus) {
+            case DELIVERED:
+                return localizationService.getMessage(context.getLanguage(), "label.package.delivered");
+            case NOTIFY_SENT:
+                return localizationService.getMessage(context.getLanguage(), "label.package.notify_sent");
+            case NOTIFIED:
+                return localizationService.getMessage(context.getLanguage(), "label.package.notified");
+            case COLLECTED:
+                return localizationService.getMessage(context.getLanguage(), "label.package.collected");
+            case ACCEPTED:
+                return localizationService.getMessage(context.getLanguage(), "label.package.accepted");
+            case EXPIRED:
+                return localizationService.getMessage(context.getLanguage(), "label.package.expired");
+            default:
+                throw new AssertionError("Unsupported mapping for PackageStatus: " + packageStatus);
+        }
     }
 
     public Package deliveredPackage(DeliveredPackageRequest req) {

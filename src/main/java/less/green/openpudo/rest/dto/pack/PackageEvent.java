@@ -24,6 +24,9 @@ public class PackageEvent {
     private PackageStatus packageStatus;
 
     @Schema(readOnly = true)
+    private String packageStatusMessage;
+
+    @Schema(readOnly = true)
     private Boolean autoFlag;
 
     @Schema(readOnly = true)
