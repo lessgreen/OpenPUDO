@@ -55,64 +55,39 @@ class _HomeUserPackagesState extends State<HomeUserPackages> with ConnectionAwar
   bool _hasPackages = false;
   bool _hasPudos = false;
 
-  void onPackageCard(PackageSummary package) {
-    NetworkManager.instance.getPackageDetails(packageId: package.packageId).then(
-      (response) {
-        if (response is PudoPackage) {
-          Navigator.of(context).pushNamed(Routes.packagePickup, arguments: response);
-        } else {
-          SAAlertDialog.displayAlertWithClose(context, "Error", "Qualcosa e' andato storto");
-        }
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<CurrentUser>(
+      builder: (_, currentUser, __) {
+        return FutureBuilder<HomeUserState>(
+          future: _initPage(),
+          initialData: HomeUserState.unknown,
+          builder: (context, snapshot) => Material(
+            child: CupertinoPageScaffold(
+              navigationBar: CupertinoNavigationBarFix.build(
+                context,
+                middle: Text(
+                  'QuiGreen',
+                  style: Theme.of(context).textTheme.navBarTitle,
+                ),
+              ),
+              child: SafeArea(
+                child: SAScaffold(
+                  isLoading: NetworkManager.instance.networkActivity,
+                  body: RefreshIndicator(
+                    onRefresh: () async => currentUser.triggerReload(),
+                    child: _buildCorrectPage(snapshot.data),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
       },
-    ).catchError((onError) => SAAlertDialog.displayAlertWithClose(context, "Error", onError));
+    );
   }
 
-  Future fetchPackages() {
-    return NetworkManager.instance.getMyPackages(limit: _fetchLimit, offset: availablePackages.length).then((value) {
-      if (value is List<PackageSummary>) {
-        availablePackages.addAll(value);
-        didChangeDependencies();
-        if (value.length < _fetchLimit) {
-          _canFetchMore = false;
-        }
-      } else {
-        NetworkErrorHelper.helper(context, value);
-      }
-    }).catchError((onError) => SAAlertDialog.displayAlertWithClose(context, "Error", onError));
-  }
-
-  Future<HomeUserState> initPage() async {
-    _canFetchMore = true;
-    availablePackages.clear();
-    _hasPackages = (Provider.of<CurrentUser>(context, listen: false).user?.packageCount ?? 0) > 0;
-    _hasPudos = await NetworkManager.instance.getMyPudos().then((value) => (value as List).isNotEmpty).catchError((onError) => false);
-
-    if (_hasPackages) {
-      await fetchPackages();
-      if (!_scrollController.hasListeners) {
-        _scrollController.addListener(scrollListener);
-      } else {
-        _scrollController.removeListener(scrollListener);
-      }
-    }
-
-    if (_hasPackages) {
-      return HomeUserState.hasPackages;
-    } else if (_hasPudos) {
-      return HomeUserState.noPackages;
-    } else if (!_hasPudos) {
-      return HomeUserState.noPudo;
-    }
-    return HomeUserState.unknown;
-  }
-
-  void scrollListener() {
-    if (_scrollController.position.atEdge) {
-      if (_scrollController.position.pixels != 0 && !NetworkManager.instance.networkActivity.value && _canFetchMore) {
-        fetchPackages();
-      }
-    }
-  }
+  //MARK: Build widget accessories
 
   Widget _buildNoPudos() => LayoutBuilder(builder: (context, constraints) {
         return SingleChildScrollView(
@@ -184,7 +159,7 @@ class _HomeUserPackagesState extends State<HomeUserPackages> with ConnectionAwar
           address: availablePackages[index].label ?? '',
           //TODO no pudo rating on PackageSummary
           stars: 0,
-          onTap: () => onPackageCard(availablePackages[index]),
+          onTap: () => _onPackageCard(availablePackages[index]),
           isRead: true,
           deliveryDate: availablePackages[index].createTms,
           image: availablePackages[index].packagePicId,
@@ -204,33 +179,64 @@ class _HomeUserPackagesState extends State<HomeUserPackages> with ConnectionAwar
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Consumer<CurrentUser>(builder: (_, currentUser, __) {
-      return FutureBuilder<HomeUserState>(
-        future: initPage(),
-        initialData: HomeUserState.unknown,
-        builder: (context, snapshot) => Material(
-          child: CupertinoPageScaffold(
-            navigationBar: CupertinoNavigationBarFix.build(
-              context,
-              middle: Text(
-                'QuiGreen',
-                style: Theme.of(context).textTheme.navBarTitle,
-              ),
-            ),
-            child: SafeArea(
-              child: SAScaffold(
-                isLoading: NetworkManager.instance.networkActivity,
-                body: RefreshIndicator(
-                  onRefresh: () async => currentUser.triggerReload(),
-                  child: _buildCorrectPage(snapshot.data),
-                ),
-              ),
-            ),
-          ),
-        ),
-      );
-    });
+  //MARK: Actions
+
+  void _onPackageCard(PackageSummary package) {
+    NetworkManager.instance.getPackageDetails(packageId: package.packageId).then(
+      (response) {
+        if (response is PudoPackage) {
+          Navigator.of(context).pushNamed(Routes.packagePickup, arguments: response);
+        } else {
+          SAAlertDialog.displayAlertWithClose(context, "Error", "Qualcosa e' andato storto");
+        }
+      },
+    ).catchError((onError) => SAAlertDialog.displayAlertWithClose(context, "Error", onError));
+  }
+
+  Future _fetchPackages() {
+    return NetworkManager.instance.getMyPackages(limit: _fetchLimit, offset: availablePackages.length).then((value) {
+      if (value is List<PackageSummary>) {
+        availablePackages.addAll(value);
+        didChangeDependencies();
+        if (value.length < _fetchLimit) {
+          _canFetchMore = false;
+        }
+      } else {
+        NetworkErrorHelper.helper(context, value);
+      }
+    }).catchError((onError) => SAAlertDialog.displayAlertWithClose(context, "Error", onError));
+  }
+
+  Future<HomeUserState> _initPage() async {
+    _canFetchMore = true;
+    availablePackages.clear();
+    _hasPackages = (Provider.of<CurrentUser>(context, listen: false).user?.packageCount ?? 0) > 0;
+    _hasPudos = await NetworkManager.instance.getMyPudos().then((value) => (value as List).isNotEmpty).catchError((onError) => false);
+
+    if (_hasPackages) {
+      await _fetchPackages();
+      if (!_scrollController.hasListeners) {
+        _scrollController.addListener(_scrollListener);
+      } else {
+        _scrollController.removeListener(_scrollListener);
+      }
+    }
+
+    if (_hasPackages) {
+      return HomeUserState.hasPackages;
+    } else if (_hasPudos) {
+      return HomeUserState.noPackages;
+    } else if (!_hasPudos) {
+      return HomeUserState.noPudo;
+    }
+    return HomeUserState.unknown;
+  }
+
+  void _scrollListener() {
+    if (_scrollController.position.atEdge) {
+      if (_scrollController.position.pixels != 0 && !NetworkManager.instance.networkActivity.value && _canFetchMore) {
+        _fetchPackages();
+      }
+    }
   }
 }

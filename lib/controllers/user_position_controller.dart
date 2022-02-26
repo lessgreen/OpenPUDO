@@ -39,7 +39,28 @@ class UserPositionController extends StatefulWidget {
 }
 
 class _UserPositionControllerState extends State<UserPositionController> {
-  Widget _buildPageWithCupertinoScaffold(UserPositionControllerViewModel viewModel) => CupertinoPageScaffold(
+  @override
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider(
+      create: (context) => UserPositionControllerViewModel(),
+      child: Consumer<UserPositionControllerViewModel?>(
+        builder: (_, viewModel, __) {
+          if (widget.canGoBack) {
+            return widget.useCupertinoScaffold ? _buildPageWithCupertinoScaffold(viewModel!) : _buildPageWithBaseScaffold(viewModel!);
+          }
+          return WillPopScope(
+            onWillPop: () async => false,
+            child: widget.useCupertinoScaffold ? _buildPageWithCupertinoScaffold(viewModel!) : _buildPageWithBaseScaffold(viewModel!),
+          );
+        },
+      ),
+    );
+  }
+
+  //MARK: Build widget accessories
+
+  Widget _buildPageWithCupertinoScaffold(UserPositionControllerViewModel viewModel) {
+    return CupertinoPageScaffold(
       resizeToAvoidBottomInset: true,
       navigationBar: CupertinoNavigationBarFix.build(
         context,
@@ -55,9 +76,12 @@ class _UserPositionControllerState extends State<UserPositionController> {
           maxLines: 1,
         ),
       ),
-      child: _buildBody(viewModel));
+      child: _buildBody(viewModel),
+    );
+  }
 
-  Widget _buildPageWithBaseScaffold(UserPositionControllerViewModel viewModel) => Scaffold(
+  Widget _buildPageWithBaseScaffold(UserPositionControllerViewModel viewModel) {
+    return Scaffold(
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
         backgroundColor: ThemeData.light().scaffoldBackgroundColor,
@@ -69,71 +93,60 @@ class _UserPositionControllerState extends State<UserPositionController> {
               )
             : const SizedBox(),
       ),
-      body: _buildBody(viewModel));
+      body: _buildBody(viewModel),
+    );
+  }
 
-  Widget _buildBody(UserPositionControllerViewModel viewModel) => SafeArea(
-        child: Stack(
-          children: [
-            SvgPicture.asset(ImageSrc.userPositionArt, semanticsLabel: 'Art Background'),
-            Column(
-              children: [
-                if (!widget.useCupertinoScaffold)
-                  Center(
-                    child: Text(
-                      'Vediamo dove ti trovi',
-                      style: Theme.of(context).textTheme.headline6,
-                    ),
-                  ),
-                if (widget.useCupertinoScaffold) const SizedBox(height: Dimension.padding),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
-                  child: Center(
-                    child: Text(
-                      'Per poterti fornire informazioni rilevanti\nabbiamo bisogno di accedere alla tua posizione.',
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.subtitle1,
-                    ),
+  Widget _buildBody(UserPositionControllerViewModel viewModel) {
+    return SafeArea(
+      child: Stack(
+        children: [
+          SvgPicture.asset(ImageSrc.userPositionArt, semanticsLabel: 'Art Background'),
+          Column(
+            children: [
+              if (!widget.useCupertinoScaffold)
+                Center(
+                  child: Text(
+                    'Vediamo dove ti trovi',
+                    style: Theme.of(context).textTheme.headline6,
                   ),
                 ),
-                const Spacer(),
-                MainButton(
-                  padding: const EdgeInsets.symmetric(horizontal: Dimension.padding),
-                  onPressed: () async {
-                    viewModel.tryGetUserLocation().then((value) {
-                      if (value != null) {
-                        viewModel.onMapClick(context);
-                      }
-                    });
-                  },
-                  text: 'Ok, grazie!',
-                ),
-                const SizedBox(height: Dimension.padding),
-                MainButton(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: Dimension.padding,
+              if (widget.useCupertinoScaffold) const SizedBox(height: Dimension.padding),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+                child: Center(
+                  child: Text(
+                    'Per poterti fornire informazioni rilevanti\nabbiamo bisogno di accedere alla tua posizione.',
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.subtitle1,
                   ),
-                  onPressed: () => viewModel.onAddAddressClick(context),
-                  text: 'Inserisci indirizzo',
                 ),
-                const SizedBox(height: Dimension.paddingL)
-              ],
-            ),
-          ],
-        ),
-      );
-
-  @override
-  Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-        create: (context) => UserPositionControllerViewModel(),
-        child: Consumer<UserPositionControllerViewModel?>(builder: (_, viewModel, __) {
-          if (widget.canGoBack) {
-            return widget.useCupertinoScaffold ? _buildPageWithCupertinoScaffold(viewModel!) : _buildPageWithBaseScaffold(viewModel!);
-          }
-          return WillPopScope(
-            onWillPop: () async => false,
-            child: widget.useCupertinoScaffold ? _buildPageWithCupertinoScaffold(viewModel!) : _buildPageWithBaseScaffold(viewModel!),
-          );
-        }));
+              ),
+              const Spacer(),
+              MainButton(
+                padding: const EdgeInsets.symmetric(horizontal: Dimension.padding),
+                onPressed: () async {
+                  viewModel.tryGetUserLocation().then((value) {
+                    if (value != null) {
+                      viewModel.onMapClick(context);
+                    }
+                  });
+                },
+                text: 'Ok, grazie!',
+              ),
+              const SizedBox(height: Dimension.padding),
+              MainButton(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: Dimension.padding,
+                ),
+                onPressed: () => viewModel.onAddAddressClick(context),
+                text: 'Inserisci indirizzo',
+              ),
+              const SizedBox(height: Dimension.paddingL)
+            ],
+          ),
+        ],
+      ),
+    );
   }
 }

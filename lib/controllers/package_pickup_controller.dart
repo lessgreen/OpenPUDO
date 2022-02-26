@@ -22,6 +22,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:qui_green/commons/alert_dialog.dart';
 import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
 import 'package:qui_green/commons/ui/custom_network_image.dart';
 import 'package:qui_green/commons/ui/cupertino_navigation_bar_fix.dart';
@@ -47,91 +48,138 @@ class _PackagePickupControllerState extends State<PackagePickupController> {
     super.initState();
   }
 
-  void sharePackage() => Share.share(NetworkManager.instance.baseURL + "/api/v2/share/${widget.packageModel.shareLink ?? ""}");
-
-  Widget _buildQr() => Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          const SizedBox(
-            height: Dimension.paddingL,
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      child: CupertinoPageScaffold(
+        navigationBar: CupertinoNavigationBarFix.build(
+          context,
+          middle: Text(
+            'Ritiro del pacco',
+            style: Theme.of(context).textTheme.navBarTitle,
           ),
-          RichText(
-              textAlign: TextAlign.center,
-              text: TextSpan(
-                text: '',
-                style: Theme.of(context).textTheme.navBarTitleDark,
-                children: const [
-                  TextSpan(
-                    text: "Mostra questo QRCode\nal punto di ritiro ",
-                  ),
-                  TextSpan(text: "QuiGreen", style: TextStyle(color: AppColors.primaryColorDark)),
-                ],
-              )),
-          const SizedBox(
-            height: Dimension.padding,
+          leading: CupertinoNavigationBarBackButton(
+            color: Colors.white,
+            onPressed: () => Navigator.of(context).pop(),
           ),
-          Container(
-            decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width / 2), boxShadow: Shadows.baseShadow),
-            alignment: Alignment.center,
-            child: QrImage(
-              data: widget.packageModel.shareLink ?? "",
-              version: QrVersions.auto,
-              size: MediaQuery.of(context).size.width / 3,
-            ),
-            height: MediaQuery.of(context).size.width / 2,
-            width: MediaQuery.of(context).size.width / 2,
-          ),
-          const SizedBox(
-            height: Dimension.padding,
-          ),
-        ],
-      );
-
-  Widget _buildPhoto() => Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Container(
-            color: AppColors.boxGrey,
-            padding: const EdgeInsets.symmetric(vertical: Dimension.paddingS, horizontal: Dimension.padding),
-            child: Text(
-              "FOTO DEL PACCO",
-              style: Theme.of(context).textTheme.bodyTextBold,
+          trailing: InkWell(
+            onTap: _sharePackage,
+            child: Padding(
+              padding: const EdgeInsets.only(right: Dimension.paddingS),
+              child: SvgPicture.asset(
+                ImageSrc.shareArt,
+                width: 26,
+                height: 26,
+                color: Colors.white,
+              ),
             ),
           ),
-          AspectRatio(
-            aspectRatio: 18 / 9,
-            child: CustomNetworkImage(
-              url: widget.packageModel.packagePicId,
-              fit: BoxFit.cover,
+        ),
+        //ClipPath is used to avoid the scrolling cards to go outside the screen
+        //and being visible when popping the page
+        child: ClipPath(
+          child: SAScaffold(
+            isLoading: NetworkManager.instance.networkActivity,
+            body: ListView(
+              children: [
+                _buildQr(),
+                const SizedBox(
+                  height: Dimension.paddingS,
+                ),
+                _buildPhoto(),
+                const SizedBox(
+                  height: Dimension.paddingS,
+                ),
+                _buildEvents(),
+                const SizedBox(
+                  height: Dimension.padding,
+                ),
+              ],
             ),
-          )
-        ],
-      );
-
-  String prettifyNotes(PudoPackageStatus? status, String? notes) {
-    return convertStatus(status) + (notes != null ? " : " + notes : "");
+          ),
+        ),
+      ),
+    );
   }
 
-  String convertStatus(PudoPackageStatus? status) {
-    switch (status) {
-      case PudoPackageStatus.accepted:
-        return "Accettato";
-      case PudoPackageStatus.collected:
-        return "Raccolto";
-      case PudoPackageStatus.delivered:
-        return "Consegnato";
-      case PudoPackageStatus.notifySent:
-        return "Utente notificato";
-      case PudoPackageStatus.notified:
-        return "Notificato";
-      case PudoPackageStatus.expired:
-        return "Scaduto";
-      default:
-        return "";
+  //MARK: Actions
+  void _sharePackage() {
+    if (widget.packageModel.shareLink != null) {
+      Share.share(NetworkManager.instance.baseURL + "/api/v2/share/${widget.packageModel.shareLink!}");
+    } else {
+      SAAlertDialog.displayAlertWithClose(context, 'Attenzione', 'Si è verificato un problema con la condivisione. Per favore, riprova.');
     }
   }
 
-  Widget _buildEvents() => Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+  //MARK: Build widget accessories
+
+  Widget _buildQr() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        const SizedBox(
+          height: Dimension.paddingL,
+        ),
+        RichText(
+            textAlign: TextAlign.center,
+            text: TextSpan(
+              text: '',
+              style: Theme.of(context).textTheme.navBarTitleDark,
+              children: const [
+                TextSpan(
+                  text: "Mostra questo QRCode\nal punto di ritiro ",
+                ),
+                TextSpan(text: "QuiGreen", style: TextStyle(color: AppColors.primaryColorDark)),
+              ],
+            )),
+        const SizedBox(
+          height: Dimension.padding,
+        ),
+        Container(
+          decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width / 2), boxShadow: Shadows.baseShadow),
+          alignment: Alignment.center,
+          child: QrImage(
+            data: widget.packageModel.shareLink ?? "",
+            version: QrVersions.auto,
+            size: MediaQuery.of(context).size.width / 3,
+          ),
+          height: MediaQuery.of(context).size.width / 2,
+          width: MediaQuery.of(context).size.width / 2,
+        ),
+        const SizedBox(
+          height: Dimension.padding,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildPhoto() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Container(
+          color: AppColors.boxGrey,
+          padding: const EdgeInsets.symmetric(vertical: Dimension.paddingS, horizontal: Dimension.padding),
+          child: Text(
+            "FOTO DEL PACCO",
+            style: Theme.of(context).textTheme.bodyTextBold,
+          ),
+        ),
+        AspectRatio(
+          aspectRatio: 18 / 9,
+          child: CustomNetworkImage(
+            url: widget.packageModel.packagePicId,
+            fit: BoxFit.cover,
+          ),
+        )
+      ],
+    );
+  }
+
+  Widget _buildEvents() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
         Container(
           color: AppColors.boxGrey,
           padding: const EdgeInsets.symmetric(vertical: Dimension.paddingS, horizontal: Dimension.padding),
@@ -154,10 +202,6 @@ class _PackagePickupControllerState extends State<PackagePickupController> {
                     text: TextSpan(
                       text: '',
                       style: Theme.of(context).textTheme.bodyTextLight,
-                      // style: Theme.of(context).textTheme.bodyText2?.copyWith(
-                      //       fontWeight: FontWeight.w300,
-                      //       color: AppColors.primaryTextColor,
-                      //     ),
                       children: [
                         TextSpan(
                           text: event.createTms?.ddmmyyyy,
@@ -167,7 +211,7 @@ class _PackagePickupControllerState extends State<PackagePickupController> {
                           text: " - ",
                         ),
                         TextSpan(
-                          text: prettifyNotes(event.packageStatus, event.notes),
+                          text: event.prettifiedNote,
                         ),
                       ],
                     )),
@@ -176,57 +220,7 @@ class _PackagePickupControllerState extends State<PackagePickupController> {
             return const SizedBox();
           },
         ),
-      ]);
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      child: CupertinoPageScaffold(
-          navigationBar: CupertinoNavigationBarFix.build(
-            context,
-            middle: Text(
-              'Ritiro del pacco',
-              style: Theme.of(context).textTheme.navBarTitle,
-            ),
-            leading: CupertinoNavigationBarBackButton(
-              color: Colors.white,
-              onPressed: () => Navigator.of(context).pop(),
-            ),
-            trailing: InkWell(
-              onTap: sharePackage,
-              child: Padding(
-                padding: const EdgeInsets.only(right: Dimension.paddingS),
-                child: SvgPicture.asset(
-                  ImageSrc.shareArt,
-                  width: 26,
-                  height: 26,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-          ),
-          //ClipPath is used to avoid the scrolling cards to go outside the screen
-          //and being visible when popping the page
-          child: ClipPath(
-            child: SAScaffold(
-                isLoading: NetworkManager.instance.networkActivity,
-                body: ListView(
-                  children: [
-                    _buildQr(),
-                    const SizedBox(
-                      height: Dimension.paddingS,
-                    ),
-                    _buildPhoto(),
-                    const SizedBox(
-                      height: Dimension.paddingS,
-                    ),
-                    _buildEvents(),
-                    const SizedBox(
-                      height: Dimension.padding,
-                    ),
-                  ],
-                )),
-          )),
+      ],
     );
   }
 }

@@ -43,91 +43,95 @@ class ProfileController extends StatefulWidget {
 class _ProfileControllerState extends State<ProfileController> with ConnectionAware {
   @override
   Widget build(BuildContext context) {
-    return Consumer<CurrentUser>(builder: (_, currentUser, __) {
-      return Material(
-        child: CupertinoPageScaffold(
-          navigationBar: CupertinoNavigationBarFix.build(context,
-              middle: Text(
-                'Il tuo profilo',
-                style: Theme.of(context).textTheme.navBarTitle,
-              )),
-          child: ListView(children: [
-            const SizedBox(height: 20),
-            Center(
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(100),
-                child: CustomNetworkImage(height: 150, width: 150, fit: BoxFit.cover, url: currentUser.user?.profilePicId),
-              ),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            Center(
-              child: Text(
-                "${currentUser.user?.firstName ?? " "} ${currentUser.user?.lastName ?? " "}",
-                style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 20),
-              ),
-            ),
-            const SizedBox(height: 6),
-            Center(
-              child: Text(
-                'Utente dal ${currentUser.user?.createTms != null ? DateFormat('dd/MM/yyyy').format(DateTime.parse(currentUser.user!.createTms!)) : " "}',
-                style: const TextStyle(fontWeight: FontWeight.w300, fontSize: 14, color: AppColors.primaryTextColor),
-              ),
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            const UserProfileRecapWidget(
-              totalUsage: 123,
-              kgCO2Saved: 456,
-            ),
-            TableViewCell(
-                leading: SvgPicture.asset(
-                  ImageSrc.positionLeadingCell,
-                  color: AppColors.cardColor,
-                  width: 36,
-                  height: 36,
-                ),
-                title: "I tuoi pudo",
-                onTap: () {
-                  Navigator.of(context).pushNamed(Routes.pudoList);
-                }),
-            TableViewCell(
-              leading: SvgPicture.asset(
-                ImageSrc.packReceivedLeadingIcon,
-                color: AppColors.cardColor,
-                width: 36,
-                height: 36,
-              ),
-              title: "Le tue spedizioni",
-              onTap: () {},
-            ),
-            TableViewCell(
-              leading: SvgPicture.asset(
-                ImageSrc.logoutIcon,
-                color: AppColors.cardColor,
-                width: 36,
-                height: 36,
-              ),
-              title: "Logout",
-              onTap: () {
-                Navigator.pop(context);
-                NetworkManager.instance.setAccessToken(null);
-                currentUser.refresh();
-              },
-            ),
-            TableViewCell(
-              title: "Elimina account",
-              textAlign: TextAlign.center,
-              textStyle: Theme.of(context).textTheme.bodyTextBold?.copyWith(
-                    color: Colors.red,
+    return Consumer<CurrentUser>(
+      builder: (_, currentUser, __) {
+        return Material(
+          child: CupertinoPageScaffold(
+            navigationBar: CupertinoNavigationBarFix.build(context,
+                middle: Text(
+                  'Il tuo profilo',
+                  style: Theme.of(context).textTheme.navBarTitle,
+                )),
+            child: ListView(
+              children: [
+                const SizedBox(height: 20),
+                Center(
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(100),
+                    child: CustomNetworkImage(height: 150, width: 150, fit: BoxFit.cover, url: currentUser.user?.profilePicId),
                   ),
-              showTrailingChevron: false,
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                Center(
+                  child: Text(
+                    "${currentUser.user?.firstName ?? " "} ${currentUser.user?.lastName ?? " "}",
+                    style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 20),
+                  ),
+                ),
+                const SizedBox(height: 6),
+                Center(
+                  child: Text(
+                    'Utente dal ${currentUser.user?.createTms != null ? DateFormat('dd/MM/yyyy').format(DateTime.parse(currentUser.user!.createTms!)) : " "}',
+                    style: const TextStyle(fontWeight: FontWeight.w300, fontSize: 14, color: AppColors.primaryTextColor),
+                  ),
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                const UserProfileRecapWidget(
+                  totalUsage: 123,
+                  kgCO2Saved: 456,
+                ),
+                TableViewCell(
+                    leading: SvgPicture.asset(
+                      ImageSrc.positionLeadingCell,
+                      color: AppColors.cardColor,
+                      width: 36,
+                      height: 36,
+                    ),
+                    title: "I tuoi pudo",
+                    onTap: () {
+                      Navigator.of(context).pushNamed(Routes.pudoList);
+                    }),
+                TableViewCell(
+                  leading: SvgPicture.asset(
+                    ImageSrc.packReceivedLeadingIcon,
+                    color: AppColors.cardColor,
+                    width: 36,
+                    height: 36,
+                  ),
+                  title: "Le tue spedizioni",
+                  onTap: () {},
+                ),
+                TableViewCell(
+                  leading: SvgPicture.asset(
+                    ImageSrc.logoutIcon,
+                    color: AppColors.cardColor,
+                    width: 36,
+                    height: 36,
+                  ),
+                  title: "Logout",
+                  onTap: () {
+                    Navigator.pop(context);
+                    NetworkManager.instance.setAccessToken(null);
+                    currentUser.refresh();
+                  },
+                ),
+                TableViewCell(
+                  title: "Elimina account",
+                  textAlign: TextAlign.center,
+                  textStyle: Theme.of(context).textTheme.bodyTextBold?.copyWith(
+                        color: Colors.red,
+                      ),
+                  showTrailingChevron: false,
+                ),
+              ],
             ),
-          ]),
-        ),
-      );
-    });
+          ),
+        );
+      },
+    );
   }
 }

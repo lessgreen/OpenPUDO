@@ -22,9 +22,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:move_to_background/move_to_background.dart';
+import 'package:qui_green/commons/ui/tab_controller_container.dart';
 import 'package:qui_green/commons/utilities/home_user_routes.dart';
 import 'package:qui_green/controllers/home_user_packages.dart';
-import 'package:qui_green/controllers/onboarding/maps_controller.dart';
+import 'package:qui_green/controllers/onboarding/map_controller.dart';
 import 'package:qui_green/controllers/profile_controller.dart';
 import 'package:qui_green/resources/res.dart';
 import 'package:qui_green/singletons/network/network_manager.dart';
@@ -52,7 +53,10 @@ class _HomeControllerState extends State<HomeController> with ConnectionAware {
           onGenerateRoute: (RouteSettings settings) => homeUserRouteWithSetting(settings),
         ),
         bottomView: BottomNavigationBarItem(
-            icon: SvgPicture.asset(ImageSrc.homeArt, color: Colors.grey.shade400), activeIcon: SvgPicture.asset(ImageSrc.homeArt, color: AppColors.primaryColorDark), label: 'Home'),
+          icon: SvgPicture.asset(ImageSrc.homeArt, color: Colors.grey.shade400),
+          activeIcon: SvgPicture.asset(ImageSrc.homeArt, color: AppColors.primaryColorDark),
+          label: 'Home',
+        ),
       ),
       TabControllerContainer(
         tabView: CupertinoTabView(
@@ -61,7 +65,10 @@ class _HomeControllerState extends State<HomeController> with ConnectionAware {
           onGenerateRoute: (RouteSettings settings) => homeUserRouteWithSetting(settings),
         ),
         bottomView: BottomNavigationBarItem(
-            icon: SvgPicture.asset(ImageSrc.mapsArt, color: Colors.grey.shade400), activeIcon: SvgPicture.asset(ImageSrc.mapsArt, color: AppColors.primaryColorDark), label: 'Pudo'),
+          icon: SvgPicture.asset(ImageSrc.mapsArt, color: Colors.grey.shade400),
+          activeIcon: SvgPicture.asset(ImageSrc.mapsArt, color: AppColors.primaryColorDark),
+          label: 'Pudo',
+        ),
       ),
       TabControllerContainer(
         tabView: CupertinoTabView(
@@ -70,7 +77,10 @@ class _HomeControllerState extends State<HomeController> with ConnectionAware {
           onGenerateRoute: (RouteSettings settings) => homeUserRouteWithSetting(settings),
         ),
         bottomView: BottomNavigationBarItem(
-            icon: SvgPicture.asset(ImageSrc.profileArt, color: Colors.grey.shade400), activeIcon: SvgPicture.asset(ImageSrc.profileArt, color: AppColors.primaryColorDark), label: 'Profile'),
+          icon: SvgPicture.asset(ImageSrc.profileArt, color: Colors.grey.shade400),
+          activeIcon: SvgPicture.asset(ImageSrc.profileArt, color: AppColors.primaryColorDark),
+          label: 'Profile',
+        ),
       )
     ];
   }
@@ -118,10 +128,4 @@ class _HomeControllerState extends State<HomeController> with ConnectionAware {
       ),
     );
   }
-}
-
-class TabControllerContainer {
-  final CupertinoTabView tabView;
-  final BottomNavigationBarItem bottomView;
-  const TabControllerContainer({required this.tabView, required this.bottomView});
 }
