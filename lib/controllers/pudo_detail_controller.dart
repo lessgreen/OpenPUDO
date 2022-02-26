@@ -53,35 +53,19 @@ class _PudoDetailControllerState extends State<PudoDetailController> with Connec
   void initState() {
     super.initState();
     if (widget.checkIsAlreadyAdded) {
-      getIfPudoAlreadySelected();
+      _getIfPudoAlreadySelected();
     } else {
-      nextVisible = true;
+      _nextVisible = true;
       checkComplete = true;
     }
   }
 
-  void _openModal() {
-    SAAlertDialog.displayModalWithButtons(context, "Scegli un'azione", [
-      CupertinoActionSheetAction(
-        child: const Text('Chiama al telefono'),
-        onPressed: () {
-          UrlLauncherHelper.launchUrl(UrlTypes.tel, widget.dataModel.publicPhoneNumber!);
-        },
-      ),
-      CupertinoActionSheetAction(
-        child: const Text('Invia un messaggio'),
-        onPressed: () {
-          UrlLauncherHelper.launchUrl(UrlTypes.sms, widget.dataModel.publicPhoneNumber!);
-        },
-      ),
-      CupertinoActionSheetAction(
-        child: const Text('Invia un WhatsApp'),
-        onPressed: () {
-          UrlLauncherHelper.launchUrl(UrlTypes.whatsapp, widget.dataModel.publicPhoneNumber!);
-        },
-      )
-    ]);
+  @override
+  Widget build(BuildContext context) {
+    return widget.useCupertinoScaffold ? _buildPageWithCupertinoScaffold() : _buildPageWithBaseScaffold();
   }
+
+  //MARK: Build accessories
 
   Widget _buildPudoDetail() => Padding(
         padding: const EdgeInsets.symmetric(horizontal: Dimension.padding),
@@ -186,9 +170,9 @@ class _PudoDetailControllerState extends State<PudoDetailController> with Connec
 
   Widget _buildTrailingWithCupertinoScaffold() {
     if (checkComplete) {
-      if (nextVisible) {
+      if (_nextVisible) {
         return TextFieldButton(
-          onPressed: handleSelect,
+          onPressed: _handleSelect,
           text: 'Scegli',
           textColor: Colors.white,
         );
@@ -211,9 +195,9 @@ class _PudoDetailControllerState extends State<PudoDetailController> with Connec
 
   Widget _buildTrailingWithBaseScaffold() {
     if (checkComplete) {
-      if (nextVisible) {
+      if (_nextVisible) {
         return TextFieldButton(
-          onPressed: handleSelect,
+          onPressed: _handleSelect,
           text: 'Scegli',
           textColor: AppColors.primaryColorDark,
         );
@@ -332,45 +316,65 @@ class _PudoDetailControllerState extends State<PudoDetailController> with Connec
         ],
       );
 
-  @override
-  Widget build(BuildContext context) {
-    return widget.useCupertinoScaffold ? _buildPageWithCupertinoScaffold() : _buildPageWithBaseScaffold();
+  //MARK: Actions
+
+  void _openModal() {
+    SAAlertDialog.displayModalWithButtons(context, "Scegli un'azione", [
+      CupertinoActionSheetAction(
+        child: const Text('Chiama al telefono'),
+        onPressed: () {
+          UrlLauncherHelper.launchUrl(UrlTypes.tel, widget.dataModel.publicPhoneNumber!);
+        },
+      ),
+      CupertinoActionSheetAction(
+        child: const Text('Invia un messaggio'),
+        onPressed: () {
+          UrlLauncherHelper.launchUrl(UrlTypes.sms, widget.dataModel.publicPhoneNumber!);
+        },
+      ),
+      CupertinoActionSheetAction(
+        child: const Text('Invia un WhatsApp'),
+        onPressed: () {
+          UrlLauncherHelper.launchUrl(UrlTypes.whatsapp, widget.dataModel.publicPhoneNumber!);
+        },
+      )
+    ]);
   }
 
-  bool nextVisible = false;
+  bool _nextVisible = false;
 
-  void getIfPudoAlreadySelected() {
+  void _getIfPudoAlreadySelected() {
     NetworkManager.instance.getMyPudos().then((value) {
       final index = value.indexWhere((element) => element.pudoId == widget.dataModel.pudoId);
       if (index > -1) {
         setState(() {
           checkComplete = true;
-          nextVisible = false;
+          _nextVisible = false;
         });
       } else {
         setState(() {
           checkComplete = true;
-          nextVisible = true;
+          _nextVisible = true;
         });
       }
     }).catchError((onError) => SAAlertDialog.displayAlertWithClose(context, "Error", onError));
   }
 
-  void handleSelect() {
+  void _handleSelect() {
     switch (widget.nextRoute) {
       case Routes.personalData:
-        goToPersonalData();
+        _goToPersonalData();
         break;
       case Routes.registrationComplete:
-        goToRegistration();
+        _goToRegistration();
         break;
       default:
-        selectPudo();
+        _selectPudo();
         break;
     }
   }
 
-  void goToRegistration() {
+  void _goToRegistration() {
     NetworkManager.instance
         .addPudoFavorite(widget.dataModel.pudoId.toString())
         .then((value) => Navigator.of(context).pushNamed(
@@ -380,14 +384,14 @@ class _PudoDetailControllerState extends State<PudoDetailController> with Connec
         .catchError((onError) => SAAlertDialog.displayAlertWithClose(context, "Error", onError));
   }
 
-  void selectPudo() {
+  void _selectPudo() {
     NetworkManager.instance.addPudoFavorite(widget.dataModel.pudoId.toString()).then((value) {
       Provider.of<CurrentUser>(context, listen: false).triggerReload();
       Navigator.of(context).pop();
     }).catchError((onError) => SAAlertDialog.displayAlertWithClose(context, "Error", onError));
   }
 
-  void goToPersonalData() {
+  void _goToPersonalData() {
     Navigator.of(context).pushNamedAndRemoveUntil(
       Routes.personalData,
       ModalRoute.withName('/'),
