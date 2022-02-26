@@ -92,6 +92,7 @@ class ImageSrc {
   static const welcomePudoOnboarding = "assets/welcomePudoOnboarding.svg";
   static const phoneIcon = "assets/phoneIcon.svg";
   static const phoneIconFill = "assets/phoneIconFill.svg";
+  static const notFound = "assets/notFound.svg";
 }
 
 class IconSrc {}

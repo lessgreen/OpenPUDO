@@ -21,14 +21,15 @@
 import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:qui_green/app.dart';
 import 'package:qui_green/commons/utilities/page_route_helper.dart';
+import 'package:qui_green/controllers/error_controller.dart';
 import 'package:qui_green/controllers/instruction_controller.dart';
 import 'package:qui_green/controllers/onboarding/insert_address_controller.dart';
 import 'package:qui_green/controllers/onboarding/map_controller.dart';
 import 'package:qui_green/controllers/package_pickup_controller.dart';
-import 'package:qui_green/controllers/profile_controller.dart';
 import 'package:qui_green/controllers/pudo_detail_controller.dart';
 import 'package:qui_green/controllers/pudo_list_controller.dart';
 import 'package:qui_green/controllers/registration_complete_controller.dart';
@@ -115,7 +116,7 @@ dynamic homeUserRouteWithSetting(RouteSettings settings) {
       return PageRouteHelper.buildPage(const PudoListController());
     default:
       return PageRouteHelper.buildPage(
-        const ProfileController(),
+        const ErrorController(),
       );
   }
 }

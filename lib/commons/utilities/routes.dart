@@ -177,11 +177,12 @@ dynamic routeWithSetting(RouteSettings settings) {
       return PageRouteHelper.buildPage(
         Scaffold(
           body: Center(
-              child: SvgPicture.asset(
-            ImageSrc.launcherIcon,
-            width: 120,
-            height: 120,
-          )),
+            child: SvgPicture.asset(
+              ImageSrc.launcherIcon,
+              width: 120,
+              height: 120,
+            ),
+          ),
         ),
       );
   }
