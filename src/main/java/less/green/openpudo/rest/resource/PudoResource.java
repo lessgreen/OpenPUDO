@@ -89,10 +89,8 @@ public class PudoResource {
         } else if (req.getPudo() == null && req.getAddressMarker() == null) {
             throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.empty_mandatory_field_coalesce", "pudo, addressMarker"));
         }
-        if (req.getPudo() != null) {
-            if (isEmpty(req.getPudo().getBusinessName())) {
-                throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.empty_mandatory_field", "businessName"));
-            }
+        if (req.getPudo() != null && isEmpty(req.getPudo().getBusinessName())) {
+            throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.empty_mandatory_field", "businessName"));
         }
         if (req.getAddressMarker() != null) {
             if (req.getAddressMarker().getAddress() == null) {
