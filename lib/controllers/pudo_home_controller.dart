@@ -22,9 +22,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
+import 'package:qui_green/commons/ui/optimized_cupertino_navigation_bar.dart';
+import 'package:qui_green/resources/res.dart';
 import 'package:qui_green/singletons/current_user.dart';
 import 'package:qui_green/singletons/network/network_manager.dart';
-import 'package:qui_green/resources/res.dart';
 
 class PudoHomeController extends StatefulWidget {
   const PudoHomeController({Key? key}) : super(key: key);
@@ -51,9 +52,8 @@ class _PudoHomeControllerState extends State<PudoHomeController> with Connection
                 routes: {
                   '/': (context) {
                     return CupertinoPageScaffold(
-                      navigationBar: CupertinoNavigationBar(
-                        padding: const EdgeInsetsDirectional.all(0),
-                        backgroundColor: AppColors.primaryColorDark,
+                      navigationBar: OptimizedCupertinoNavigationBar.build(
+                        context,
                         middle: Text(
                           'Il tuo profilo',
                           style: Theme.of(context).textTheme.navBarTitle,
@@ -69,7 +69,8 @@ class _PudoHomeControllerState extends State<PudoHomeController> with Connection
                 routes: {
                   '/': (context) {
                     return CupertinoPageScaffold(
-                        navigationBar: CupertinoNavigationBar(
+                        navigationBar: OptimizedCupertinoNavigationBar.build(
+                          context,
                           padding: const EdgeInsetsDirectional.all(0),
                           brightness: Brightness.dark,
                           backgroundColor: AppColors.primaryColorDark,

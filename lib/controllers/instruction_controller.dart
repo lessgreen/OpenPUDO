@@ -24,6 +24,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
+import 'package:qui_green/commons/ui/optimized_cupertino_navigation_bar.dart';
 import 'package:qui_green/models/pudo_profile.dart';
 import 'package:qui_green/resources/res.dart';
 import 'package:qui_green/singletons/current_user.dart';
@@ -113,10 +114,7 @@ class _InstructionControllerState extends State<InstructionController> with Conn
       );
 
   Widget _buildPageWithCupertinoScaffold(CurrentUser currentUser) => CupertinoPageScaffold(
-        navigationBar: CupertinoNavigationBar(
-            padding: const EdgeInsetsDirectional.all(0),
-            brightness: Brightness.dark,
-            backgroundColor: AppColors.primaryColorDark,
+        navigationBar: OptimizedCupertinoNavigationBar.build(context,
             middle: Text(
               'Istruzioni',
               style: Theme.of(context).textTheme.navBarTitle,

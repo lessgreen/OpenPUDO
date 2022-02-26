@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 
 class PageRouteHelper {
   static buildPage(Widget page) {
-    if (Platform.isIOS) {
+    if (!Platform.isIOS) {
       return CupertinoPageRoute(builder: (context) => page);
     }
     return PageRouteBuilder(

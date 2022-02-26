@@ -24,6 +24,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
+import 'package:qui_green/commons/ui/optimized_cupertino_navigation_bar.dart';
 import 'package:qui_green/commons/utilities/keyboard_visibility.dart';
 import 'package:qui_green/resources/res.dart';
 import 'package:qui_green/singletons/network/network_manager.dart';
@@ -51,10 +52,8 @@ class _InsertAddressControllerState extends State<InsertAddressController> with 
   }
 
   Widget _buildPageWithCupertinoScaffold(InsertAddressControllerViewModel viewModel, bool isKeyboardVisible) => CupertinoPageScaffold(
-      navigationBar: CupertinoNavigationBar(
-        padding: const EdgeInsetsDirectional.all(0),
-        brightness: Brightness.dark,
-        backgroundColor: AppColors.primaryColorDark,
+      navigationBar: OptimizedCupertinoNavigationBar.build(
+        context,
         middle: Text(
           'Inserisci il tuo indirizzo',
           style: Theme.of(context).textTheme.navBarTitle,

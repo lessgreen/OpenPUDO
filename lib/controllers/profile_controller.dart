@@ -25,6 +25,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
 import 'package:qui_green/commons/ui/custom_network_image.dart';
+import 'package:qui_green/commons/ui/optimized_cupertino_navigation_bar.dart';
 import 'package:qui_green/resources/res.dart';
 import 'package:qui_green/resources/routes_enum.dart';
 import 'package:qui_green/singletons/current_user.dart';
@@ -45,15 +46,11 @@ class _ProfileControllerState extends State<ProfileController> with ConnectionAw
     return Consumer<CurrentUser>(builder: (_, currentUser, __) {
       return Material(
         child: CupertinoPageScaffold(
-          navigationBar: CupertinoNavigationBar(
-            padding: const EdgeInsetsDirectional.all(0),
-            brightness: Brightness.dark,
-            backgroundColor: AppColors.primaryColorDark,
-            middle: Text(
-              'Il tuo profilo',
-              style: Theme.of(context).textTheme.navBarTitle,
-            ),
-          ),
+          navigationBar: OptimizedCupertinoNavigationBar.build(context,
+              middle: Text(
+                'Il tuo profilo',
+                style: Theme.of(context).textTheme.navBarTitle,
+              )),
           child: ListView(children: [
             const SizedBox(height: 20),
             Center(

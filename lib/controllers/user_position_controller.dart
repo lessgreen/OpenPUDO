@@ -24,6 +24,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
+import 'package:qui_green/commons/ui/optimized_cupertino_navigation_bar.dart';
 import 'package:qui_green/resources/res.dart';
 import 'package:qui_green/view_models/user_position_controller_viewmodel.dart';
 import 'package:qui_green/widgets/main_button.dart';
@@ -40,10 +41,8 @@ class UserPositionController extends StatefulWidget {
 class _UserPositionControllerState extends State<UserPositionController> {
   Widget _buildPageWithCupertinoScaffold(UserPositionControllerViewModel viewModel) => CupertinoPageScaffold(
       resizeToAvoidBottomInset: true,
-      navigationBar: CupertinoNavigationBar(
-        padding: const EdgeInsetsDirectional.all(0),
-        brightness: Brightness.dark,
-        backgroundColor: AppColors.primaryColorDark,
+      navigationBar: OptimizedCupertinoNavigationBar.build(
+        context,
         leading: widget.canGoBack
             ? CupertinoNavigationBarBackButton(
                 color: Colors.white,
