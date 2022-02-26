@@ -45,18 +45,15 @@ class HomeUserPackages extends StatefulWidget {
   _HomeUserPackagesState createState() => _HomeUserPackagesState();
 }
 
+enum HomeUserState { hasPackages, noPackages, noPudo, unknown }
+
 class _HomeUserPackagesState extends State<HomeUserPackages> with ConnectionAware {
   final ScrollController _scrollController = ScrollController();
   bool _canFetchMore = true;
   final int _fetchLimit = 20;
   List<PackageSummary> availablePackages = [];
-  bool hasPackages = false;
-  bool hasPudos = false;
-
-  @override
-  void initState() {
-    super.initState();
-  }
+  bool _hasPackages = false;
+  bool _hasPudos = false;
 
   void onPackageCard(PackageSummary package) {
     NetworkManager.instance.getPackageDetails(packageId: package.packageId).then(
@@ -84,12 +81,13 @@ class _HomeUserPackagesState extends State<HomeUserPackages> with ConnectionAwar
     }).catchError((onError) => SAAlertDialog.displayAlertWithClose(context, "Error", onError));
   }
 
-  Future<void> initPage() async {
+  Future<HomeUserState> initPage() async {
     _canFetchMore = true;
     availablePackages.clear();
-    hasPackages = (Provider.of<CurrentUser>(context, listen: false).user?.packageCount ?? 0) > 0;
-    hasPudos = await NetworkManager.instance.getMyPudos().then((value) => (value as List).isNotEmpty).catchError((onError) => false);
-    if (hasPackages) {
+    _hasPackages = (Provider.of<CurrentUser>(context, listen: false).user?.packageCount ?? 0) > 0;
+    _hasPudos = await NetworkManager.instance.getMyPudos().then((value) => (value as List).isNotEmpty).catchError((onError) => false);
+
+    if (_hasPackages) {
       await fetchPackages();
       if (!_scrollController.hasListeners) {
         _scrollController.addListener(scrollListener);
@@ -97,6 +95,15 @@ class _HomeUserPackagesState extends State<HomeUserPackages> with ConnectionAwar
         _scrollController.removeListener(scrollListener);
       }
     }
+
+    if (_hasPackages) {
+      return HomeUserState.hasPackages;
+    } else if (_hasPudos) {
+      return HomeUserState.noPackages;
+    } else if (!_hasPudos) {
+      return HomeUserState.noPudo;
+    }
+    return HomeUserState.unknown;
   }
 
   void scrollListener() {
@@ -184,22 +191,25 @@ class _HomeUserPackagesState extends State<HomeUserPackages> with ConnectionAwar
         );
       });
 
-  Widget _buildCorrectPage() {
-    if (!hasPudos) {
-      return _buildNoPudos();
-    }
-    if (hasPackages) {
-      return _buildPackages();
-    } else {
-      return _buildNoPackages();
+  Widget _buildCorrectPage(HomeUserState? state) {
+    switch (state) {
+      case HomeUserState.hasPackages:
+        return _buildPackages();
+      case HomeUserState.noPackages:
+        return _buildNoPackages();
+      case HomeUserState.noPudo:
+        return _buildNoPudos();
+      default:
+        return const SizedBox();
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Consumer<CurrentUser>(builder: (_, currentUser, __) {
-      return FutureBuilder<void>(
+      return FutureBuilder<HomeUserState>(
         future: initPage(),
+        initialData: HomeUserState.unknown,
         builder: (context, snapshot) => Material(
           child: CupertinoPageScaffold(
             navigationBar: CupertinoNavigationBarFix.build(
@@ -210,7 +220,13 @@ class _HomeUserPackagesState extends State<HomeUserPackages> with ConnectionAwar
               ),
             ),
             child: SafeArea(
-              child: SAScaffold(isLoading: NetworkManager.instance.networkActivity, body: RefreshIndicator(onRefresh: () async => currentUser.triggerReload(), child: _buildCorrectPage())),
+              child: SAScaffold(
+                isLoading: NetworkManager.instance.networkActivity,
+                body: RefreshIndicator(
+                  onRefresh: () async => currentUser.triggerReload(),
+                  child: _buildCorrectPage(snapshot.data),
+                ),
+              ),
             ),
           ),
         ),
