@@ -40,8 +40,18 @@ import 'package:qui_green/widgets/pudo_map_card.dart';
 import 'package:qui_green/widgets/sascaffold.dart';
 import 'package:qui_green/widgets/text_field_button.dart';
 
-class MapsController extends StatefulWidget {
-  const MapsController(
+class MapController extends StatefulWidget {
+  final LatLng? initialPosition;
+  final bool getUserPosition;
+  final bool enableAddressSearch;
+  final bool enablePudoCards;
+  final bool useCupertinoScaffold;
+  final bool canOpenProfilePage;
+  final String title;
+  final bool canGoBack;
+  final bool isOnboarding;
+
+  const MapController(
       {Key? key,
       this.initialPosition,
       required this.getUserPosition,
@@ -53,21 +63,25 @@ class MapsController extends StatefulWidget {
       this.canOpenProfilePage = false,
       required this.isOnboarding})
       : super(key: key);
-  final LatLng? initialPosition;
-  final bool getUserPosition;
-  final bool enableAddressSearch;
-  final bool enablePudoCards;
-  final bool useCupertinoScaffold;
-  final bool canOpenProfilePage;
-  final String title;
-  final bool canGoBack;
-  final bool isOnboarding;
+
+  const MapController.homeUser({
+    Key? key,
+    this.initialPosition,
+    this.canGoBack = false,
+    this.useCupertinoScaffold = true,
+    this.enableAddressSearch = true,
+    this.enablePudoCards = false,
+    this.getUserPosition = true,
+    this.canOpenProfilePage = false,
+    this.isOnboarding = false,
+    this.title = "QuiGreen",
+  }) : super(key: key);
 
   @override
-  _MapsControllerState createState() => _MapsControllerState();
+  _MapControllerState createState() => _MapControllerState();
 }
 
-class _MapsControllerState extends State<MapsController> with ConnectionAware, TickerProviderStateMixin {
+class _MapControllerState extends State<MapController> with ConnectionAware, TickerProviderStateMixin {
   void _showErrorDialog(BuildContext context, String val) => SAAlertDialog.displayAlertWithClose(context, "Error", val);
 
   void animateMapTo(MapsControllerViewModel viewModel, LatLng pos, {bool forceZoom = false}) {

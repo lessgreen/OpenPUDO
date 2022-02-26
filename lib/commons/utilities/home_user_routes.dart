@@ -27,34 +27,49 @@ import 'package:qui_green/commons/utilities/page_route_helper.dart';
 import 'package:qui_green/controllers/instruction_controller.dart';
 import 'package:qui_green/controllers/onboarding/insert_address_controller.dart';
 import 'package:qui_green/controllers/onboarding/maps_controller.dart';
+import 'package:qui_green/controllers/package_pickup_controller.dart';
 import 'package:qui_green/controllers/profile_controller.dart';
 import 'package:qui_green/controllers/pudo_detail_controller.dart';
 import 'package:qui_green/controllers/pudo_list_controller.dart';
 import 'package:qui_green/controllers/registration_complete_controller.dart';
 import 'package:qui_green/controllers/user_position_controller.dart';
+import 'package:qui_green/models/pudo_package.dart';
 import 'package:qui_green/models/pudo_profile.dart';
 import 'package:qui_green/resources/routes_enum.dart';
 
-dynamic routeHomeUserProfileSectionWithSetting(RouteSettings settings) {
+dynamic homeUserRouteWithSetting(RouteSettings settings) {
   log("current route name: ${settings.name}");
   currentRouteName.value = settings.name ?? '/main';
   switch (settings.name) {
+    case Routes.pudoDetail:
+      return PageRouteHelper.buildPage(PudoDetailController(
+        useCupertinoScaffold: true,
+        dataModel: settings.arguments as PudoProfile,
+        checkIsAlreadyAdded: true,
+      ));
+
+    case Routes.packagePickup:
+      return PageRouteHelper.buildPage(PackagePickupController(packageModel: settings.arguments as PudoPackage));
+
     case Routes.instruction:
-      return PageRouteHelper.buildPage(InstructionController(
+      return PageRouteHelper.buildPage(
+        InstructionController(
           pudoDataModel: settings.arguments as PudoProfile?,
           canGoBack: true,
           useCupertinoScaffold: true,
         ),
       );
     case Routes.registrationComplete:
-      return PageRouteHelper.buildPage(RegistrationCompleteController(
+      return PageRouteHelper.buildPage(
+        RegistrationCompleteController(
           pudoDataModel: settings.arguments as PudoProfile,
           useCupertinoScaffold: true,
           canGoBack: true,
         ),
       );
     case Routes.maps:
-      return PageRouteHelper.buildPage(MapsController(
+      return PageRouteHelper.buildPage(
+        MapsController(
           initialPosition: settings.arguments as LatLng,
           canGoBack: true,
           useCupertinoScaffold: true,
@@ -67,34 +82,31 @@ dynamic routeHomeUserProfileSectionWithSetting(RouteSettings settings) {
         ),
       );
     case Routes.insertAddress:
-      return PageRouteHelper.buildPage(const InsertAddressController(
+      return PageRouteHelper.buildPage(
+        const InsertAddressController(
           useCupertinoScaffold: true,
         ),
       );
     case Routes.userPosition:
-      return PageRouteHelper.buildPage(const UserPositionController(
+      return PageRouteHelper.buildPage(
+        const UserPositionController(
           canGoBack: true,
           useCupertinoScaffold: true,
         ),
       );
     case Routes.pudoTutorial:
-      return PageRouteHelper.buildPage(InstructionController(
+      return PageRouteHelper.buildPage(
+        InstructionController(
           canGoBack: true,
           useCupertinoScaffold: true,
           pudoDataModel: settings.arguments as PudoProfile,
         ),
       );
     case Routes.pudoDetailOnBoarding:
-      return PageRouteHelper.buildPage(PudoDetailController(
+      return PageRouteHelper.buildPage(
+        PudoDetailController(
           dataModel: settings.arguments as PudoProfile,
           nextRoute: Routes.registrationComplete,
-          checkIsAlreadyAdded: true,
-          useCupertinoScaffold: true,
-        ),
-      );
-    case Routes.pudoDetail:
-      return PageRouteHelper.buildPage(PudoDetailController(
-          dataModel: settings.arguments as PudoProfile,
           checkIsAlreadyAdded: true,
           useCupertinoScaffold: true,
         ),
@@ -102,7 +114,8 @@ dynamic routeHomeUserProfileSectionWithSetting(RouteSettings settings) {
     case Routes.pudoList:
       return PageRouteHelper.buildPage(const PudoListController());
     default:
-      return PageRouteHelper.buildPage(const ProfileController(),
+      return PageRouteHelper.buildPage(
+        const ProfileController(),
       );
   }
 }
