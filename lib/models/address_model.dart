@@ -24,15 +24,25 @@ part 'address_model.g.dart';
 
 @JsonSerializable()
 class AddressModel {
+  @JsonKey(includeIfNull: false)
   final int? pudoId;
+  @JsonKey(includeIfNull: false)
   final String? city;
+  @JsonKey(includeIfNull: false)
   final String? country;
+  @JsonKey(includeIfNull: false)
   final String? label;
+  @JsonKey(includeIfNull: false)
   final double? lat;
+  @JsonKey(includeIfNull: false)
   final double? lon;
+  @JsonKey(includeIfNull: false)
   final String? province;
+  @JsonKey(includeIfNull: false)
   final String? street;
+  @JsonKey(includeIfNull: false)
   final String? streetNum;
+  @JsonKey(includeIfNull: false)
   final String? zipCode;
 
   AddressModel({

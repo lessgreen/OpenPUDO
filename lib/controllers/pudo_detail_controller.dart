@@ -26,6 +26,7 @@ import 'package:provider/provider.dart';
 import 'package:qui_green/commons/alert_dialog.dart';
 import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
 import 'package:qui_green/commons/ui/custom_network_image.dart';
+import 'package:qui_green/commons/ui/optimized_cupertino_navigation_bar.dart';
 import 'package:qui_green/commons/utilities/url_launcher_helper.dart';
 import 'package:qui_green/models/pudo_profile.dart';
 import 'package:qui_green/resources/res.dart';
@@ -184,10 +185,7 @@ class _PudoDetailControllerState extends State<PudoDetailController> with Connec
 
   Widget _buildPageWithCupertinoScaffold() => CupertinoPageScaffold(
       resizeToAvoidBottomInset: true,
-      navigationBar: CupertinoNavigationBar(
-          padding: const EdgeInsetsDirectional.all(0),
-          brightness: Brightness.dark,
-          backgroundColor: AppColors.primaryColorDark,
+      navigationBar: CupertinoNavigationBarFix.build(context,
           leading: CupertinoNavigationBarBackButton(
             color: Colors.white,
             onPressed: () => Navigator.of(context).pop(),
@@ -297,7 +295,7 @@ class _PudoDetailControllerState extends State<PudoDetailController> with Connec
                 _buildPudoDetail(),
                 const SizedBox(height: Dimension.padding),
                 Container(
-                  width: MediaQuery.of(context).size.width / 2,
+                  width: MediaQuery.of(context).size.width / 3 * 2,
                   height: 1,
                   color: Colors.grey.shade400,
                 ),

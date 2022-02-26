@@ -6,7 +6,7 @@ class NetworkErrorHelper {
     if (value is ErrorDescription) {
       SAAlertDialog.displayAlertWithClose(context, "Error", value);
     } else {
-      NetworkErrorHelper.helper(context, value);
+      SAAlertDialog.displayAlertWithClose(context, "Error", "Qualcosa è andato storto");
     }
   }
 }

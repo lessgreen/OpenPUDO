@@ -29,7 +29,8 @@ class TableViewCell extends StatelessWidget {
   final bool showTrailingChevron;
   final TextAlign textAlign;
   final TextStyle? textStyle;
-  final Function? onTap;
+  final Function()? onTap;
+  final bool showTopDivider;
 
   const TableViewCell({
     Key? key,
@@ -39,17 +40,25 @@ class TableViewCell extends StatelessWidget {
     this.textStyle,
     this.showTrailingChevron = true,
     this.onTap,
+    this.showTopDivider = false,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
       dense: true,
-      onTap: () => onTap?.call(),
+      onTap: onTap,
       title: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          if (showTopDivider)
+            const Padding(
+              padding: EdgeInsets.only(bottom: 8.0),
+              child: Divider(
+                height: 1,
+              ),
+            ),
           Row(
             children: [
               leading != null

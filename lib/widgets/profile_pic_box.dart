@@ -21,13 +21,17 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:qui_green/resources/res.dart';
 
 class ProfilePicBox extends StatelessWidget {
-  final Function() onTap;
+  final Function()? onTap;
   final File? image;
+  final IconData? mainIcon;
+  final String? mainIconSvgAsset;
+  final String title;
 
-  const ProfilePicBox({Key? key, required this.onTap, this.image}) : super(key: key);
+  const ProfilePicBox({Key? key, this.onTap, this.image, this.mainIcon = Icons.account_circle_rounded, this.mainIconSvgAsset, this.title = 'Aggiungi una \ntua foto'}) : super(key: key);
 
   @override
   Widget build(BuildContext context) => Row(
@@ -51,13 +55,21 @@ class ProfilePicBox extends StatelessWidget {
                   : Column(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        Icon(
-                          Icons.account_circle_rounded,
-                          color: Colors.grey.shade400,
-                          size: MediaQuery.of(context).size.width / 6,
-                        ),
+                        if (mainIconSvgAsset != null)
+                          SvgPicture.asset(
+                            mainIconSvgAsset!,
+                            color: Colors.grey.shade400,
+                            width: MediaQuery.of(context).size.width / 6,
+                            height: MediaQuery.of(context).size.width / 6,
+                          ),
+                        if (mainIconSvgAsset == null)
+                          Icon(
+                            mainIcon,
+                            color: Colors.grey.shade400,
+                            size: MediaQuery.of(context).size.width / 6,
+                          ),
                         Text(
-                          'Aggiungi una \ntua foto',
+                          title,
                           textAlign: TextAlign.center,
                           style: TextStyle(color: Colors.grey.shade500, fontSize: 12),
                         ),

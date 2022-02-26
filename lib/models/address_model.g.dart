@@ -19,16 +19,24 @@ AddressModel _$AddressModelFromJson(Map<String, dynamic> json) => AddressModel(
       zipCode: json['zipCode'] as String?,
     );
 
-Map<String, dynamic> _$AddressModelToJson(AddressModel instance) =>
-    <String, dynamic>{
-      'pudoId': instance.pudoId,
-      'city': instance.city,
-      'country': instance.country,
-      'label': instance.label,
-      'lat': instance.lat,
-      'lon': instance.lon,
-      'province': instance.province,
-      'street': instance.street,
-      'streetNum': instance.streetNum,
-      'zipCode': instance.zipCode,
-    };
+Map<String, dynamic> _$AddressModelToJson(AddressModel instance) {
+  final val = <String, dynamic>{};
+
+  void writeNotNull(String key, dynamic value) {
+    if (value != null) {
+      val[key] = value;
+    }
+  }
+
+  writeNotNull('pudoId', instance.pudoId);
+  writeNotNull('city', instance.city);
+  writeNotNull('country', instance.country);
+  writeNotNull('label', instance.label);
+  writeNotNull('lat', instance.lat);
+  writeNotNull('lon', instance.lon);
+  writeNotNull('province', instance.province);
+  writeNotNull('street', instance.street);
+  writeNotNull('streetNum', instance.streetNum);
+  writeNotNull('zipCode', instance.zipCode);
+  return val;
+}

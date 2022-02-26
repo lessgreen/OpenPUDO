@@ -25,6 +25,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:qui_green/commons/alert_dialog.dart';
 import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
+import 'package:qui_green/commons/ui/optimized_cupertino_navigation_bar.dart';
 import 'package:qui_green/commons/utilities/keyboard_visibility.dart';
 import 'package:qui_green/models/pudo_profile.dart';
 import 'package:qui_green/resources/res.dart';
@@ -49,10 +50,7 @@ class _RegistrationCompleteControllerState extends State<RegistrationCompleteCon
 
   Widget _buildPageWithCupertinoScaffold(RegistrationCompleteControllerViewModel viewModel, bool isKeyboardVisible) => CupertinoPageScaffold(
         resizeToAvoidBottomInset: false,
-        navigationBar: CupertinoNavigationBar(
-            padding: const EdgeInsetsDirectional.all(0),
-            brightness: Brightness.dark,
-            backgroundColor: AppColors.primaryColorDark,
+        navigationBar: CupertinoNavigationBarFix.build(context,
             middle: Text(
               'Fatto!',
               style: Theme.of(context).textTheme.navBarTitle,
@@ -62,7 +60,7 @@ class _RegistrationCompleteControllerState extends State<RegistrationCompleteCon
                     color: Colors.white,
                     onPressed: () => Navigator.of(context).pop(),
                   )
-                : null),
+                : const SizedBox()),
         child: _buildBody(viewModel, isKeyboardVisible),
       );
 
@@ -77,7 +75,7 @@ class _RegistrationCompleteControllerState extends State<RegistrationCompleteCon
                   color: AppColors.primaryColorDark,
                   onPressed: () => Navigator.of(context).pop(),
                 )
-              : null,
+              : const SizedBox(),
         ),
         body: _buildBody(viewModel, isKeyboardVisible),
       );

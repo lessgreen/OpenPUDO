@@ -91,7 +91,7 @@ class PersonalDataControllerViewModel extends ChangeNotifier {
             if (pudoModel != null) {
               Navigator.of(context).pushReplacementNamed(Routes.registrationComplete, arguments: pudoModel);
             } else {
-              Navigator.of(context).pushReplacementNamed(Routes.pudoTutorial,
+              Navigator.of(context).pushReplacementNamed(Routes.userPudoTutorial,
                   arguments: PudoProfile(
                       businessName: "Bar - La pinta",
                       address: AddressModel(

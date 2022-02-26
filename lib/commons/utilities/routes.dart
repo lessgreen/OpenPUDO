@@ -29,13 +29,14 @@ import 'package:qui_green/controllers/about_you_controller.dart';
 import 'package:qui_green/controllers/home_controller.dart';
 import 'package:qui_green/controllers/instruction_controller.dart';
 import 'package:qui_green/controllers/onboarding/confirm_phone_controller.dart';
-import 'package:qui_green/controllers/onboarding/exchange_controller.dart';
 import 'package:qui_green/controllers/onboarding/insert_address_controller.dart';
 import 'package:qui_green/controllers/onboarding/insert_phone_controller.dart';
 import 'package:qui_green/controllers/onboarding/login_controller.dart';
 import 'package:qui_green/controllers/onboarding/maps_controller.dart';
 import 'package:qui_green/controllers/onboarding/personal_data_business_controller.dart';
 import 'package:qui_green/controllers/onboarding/personal_data_controller.dart';
+import 'package:qui_green/controllers/onboarding/pudo_registration_preview_controller.dart';
+import 'package:qui_green/controllers/onboarding/reward_policy_controller.dart';
 import 'package:qui_green/controllers/pudo_detail_controller.dart';
 import 'package:qui_green/controllers/pudo_home_controller.dart';
 import 'package:qui_green/controllers/pudo_list_controller.dart';
@@ -43,6 +44,7 @@ import 'package:qui_green/controllers/registration_complete_controller.dart';
 import 'package:qui_green/controllers/thanks_controller.dart';
 import 'package:qui_green/controllers/user_position_controller.dart';
 import 'package:qui_green/models/pudo_profile.dart';
+import 'package:qui_green/models/registration_pudo_model.dart';
 import 'package:qui_green/resources/res.dart';
 import 'package:qui_green/resources/routes_enum.dart';
 
@@ -75,7 +77,7 @@ dynamic routeWithSetting(RouteSettings settings) {
       );
     case Routes.aboutYou:
       return PageRouteHelper.buildPage(
-        const AboutYouController(),
+        AboutYouController(phoneNumber: settings.arguments as String),
       );
     case Routes.userPosition:
       return PageRouteHelper.buildPage(
@@ -132,19 +134,32 @@ dynamic routeWithSetting(RouteSettings settings) {
       return PageRouteHelper.buildPage(
         const ThanksController(),
       );
+    case Routes.pudoRegistrationPreview:
+      return PageRouteHelper.buildPage(PudoRegistrationPreviewController(dataModel: settings.arguments as RegistrationPudoModel));
+    case Routes.rewardPolicy:
+      return PageRouteHelper.buildPage(
+        RewardPolicyController(
+          pudoRegistrationModel: settings.arguments as RegistrationPudoModel,
+        ),
+      );
     case Routes.personalDataBusiness:
       return PageRouteHelper.buildPage(
-        const PersonalDataBusinessController(),
+        PersonalDataBusinessController(
+          phoneNumber: settings.arguments as String,
+        ),
       );
-    case Routes.exchange:
-      return PageRouteHelper.buildPage(
-        const ExchangeController(),
-      );
+    case Routes.userPudoTutorial:
+      return PageRouteHelper.buildPage(InstructionController(
+        canGoBack: false,
+        useCupertinoScaffold: false,
+        pudoDataModel: settings.arguments as PudoProfile,
+      ));
     case Routes.pudoTutorial:
       return PageRouteHelper.buildPage(InstructionController(
         canGoBack: false,
         useCupertinoScaffold: false,
         pudoDataModel: settings.arguments as PudoProfile,
+        isForPudo: true,
       ));
     case Routes.pudoList:
       return PageRouteHelper.buildPage(

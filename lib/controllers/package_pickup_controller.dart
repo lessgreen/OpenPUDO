@@ -24,6 +24,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
 import 'package:qui_green/commons/ui/custom_network_image.dart';
+import 'package:qui_green/commons/ui/optimized_cupertino_navigation_bar.dart';
 import 'package:qui_green/commons/utilities/date_time_extension.dart';
 import 'package:qui_green/models/pudo_package.dart';
 import 'package:qui_green/models/pudo_package_event.dart';
@@ -181,10 +182,8 @@ class _PackagePickupControllerState extends State<PackagePickupController> {
   Widget build(BuildContext context) {
     return Material(
       child: CupertinoPageScaffold(
-          navigationBar: CupertinoNavigationBar(
-            padding: const EdgeInsetsDirectional.all(0),
-            brightness: Brightness.dark,
-            backgroundColor: AppColors.primaryColorDark,
+          navigationBar: CupertinoNavigationBarFix.build(
+            context,
             middle: Text(
               'Ritiro del pacco',
               style: Theme.of(context).textTheme.navBarTitle,

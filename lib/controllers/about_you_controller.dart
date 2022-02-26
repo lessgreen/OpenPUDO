@@ -26,8 +26,8 @@ import 'package:qui_green/resources/res.dart';
 import 'package:qui_green/resources/routes_enum.dart';
 
 class AboutYouController extends StatefulWidget {
-  const AboutYouController({Key? key}) : super(key: key);
-
+  const AboutYouController({Key? key,this.phoneNumber}) : super(key: key);
+  final String? phoneNumber;
   @override
   _AboutYouControllerState createState() => _AboutYouControllerState();
 }
@@ -80,7 +80,7 @@ class _AboutYouControllerState extends State<AboutYouController> {
                 horizontal: Dimension.padding,
               ),
               onPressed: () {
-                Navigator.of(context).pushReplacementNamed(Routes.home);
+                Navigator.of(context).pushReplacementNamed(Routes.personalDataBusiness,arguments: widget.phoneNumber);
               },
               text: 'Voglio fornire un servizio',
             ),
