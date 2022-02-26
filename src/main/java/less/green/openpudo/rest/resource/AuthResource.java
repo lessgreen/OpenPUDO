@@ -62,7 +62,7 @@ public class AuthResource {
             throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.invalid_field", "phoneNumber"));
         }
         // normalizing phone number
-        PhoneNumberUtils.PhoneNumberSummary pns = PhoneNumberUtils.normalizePhoneNumber(req.getPhoneNumber());
+        PhoneNumberUtils.PhoneNumberSummary pns = PhoneNumberUtils.normalizePhoneNumber(req.getPhoneNumber(), false);
         if (!pns.isValid() || !pns.isMobile()) {
             throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.invalid_field", "phoneNumber"));
         }
@@ -89,7 +89,7 @@ public class AuthResource {
             throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.invalid_field", "phoneNumber"));
         }
         // normalizing phone number
-        PhoneNumberUtils.PhoneNumberSummary pns = PhoneNumberUtils.normalizePhoneNumber(req.getPhoneNumber());
+        PhoneNumberUtils.PhoneNumberSummary pns = PhoneNumberUtils.normalizePhoneNumber(req.getPhoneNumber(), false);
         if (!pns.isValid() || !pns.isMobile()) {
             throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.invalid_field", "phoneNumber"));
         }
@@ -149,7 +149,7 @@ public class AuthResource {
         }
         // normalizing phone number
         if (!isEmpty(req.getPudo().getPublicPhoneNumber())) {
-            PhoneNumberUtils.PhoneNumberSummary pns = PhoneNumberUtils.normalizePhoneNumber(req.getPudo().getPublicPhoneNumber());
+            PhoneNumberUtils.PhoneNumberSummary pns = PhoneNumberUtils.normalizePhoneNumber(req.getPudo().getPublicPhoneNumber(), true);
             if (!pns.isValid()) {
                 throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.invalid_field", "publicPhoneNumber"));
             }

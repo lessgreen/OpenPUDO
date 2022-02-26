@@ -21,7 +21,7 @@ public class PhoneNumberUtils {
     public PhoneNumberUtils() {
     }
 
-    public static PhoneNumberSummary normalizePhoneNumber(String str) {
+    public static PhoneNumberSummary normalizePhoneNumber(String str, boolean allowFixedLine) {
         if (isEmpty(str)) {
             return new PhoneNumberSummary(false, false, null);
         }
@@ -33,7 +33,11 @@ public class PhoneNumberUtils {
         }
         PhoneNumberSummary ret = new PhoneNumberSummary();
         ret.setValid(PNU.isValidNumber(pn));
-        ret.setMobile(PNU.getNumberType(pn) == PhoneNumberUtil.PhoneNumberType.MOBILE || PNU.getNumberType(pn) == PhoneNumberUtil.PhoneNumberType.FIXED_LINE_OR_MOBILE);
+        if (!allowFixedLine) {
+            ret.setMobile(PNU.getNumberType(pn) == PhoneNumberUtil.PhoneNumberType.MOBILE || PNU.getNumberType(pn) == PhoneNumberUtil.PhoneNumberType.FIXED_LINE_OR_MOBILE);
+        } else {
+            ret.setMobile(PNU.getNumberType(pn) == PhoneNumberUtil.PhoneNumberType.MOBILE || PNU.getNumberType(pn) == PhoneNumberUtil.PhoneNumberType.FIXED_LINE_OR_MOBILE || PNU.getNumberType(pn) == PhoneNumberUtil.PhoneNumberType.FIXED_LINE);
+        }
         ret.setNormalizedPhoneNumber(PNU.format(pn, PhoneNumberUtil.PhoneNumberFormat.E164));
         return ret;
     }

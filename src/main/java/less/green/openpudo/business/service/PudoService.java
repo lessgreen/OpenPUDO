@@ -15,6 +15,7 @@ import less.green.openpudo.rest.config.exception.ApiException;
 import less.green.openpudo.rest.dto.DtoMapper;
 import less.green.openpudo.rest.dto.pack.PackageSummary;
 import less.green.openpudo.rest.dto.pudo.Pudo;
+import less.green.openpudo.rest.dto.pudo.UpdatePudoRequest;
 import less.green.openpudo.rest.dto.pudo.reward.*;
 import less.green.openpudo.rest.dto.user.UserSummary;
 import lombok.extern.log4j.Log4j2;
@@ -46,6 +47,8 @@ public class PudoService {
     @Inject
     PackageService packageService;
 
+    @Inject
+    AddressDao addressDao;
     @Inject
     ExternalFileDao externalFileDao;
     @Inject
@@ -88,6 +91,30 @@ public class PudoService {
         return getPudo(pudoId);
     }
 
+    public Pudo updateCurrentPudo(UpdatePudoRequest req) {
+        Long pudoId = getCurrentPudoId();
+        Date now = new Date();
+        // we could update pudo, address, or both
+        if (req.getPudo() != null) {
+            TbPudo pudo = pudoDao.get(pudoId);
+            pudo.setUpdateTms(now);
+            pudo.setBusinessName(sanitizeString(req.getPudo().getBusinessName()));
+            pudo.setPublicPhoneNumber(sanitizeString(req.getPudo().getPublicPhoneNumber()));
+            pudoDao.flush();
+        }
+        if (req.getAddressMarker() != null) {
+            TbAddress oldAddress = addressDao.get(pudoId);
+            TbAddress newAddress = dtoMapper.mapAddressSearchResultToAddressEntity(req.getAddressMarker().getAddress());
+            newAddress.setPudoId(oldAddress.getPudoId());
+            newAddress.setCreateTms(oldAddress.getCreateTms());
+            newAddress.setUpdateTms(now);
+            newAddress = addressDao.merge(newAddress);
+            addressDao.flush();
+        }
+        log.info("[{}] Updated profile for PUDO: {}", context.getExecutionId(), pudoId);
+        return getCurrentPudo();
+    }
+
     public UUID updateCurrentPudoPicture(String mimeType, byte[] bytes) {
         Long pudoId = getCurrentPudoId();
         Date now = new Date();
@@ -115,7 +142,7 @@ public class PudoService {
         // remove old row
         externalFileDao.delete(oldId);
         externalFileDao.flush();
-        log.info("[{}] Updated profile picture for PUDO: {}", context.getExecutionId(), pudo.getPudoId());
+        log.info("[{}] Updated profile picture for PUDO: {}", context.getExecutionId(), pudoId);
         return newId;
     }
 

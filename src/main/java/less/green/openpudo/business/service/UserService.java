@@ -113,9 +113,8 @@ public class UserService {
         userProfile.setFirstName(sanitizeString(req.getFirstName()));
         userProfile.setLastName(sanitizeString(req.getLastName()));
         userProfileDao.flush();
-        long packageCount = packageDao.getPackageCountByUserId(context.getUserId());
         log.info("[{}] Updated profile for user: {}", context.getExecutionId(), context.getUserId());
-        return dtoMapper.mapUserProfileEntityToDto(userProfile, user.getPhoneNumber(), packageCount, null);
+        return getCurrentUserProfile();
     }
 
     public UUID updateCurrentUserProfilePicture(String mimeType, byte[] bytes) {

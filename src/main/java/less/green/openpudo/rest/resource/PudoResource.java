@@ -2,10 +2,12 @@ package less.green.openpudo.rest.resource;
 
 import less.green.openpudo.business.service.PudoService;
 import less.green.openpudo.cdi.ExecutionContext;
+import less.green.openpudo.cdi.service.CryptoService;
 import less.green.openpudo.cdi.service.LocalizationService;
 import less.green.openpudo.common.ApiReturnCodes;
 import less.green.openpudo.common.ExceptionUtils;
 import less.green.openpudo.common.MultipartUtils;
+import less.green.openpudo.common.PhoneNumberUtils;
 import less.green.openpudo.common.dto.tuple.Pair;
 import less.green.openpudo.rest.config.annotation.BinaryAPI;
 import less.green.openpudo.rest.config.annotation.ProtectedAPI;
@@ -14,6 +16,7 @@ import less.green.openpudo.rest.dto.pack.PackageSummary;
 import less.green.openpudo.rest.dto.pack.PackageSummaryListResponse;
 import less.green.openpudo.rest.dto.pudo.Pudo;
 import less.green.openpudo.rest.dto.pudo.PudoResponse;
+import less.green.openpudo.rest.dto.pudo.UpdatePudoRequest;
 import less.green.openpudo.rest.dto.pudo.reward.RewardOption;
 import less.green.openpudo.rest.dto.pudo.reward.RewardOptionListResponse;
 import less.green.openpudo.rest.dto.scalar.UUIDResponse;
@@ -34,6 +37,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static less.green.openpudo.common.MultipartUtils.ALLOWED_IMAGE_MIME_TYPES;
+import static less.green.openpudo.common.StringUtils.isEmpty;
 
 @RequestScoped
 @Path("/pudo")
@@ -47,6 +51,9 @@ public class PudoResource {
 
     @Inject
     LocalizationService localizationService;
+
+    @Inject
+    CryptoService cryptoService;
 
     @Inject
     PudoService pudoService;
@@ -67,6 +74,48 @@ public class PudoResource {
     @Operation(summary = "Get profile for current PUDO")
     public PudoResponse getCurrentPudo() {
         Pudo ret = pudoService.getCurrentPudo();
+        return new PudoResponse(context.getExecutionId(), ApiReturnCodes.OK, ret);
+    }
+
+    @POST
+    @Path("/me")
+    @SecurityRequirement(name = "JWT")
+    @Operation(summary = "Update profile for current PUDO",
+            description = "You can update base PUDO information and/or PUDO address. At least one of those fields must be present in the request.")
+    public PudoResponse updateCurrentPudo(UpdatePudoRequest req) {
+        // sanitize input
+        if (req == null) {
+            throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.empty_request"));
+        } else if (req.getPudo() == null && req.getAddressMarker() == null) {
+            throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.empty_mandatory_field_coalesce", "pudo, addressMarker"));
+        }
+        if (req.getPudo() != null) {
+            if (isEmpty(req.getPudo().getBusinessName())) {
+                throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.empty_mandatory_field", "businessName"));
+            }
+        }
+        if (req.getAddressMarker() != null) {
+            if (req.getAddressMarker().getAddress() == null) {
+                throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.empty_mandatory_field", "address"));
+            } else if (req.getAddressMarker().getAddress().getLabel() == null || req.getAddressMarker().getAddress().getStreet() == null
+                       || req.getAddressMarker().getAddress().getCity() == null || req.getAddressMarker().getAddress().getProvince() == null
+                       || req.getAddressMarker().getAddress().getCountry() == null) {
+                throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.address.not_precise"));
+            } else if (isEmpty(req.getAddressMarker().getSignature())) {
+                throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.empty_mandatory_field", "signature"));
+            } else if (!cryptoService.isValidSignature(req.getAddressMarker().getAddress(), req.getAddressMarker().getSignature())) {
+                throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.invalid_field", "signature"));
+            }
+        }
+        // normalizing phone number
+        if (req.getPudo() != null && !isEmpty(req.getPudo().getPublicPhoneNumber())) {
+            PhoneNumberUtils.PhoneNumberSummary pns = PhoneNumberUtils.normalizePhoneNumber(req.getPudo().getPublicPhoneNumber(), true);
+            if (!pns.isValid()) {
+                throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.invalid_field", "publicPhoneNumber"));
+            }
+            req.getPudo().setPublicPhoneNumber(pns.getNormalizedPhoneNumber());
+        }
+        Pudo ret = pudoService.updateCurrentPudo(req);
         return new PudoResponse(context.getExecutionId(), ApiReturnCodes.OK, ret);
     }
 
