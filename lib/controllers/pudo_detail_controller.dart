@@ -185,7 +185,7 @@ class _PudoDetailControllerState extends State<PudoDetailController> with Connec
 
   Widget _buildPageWithCupertinoScaffold() => CupertinoPageScaffold(
       resizeToAvoidBottomInset: true,
-      navigationBar: OptimizedCupertinoNavigationBar.build(context,
+      navigationBar: CupertinoNavigationBarFix.build(context,
           leading: CupertinoNavigationBarBackButton(
             color: Colors.white,
             onPressed: () => Navigator.of(context).pop(),

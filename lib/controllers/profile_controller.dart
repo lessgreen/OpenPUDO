@@ -46,7 +46,7 @@ class _ProfileControllerState extends State<ProfileController> with ConnectionAw
     return Consumer<CurrentUser>(builder: (_, currentUser, __) {
       return Material(
         child: CupertinoPageScaffold(
-          navigationBar: OptimizedCupertinoNavigationBar.build(context,
+          navigationBar: CupertinoNavigationBarFix.build(context,
               middle: Text(
                 'Il tuo profilo',
                 style: Theme.of(context).textTheme.navBarTitle,

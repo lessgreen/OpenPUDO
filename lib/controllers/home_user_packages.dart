@@ -202,7 +202,7 @@ class _HomeUserPackagesState extends State<HomeUserPackages> with ConnectionAwar
         future: initPage(),
         builder: (context, snapshot) => Material(
           child: CupertinoPageScaffold(
-            navigationBar: OptimizedCupertinoNavigationBar.build(
+            navigationBar: CupertinoNavigationBarFix.build(
               context,
               middle: Text(
                 'QuiGreen',

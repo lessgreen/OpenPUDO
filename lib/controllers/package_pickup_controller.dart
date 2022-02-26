@@ -182,7 +182,7 @@ class _PackagePickupControllerState extends State<PackagePickupController> {
   Widget build(BuildContext context) {
     return Material(
       child: CupertinoPageScaffold(
-          navigationBar: OptimizedCupertinoNavigationBar.build(
+          navigationBar: CupertinoNavigationBarFix.build(
             context,
             middle: Text(
               'Ritiro del pacco',

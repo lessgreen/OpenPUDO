@@ -114,7 +114,7 @@ class _MapsControllerState extends State<MapsController> with ConnectionAware, T
   }
 
   Widget _buildPageWithCupertinoScaffold(MapsControllerViewModel viewModel) => CupertinoPageScaffold(
-      navigationBar: OptimizedCupertinoNavigationBar.build(
+      navigationBar: CupertinoNavigationBarFix.build(
         context,
         leading: widget.canGoBack
             ? CupertinoNavigationBarBackButton(

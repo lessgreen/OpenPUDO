@@ -124,7 +124,7 @@ class _PudoListControllerState extends State<PudoListController> {
         future: getPudos(),
         builder: (context, snapshot) => Material(
           child: CupertinoPageScaffold(
-              navigationBar: OptimizedCupertinoNavigationBar.build(
+              navigationBar: CupertinoNavigationBarFix.build(
                 context,
                 middle: Text(
                   'I tuoi pudo',

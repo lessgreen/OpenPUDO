@@ -41,7 +41,7 @@ class UserPositionController extends StatefulWidget {
 class _UserPositionControllerState extends State<UserPositionController> {
   Widget _buildPageWithCupertinoScaffold(UserPositionControllerViewModel viewModel) => CupertinoPageScaffold(
       resizeToAvoidBottomInset: true,
-      navigationBar: OptimizedCupertinoNavigationBar.build(
+      navigationBar: CupertinoNavigationBarFix.build(
         context,
         leading: widget.canGoBack
             ? CupertinoNavigationBarBackButton(

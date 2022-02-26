@@ -52,7 +52,7 @@ class _PudoHomeControllerState extends State<PudoHomeController> with Connection
                 routes: {
                   '/': (context) {
                     return CupertinoPageScaffold(
-                      navigationBar: OptimizedCupertinoNavigationBar.build(
+                      navigationBar: CupertinoNavigationBarFix.build(
                         context,
                         middle: Text(
                           'Il tuo profilo',
@@ -69,7 +69,7 @@ class _PudoHomeControllerState extends State<PudoHomeController> with Connection
                 routes: {
                   '/': (context) {
                     return CupertinoPageScaffold(
-                        navigationBar: OptimizedCupertinoNavigationBar.build(
+                        navigationBar: CupertinoNavigationBarFix.build(
                           context,
                           padding: const EdgeInsetsDirectional.all(0),
                           brightness: Brightness.dark,

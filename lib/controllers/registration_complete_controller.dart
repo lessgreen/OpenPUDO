@@ -50,7 +50,7 @@ class _RegistrationCompleteControllerState extends State<RegistrationCompleteCon
 
   Widget _buildPageWithCupertinoScaffold(RegistrationCompleteControllerViewModel viewModel, bool isKeyboardVisible) => CupertinoPageScaffold(
         resizeToAvoidBottomInset: false,
-        navigationBar: OptimizedCupertinoNavigationBar.build(context,
+        navigationBar: CupertinoNavigationBarFix.build(context,
             middle: Text(
               'Fatto!',
               style: Theme.of(context).textTheme.navBarTitle,

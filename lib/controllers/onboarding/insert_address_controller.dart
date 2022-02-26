@@ -52,7 +52,7 @@ class _InsertAddressControllerState extends State<InsertAddressController> with 
   }
 
   Widget _buildPageWithCupertinoScaffold(InsertAddressControllerViewModel viewModel, bool isKeyboardVisible) => CupertinoPageScaffold(
-      navigationBar: OptimizedCupertinoNavigationBar.build(
+      navigationBar: CupertinoNavigationBarFix.build(
         context,
         middle: Text(
           'Inserisci il tuo indirizzo',

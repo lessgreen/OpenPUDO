@@ -114,7 +114,7 @@ class _InstructionControllerState extends State<InstructionController> with Conn
       );
 
   Widget _buildPageWithCupertinoScaffold(CurrentUser currentUser) => CupertinoPageScaffold(
-        navigationBar: OptimizedCupertinoNavigationBar.build(context,
+        navigationBar: CupertinoNavigationBarFix.build(context,
             middle: Text(
               'Istruzioni',
               style: Theme.of(context).textTheme.navBarTitle,
