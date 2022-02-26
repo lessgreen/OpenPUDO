@@ -23,7 +23,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:qui_green/commons/alert_dialog.dart';
 import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
-import 'package:qui_green/commons/ui/optimized_cupertino_navigation_bar.dart';
+import 'package:qui_green/commons/ui/cupertino_navigation_bar_fix.dart';
 import 'package:qui_green/commons/utilities/network_error_helper.dart';
 import 'package:qui_green/models/pudo_profile.dart';
 import 'package:qui_green/models/pudo_summary.dart';
