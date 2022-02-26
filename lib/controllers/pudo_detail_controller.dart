@@ -60,7 +60,7 @@ class _PudoDetailControllerState extends State<PudoDetailController> with Connec
     }
   }
 
-  void openModal() {
+  void _openModal() {
     SAAlertDialog.displayModalWithButtons(context, "Scegli un'azione", [
       CupertinoActionSheetAction(
         child: const Text('Chiama al telefono'),
@@ -137,13 +137,14 @@ class _PudoDetailControllerState extends State<PudoDetailController> with Connec
                 style: Theme.of(context).textTheme.bodyText2,
                 children: [
                   WidgetSpan(
-                      alignment: PlaceholderAlignment.middle,
-                      child: SvgPicture.asset(
-                        ImageSrc.phoneIconFill,
-                        color: AppColors.primaryColorDark,
-                        width: 23,
-                        height: 23,
-                      )),
+                    alignment: PlaceholderAlignment.middle,
+                    child: SvgPicture.asset(
+                      ImageSrc.phoneIconFill,
+                      color: AppColors.primaryColorDark,
+                      width: 23,
+                      height: 23,
+                    ),
+                  ),
                   const WidgetSpan(
                     child: SizedBox(
                       width: Dimension.paddingS,
@@ -183,49 +184,73 @@ class _PudoDetailControllerState extends State<PudoDetailController> with Connec
         ]),
       );
 
+  Widget _buildTrailingWithCupertinoScaffold() {
+    if (checkComplete) {
+      if (nextVisible) {
+        return TextFieldButton(
+          onPressed: handleSelect,
+          text: 'Scegli',
+          textColor: Colors.white,
+        );
+      } else if (widget.dataModel.publicPhoneNumber != null) {
+        return IconButton(
+          onPressed: () => _openModal(),
+          icon: SvgPicture.asset(
+            ImageSrc.phoneIcon,
+            color: Colors.white,
+            width: 26,
+            height: 26,
+          ),
+        );
+      }
+    }
+    return const SizedBox(
+      height: 26,
+    );
+  }
+
+  Widget _buildTrailingWithBaseScaffold() {
+    if (checkComplete) {
+      if (nextVisible) {
+        return TextFieldButton(
+          onPressed: handleSelect,
+          text: 'Scegli',
+          textColor: AppColors.primaryColorDark,
+        );
+      } else if (widget.dataModel.publicPhoneNumber != null) {
+        return IconButton(
+          onPressed: () => _openModal(),
+          icon: SvgPicture.asset(
+            ImageSrc.phoneIcon,
+            color: AppColors.primaryColorDark,
+            width: 26,
+            height: 26,
+          ),
+        );
+      }
+    }
+
+    return const SizedBox(
+      height: 30,
+    );
+  }
+
   Widget _buildPageWithCupertinoScaffold() => CupertinoPageScaffold(
       resizeToAvoidBottomInset: true,
-      navigationBar: CupertinoNavigationBarFix.build(context,
-          leading: CupertinoNavigationBarBackButton(
-            color: Colors.white,
-            onPressed: () => Navigator.of(context).pop(),
-          ),
-          middle: AnimatedCrossFade(
-              firstChild: const SizedBox(
-                height: 30,
-                width: double.infinity,
-              ),
-              secondChild: Text(
-                widget.dataModel.businessName,
-                style: Theme.of(context).textTheme.navBarTitle,
-                overflow: TextOverflow.ellipsis,
-                maxLines: 1,
-              ),
-              crossFadeState: checkComplete ? CrossFadeState.showSecond : CrossFadeState.showFirst,
-              duration: const Duration(milliseconds: 100)),
-          trailing: AnimatedCrossFade(
-              firstChild: const SizedBox(
-                height: 26,
-              ),
-              secondChild: nextVisible
-                  ? TextFieldButton(
-                      onPressed: handleSelect,
-                      text: 'Scegli',
-                      textColor: Colors.white,
-                    )
-                  : widget.dataModel.publicPhoneNumber != null
-                      ? IconButton(
-                          onPressed: () => openModal(),
-                          icon: SvgPicture.asset(
-                            ImageSrc.phoneIcon,
-                            color: Colors.white,
-                            width: 26,
-                            height: 26,
-                          ),
-                        )
-                      : const SizedBox(),
-              crossFadeState: checkComplete ? CrossFadeState.showSecond : CrossFadeState.showFirst,
-              duration: const Duration(milliseconds: 100))),
+      navigationBar: CupertinoNavigationBarFix.build(
+        context,
+        leading: CupertinoNavigationBarBackButton(
+          color: Colors.white,
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        middle: Text(
+          'Dettagli Pudo',
+          style: Theme.of(context).textTheme.navBarTitle,
+          overflow: TextOverflow.ellipsis,
+          maxLines: 1,
+        ),
+        trailing: _buildTrailingWithCupertinoScaffold(),
+      ),
       child: _buildBody());
 
   Widget _buildPageWithBaseScaffold() => Scaffold(
@@ -233,49 +258,18 @@ class _PudoDetailControllerState extends State<PudoDetailController> with Connec
       appBar: AppBar(
         backgroundColor: ThemeData.light().scaffoldBackgroundColor,
         systemOverlayStyle: SystemUiOverlayStyle.dark,
-        title: AnimatedCrossFade(
-            firstChild: const SizedBox(
-              height: 30,
-              width: double.infinity,
-            ),
-            secondChild: Text(
-              widget.dataModel.businessName,
-              style: Theme.of(context).textTheme.navBarTitleDark,
-              overflow: TextOverflow.ellipsis,
-              maxLines: 1,
-            ),
-            crossFadeState: checkComplete ? CrossFadeState.showSecond : CrossFadeState.showFirst,
-            duration: const Duration(milliseconds: 100)),
+        title: Text(
+          'Dettagli Pudo',
+          style: Theme.of(context).textTheme.navBarTitleDark,
+          overflow: TextOverflow.ellipsis,
+          maxLines: 1,
+        ),
         centerTitle: true,
         leading: CupertinoNavigationBarBackButton(
           color: AppColors.primaryColorDark,
           onPressed: () => Navigator.of(context).pop(),
         ),
-        actions: [
-          AnimatedCrossFade(
-              firstChild: const SizedBox(
-                height: 30,
-              ),
-              secondChild: nextVisible
-                  ? TextFieldButton(
-                      onPressed: handleSelect,
-                      text: 'Scegli',
-                      textColor: AppColors.primaryColorDark,
-                    )
-                  : widget.dataModel.publicPhoneNumber != null
-                      ? IconButton(
-                          onPressed: () => openModal(),
-                          icon: SvgPicture.asset(
-                            ImageSrc.phoneIcon,
-                            color: AppColors.primaryColorDark,
-                            width: 26,
-                            height: 26,
-                          ),
-                        )
-                      : const SizedBox(),
-              crossFadeState: checkComplete ? CrossFadeState.showSecond : CrossFadeState.showFirst,
-              duration: const Duration(milliseconds: 100))
-        ],
+        actions: [_buildTrailingWithBaseScaffold()],
       ),
       body: _buildBody());
 
