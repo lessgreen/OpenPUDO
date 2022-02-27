@@ -20,6 +20,31 @@ public class NotificationDao extends BaseEntityDao<TbNotification, Long> {
         super(TbNotification.class, "notificationId");
     }
 
+    public List<TbNotification> getNotifications(Long userId, int limit, int offset) {
+        String qs = "SELECT t FROM TbNotification t WHERE t.userId = :userId AND t.queuedFlag = false ORDER BY t.createTms DESC";
+        TypedQuery<TbNotification> q = em.createQuery(qs, TbNotification.class);
+        q.setParameter("userId", userId);
+        q.setMaxResults(limit);
+        q.setFirstResult(offset);
+        List<TbNotification> rs = q.getResultList();
+        return rs.isEmpty() ? Collections.emptyList() : rs;
+    }
+
+    public long getUnreadNotificationCount(Long userId) {
+        String qs = "SELECT COUNT(t) FROM TbNotification t WHERE t.userId = :userId AND t.queuedFlag = false AND t.readTms IS NULL";
+        TypedQuery<Long> q = em.createQuery(qs, Long.class);
+        q.setParameter("userId", userId);
+        return q.getSingleResult();
+    }
+
+    public int markNotificationsAsRead(Long userId) {
+        String qs = "UPDATE TbNotification t SET t.readTms = :now WHERE t.userId = :userId AND t.queuedFlag = false AND t.readTms IS NULL";
+        Query q = em.createQuery(qs);
+        q.setParameter("userId", userId);
+        q.setParameter("now", new Date());
+        return q.executeUpdate();
+    }
+
     public int removeQueuedNotificationFavourite(Long customerUserId, Long pudoId) {
         String qs = "DELETE FROM TbNotificationFavourite t WHERE t.queuedFlag = true AND t.customerUserId = :customerUserId AND t.pudoId = :pudoId";
         Query q = em.createQuery(qs);

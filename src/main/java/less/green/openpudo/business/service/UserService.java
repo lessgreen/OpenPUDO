@@ -262,6 +262,7 @@ public class UserService {
         userPudoRelation.setCustomerSuffix(customerSuffix);
         userPudoRelationDao.persist(userPudoRelation);
         userPudoRelationDao.flush();
+
         // queue notification to pudo owner
         Long ownerUserId = userPudoRelationDao.getOwnerUserIdByPudoId(pudoId);
         TbNotificationFavourite notification = new TbNotificationFavourite();
@@ -278,6 +279,7 @@ public class UserService {
         notification.setPudoId(pudoId);
         notificationDao.persist(notification);
         notificationDao.flush();
+
         log.info("[{}] Added PUDO: {} to favourites of user: {}", context.getExecutionId(), pudoId, context.getUserId());
         return getCurrentUserPudos();
     }

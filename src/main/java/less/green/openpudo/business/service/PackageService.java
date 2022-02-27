@@ -16,6 +16,7 @@ import less.green.openpudo.common.dto.tuple.Septet;
 import less.green.openpudo.common.dto.tuple.Sextet;
 import less.green.openpudo.rest.config.exception.ApiException;
 import less.green.openpudo.rest.dto.DtoMapper;
+import less.green.openpudo.rest.dto.notification.NotificationPackageOptData;
 import less.green.openpudo.rest.dto.pack.Package;
 import less.green.openpudo.rest.dto.pack.*;
 import lombok.extern.log4j.Log4j2;
@@ -263,7 +264,7 @@ public class PackageService {
         packageEventDao.persist(packageEvent);
         packageEventDao.flush();
 
-        // send notification to user
+        // save notification for user
         TbPudo pudo = pudoDao.get(rs.getValue0().getPudoId());
         String titleTemplate = "notification.package.collected.title";
         String messageTemplate = "notification.package.collected.message";
@@ -281,7 +282,9 @@ public class PackageService {
         notification.setPackageId(packageId);
         notificationDao.persist(notification);
         notificationDao.flush();
-        notificationService.sendPushNotifications(rs.getValue0().getUserId(), titleTemplate, null, messageTemplate, messageParams, Map.of("packageId", packageId.toString()));
+        // send push
+        NotificationPackageOptData optData = new NotificationPackageOptData(notification.getNotificationId().toString(), packageId.toString());
+        notificationService.sendPushNotifications(rs.getValue0().getUserId(), titleTemplate, null, messageTemplate, messageParams, optData.toMap());
 
         log.info("[{}] Package {}: {} -> {}", context.getExecutionId(), packageId, rs.getValue1().get(0).getPackageStatus(), packageEvent.getPackageStatus());
         return getPackage(packageId);
@@ -316,7 +319,7 @@ public class PackageService {
         packageEventDao.persist(packageEvent);
         packageEventDao.flush();
 
-        // send notification to pudo owner
+        // save notification for pudo owner
         Long ownerUserId = userPudoRelationDao.getOwnerUserIdByPudoId(rs.getValue0().getPudoId());
         String titleTemplate = "notification.package.accepted.title";
         String messageTemplate = "notification.package.accepted.message";
@@ -334,7 +337,9 @@ public class PackageService {
         notification.setPackageId(packageId);
         notificationDao.persist(notification);
         notificationDao.flush();
-        notificationService.sendPushNotifications(ownerUserId, titleTemplate, null, messageTemplate, messageParams, Map.of("packageId", packageId.toString()));
+        // send push
+        NotificationPackageOptData optData = new NotificationPackageOptData(notification.getNotificationId().toString(), packageId.toString());
+        notificationService.sendPushNotifications(ownerUserId, titleTemplate, null, messageTemplate, messageParams, optData.toMap());
 
         log.info("[{}] Package {}: {} -> {}", context.getExecutionId(), packageId, rs.getValue1().get(0).getPackageStatus(), packageEvent.getPackageStatus());
         return getPackage(packageId);
@@ -360,7 +365,7 @@ public class PackageService {
         packageEventDao.persist(packageEvent);
         packageEventDao.flush();
 
-        // send notification to user
+        // save notification for user
         TbPudo pudo = pudoDao.get(rs.getValue0().getPudoId());
         String titleTemplate = "notification.package.delivered.title";
         String messageTemplate = "notification.package.delivered.message";
@@ -378,7 +383,9 @@ public class PackageService {
         notification.setPackageId(packageId);
         notificationDao.persist(notification);
         notificationDao.flush();
-        notificationService.sendPushNotifications(rs.getValue0().getUserId(), titleTemplate, null, messageTemplate, messageParams, Map.of("packageId", packageId.toString()));
+        // send push
+        NotificationPackageOptData optData = new NotificationPackageOptData(notification.getNotificationId().toString(), packageId.toString());
+        notificationService.sendPushNotifications(rs.getValue0().getUserId(), titleTemplate, null, messageTemplate, messageParams, optData.toMap());
 
         log.info("[{}] Package {}: {} -> {}", context.getExecutionId(), packageId, rs.getValue1().get(0).getPackageStatus(), packageEvent.getPackageStatus());
     }

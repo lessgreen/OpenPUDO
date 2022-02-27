@@ -81,8 +81,6 @@ public interface DtoMapper {
     @Mapping(source = "ent.value1", target = "packageStatusMessage")
     PackageEvent mapPackageEventEntityToDto(Pair<TbPackageEvent, String> ent);
 
-    List<PackageEvent> mapPackageEventEntityListyToDtoList(List<Pair<TbPackageEvent, String>> ent);
-
     @Mapping(source = "val.value0.packageId", target = "packageId")
     @Mapping(source = "val.value0.createTms", target = "createTms")
     @Mapping(source = "val.value0.packagePicId", target = "packagePicId")
