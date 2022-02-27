@@ -13,6 +13,7 @@ class DeletableListView<T> extends StatefulWidget {
   final String? title;
   final String alertDeleteText;
   final bool hasScrollBar;
+  final TextStyle? titleStyle;
 
   const DeletableListView({
     Key? key,
@@ -22,6 +23,7 @@ class DeletableListView<T> extends StatefulWidget {
     required this.onDelete,
     required this.alertDeleteText,
     this.title,
+    this.titleStyle,
     this.hasScrollBar = false,
   }) : super(key: key);
 
@@ -58,6 +60,7 @@ class _DeletableListViewState<T> extends State<DeletableListView<T>> {
             padding: const EdgeInsets.only(left: Dimension.padding, top: Dimension.padding),
             child: Text(
               widget.title!,
+              style: widget.titleStyle,
             ),
           ),
         ListView.builder(
