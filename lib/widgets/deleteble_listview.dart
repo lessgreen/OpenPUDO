@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:qui_green/commons/alert_dialog.dart';
 import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
@@ -5,21 +6,24 @@ import 'package:qui_green/resources/res.dart';
 import 'package:qui_green/widgets/deletable_card.dart';
 
 class DeletableListView<T> extends StatefulWidget {
-  const DeletableListView({
-    Key? key,
-    required this.itemBuilder,
-    required this.items,
-    required this.idGetter,
-    required this.onDelete,
-    this.title,
-    required this.alertDeleteText,
-  }) : super(key: key);
   final Widget Function(T) itemBuilder;
   final List<T> items;
   final int Function(T) idGetter;
   final Function(T) onDelete;
   final String? title;
   final String alertDeleteText;
+  final bool hasScrollBar;
+
+  const DeletableListView({
+    Key? key,
+    required this.itemBuilder,
+    required this.items,
+    required this.idGetter,
+    required this.onDelete,
+    required this.alertDeleteText,
+    this.title,
+    this.hasScrollBar = false,
+  }) : super(key: key);
 
   @override
   State<DeletableListView> createState() => _DeletableListViewState<T>();
@@ -46,7 +50,7 @@ class _DeletableListViewState<T> extends State<DeletableListView<T>> {
     if (widget.items.length != tilesState.length) {
       tilesState = List.generate(widget.items.length, (index) => GlobalKey<DeletableCardState>());
     }
-    return ListView(
+    var _listView = ListView(
       physics: const AlwaysScrollableScrollPhysics(),
       children: [
         if (widget.title != null)
@@ -92,5 +96,6 @@ class _DeletableListViewState<T> extends State<DeletableListView<T>> {
             })
       ],
     );
+    return widget.hasScrollBar ? CupertinoScrollbar(child: _listView) : _listView;
   }
 }
