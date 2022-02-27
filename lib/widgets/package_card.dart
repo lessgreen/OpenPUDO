@@ -19,6 +19,7 @@
 */
 
 import 'package:flutter/material.dart';
+import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
 import 'package:qui_green/commons/ui/custom_network_image.dart';
 import 'package:qui_green/commons/utilities/date_time_extension.dart';
 import 'package:qui_green/resources/res.dart';
@@ -61,7 +62,7 @@ class PackageCard extends StatelessWidget {
                   ),
                   Expanded(
                     child: Padding(
-                      padding: const EdgeInsets.only(left: Dimension.padding,right: Dimension.paddingXS),
+                      padding: const EdgeInsets.only(left: Dimension.padding, right: Dimension.paddingXS),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
@@ -69,7 +70,7 @@ class PackageCard extends StatelessWidget {
                           if (deliveryDate != null)
                             Text(
                               'Pacco consegnato il ' + deliveryDate!.ddmmyyyy,
-                              style: Theme.of(context).textTheme.labelSmall,
+                              style: Theme.of(context).textTheme.captionSmall,
                             ),
                           if (deliveryDate != null) const SizedBox(height: Dimension.padding),
                           Text(
