@@ -51,7 +51,6 @@ public class PudoDao extends BaseEntityDao<TbPudo, Long> {
         String qs = "SELECT t1.pudoId, t1.businessName, t1.pudoPicId, t2.label, t3, t2.lat, t2.lon "
                     + "FROM TbPudo t1, TbAddress t2, TbRating t3 "
                     + "WHERE t1.pudoId = t2.pudoId AND t1.pudoId = t3.pudoId "
-                    + "AND t1.pudoPicId IS NOT NULL "
                     + "AND t2.lat >= :latMin AND t2.lat <= :latMax "
                     + "AND t2.lon >= :lonMin AND t2.lon <= :lonMax";
         TypedQuery<Object[]> q = em.createQuery(qs, Object[].class);
@@ -68,7 +67,6 @@ public class PudoDao extends BaseEntityDao<TbPudo, Long> {
         String qs = "SELECT t1.pudo_id, t1.business_name, CAST(t1.pudo_pic_id AS text), t2.label, t3.review_count, t3.average_score, t2.lat, t2.lon "
                     + "FROM tb_pudo t1, tb_address t2, tb_rating t3 "
                     + "WHERE t1.pudo_id = t2.pudo_id AND t1.pudo_id = t3.pudo_id "
-                    + "AND t1.pudo_pic_id IS NOT NULL "
                     + "AND t1.business_name_search @@ to_tsquery('simple', :tsquery)";
         Query q = em.createNativeQuery(qs, Tuple.class);
         q.setParameter("tsquery", tsquery);
@@ -83,7 +81,7 @@ public class PudoDao extends BaseEntityDao<TbPudo, Long> {
             Septet<Long, String, UUID, String, TbRating, BigDecimal, BigDecimal> row = new Septet<>();
             row.setValue0(t.get("pudo_id", BigInteger.class).longValue());
             row.setValue1(t.get("business_name", String.class));
-            row.setValue2(UUID.fromString(t.get("pudo_pic_id", String.class)));
+            row.setValue2(t.get("pudo_pic_id", String.class) == null ? null : UUID.fromString(t.get("pudo_pic_id", String.class)));
             row.setValue3(t.get("label", String.class));
             row.setValue4(new TbRating(t.get("pudo_id", BigInteger.class).longValue(), t.get("review_count", BigInteger.class).longValue(), t.get("average_score", BigDecimal.class)));
             row.setValue5(t.get("lat", BigDecimal.class));

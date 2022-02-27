@@ -234,9 +234,6 @@ public class UserService {
         if (pudo == null) {
             throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.resource_not_exists"));
         }
-        if (!isPudoProfileComplete(pudo)) {
-            throw new ApiException(ApiReturnCodes.FORBIDDEN, localizationService.getMessage(context.getLanguage(), "error.forbidden.pudo_profile_incomplete"));
-        }
         // check if there is a relation already
         TbUserPudoRelation userPudoRelation = userPudoRelationDao.getUserPudoActiveCustomerRelation(pudo.getPudoId(), context.getUserId());
         if (userPudoRelation != null) {
@@ -319,10 +316,6 @@ public class UserService {
 
     private boolean isUserProfileComplete(TbUserProfile userProfile) {
         return (!isEmpty(userProfile.getFirstName()) && !isEmpty(userProfile.getLastName()) || userProfile.getProfilePicId() != null);
-    }
-
-    private boolean isPudoProfileComplete(TbPudo pudo) {
-        return pudo.getPudoPicId() != null;
     }
 
     private String generateCustomerSuffix(String firstName, String lastName) {

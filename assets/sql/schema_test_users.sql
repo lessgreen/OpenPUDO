@@ -11,15 +11,10 @@ INSERT INTO openpudo.tb_user_preferences (user_id, create_tms, update_tms, show_
 
 INSERT INTO openpudo.tb_user_profile (user_id, create_tms, update_tms, first_name, last_name, profile_pic_id) VALUES (1, '2022-01-17 12:30:00.000', '2022-01-17 12:30:00.000', 'Test', 'User', NULL);
 
-INSERT INTO openpudo.tb_external_file (external_file_id, create_tms, mime_type) VALUES ('4d3e735f-c589-4789-b554-8da825baf1cd', '2022-01-17 12:30:00.000', 'image/jpeg');
-INSERT INTO openpudo.tb_external_file (external_file_id, create_tms, mime_type) VALUES ('5476fb5c-c219-4eff-9298-12e2325f21ac', '2022-01-17 12:30:00.000', 'image/jpeg');
-INSERT INTO openpudo.tb_external_file (external_file_id, create_tms, mime_type) VALUES ('e02c35d0-17d6-4caa-bed4-77119575f370', '2022-01-17 12:30:00.000', 'image/jpeg');
-INSERT INTO openpudo.tb_external_file (external_file_id, create_tms, mime_type) VALUES ('a3681c13-7296-485f-bca4-59fb11d3e161', '2022-01-17 12:30:00.000', 'image/jpeg');
-
-INSERT INTO openpudo.tb_pudo (pudo_id, create_tms, update_tms, business_name, public_phone_number, pudo_pic_id, business_name_search) VALUES (1, '2022-01-17 12:30:00.000', '2022-01-17 12:30:00.000', 'Bar La Pinta', NULL, '4d3e735f-c589-4789-b554-8da825baf1cd', DEFAULT);
-INSERT INTO openpudo.tb_pudo (pudo_id, create_tms, update_tms, business_name, public_phone_number, pudo_pic_id, business_name_search) VALUES (2, '2022-01-17 12:30:00.000', '2022-01-17 12:30:00.000', 'Il Paradiso della Porchetta', NULL, '5476fb5c-c219-4eff-9298-12e2325f21ac', DEFAULT);
-INSERT INTO openpudo.tb_pudo (pudo_id, create_tms, update_tms, business_name, public_phone_number, pudo_pic_id, business_name_search) VALUES (3, '2022-01-17 12:30:00.000', '2022-01-17 12:30:00.000', 'Sushi Arigato Restaurant', NULL, 'e02c35d0-17d6-4caa-bed4-77119575f370', DEFAULT);
-INSERT INTO openpudo.tb_pudo (pudo_id, create_tms, update_tms, business_name, public_phone_number, pudo_pic_id, business_name_search) VALUES (4, '2022-01-17 12:30:00.000', '2022-01-17 12:30:00.000', 'Tabacchi Fortunato', NULL, 'a3681c13-7296-485f-bca4-59fb11d3e161', DEFAULT);
+INSERT INTO openpudo.tb_pudo (pudo_id, create_tms, update_tms, business_name, public_phone_number, pudo_pic_id, business_name_search) VALUES (1, '2022-01-17 12:30:00.000', '2022-01-17 12:30:00.000', 'Bar La Pinta', NULL, NULL, DEFAULT);
+INSERT INTO openpudo.tb_pudo (pudo_id, create_tms, update_tms, business_name, public_phone_number, pudo_pic_id, business_name_search) VALUES (2, '2022-01-17 12:30:00.000', '2022-01-17 12:30:00.000', 'Il Paradiso della Porchetta', NULL, NULL, DEFAULT);
+INSERT INTO openpudo.tb_pudo (pudo_id, create_tms, update_tms, business_name, public_phone_number, pudo_pic_id, business_name_search) VALUES (3, '2022-01-17 12:30:00.000', '2022-01-17 12:30:00.000', 'Sushi Arigato Restaurant', NULL, NULL, DEFAULT);
+INSERT INTO openpudo.tb_pudo (pudo_id, create_tms, update_tms, business_name, public_phone_number, pudo_pic_id, business_name_search) VALUES (4, '2022-01-17 12:30:00.000', '2022-01-17 12:30:00.000', 'Tabacchi Fortunato', NULL, NULL, DEFAULT);
 
 INSERT INTO openpudo.tb_address (pudo_id, create_tms, update_tms, label, street, street_num, zip_code, city, province, country, lat, lon) VALUES (1, '2022-01-17 12:30:00.000', '2022-01-17 12:30:00.000', 'Via Alessandro Bisnati 4, Milano, MI, Italia', 'Via Alessandro Bisnati', '4', '20161', 'Milano', 'Milano', 'Italia', 45.5229090, 9.1748640);
 INSERT INTO openpudo.tb_address (pudo_id, create_tms, update_tms, label, street, street_num, zip_code, city, province, country, lat, lon) VALUES (2, '2022-01-17 12:30:00.000', '2022-01-17 12:30:00.000', 'Via Sant''Arnaldo 31, Milano, MI, Italia', 'Via Sant''Arnaldo', '31', '20161', 'Milano', 'Milano', 'Italia', 45.5253360, 9.1754220);
