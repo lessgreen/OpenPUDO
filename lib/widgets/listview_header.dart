@@ -11,7 +11,6 @@ class ListViewHeader extends StatelessWidget {
   final TextStyle? titleStyle;
   final EdgeInsets itemPadding;
   final ScrollController? scrollController;
-  final String? endText;
   final int actualItemCount;
   final bool hasScrollbar;
 
@@ -21,13 +20,12 @@ class ListViewHeader extends StatelessWidget {
     required this.contentBuilder,
     required this.title,
     this.hasScrollbar = false,
-    this.endText,
     this.physics,
     this.titleStyle,
     this.scrollController,
     this.shrinkWrap = false,
     this.itemPadding = EdgeInsets.zero,
-  })  : actualItemCount = itemCount + 2,
+  })  : actualItemCount = itemCount + 1,
         super(key: key);
 
   @override
@@ -48,20 +46,6 @@ class ListViewHeader extends StatelessWidget {
               style: titleStyle ?? TextStyle(color: Colors.grey.shade800),
             ),
           );
-        } else if (index == actualItemCount - 1) {
-          //No more items
-          return endText != null
-              ? Container(
-                  alignment: Alignment.center,
-                  child: Text(
-                    endText!,
-                    style: TextStyle(color: Colors.grey.shade800),
-                  ),
-                )
-              : Container(
-                  alignment: Alignment.center,
-                  child: const SizedBox(),
-                );
         } else {
           //Actual item
           return Padding(
