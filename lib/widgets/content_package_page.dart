@@ -62,7 +62,9 @@ class _ContentPackagesPageState extends State<ContentPackagesPage> {
   }
 
   _refreshDidTriggered() {
-    _availablePackages.clear();
+    setState(() {
+      _availablePackages.clear();
+    });
     _fetchPackages().then(
       (response) {
         if (response is List<PackageSummary>) {
