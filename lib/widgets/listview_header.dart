@@ -14,6 +14,7 @@ class ListViewHeader extends StatelessWidget {
   final String? endText;
   final int actualItemCount;
   final bool hasScrollbar;
+
   const ListViewHeader({
     Key? key,
     required this.itemCount,
@@ -70,6 +71,11 @@ class ListViewHeader extends StatelessWidget {
         }
       },
     );
-    return hasScrollbar ? CupertinoScrollbar(child: _listView) : _listView;
+    return hasScrollbar
+        ? CupertinoScrollbar(
+            controller: scrollController,
+            child: _listView,
+          )
+        : _listView;
   }
 }
