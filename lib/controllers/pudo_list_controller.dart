@@ -94,8 +94,6 @@ class _PudoListControllerState extends State<PudoListController> {
   Widget _buildPudos() {
     return DeletableListView<PudoSummary>(
       hasScrollBar: true,
-      title: 'I tuoi pudo:'.toUpperCase(),
-      titleStyle: Theme.of(context).textTheme.headerTitle,
       itemBuilder: (PudoSummary pudo) => PudoMapCard(
         name: pudo.businessName,
         address: pudo.label ?? "",
