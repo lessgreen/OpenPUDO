@@ -43,6 +43,10 @@ class PudoRegistrationPreviewController extends StatefulWidget {
 }
 
 class _PudoRegistrationPreviewControllerState extends State<PudoRegistrationPreviewController> with ConnectionAware {
+  double bodyHeight = 0;
+  double listHeight = 0;
+  ScrollController controller = ScrollController();
+
   @override
   void initState() {
     super.initState();
@@ -171,6 +175,8 @@ class _PudoRegistrationPreviewControllerState extends State<PudoRegistrationPrev
       );
 
   Widget _buildBody(CurrentUser currentUser, PudoRegistrationPreviewControllerViewModel viewModel) => ListView(
+        controller: controller,
+        shrinkWrap: true,
         children: [
           Container(
             padding: const EdgeInsets.only(bottom: Dimension.padding),
@@ -218,6 +224,11 @@ class _PudoRegistrationPreviewControllerState extends State<PudoRegistrationPrev
                     textAlign: TextAlign.center,
                   ),
                 ),
+                if (controller.positions.isNotEmpty && !viewModel.editEnabled)
+                  if (controller.position.maxScrollExtent > 0)
+                    const SizedBox(
+                      height: 150,
+                    )
               ],
             ),
           ),
@@ -227,24 +238,23 @@ class _PudoRegistrationPreviewControllerState extends State<PudoRegistrationPrev
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-        create: (context) => PudoRegistrationPreviewControllerViewModel(widget.dataModel),
-        child: Consumer2<CurrentUser, PudoRegistrationPreviewControllerViewModel>(
-          builder: (BuildContext context, currentUser, viewModel, Widget? child) {
-            return Scaffold(
-              resizeToAvoidBottomInset: true,
-              appBar: AppBar(
-                backgroundColor: ThemeData.light().scaffoldBackgroundColor,
-                systemOverlayStyle: SystemUiOverlayStyle.dark,
-                leading: const SizedBox(),
-                title: Text(
-                  viewModel.businessNameController.text,
-                  style: Theme.of(context).textTheme.navBarTitleDark,
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 1,
-                ),
-                centerTitle: true,
-                actions: const [
-                  /*Padding(
+      create: (context) => PudoRegistrationPreviewControllerViewModel(widget.dataModel),
+      child: Consumer2<CurrentUser, PudoRegistrationPreviewControllerViewModel>(builder: (BuildContext context, currentUser, viewModel, Widget? child) {
+        return Scaffold(
+          resizeToAvoidBottomInset: true,
+          appBar: AppBar(
+            backgroundColor: ThemeData.light().scaffoldBackgroundColor,
+            systemOverlayStyle: SystemUiOverlayStyle.dark,
+            leading: const SizedBox(),
+            title: Text(
+              viewModel.businessNameController.text,
+              style: Theme.of(context).textTheme.navBarTitleDark,
+              overflow: TextOverflow.ellipsis,
+              maxLines: 1,
+            ),
+            centerTitle: true,
+            actions: const [
+              /*Padding(
                     padding: const EdgeInsets.only(right: Dimension.paddingS),
                     child: TextFieldButton(
                       onPressed: () => viewModel.handleEdit(),
@@ -252,40 +262,49 @@ class _PudoRegistrationPreviewControllerState extends State<PudoRegistrationPrev
                       textColor: AppColors.primaryColorDark,
                     ),
                   ),*/
-                ],
-              ),
-              body: _buildBody(currentUser, viewModel),
-              bottomSheet: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  AnimatedCrossFade(
-                      firstChild: MainButton(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: Dimension.padding,
-                        ),
-                        onPressed: () => viewModel.goToInstructions(context, currentUser.pudoProfile!),
-                        text: 'Vedi istruzioni di consegna',
-                      ),
-                      secondChild: const SizedBox(),
-                      crossFadeState: viewModel.editEnabled ? CrossFadeState.showSecond : CrossFadeState.showFirst,
-                      duration: const Duration(milliseconds: 100)),
-                  const SizedBox(height: Dimension.padding),
-                  AnimatedCrossFade(
-                      firstChild: MainButton(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: Dimension.padding,
-                        ),
-                        onPressed: () => currentUser.refresh(),
-                        text: 'Vai alla home',
-                      ),
-                      secondChild: const SizedBox(),
-                      crossFadeState: viewModel.editEnabled ? CrossFadeState.showSecond : CrossFadeState.showFirst,
-                      duration: const Duration(milliseconds: 100)),
-                ],
-              ),
-            );
-          },
-        ));
+            ],
+          ),
+          body: SafeArea(
+            child: Stack(children: [
+              LayoutBuilder(builder: (context, constraints) {
+                bodyHeight = constraints.maxHeight;
+                return _buildBody(currentUser, viewModel);
+              }),
+              Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      AnimatedCrossFade(
+                          firstChild: MainButton(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: Dimension.padding,
+                            ),
+                            onPressed: () => viewModel.goToInstructions(context, currentUser.pudoProfile!),
+                            text: 'Vedi istruzioni di consegna',
+                          ),
+                          secondChild: const SizedBox(),
+                          crossFadeState: viewModel.editEnabled ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+                          duration: const Duration(milliseconds: 100)),
+                      const SizedBox(height: Dimension.padding),
+                      AnimatedCrossFade(
+                          firstChild: MainButton(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: Dimension.padding,
+                            ),
+                            onPressed: () => currentUser.refresh(),
+                            text: 'Vai alla home',
+                          ),
+                          secondChild: const SizedBox(),
+                          crossFadeState: viewModel.editEnabled ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+                          duration: const Duration(milliseconds: 100)),
+                    ],
+                  ))
+            ]),
+          ),
+        );
+      }),
+    );
   }
 
   void goToRegistration() {}
