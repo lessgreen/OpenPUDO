@@ -290,74 +290,141 @@ public class PudoService {
         return pudoId;
     }
 
-    private String createPolicyMessage(TbRewardPolicy tbRewardPolicy) {
-        if (tbRewardPolicy.getFreeChecked()) {
+    private String createPolicyMessage(TbRewardPolicy ent) {
+        if (ent.getFreeChecked()) {
             return localizationService.getMessage(context.getLanguage(), "label.reward.free");
         }
-        List<String> messages = new ArrayList<>(4);
-        if (tbRewardPolicy.getCustomerChecked()) {
-            String msg = localizationService.getMessage(context.getLanguage(), "label.reward.customers");
-            if (!tbRewardPolicy.getCustomerSelectitem().equals("other")) {
-                msg += " (" + localizationService.getMessage(context.getLanguage(), "label.reward." + tbRewardPolicy.getCustomerSelectitem()) + ")";
-            } else {
-                msg += " (" + tbRewardPolicy.getCustomerSelectitemText() + ")";
+        // grammars are different, so we must write custom block for every supported language, and we can't rely totally on message bundles
+        Locale locale = isEmpty(context.getLanguage()) ? LocalizationService.DEFAULT_LOCALE : new Locale(context.getLanguage());
+        StringBuilder sb = new StringBuilder();
+        if (locale.equals(Locale.ITALIAN)) {
+            if (ent.getCustomerChecked() || ent.getMembersChecked()) {
+                sb.append("Il servizio è gratuito ");
+                if (ent.getCustomerChecked()) {
+                    sb.append(createCustomersPolicyMessage(ent, locale));
+                }
+                if (ent.getMembersChecked()) {
+                    if (ent.getCustomerChecked()) {
+                        sb.append(", ed anche ");
+                    }
+                    sb.append(createMembersPolicyMessage(ent, locale));
+                }
+                sb.append(". ");
             }
-            messages.add(msg);
-        }
-        if (tbRewardPolicy.getMembersChecked()) {
-            String msg = localizationService.getMessage(context.getLanguage(), "label.reward.members");
-            if (tbRewardPolicy.getMembersText() != null) {
-                msg += " (" + tbRewardPolicy.getMembersText() + ")";
+            if (ent.getBuyChecked() || ent.getFeeChecked()) {
+                if (ent.getCustomerChecked() || ent.getMembersChecked()) {
+                    sb.append("In alternativa puoi usufruire del servizio ");
+                } else {
+                    sb.append("Puoi usufruire del servizio ");
+                }
+                if (ent.getBuyChecked()) {
+                    sb.append(createBuyPolicyMessage(ent, locale));
+                }
+                if (ent.getFeeChecked()) {
+                    if (ent.getBuyChecked()) {
+                        sb.append(", oppure ");
+                    }
+                    sb.append(createFeePolicyMessage(ent, locale));
+                }
+                sb.append(". ");
             }
-            messages.add(msg);
-        }
-        if (tbRewardPolicy.getBuyChecked()) {
-            String msg = localizationService.getMessage(context.getLanguage(), "label.reward.buy");
-            if (tbRewardPolicy.getBuyText() != null) {
-                msg += " (" + tbRewardPolicy.getBuyText() + ")";
-            }
-            messages.add(msg);
-        }
-        if (tbRewardPolicy.getFeeChecked()) {
-            String msg = localizationService.getMessage(context.getLanguage(), "label.reward.fee");
-            if (tbRewardPolicy.getFeePrice() != null) {
-                msg += " (" + tbRewardPolicy.getFeePrice() + " €)";
-            }
-            messages.add(msg);
-        }
-        if (messages.size() == 1) {
-            return messages.get(0);
         } else {
-            StringJoiner sj = new StringJoiner("\n", "", "");
-            messages.forEach(i -> sj.add("- " + i));
-            return sj.toString();
+            if (ent.getCustomerChecked() || ent.getMembersChecked()) {
+                sb.append("Service is free ");
+                if (ent.getCustomerChecked()) {
+                    sb.append(createCustomersPolicyMessage(ent, locale));
+                }
+                if (ent.getMembersChecked()) {
+                    if (ent.getCustomerChecked()) {
+                        sb.append(", and ");
+                    }
+                    sb.append(createMembersPolicyMessage(ent, locale));
+                }
+                sb.append(". ");
+            }
+            if (ent.getBuyChecked() || ent.getFeeChecked()) {
+                if (ent.getCustomerChecked() || ent.getMembersChecked()) {
+                    sb.append("Otherwise, you can have access to the service ");
+                } else {
+                    sb.append("You can have access to the service ");
+                }
+                if (ent.getBuyChecked()) {
+                    sb.append(createBuyPolicyMessage(ent, locale));
+                }
+                if (ent.getFeeChecked()) {
+                    if (ent.getBuyChecked()) {
+                        sb.append(", or ");
+                    }
+                    sb.append(createFeePolicyMessage(ent, locale));
+                }
+                sb.append(". ");
+            }
         }
+        return sb.toString().trim();
     }
 
-    private String createCustomizedAddress(TbPudo pudo, TbAddress address, String customerSuffix) {
+    private String createCustomersPolicyMessage(TbRewardPolicy ent, Locale locale) {
         StringBuilder sb = new StringBuilder();
-        // first line: pudo name and customer suffix
-        sb.append(pudo.getBusinessName());
-        sb.append(" ");
-        sb.append(customerSuffix);
-        sb.append("\n");
-        // second line: street and street number (if any)
-        sb.append(address.getStreet());
-        if (!isEmpty(address.getStreetNum())) {
-            sb.append(" ");
-            sb.append(address.getStreetNum());
-            sb.append("\n");
+        if (locale.equals(Locale.ITALIAN)) {
+            sb.append(localizationService.getMessage(locale.getLanguage(), "label.reward.customers.message"));
+            sb.append(", cioè ");
+            if (!ent.getCustomerSelectitem().equals("customers.select.other")) {
+                sb.append("chi effettua almeno ");
+                sb.append(localizationService.getMessage(locale.getLanguage(), "label.reward." + ent.getCustomerSelectitem()).toLowerCase());
+            } else {
+                sb.append(ent.getCustomerSelectitemText());
+            }
+        } else {
+            sb.append(localizationService.getMessage(locale.getLanguage(), "label.reward.customers.message"));
+            sb.append(", that is ");
+            if (!ent.getCustomerSelectitem().equals("customers.select.other")) {
+                sb.append("who does at least ");
+                sb.append(localizationService.getMessage(locale.getLanguage(), "label.reward." + ent.getCustomerSelectitem()).toLowerCase());
+            } else {
+                sb.append(ent.getCustomerSelectitemText());
+            }
         }
-        // third line: zip code (if any), city and province
-        if (!isEmpty(address.getZipCode())) {
-            sb.append(address.getZipCode());
-            sb.append(" ");
-        }
-        sb.append(address.getCity());
-        sb.append(" (");
-        sb.append(address.getProvince());
-        sb.append(")");
         return sb.toString();
+    }
+
+    private String createMembersPolicyMessage(TbRewardPolicy ent, Locale locale) {
+        StringBuilder sb = new StringBuilder();
+        if (locale.equals(Locale.ITALIAN)) {
+            sb.append(localizationService.getMessage(locale.getLanguage(), "label.reward.members.message"));
+            if (!isEmpty(ent.getMembersText())) {
+                sb.append(", quali ");
+                sb.append(ent.getMembersText());
+            }
+        } else {
+            sb.append(localizationService.getMessage(locale.getLanguage(), "label.reward.members.message"));
+            if (!isEmpty(ent.getMembersText())) {
+                sb.append(", such as ");
+                sb.append(ent.getMembersText());
+            }
+        }
+        return sb.toString();
+    }
+
+    private String createBuyPolicyMessage(TbRewardPolicy ent, Locale locale) {
+        StringBuilder sb = new StringBuilder();
+        if (locale.equals(Locale.ITALIAN)) {
+            sb.append(localizationService.getMessage(locale.getLanguage(), "label.reward.buy.message"));
+            if (!isEmpty(ent.getBuyText())) {
+                sb.append(", ad esempio ");
+                sb.append(ent.getBuyText());
+            }
+        } else {
+            sb.append(localizationService.getMessage(locale.getLanguage(), "label.reward.buy.message"));
+            if (!isEmpty(ent.getBuyText())) {
+                sb.append(", for example ");
+                sb.append(ent.getBuyText());
+            }
+        }
+        return sb.toString();
+    }
+
+    private String createFeePolicyMessage(TbRewardPolicy ent, Locale locale) {
+        return localizationService.getMessage(locale.getLanguage(), "label.reward.fee.message", ent.getFeePrice().toString());
     }
 
     protected TbRewardPolicy mapRewardPolicyDtoToEntity(List<RewardOption> rewardPolicy) {
@@ -488,6 +555,32 @@ public class PudoService {
         }
 
         return ret;
+    }
+
+    private String createCustomizedAddress(TbPudo pudo, TbAddress address, String customerSuffix) {
+        StringBuilder sb = new StringBuilder();
+        // first line: pudo name and customer suffix
+        sb.append(pudo.getBusinessName());
+        sb.append(" ");
+        sb.append(customerSuffix);
+        sb.append("\n");
+        // second line: street and street number (if any)
+        sb.append(address.getStreet());
+        if (!isEmpty(address.getStreetNum())) {
+            sb.append(" ");
+            sb.append(address.getStreetNum());
+            sb.append("\n");
+        }
+        // third line: zip code (if any), city and province
+        if (!isEmpty(address.getZipCode())) {
+            sb.append(address.getZipCode());
+            sb.append(" ");
+        }
+        sb.append(address.getCity());
+        sb.append(" (");
+        sb.append(address.getProvince());
+        sb.append(")");
+        return sb.toString();
     }
 
 }

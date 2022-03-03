@@ -1,5 +1,6 @@
 package less.green.openpudo.rest.config;
 
+import io.quarkus.runtime.configuration.ProfileManager;
 import less.green.openpudo.cdi.ExecutionContext;
 import lombok.extern.log4j.Log4j2;
 
@@ -27,6 +28,8 @@ public class ApplicationLanguageFilter implements ContainerRequestFilter {
         String language = requestContext.getHeaderString(LANGUAGE_HEADER);
         if (!isEmpty(language)) {
             context.setLanguage(language.trim());
+        } else if ("dev".equals(ProfileManager.getActiveProfile())) {
+            context.setLanguage("it");
         }
     }
 

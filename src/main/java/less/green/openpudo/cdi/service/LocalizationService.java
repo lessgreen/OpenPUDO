@@ -14,7 +14,7 @@ import static less.green.openpudo.common.StringUtils.isEmpty;
 @Log4j2
 public class LocalizationService {
 
-    private static final Locale DEFAULT_LOCALE = Locale.ENGLISH;
+    public static final Locale DEFAULT_LOCALE = Locale.ENGLISH;
 
     public String getMessage(String language, String key, Object... params) {
         ResourceBundle bundle;
