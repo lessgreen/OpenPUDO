@@ -43,13 +43,39 @@ class PudoRegistrationPreviewController extends StatefulWidget {
 }
 
 class _PudoRegistrationPreviewControllerState extends State<PudoRegistrationPreviewController> with ConnectionAware {
-  double bodyHeight = 0;
-  double listHeight = 0;
   ScrollController controller = ScrollController();
+  final keyButtons = GlobalKey();
+  final keyText = GlobalKey();
 
   @override
   void initState() {
     super.initState();
+  }
+
+  bool _checkIfOverlaps() {
+    if (keyButtons.currentContext != null && keyText.currentContext != null) {
+      RenderBox? box1 = keyButtons.currentContext!.findRenderObject() as RenderBox?;
+      RenderBox? box2 = keyText.currentContext!.findRenderObject() as RenderBox?;
+      if (box1 != null && box2 != null) {
+        final size1 = box1.size;
+        final size2 = box2.size;
+        final position1 = box1.localToGlobal(Offset.zero);
+        final position2 = box2.localToGlobal(Offset.zero);
+        return (position1.dx < position2.dx + size2.width && position1.dx + size1.width > position2.dx && position1.dy < position2.dy + size2.height && position1.dy + size1.height > position2.dy);
+      }
+    }
+    return false;
+  }
+
+  double _getButtonsHeight() {
+    if (keyButtons.currentContext != null) {
+      RenderBox? box1 = keyButtons.currentContext!.findRenderObject() as RenderBox?;
+      if (box1 != null) {
+        final size1 = box1.size;
+        return size1.height;
+      }
+    }
+    return 0;
   }
 
   Widget _buildEditable(PudoRegistrationPreviewControllerViewModel viewModel, Widget view, Widget edit) =>
@@ -176,7 +202,6 @@ class _PudoRegistrationPreviewControllerState extends State<PudoRegistrationPrev
 
   Widget _buildBody(CurrentUser currentUser, PudoRegistrationPreviewControllerViewModel viewModel) => ListView(
         controller: controller,
-        shrinkWrap: true,
         children: [
           Container(
             padding: const EdgeInsets.only(bottom: Dimension.padding),
@@ -216,6 +241,7 @@ class _PudoRegistrationPreviewControllerState extends State<PudoRegistrationPrev
                   width: MediaQuery.of(context).size.width / 3 * 2,
                   child: Text(
                     '“${currentUser.pudoProfile?.rewardMessage ?? ""}”',
+                    key: keyText,
                     style: Theme.of(context).textTheme.subtitle1?.copyWith(
                           height: 2,
                           fontStyle: FontStyle.italic,
@@ -224,11 +250,10 @@ class _PudoRegistrationPreviewControllerState extends State<PudoRegistrationPrev
                     textAlign: TextAlign.center,
                   ),
                 ),
-                if (controller.positions.isNotEmpty && !viewModel.editEnabled)
-                  if (controller.position.maxScrollExtent > 0)
-                    const SizedBox(
-                      height: 150,
-                    )
+                if (_checkIfOverlaps() && !viewModel.editEnabled)
+                  SizedBox(
+                    height: _getButtonsHeight(),
+                  )
               ],
             ),
           ),
@@ -266,13 +291,11 @@ class _PudoRegistrationPreviewControllerState extends State<PudoRegistrationPrev
           ),
           body: SafeArea(
             child: Stack(children: [
-              LayoutBuilder(builder: (context, constraints) {
-                bodyHeight = constraints.maxHeight;
-                return _buildBody(currentUser, viewModel);
-              }),
+              _buildBody(currentUser, viewModel),
               Align(
                   alignment: Alignment.bottomCenter,
                   child: Column(
+                    key: keyButtons,
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       AnimatedCrossFade(
