@@ -108,7 +108,7 @@ public class PudoService {
             newAddress.setPudoId(oldAddress.getPudoId());
             newAddress.setCreateTms(oldAddress.getCreateTms());
             newAddress.setUpdateTms(now);
-            newAddress = addressDao.merge(newAddress);
+            addressDao.merge(newAddress);
             addressDao.flush();
         }
         log.info("[{}] Updated profile for PUDO: {}", context.getExecutionId(), pudoId);
