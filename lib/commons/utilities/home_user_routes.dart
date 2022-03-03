@@ -48,10 +48,8 @@ dynamic homeUserRouteWithSetting(RouteSettings settings) {
         dataModel: settings.arguments as PudoProfile,
         checkIsAlreadyAdded: true,
       ));
-
     case Routes.packagePickup:
       return PageRouteHelper.buildPage(PackagePickupController(packageModel: settings.arguments as PudoPackage));
-
     case Routes.instruction:
       return PageRouteHelper.buildPage(
         InstructionController(

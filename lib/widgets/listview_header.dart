@@ -7,7 +7,7 @@ class ListViewHeader extends StatelessWidget {
   final bool shrinkWrap;
   final Function(BuildContext, int) contentBuilder;
   final ScrollPhysics? physics;
-  final String title;
+  final String? title;
   final TextStyle? titleStyle;
   final EdgeInsets itemPadding;
   final ScrollController? scrollController;
@@ -18,14 +18,14 @@ class ListViewHeader extends StatelessWidget {
     Key? key,
     required this.itemCount,
     required this.contentBuilder,
-    required this.title,
+    this.title,
     this.hasScrollbar = false,
     this.physics,
     this.titleStyle,
     this.scrollController,
     this.shrinkWrap = false,
     this.itemPadding = EdgeInsets.zero,
-  })  : actualItemCount = itemCount + 1,
+  })  : actualItemCount = title != null ? itemCount + 1 : itemCount,
         super(key: key);
 
   @override
@@ -36,21 +36,28 @@ class ListViewHeader extends StatelessWidget {
       shrinkWrap: shrinkWrap,
       controller: scrollController,
       itemBuilder: (context, index) {
-        if (index == 0) {
-          //Start
-          return Container(
-            padding: const EdgeInsets.symmetric(horizontal: Dimension.padding, vertical: Dimension.padding),
-            alignment: Alignment.centerLeft,
-            child: Text(
-              title,
-              style: titleStyle ?? TextStyle(color: Colors.grey.shade800),
-            ),
-          );
+        if (title != null) {
+          if (index == 0) {
+            //Start
+            return Container(
+              padding: const EdgeInsets.symmetric(horizontal: Dimension.padding, vertical: Dimension.padding),
+              alignment: Alignment.centerLeft,
+              child: Text(
+                title!,
+                style: titleStyle ?? TextStyle(color: Colors.grey.shade800),
+              ),
+            );
+          } else {
+            //Actual item
+            return Padding(
+              padding: itemPadding,
+              child: contentBuilder(context, index - 1),
+            );
+          }
         } else {
-          //Actual item
           return Padding(
             padding: itemPadding,
-            child: contentBuilder(context, index - 1),
+            child: contentBuilder(context, index),
           );
         }
       },

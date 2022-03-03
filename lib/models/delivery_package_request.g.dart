@@ -11,7 +11,6 @@ DeliveryPackageRequest _$DeliveryPackageRequestFromJson(
     DeliveryPackageRequest(
       userId: json['userId'] as int,
       notes: json['notes'] as String?,
-      packagePicId: json['packagePicId'] as String?,
     );
 
 Map<String, dynamic> _$DeliveryPackageRequestToJson(
@@ -19,5 +18,4 @@ Map<String, dynamic> _$DeliveryPackageRequestToJson(
     <String, dynamic>{
       'userId': instance.userId,
       'notes': instance.notes,
-      'packagePicId': instance.packagePicId,
     };

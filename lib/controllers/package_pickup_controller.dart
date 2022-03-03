@@ -24,8 +24,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:qui_green/commons/alert_dialog.dart';
 import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
-import 'package:qui_green/commons/ui/custom_network_image.dart';
 import 'package:qui_green/commons/ui/cupertino_navigation_bar_fix.dart';
+import 'package:qui_green/commons/ui/custom_network_image.dart';
 import 'package:qui_green/commons/utilities/date_time_extension.dart';
 import 'package:qui_green/models/pudo_package.dart';
 import 'package:qui_green/models/pudo_package_event.dart';
@@ -35,8 +35,9 @@ import 'package:qui_green/widgets/sascaffold.dart';
 import 'package:share_plus/share_plus.dart';
 
 class PackagePickupController extends StatefulWidget {
-  const PackagePickupController({Key? key, required this.packageModel}) : super(key: key);
+  const PackagePickupController({Key? key, required this.packageModel, this.isForPudo = false}) : super(key: key);
   final PudoPackage packageModel;
+  final bool isForPudo;
 
   @override
   _PackagePickupControllerState createState() => _PackagePickupControllerState();
@@ -55,47 +56,46 @@ class _PackagePickupControllerState extends State<PackagePickupController> {
         navigationBar: CupertinoNavigationBarFix.build(
           context,
           middle: Text(
-            'Ritiro del pacco',
+            widget.isForPudo ? 'Dettagli pacco' : 'Ritiro del pacco',
             style: Theme.of(context).textTheme.navBarTitle,
           ),
           leading: CupertinoNavigationBarBackButton(
             color: Colors.white,
             onPressed: () => Navigator.of(context).pop(),
           ),
-          trailing: InkWell(
-            onTap: _sharePackage,
-            child: Padding(
-              padding: const EdgeInsets.only(right: Dimension.paddingS),
-              child: SvgPicture.asset(
-                ImageSrc.shareArt,
-                width: 26,
-                height: 26,
-                color: Colors.white,
-              ),
-            ),
-          ),
+          trailing: !widget.isForPudo
+              ? InkWell(
+                  onTap: _sharePackage,
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: Dimension.paddingS),
+                    child: SvgPicture.asset(
+                      ImageSrc.shareArt,
+                      width: 26,
+                      height: 26,
+                      color: Colors.white,
+                    ),
+                  ),
+                )
+              : null,
         ),
-        //ClipPath is used to avoid the scrolling cards to go outside the screen
-        //and being visible when popping the page
-        child: ClipPath(
-          child: SAScaffold(
-            isLoading: NetworkManager.instance.networkActivity,
-            body: ListView(
-              children: [
-                _buildQr(),
+        child: SAScaffold(
+          isLoading: NetworkManager.instance.networkActivity,
+          body: ListView(
+            children: [
+              if (!widget.isForPudo) _buildQr(),
+              if (!widget.isForPudo)
                 const SizedBox(
                   height: Dimension.paddingS,
                 ),
-                _buildPhoto(),
-                const SizedBox(
-                  height: Dimension.paddingS,
-                ),
-                _buildEvents(),
-                const SizedBox(
-                  height: Dimension.padding,
-                ),
-              ],
-            ),
+              _buildPhoto(),
+              const SizedBox(
+                height: Dimension.paddingS,
+              ),
+              _buildEvents(),
+              const SizedBox(
+                height: Dimension.padding,
+              ),
+            ],
           ),
         ),
       ),

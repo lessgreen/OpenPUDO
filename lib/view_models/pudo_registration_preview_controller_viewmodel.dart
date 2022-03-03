@@ -34,12 +34,10 @@ import 'package:qui_green/resources/routes_enum.dart';
 import 'package:qui_green/singletons/network/network_manager.dart';
 
 class PudoRegistrationPreviewControllerViewModel extends ChangeNotifier {
-  PudoRegistrationPreviewControllerViewModel(RegistrationPudoModel model) {
-    dataModel = model;
-    _dataSource = model.rewardPolicy ?? [];
-    businessNameController.text = dataModel.businessName ?? "";
-    phoneController.text = dataModel.publicPhoneNumber ?? "";
-    addressController.text = dataModel.addressMarker!.address.label ?? "";
+  PudoRegistrationPreviewControllerViewModel(PudoProfile profile) {
+    businessNameController.text = profile.businessName;
+    phoneController.text = profile.publicPhoneNumber ?? "";
+    addressController.text = profile.address?.label ?? "";
   }
 
   late RegistrationPudoModel dataModel;

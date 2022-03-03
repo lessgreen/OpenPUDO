@@ -21,7 +21,54 @@
 part of 'network_shared.dart';
 
 mixin NetworkManagerPackages on NetworkGeneral {
-  //TODO: implement API calls (package related)
+  Future<dynamic> getPackageDetailsByQrCode({required String shareLink}) async {
+    try {
+      if (!isOnline) {
+        throw ("Network is offline");
+      }
+      if (_accessToken != null) {
+        _headers['Authorization'] = 'Bearer $_accessToken';
+      }
+
+      var url = _baseURL + '/api/v2/package/by-qrcode/$shareLink';
+      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+        _networkActivity.value = true;
+      });
+      Response response = await r.retry(
+        () => get(Uri.parse(url), headers: _headers).timeout(Duration(seconds: _timeout)),
+        retryIf: (e) => e is SocketException || e is TimeoutException,
+      );
+      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+        _networkActivity.value = false;
+      });
+      final codeUnits = response.body.codeUnits;
+      var decodedUTF8 = const Utf8Decoder().convert(codeUnits);
+      var json = jsonDecode(decodedUTF8);
+      var baseResponse = OPBaseResponse.fromJson(json);
+
+      var needHandleTokenRefresh = _handleTokenRefresh(
+        baseResponse,
+        () {
+          getPackageDetailsByQrCode(
+            shareLink: shareLink,
+          ).catchError((onError) => throw onError);
+        },
+      );
+      if (needHandleTokenRefresh == false) {
+        if (baseResponse.returnCode == 0 && baseResponse.payload != null && baseResponse.payload is Map) {
+          return PudoPackage.fromJson(baseResponse.payload);
+        } else {
+          throw ErrorDescription('Error ${baseResponse.returnCode}: ${baseResponse.message}');
+        }
+      }
+    } catch (e) {
+      safePrint('ERROR - getPackageDetailsByQrCode : $e');
+      _refreshTokenRetryCounter = 0;
+      _networkActivity.value = false;
+      return e;
+    }
+  }
+
   Future<dynamic> getPackageDetails({required int packageId}) async {
     try {
       if (!isOnline) {
@@ -82,22 +129,19 @@ mixin NetworkManagerPackages on NetworkGeneral {
       var url = _baseURL;
 
       if (newStatus == PudoPackageStatus.accepted) {
-        url = _baseURL + '/api/v1/packages/$packageId/accepted';
+        url = _baseURL + '/api/v2/package/$packageId/accepted';
       } else if (newStatus == PudoPackageStatus.collected) {
-        url = _baseURL + '/api/v1/packages/$packageId/collected';
+        url = _baseURL + '/api/v2/package/$packageId/collected';
       } else if (newStatus == PudoPackageStatus.notified) {
-        url = _baseURL + '/api/v1/packages/$packageId/notified';
+        url = _baseURL + '/api/v2/package/$packageId/notified';
       } else if (newStatus == PudoPackageStatus.notifySent) {
-        url = _baseURL + '/api/v1/packages/$packageId/notified';
+        url = _baseURL + '/api/v2/package/$packageId/notified';
       } else {
         return ErrorDescription('Error Unsupported PackageStatus specified.');
       }
-
       String? body;
-      if (notes != null) {
-        var request = ChangePackageStatusRequest(notes: notes);
-        body = jsonEncode(request.toJson());
-      }
+      var request = ChangePackageStatusRequest(notes: notes);
+      body = jsonEncode(request.toJson());
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
@@ -205,7 +249,6 @@ mixin NetworkManagerPackages on NetworkGeneral {
     DeliveryPackageRequest? request,
     int? userId,
     String? notes,
-    String? packagePicId,
   }) async {
     try {
       if (!isOnline) {
@@ -213,12 +256,12 @@ mixin NetworkManagerPackages on NetworkGeneral {
       }
       if (request != null) {
       } else if (userId != null) {
-        request = DeliveryPackageRequest(userId: userId, notes: notes, packagePicId: packagePicId);
+        request = DeliveryPackageRequest(userId: userId, notes: notes);
       } else {
         return ErrorDescription('Error missing parameters.');
       }
-
-      var url = _baseURL + '/api/v1/packages';
+      print(notes);
+      var url = _baseURL + '/api/v2/package';
       var body = jsonEncode(request.toJson());
 
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
@@ -243,7 +286,6 @@ mixin NetworkManagerPackages on NetworkGeneral {
             request: request,
             userId: userId,
             notes: notes,
-            packagePicId: packagePicId,
           ).catchError((onError) => throw onError);
         },
       );
@@ -262,7 +304,7 @@ mixin NetworkManagerPackages on NetworkGeneral {
     }
   }
 
-  Future<dynamic> getMyPackages({bool history = false, int limit = 20, int offset = 0}) async {
+  Future<dynamic> getMyPackages({bool isPudo = false, bool history = false, int limit = 20, int offset = 0, bool enablePagination = true}) async {
     try {
       if (!isOnline) {
         throw ("Network is offline");
@@ -271,9 +313,9 @@ mixin NetworkManagerPackages on NetworkGeneral {
         _headers['Authorization'] = 'Bearer $_accessToken';
       }
 
-      var queryString = "?history=$history&limit=$limit&offset=$offset";
+      var queryString = enablePagination ? "?history=$history&limit=$limit&offset=$offset" : "?history=$history";
 
-      var url = _baseURL + '/api/v2/user/me/packages$queryString';
+      var url = _baseURL + '/api/v2/${isPudo ? "pudo" : "user"}/me/packages$queryString';
 
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
@@ -313,6 +355,60 @@ mixin NetworkManagerPackages on NetworkGeneral {
       }
     } catch (e) {
       safePrint('ERROR - getMyPackages: $e');
+      _refreshTokenRetryCounter = 0;
+      _networkActivity.value = false;
+      return e;
+    }
+  }
+
+  Future<dynamic> packagePhotoUpload(File anImage, int packageId) async {
+    if (_accessToken != null) {
+      _headers['Authorization'] = 'Bearer $_accessToken';
+    }
+
+    var url = _baseURL + '/api/v2/package/$packageId/picture';
+    var uri = Uri.parse(url);
+
+    // create multipart request
+    var request = MultipartRequest("PUT", uri);
+    var multipartFileSign = MultipartFile(
+      'attachment',
+      anImage.readAsBytes().asStream(),
+      anImage.lengthSync(),
+      filename: basename(anImage.path),
+      contentType: MediaType("image", "jpeg"),
+    );
+
+    request.files.add(multipartFileSign);
+    _headers.forEach((k, v) {
+      request.headers[k] = v;
+    });
+
+    try {
+      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+        _networkActivity.value = true;
+      });
+      var response = await request.send();
+      var respStr = await response.stream.bytesToString();
+      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+        _networkActivity.value = false;
+      });
+      var json = jsonDecode(respStr);
+
+      var baseResponse = OPBaseResponse.fromJson(json);
+
+      var needHandleTokenRefresh = _handleTokenRefresh(baseResponse, () {
+        packagePhotoUpload(anImage, packageId).catchError((onError) => throw onError);
+      });
+      if (needHandleTokenRefresh == false) {
+        if (baseResponse.returnCode == 0) {
+          return null;
+        } else {
+          throw ErrorDescription('Error ${baseResponse.returnCode}: ${baseResponse.message}');
+        }
+      }
+    } catch (e) {
+      safePrint('ERROR - photoupload: $e');
       _refreshTokenRetryCounter = 0;
       _networkActivity.value = false;
       return e;
