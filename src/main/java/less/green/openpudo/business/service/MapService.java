@@ -176,7 +176,7 @@ public class MapService {
                 }
             }
 
-            // searching for eventual exact matches, with decreasing prio
+            // searching for eventual exact matches, with decreasing priority
             List<AddressMarker> exactMatches = ret.stream().filter(i -> text.equalsIgnoreCase(i.getAddress().getCity())).collect(Collectors.toList());
             exactMatches.addAll(ret.stream().filter(i -> text.equalsIgnoreCase(i.getAddress().getProvince()) && !exactMatches.contains(i)).collect(Collectors.toList()));
             exactMatches.addAll(ret.stream().filter(i -> text.equalsIgnoreCase(i.getAddress().getCountry()) && !exactMatches.contains(i)).collect(Collectors.toList()));
