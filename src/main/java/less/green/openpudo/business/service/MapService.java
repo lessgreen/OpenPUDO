@@ -9,8 +9,8 @@ import less.green.openpudo.cdi.service.LocalizationService;
 import less.green.openpudo.common.ApiReturnCodes;
 import less.green.openpudo.common.ExceptionUtils;
 import less.green.openpudo.common.GPSUtils;
+import less.green.openpudo.common.StringUtils;
 import less.green.openpudo.common.dto.geojson.Feature;
-import less.green.openpudo.common.dto.geojson.FeatureCollection;
 import less.green.openpudo.common.dto.tuple.Quartet;
 import less.green.openpudo.common.dto.tuple.Quintet;
 import less.green.openpudo.common.dto.tuple.Septet;
@@ -30,6 +30,9 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.*;
+import java.util.stream.Collectors;
+
+import static less.green.openpudo.common.FormatUtils.smartElapsed;
 
 @RequestScoped
 @Transactional(Transactional.TxType.REQUIRED)
@@ -130,15 +133,32 @@ public class MapService {
             return Collections.emptyList();
         }
         try {
-            FeatureCollection fc = geocodeService.autocomplete(context.getLanguage(), text, lat, lon);
-            List<Feature> rs = fc.getFeatures();
-            List<AddressMarker> ret = new ArrayList<>(rs.size());
+            long startTime = System.nanoTime();
+            // fetching geocode results
+            boolean relevanceFiltering = false;
+            List<Feature> rs = geocodeService.autocomplete(context.getLanguage(), text, lat, lon).getFeatures();
+            // if we get no result, retry without coordinates to disable relevance filtering remote side
+            if (rs.isEmpty()) {
+                relevanceFiltering = true;
+                rs = geocodeService.autocomplete(context.getLanguage(), text, null, null).getFeatures();
+            }
+            long endTime = System.nanoTime();
+            log.info("Geocode search took {}", smartElapsed(endTime - startTime));
+
+            // mapping to inner dto
+            List<AddressSearchResult> addresses = new ArrayList<>(rs.size());
             for (var row : rs) {
                 AddressSearchResult address = dtoMapper.mapFeatureToAddressSearchResult(row);
                 // remove results not suitable for pudo address
                 if (precise && (address.getLabel() == null || address.getStreet() == null || address.getCity() == null || address.getProvince() == null || address.getCountry() == null)) {
                     continue;
                 }
+                addresses.add(address);
+            }
+
+            // mapping to final dto
+            List<AddressMarker> ret = new ArrayList<>(addresses.size());
+            for (var address : addresses) {
                 String signature = cryptoService.signObject(address);
                 BigDecimal distanceFromOrigin = null;
                 if (lat != null && lon != null) {
@@ -146,15 +166,37 @@ public class MapService {
                 }
                 ret.add(dtoMapper.mapProjectionToAddressMarker(new Quintet<>(address, signature, address.getLat(), address.getLon(), distanceFromOrigin)));
             }
-            // ordering by distance
-            if (ret.size() > 1 && lat != null && lon != null) {
-                ret.sort(Comparator.comparingDouble(i -> i.getDistanceFromOrigin().doubleValue()));
+
+            // ordering by distance or by text similarity
+            if (ret.size() > 1) {
+                if (lat != null && lon != null && !relevanceFiltering) {
+                    ret.sort(Comparator.comparingDouble(i -> i.getDistanceFromOrigin().doubleValue()));
+                } else if (relevanceFiltering) {
+                    ret.sort(Comparator.comparingInt(i -> StringUtils.levenshteinDistance(text, i.getAddress().getLabel())));
+                }
             }
-            // restricting results if necessary
-            if (ret.size() > MAX_SEARCH_RESULTS) {
-                ret = ret.subList(0, MAX_SEARCH_RESULTS);
+
+            // searching for eventual exact matches, with decreasing prio
+            List<AddressMarker> exactMatches = ret.stream().filter(i -> text.equalsIgnoreCase(i.getAddress().getCity())).collect(Collectors.toList());
+            exactMatches.addAll(ret.stream().filter(i -> text.equalsIgnoreCase(i.getAddress().getProvince()) && !exactMatches.contains(i)).collect(Collectors.toList()));
+            exactMatches.addAll(ret.stream().filter(i -> text.equalsIgnoreCase(i.getAddress().getCountry()) && !exactMatches.contains(i)).collect(Collectors.toList()));
+            if (exactMatches.isEmpty()) {
+                // restricting results if necessary
+                if (ret.size() > MAX_SEARCH_RESULTS) {
+                    ret = ret.subList(0, MAX_SEARCH_RESULTS);
+                }
+                return ret;
+            } else {
+                ret.removeAll(exactMatches);
+                // restricting results if necessary
+                int nonExactMatchesToKeep = Math.max(MAX_SEARCH_RESULTS - exactMatches.size(), 0);
+                if (ret.size() > nonExactMatchesToKeep) {
+                    ret = ret.subList(0, nonExactMatchesToKeep);
+                }
+                // adding left partial matches at the end, keeping exact on top
+                exactMatches.addAll(ret);
+                return exactMatches;
             }
-            return ret;
         } catch (RuntimeException ex) {
             log.error("[{}] {}", context.getExecutionId(), ExceptionUtils.getCanonicalFormWithStackTrace(ex));
             throw new ApiException(ApiReturnCodes.SERVICE_UNAVAILABLE, localizationService.getMessage(context.getLanguage(), "error.service_unavailable"));
@@ -162,8 +204,8 @@ public class MapService {
     }
 
     public List<PudoMarker> searchPudo(String text, BigDecimal lat, BigDecimal lon) {
-        // prevent returning meaningless results with too few characters, and removing charachters that can interfere with full etxt search
-        if (text.trim().replaceAll("[\\*\\&\\:\\|\\(\\)]", "").length() <= 3) {
+        // prevent returning meaningless results with too few characters, and removing characters that can interfere with full text search
+        if (text.trim().replaceAll("[*&:|()]", "").length() <= 3) {
             return Collections.emptyList();
         }
         // tokenizing search string
