@@ -298,6 +298,24 @@ class _PudoRegistrationPreviewControllerState extends State<PudoRegistrationPrev
                     key: keyButtons,
                     mainAxisSize: MainAxisSize.min,
                     children: [
+                      IgnorePointer(
+                        ignoring: true,
+                        child: ShaderMask(
+                            shaderCallback: (Rect rect) {
+                              return LinearGradient(
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                                colors: [Theme.of(context).backgroundColor, Colors.transparent, Colors.transparent, Colors.transparent],
+                                stops: const [0, 0.5, 0.7, 1],
+                              ).createShader(rect);
+                            },
+                            blendMode: BlendMode.dstOut,
+                            child: Container(
+                              color: Colors.white.withAlpha(225),
+                              height: Dimension.paddingL,
+                              width: double.infinity,
+                            )),
+                      ),
                       AnimatedCrossFade(
                           firstChild: MainButton(
                             padding: const EdgeInsets.symmetric(
@@ -309,7 +327,10 @@ class _PudoRegistrationPreviewControllerState extends State<PudoRegistrationPrev
                           secondChild: const SizedBox(),
                           crossFadeState: viewModel.editEnabled ? CrossFadeState.showSecond : CrossFadeState.showFirst,
                           duration: const Duration(milliseconds: 100)),
-                      const SizedBox(height: Dimension.padding),
+                      Container(
+                        height: Dimension.padding,
+                        color: Theme.of(context).scaffoldBackgroundColor,
+                      ),
                       AnimatedCrossFade(
                           firstChild: MainButton(
                             padding: const EdgeInsets.symmetric(
