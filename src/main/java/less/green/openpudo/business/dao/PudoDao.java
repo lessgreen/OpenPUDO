@@ -1,12 +1,8 @@
 package less.green.openpudo.business.dao;
 
-import less.green.openpudo.business.model.TbAddress;
-import less.green.openpudo.business.model.TbPudo;
-import less.green.openpudo.business.model.TbRating;
-import less.green.openpudo.business.model.TbRewardPolicy;
+import less.green.openpudo.business.model.*;
 import less.green.openpudo.business.model.usertype.RelationType;
 import less.green.openpudo.common.dto.tuple.Quartet;
-import less.green.openpudo.common.dto.tuple.Quintet;
 import less.green.openpudo.common.dto.tuple.Septet;
 import lombok.extern.log4j.Log4j2;
 
@@ -91,8 +87,8 @@ public class PudoDao extends BaseEntityDao<TbPudo, Long> {
         return ret;
     }
 
-    public List<Quintet<Long, String, UUID, String, TbRating>> getUserPudos(Long userId) {
-        String qs = "SELECT t1.pudoId, t1.businessName, t1.pudoPicId, t2.label, t4 "
+    public List<Quartet<TbPudo, TbAddress, TbUserPudoRelation, TbRating>> getUserPudos(Long userId) {
+        String qs = "SELECT t1, t2, t3, t4 "
                     + "FROM TbPudo t1, TbAddress t2, TbUserPudoRelation t3, TbRating t4 "
                     + "WHERE t1.pudoId = t2.pudoId AND t1.pudoId = t3.pudoId AND t1.pudoId = t4.pudoId "
                     + "AND t3.userId = :userId AND t3.relationType = :relationType AND t3.deleteTms IS NULL "
@@ -101,7 +97,7 @@ public class PudoDao extends BaseEntityDao<TbPudo, Long> {
         q.setParameter("userId", userId);
         q.setParameter("relationType", RelationType.CUSTOMER);
         List<Object[]> rs = q.getResultList();
-        return rs.isEmpty() ? Collections.emptyList() : rs.stream().map(row -> new Quintet<>((Long) row[0], (String) row[1], (UUID) row[2], (String) row[3], (TbRating) row[4])).collect(Collectors.toList());
+        return rs.isEmpty() ? Collections.emptyList() : rs.stream().map(row -> new Quartet<>((TbPudo) row[0], (TbAddress) row[1], (TbUserPudoRelation) row[2], (TbRating) row[3])).collect(Collectors.toList());
     }
 
 }

@@ -9,7 +9,8 @@ import less.green.openpudo.cdi.service.LocalizationService;
 import less.green.openpudo.cdi.service.StorageService;
 import less.green.openpudo.common.ApiReturnCodes;
 import less.green.openpudo.common.CalendarUtils;
-import less.green.openpudo.common.dto.tuple.Quintet;
+import less.green.openpudo.common.dto.tuple.Quartet;
+import less.green.openpudo.common.dto.tuple.Sextet;
 import less.green.openpudo.rest.config.exception.ApiException;
 import less.green.openpudo.rest.dto.DtoMapper;
 import less.green.openpudo.rest.dto.pack.PackageSummary;
@@ -24,6 +25,7 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Collectors;
 
 import static less.green.openpudo.common.StringUtils.isEmpty;
 import static less.green.openpudo.common.StringUtils.sanitizeString;
@@ -44,6 +46,8 @@ public class UserService {
 
     @Inject
     PackageService packageService;
+    @Inject
+    PudoService pudoService;
 
     @Inject
     DeviceTokenDao deviceTokenDao;
@@ -217,8 +221,12 @@ public class UserService {
         if (user.getAccountType() != AccountType.CUSTOMER) {
             throw new ApiException(ApiReturnCodes.FORBIDDEN, localizationService.getMessage(context.getLanguage(), "error.forbidden.wrong_account_type"));
         }
-        List<Quintet<Long, String, UUID, String, TbRating>> rs = pudoDao.getUserPudos(context.getUserId());
-        return dtoMapper.mapProjectionListToPudoSummaryList(rs);
+        List<Quartet<TbPudo, TbAddress, TbUserPudoRelation, TbRating>> rs = pudoDao.getUserPudos(context.getUserId());
+        List<Sextet<Long, String, UUID, String, TbRating, String>> ret = rs.stream()
+                .map(i -> new Sextet<>(i.getValue0().getPudoId(), i.getValue0().getBusinessName(), i.getValue0().getPudoPicId(), i.getValue1().getLabel(), i.getValue3(),
+                        pudoService.createCustomizedAddress(i.getValue0(), i.getValue1(), i.getValue2().getCustomerSuffix())))
+                .collect(Collectors.toList());
+        return dtoMapper.mapProjectionListToPudoSummaryList(ret);
     }
 
     public List<PudoSummary> addPudoToFavourites(Long pudoId) {

@@ -3,10 +3,7 @@ package less.green.openpudo.rest.dto;
 import less.green.openpudo.business.model.*;
 import less.green.openpudo.common.dto.geojson.Feature;
 import less.green.openpudo.common.dto.geojson.Point;
-import less.green.openpudo.common.dto.tuple.Pair;
-import less.green.openpudo.common.dto.tuple.Quartet;
-import less.green.openpudo.common.dto.tuple.Quintet;
-import less.green.openpudo.common.dto.tuple.Septet;
+import less.green.openpudo.common.dto.tuple.*;
 import less.green.openpudo.rest.dto.map.AddressMarker;
 import less.green.openpudo.rest.dto.map.AddressSearchResult;
 import less.green.openpudo.rest.dto.map.PudoMarker;
@@ -67,9 +64,10 @@ public interface DtoMapper {
     @Mapping(source = "val.value2", target = "pudoPicId")
     @Mapping(source = "val.value3", target = "label")
     @Mapping(source = "val.value4", target = "rating")
-    PudoSummary mapProjectionToPudoSummary(Quintet<Long, String, UUID, String, TbRating> val);
+    @Mapping(source = "val.value5", target = "customizedAddress")
+    PudoSummary mapProjectionToPudoSummary(Sextet<Long, String, UUID, String, TbRating, String> val);
 
-    List<PudoSummary> mapProjectionListToPudoSummaryList(List<Quintet<Long, String, UUID, String, TbRating>> val);
+    List<PudoSummary> mapProjectionListToPudoSummaryList(List<Sextet<Long, String, UUID, String, TbRating, String>> val);
 
     @Mapping(source = "ent.value0", target = ".")
     @Mapping(source = "ent.value1", target = "events")

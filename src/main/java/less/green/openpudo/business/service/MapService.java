@@ -14,6 +14,7 @@ import less.green.openpudo.common.dto.geojson.Feature;
 import less.green.openpudo.common.dto.tuple.Quartet;
 import less.green.openpudo.common.dto.tuple.Quintet;
 import less.green.openpudo.common.dto.tuple.Septet;
+import less.green.openpudo.common.dto.tuple.Sextet;
 import less.green.openpudo.rest.config.exception.ApiException;
 import less.green.openpudo.rest.dto.DtoMapper;
 import less.green.openpudo.rest.dto.map.AddressMarker;
@@ -110,7 +111,7 @@ public class MapService {
         List<Septet<Long, String, UUID, String, TbRating, BigDecimal, BigDecimal>> rs = pudoDao.getPudosOnMap(latMin, latMax, lonMin, lonMax);
         List<PudoMarker> ret = new ArrayList<>(rs.size());
         for (var row : rs) {
-            PudoSummary pudoSummary = dtoMapper.mapProjectionToPudoSummary(new Quintet<>(row.getValue0(), row.getValue1(), row.getValue2(), row.getValue3(), row.getValue4()));
+            PudoSummary pudoSummary = dtoMapper.mapProjectionToPudoSummary(new Sextet<>(row.getValue0(), row.getValue1(), row.getValue2(), row.getValue3(), row.getValue4(), null));
             BigDecimal distanceFromOrigin = GPSUtils.calculateDistanceFromOrigin(row.getValue5(), row.getValue6(), lat, lon);
             PudoMarker marker = dtoMapper.mapProjectionToPudoMarker(new Quartet<>(pudoSummary, row.getValue5(), row.getValue6(), distanceFromOrigin));
             ret.add(marker);
@@ -213,7 +214,7 @@ public class MapService {
         List<Septet<Long, String, UUID, String, TbRating, BigDecimal, BigDecimal>> rs = pudoDao.searchPudo(tokens);
         List<PudoMarker> ret = new ArrayList<>(rs.size());
         for (var row : rs) {
-            PudoSummary pudo = dtoMapper.mapProjectionToPudoSummary(new Quintet<>(row.getValue0(), row.getValue1(), row.getValue2(), row.getValue3(), row.getValue4()));
+            PudoSummary pudo = dtoMapper.mapProjectionToPudoSummary(new Sextet<>(row.getValue0(), row.getValue1(), row.getValue2(), row.getValue3(), row.getValue4(), null));
             BigDecimal distanceFromOrigin = null;
             if (lat != null && lon != null) {
                 distanceFromOrigin = GPSUtils.calculateDistanceFromOrigin(row.getValue5(), row.getValue6(), lat, lon);

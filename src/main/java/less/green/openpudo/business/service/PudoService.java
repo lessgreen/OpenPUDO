@@ -557,7 +557,7 @@ public class PudoService {
         return ret;
     }
 
-    private String createCustomizedAddress(TbPudo pudo, TbAddress address, String customerSuffix) {
+    protected String createCustomizedAddress(TbPudo pudo, TbAddress address, String customerSuffix) {
         StringBuilder sb = new StringBuilder();
         // first line: pudo name and customer suffix
         sb.append(pudo.getBusinessName());

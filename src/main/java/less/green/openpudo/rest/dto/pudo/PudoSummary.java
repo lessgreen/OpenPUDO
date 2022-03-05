@@ -27,4 +27,7 @@ public class PudoSummary {
     @Schema(readOnly = true)
     private Rating rating;
 
+    @Schema(readOnly = true)
+    private String customizedAddress;
+
 }
