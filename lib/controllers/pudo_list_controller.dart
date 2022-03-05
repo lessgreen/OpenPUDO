@@ -36,14 +36,19 @@ import 'package:qui_green/widgets/pudo_map_card.dart';
 import 'package:qui_green/widgets/sascaffold.dart';
 
 class PudoListController extends StatefulWidget {
-  const PudoListController({Key? key}) : super(key: key);
+  final bool isRootController;
+
+  const PudoListController({
+    Key? key,
+    this.isRootController = false,
+  }) : super(key: key);
 
   @override
   _PudoListControllerState createState() => _PudoListControllerState();
 }
 
 class _PudoListControllerState extends State<PudoListController> {
-  List<PudoSummary>? pudoList;
+  List<PudoSummary>? dataSource;
 
   @override
   void initState() {
@@ -63,10 +68,12 @@ class _PudoListControllerState extends State<PudoListController> {
                 'I tuoi pudo',
                 style: Theme.of(context).textTheme.navBarTitle,
               ),
-              leading: CupertinoNavigationBarBackButton(
-                color: Colors.white,
-                onPressed: () => Navigator.of(context).pop(),
-              ),
+              leading: widget.isRootController
+                  ? null
+                  : CupertinoNavigationBarBackButton(
+                      color: Colors.white,
+                      onPressed: () => Navigator.of(context).pop(),
+                    ),
             ),
             //ClipPath is used to avoid the scrolling cards to go outside the screen
             //and being visible when popping the page
@@ -75,9 +82,9 @@ class _PudoListControllerState extends State<PudoListController> {
                 isLoading: NetworkManager.instance.networkActivity,
                 body: RefreshIndicator(
                   onRefresh: () async => currentUser.triggerReload(),
-                  child: pudoList == null
+                  child: dataSource == null
                       ? const SizedBox()
-                      : pudoList!.isEmpty
+                      : dataSource!.isEmpty
                           ? const NoPudosWidget()
                           : _buildPudos(),
                 ),
@@ -102,7 +109,7 @@ class _PudoListControllerState extends State<PudoListController> {
         onTap: () => _openPudo(pudo),
         hasShadow: true,
       ),
-      items: pudoList!,
+      items: dataSource!,
       idGetter: (PudoSummary pudo) => pudo.pudoId!,
       onDelete: (PudoSummary pudo) => _deletePudo(pudo),
       alertDeleteText: "Sei sicuro di voler rimuovere questo pudo?\nSe continui non riceverai ulteriori notifiche per i pacchi non ancora consegnati",
@@ -132,7 +139,7 @@ class _PudoListControllerState extends State<PudoListController> {
   Future<void> _getPudos() {
     return NetworkManager.instance.getMyPudos().then((value) {
       if (value is List<PudoSummary>) {
-        pudoList = value;
+        dataSource = value;
       } else {
         NetworkErrorHelper.helper(context, value);
       }
