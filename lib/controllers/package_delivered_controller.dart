@@ -139,10 +139,10 @@ class _PackageDeliveredControllerState extends State<PackageDeliveredController>
                   showTrailingChevron: true,
                   title: selectedPackage == null ? "Pacchi in giacenza" : selectedPackage!.packageName ?? "",
                   leading: SvgPicture.asset(
-                    ImageSrc.packReceivedLeadingIcon,
+                    ImageSrc.boxFillIcon,
                     color: AppColors.primaryColorDark,
-                    height: 26,
-                    width: 26,
+                    height: 36,
+                    width: 36,
                   ),
                 ),
               ],
@@ -151,8 +151,8 @@ class _PackageDeliveredControllerState extends State<PackageDeliveredController>
     );
   }
 
-  void _handleQRCode(String? code){
-    if (_code == null && code!=null) {
+  void _handleQRCode(String? code) {
+    if (_code == null && code != null) {
       _code = code;
       NetworkManager.instance.getPackageDetailsByQrCode(shareLink: _code!).then((value) {
         if (value is PudoPackage) {

@@ -70,7 +70,7 @@ class _HomePudoPackagesState extends State<HomePudoPackages> with ConnectionAwar
               showTrailingChevron: true,
               title: "Ho ricevuto un pacco",
               leading: SvgPicture.asset(
-                ImageSrc.packReceivedLeadingIcon,
+                ImageSrc.boxFillIcon,
                 color: AppColors.cardColor,
                 width: 36,
                 height: 36,
@@ -95,7 +95,7 @@ class _HomePudoPackagesState extends State<HomePudoPackages> with ConnectionAwar
               showTrailingChevron: true,
               title: "Pacchi in giacenza",
               leading: SvgPicture.asset(
-                ImageSrc.packReceivedLeadingIcon,
+                ImageSrc.boxFillIcon,
                 color: AppColors.cardColor,
                 width: 36,
                 height: 36,

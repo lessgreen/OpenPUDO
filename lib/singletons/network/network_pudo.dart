@@ -254,7 +254,6 @@ mixin NetworkManagerPudo on NetworkGeneral {
       final codeUnits = response.body.codeUnits;
       var decodedUTF8 = const Utf8Decoder().convert(codeUnits);
       var json = jsonDecode(decodedUTF8);
-      log(decodedUTF8);
       var baseResponse = OPBaseResponse.fromJson(json);
       List<RewardOption> rewardOptions = <RewardOption>[];
 
