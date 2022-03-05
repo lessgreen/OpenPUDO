@@ -127,10 +127,10 @@ class _InstructionControllerState extends State<InstructionController> with Conn
         if (!widget.isForPudo)
           Container(
               padding: const EdgeInsets.only(left: Dimension.padding, right: Dimension.padding),
-              child: const Text(
-                'Se vuoi rivedere in seguito l’indirizzo da utilizzare per la consegna ti basterà selezionare il PUDO tra i tuoi PUDO dalla Home.',
+              child: Text(
+                'Se vuoi rivedere in seguito l’indirizzo\nda utilizzare per la consegna ti\nbasterà selezionare il PUDO tra i tuoi\nPUDO dalla Home.',
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 18),
+                style: Theme.of(context).textTheme.subtitle1!.copyWith(height: 1.2)
               )),
       ],
     );
@@ -306,7 +306,7 @@ class _InstructionControllerState extends State<InstructionController> with Conn
       return [
         InstructionCard(
           title: "É semplicissimo!",
-          description: 'Per poter ricevere il tuo pacco senza pensieri, utilizzando il tuo PUDO come destinatario ti basterà usare il seguente indirizzo di spedizione:',
+          description: 'Per poter ricevere il tuo pacco senza\npensieri, utilizzando il tuo PUDO\ncome destinatario ti basterà usare il\nseguente indirizzo di spedizione:',
           activeIndex: _currentPage,
           pages: 2,
           bottomWidget: _buildFirstPageWidget(
@@ -315,7 +315,7 @@ class _InstructionControllerState extends State<InstructionController> with Conn
         ),
         InstructionCard(
           title: "Notifica in tempo reale",
-          description: 'Riceverai una notifica quando il tuo pacco sarà giunto a destinazione presso il tuo PUDO.',
+          description: 'Riceverai una notifica quando il tuo\npacco sarà giunto a destinazione\npresso il tuo PUDO.',
           activeIndex: _currentPage,
           pages: 2,
           bottomWidget: SvgPicture.asset(ImageSrc.notificationVectorArt, semanticsLabel: 'Art Background'),
