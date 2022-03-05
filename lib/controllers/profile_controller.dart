@@ -24,8 +24,8 @@ import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
-import 'package:qui_green/commons/ui/custom_network_image.dart';
 import 'package:qui_green/commons/ui/cupertino_navigation_bar_fix.dart';
+import 'package:qui_green/commons/ui/custom_network_image.dart';
 import 'package:qui_green/resources/res.dart';
 import 'package:qui_green/resources/routes_enum.dart';
 import 'package:qui_green/singletons/current_user.dart';
@@ -92,7 +92,7 @@ class _ProfileControllerState extends State<ProfileController> with ConnectionAw
                     height: 36,
                   ),
                   title: "Le tue spedizioni",
-                  onTap: () {},
+                  onTap: () => Navigator.of(context).pushNamed(Routes.packagesList),
                 ),
                 TableViewCell(
                   leading: SvgPicture.asset(

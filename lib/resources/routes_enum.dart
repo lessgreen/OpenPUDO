@@ -48,8 +48,8 @@ class Routes {
   static const pudoUsersList = "/pudoUsersList";
   static const packageDelivered = "/packageDelivered";
   static const notifySent = "/notifySent";
-  static const packagesStock = "/packagesStock";
-  static const packagesStockWithHistory = "/packagesStockWithHistory";
+  static const packagesList = "/packagesList";
+  static const packagesListWithHistory = "/packagesListWithHistory";
   static const userDetail = "/userDetail";
   static const profileEdit = "/profileEdit";
 }

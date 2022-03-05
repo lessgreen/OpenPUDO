@@ -121,7 +121,7 @@ class _PackageDeliveredControllerState extends State<PackageDeliveredController>
                 ),
                 TableViewCell(
                   onTap: () {
-                    Navigator.of(context).pushNamed(Routes.packagesStock).then((value) {
+                    Navigator.of(context).pushNamed(Routes.packagesList).then((value) {
                       if (value != null && value is PackageSummary) {
                         setState(() {
                           selectedPackage = value;

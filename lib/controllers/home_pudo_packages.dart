@@ -90,7 +90,7 @@ class _HomePudoPackagesState extends State<HomePudoPackages> with ConnectionAwar
               ),
             ),
             TableViewCell(
-              onTap: () => Navigator.of(context).pushNamed(Routes.packagesStockWithHistory),
+              onTap: () => Navigator.of(context).pushNamed(Routes.packagesListWithHistory),
               fullWidth: true,
               showTrailingChevron: true,
               title: "Pacchi in giacenza",

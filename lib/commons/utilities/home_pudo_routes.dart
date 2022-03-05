@@ -30,7 +30,7 @@ import 'package:qui_green/controllers/onboarding/pudo_profile_edit_controller.da
 import 'package:qui_green/controllers/package_delivered_controller.dart';
 import 'package:qui_green/controllers/package_pickup_controller.dart';
 import 'package:qui_green/controllers/package_received_controller.dart';
-import 'package:qui_green/controllers/packages_stock_controller.dart';
+import 'package:qui_green/controllers/packages_list_controller.dart';
 import 'package:qui_green/controllers/pudo_users_list_controller.dart';
 import 'package:qui_green/controllers/user_detail_controller.dart';
 import 'package:qui_green/models/pudo_package.dart';
@@ -52,16 +52,18 @@ dynamic homePudoRouteWithSetting(RouteSettings settings) {
         packageModel: settings.arguments as PudoPackage,
         isForPudo: true,
       ));
-    case Routes.packagesStockWithHistory:
+    case Routes.packagesListWithHistory:
       return PageRouteHelper.buildPage(
-        const PackagesStockController(
+        const PackagesListController(
+          isForPudo: true,
           isOnReceivePack: false,
           enableHistory: true,
         ),
       );
-    case Routes.packagesStock:
+    case Routes.packagesList:
       return PageRouteHelper.buildPage(
-        const PackagesStockController(
+        const PackagesListController(
+          isForPudo: true,
           enableHistory: false,
           isOnReceivePack: true,
         ),
