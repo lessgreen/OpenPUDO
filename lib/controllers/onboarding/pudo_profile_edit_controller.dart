@@ -48,6 +48,9 @@ class PudoProfileEditController extends StatefulWidget {
 }
 
 class _PudoProfileEditControllerState extends State<PudoProfileEditController> with ConnectionAware {
+  final keyButtons = GlobalKey();
+  final keyText = GlobalKey();
+
   @override
   Widget build(BuildContext context) {
     return Consumer<CurrentUser>(builder: (context, currentUser, _) {
@@ -107,34 +110,64 @@ class _PudoProfileEditControllerState extends State<PudoProfileEditController> w
             ),
           ],
         ),
-        body: _buildBody(currentUser, viewModel),
-        bottomSheet: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            AnimatedCrossFade(
-                firstChild: MainButton(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: Dimension.padding,
-                  ),
-                  onPressed: () => viewModel.goToInstructions(context, currentUser.pudoProfile!),
-                  text: 'Vedi istruzioni di consegna',
-                ),
-                secondChild: const SizedBox(),
-                crossFadeState: viewModel.editEnabled ? CrossFadeState.showSecond : CrossFadeState.showFirst,
-                duration: const Duration(milliseconds: 100)),
-            const SizedBox(height: Dimension.padding),
-            AnimatedCrossFade(
-                firstChild: MainButton(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: Dimension.padding,
-                  ),
-                  onPressed: () => currentUser.refresh(),
-                  text: 'Vai alla home',
-                ),
-                secondChild: const SizedBox(),
-                crossFadeState: viewModel.editEnabled ? CrossFadeState.showSecond : CrossFadeState.showFirst,
-                duration: const Duration(milliseconds: 100)),
-          ],
+        body: SafeArea(
+          child: Stack(
+            children: [
+              _buildBody(currentUser, viewModel),
+              Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Column(
+                    key: keyButtons,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IgnorePointer(
+                        ignoring: true,
+                        child: ShaderMask(
+                            shaderCallback: (Rect rect) {
+                              return LinearGradient(
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                                colors: [Theme.of(context).backgroundColor, Colors.transparent, Colors.transparent, Colors.transparent],
+                                stops: const [0, 0.5, 0.7, 1],
+                              ).createShader(rect);
+                            },
+                            blendMode: BlendMode.dstOut,
+                            child: Container(
+                              color: Colors.white.withAlpha(225),
+                              height: Dimension.paddingL,
+                              width: double.infinity,
+                            )),
+                      ),
+                      AnimatedCrossFade(
+                          firstChild: MainButton(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: Dimension.padding,
+                            ),
+                            onPressed: () => viewModel.goToInstructions(context, currentUser.pudoProfile!),
+                            text: 'Vedi istruzioni di consegna',
+                          ),
+                          secondChild: const SizedBox(),
+                          crossFadeState: viewModel.editEnabled ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+                          duration: const Duration(milliseconds: 100)),
+                      Container(
+                        height: Dimension.padding,
+                        color: Theme.of(context).scaffoldBackgroundColor,
+                      ),
+                      AnimatedCrossFade(
+                          firstChild: MainButton(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: Dimension.padding,
+                            ),
+                            onPressed: () => currentUser.refresh(),
+                            text: 'Vai alla home',
+                          ),
+                          secondChild: const SizedBox(),
+                          crossFadeState: viewModel.editEnabled ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+                          duration: const Duration(milliseconds: 100)),
+                    ],
+                  ))
+            ],
+          ),
         ),
       );
 
@@ -182,6 +215,7 @@ class _PudoProfileEditControllerState extends State<PudoProfileEditController> w
                       width: MediaQuery.of(context).size.width / 3 * 2,
                       child: Text(
                         '“${currentUser.pudoProfile?.rewardMessage ?? ""}”',
+                        key: keyText,
                         style: Theme.of(context).textTheme.subtitle1?.copyWith(
                               height: 2,
                               fontStyle: FontStyle.italic,
@@ -206,6 +240,10 @@ class _PudoProfileEditControllerState extends State<PudoProfileEditController> w
                 ],
               ),
             ),
+            if (_checkIfOverlaps() && !viewModel.editEnabled)
+              SizedBox(
+                height: _getButtonsHeight(),
+              )
           ],
         ),
       );
@@ -346,4 +384,30 @@ class _PudoProfileEditControllerState extends State<PudoProfileEditController> w
 
   Widget _buildEditable(PudoProfileEditControllerViewModel viewModel, Widget view, Widget edit) =>
       AnimatedCrossFade(firstChild: view, secondChild: edit, crossFadeState: viewModel.editEnabled ? CrossFadeState.showSecond : CrossFadeState.showFirst, duration: const Duration(milliseconds: 150));
+
+  bool _checkIfOverlaps() {
+    if (keyButtons.currentContext != null && keyText.currentContext != null) {
+      RenderBox? box1 = keyButtons.currentContext!.findRenderObject() as RenderBox?;
+      RenderBox? box2 = keyText.currentContext!.findRenderObject() as RenderBox?;
+      if (box1 != null && box2 != null) {
+        final size1 = box1.size;
+        final size2 = box2.size;
+        final position1 = box1.localToGlobal(Offset.zero);
+        final position2 = box2.localToGlobal(Offset.zero);
+        return (position1.dx < position2.dx + size2.width && position1.dx + size1.width > position2.dx && position1.dy < position2.dy + size2.height && position1.dy + size1.height > position2.dy);
+      }
+    }
+    return false;
+  }
+
+  double _getButtonsHeight() {
+    if (keyButtons.currentContext != null) {
+      RenderBox? box1 = keyButtons.currentContext!.findRenderObject() as RenderBox?;
+      if (box1 != null) {
+        final size1 = box1.size;
+        return size1.height;
+      }
+    }
+    return 0;
+  }
 }

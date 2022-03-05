@@ -18,7 +18,7 @@
  If not, see <https://github.com/lessgreen/OpenPUDO>.
 */
 
-import 'package:flutter/cupertino.dart';
+/*import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
@@ -353,3 +353,4 @@ class _PudoRegistrationPreviewControllerState extends State<PudoRegistrationPrev
 
   void goToRegistration() {}
 }
+*/
