@@ -27,6 +27,7 @@ import 'package:qui_green/commons/utilities/home_user_routes.dart';
 import 'package:qui_green/controllers/home_user_packages.dart';
 import 'package:qui_green/controllers/onboarding/map_controller.dart';
 import 'package:qui_green/controllers/profile_controller.dart';
+import 'package:qui_green/controllers/pudo_list_controller.dart';
 import 'package:qui_green/resources/res.dart';
 import 'package:qui_green/singletons/network/network_manager.dart';
 
@@ -67,7 +68,21 @@ class _HomeControllerState extends State<HomeController> with ConnectionAware {
         bottomView: BottomNavigationBarItem(
           icon: SvgPicture.asset(ImageSrc.mapsArt, color: Colors.grey.shade400),
           activeIcon: SvgPicture.asset(ImageSrc.mapsArt, color: AppColors.primaryColorDark),
-          label: 'Pudo',
+          label: 'Map',
+        ),
+      ),
+      TabControllerContainer(
+        tabView: CupertinoTabView(
+          navigatorKey: GlobalKey(),
+          builder: (context) => const PudoListController(
+            isRootController: true,
+          ),
+          onGenerateRoute: (RouteSettings settings) => homeUserRouteWithSetting(settings),
+        ),
+        bottomView: BottomNavigationBarItem(
+          icon: SvgPicture.asset(ImageSrc.packReceivedLeadingIcon, color: Colors.grey.shade400),
+          activeIcon: SvgPicture.asset(ImageSrc.packReceivedLeadingIcon, color: AppColors.primaryColorDark),
+          label: 'Pudos',
         ),
       ),
       TabControllerContainer(
