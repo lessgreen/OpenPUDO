@@ -127,6 +127,24 @@ class _MapControllerState extends State<MapController> with ConnectionAware, Tic
     controller.forward();
   }
 
+  @override
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider(
+      create: (context) => MapsControllerViewModel(),
+      child: Consumer<MapsControllerViewModel?>(builder: (_, viewModel, __) {
+        viewModel?.animateMapTo = animateMapTo;
+        viewModel?.showErrorDialog = (String val) => _showErrorDialog(context, val);
+        if (widget.canGoBack) {
+          return widget.useCupertinoScaffold ? _buildPageWithCupertinoScaffold(viewModel!) : _buildPageWithCustomSpecificScaffold(viewModel!);
+        }
+        return WillPopScope(
+          onWillPop: () async => false,
+          child: widget.useCupertinoScaffold ? _buildPageWithCupertinoScaffold(viewModel!) : _buildPageWithCustomSpecificScaffold(viewModel!),
+        );
+      }),
+    );
+  }
+
   Widget _buildPageWithCupertinoScaffold(MapsControllerViewModel viewModel) => CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBarFix.build(
         context,
@@ -378,22 +396,4 @@ class _MapControllerState extends State<MapController> with ConnectionAware, Tic
           ],
         ),
       );
-
-  @override
-  Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => MapsControllerViewModel(),
-      child: Consumer<MapsControllerViewModel?>(builder: (_, viewModel, __) {
-        viewModel?.animateMapTo = animateMapTo;
-        viewModel?.showErrorDialog = (String val) => _showErrorDialog(context, val);
-        if (widget.canGoBack) {
-          return widget.useCupertinoScaffold ? _buildPageWithCupertinoScaffold(viewModel!) : _buildPageWithCustomSpecificScaffold(viewModel!);
-        }
-        return WillPopScope(
-          onWillPop: () async => false,
-          child: widget.useCupertinoScaffold ? _buildPageWithCupertinoScaffold(viewModel!) : _buildPageWithCustomSpecificScaffold(viewModel!),
-        );
-      }),
-    );
-  }
 }
