@@ -183,10 +183,23 @@ class _PackagePickupControllerState extends State<PackagePickupController> {
         Container(
           color: AppColors.boxGrey,
           padding: const EdgeInsets.symmetric(vertical: Dimension.paddingS, horizontal: Dimension.padding),
-          child: Text(
-            "DETTAGLI PACCO",
-            style: Theme.of(context).textTheme.bodyTextBold,
-          ),
+          child: RichText(
+              textAlign: TextAlign.justify,
+              text: TextSpan(
+                text: 'DETTAGLI PACCO',
+                style: widget.isForPudo ? Theme.of(context).textTheme.bodyTextLight : Theme.of(context).textTheme.bodyTextBold,
+                children: [
+                  if (widget.isForPudo)
+                    const TextSpan(
+                      text: " - per ",
+                    ),
+                  if (widget.isForPudo)
+                    TextSpan(
+                      text: "AC${widget.packageModel.userId ?? 0}",
+                      style: Theme.of(context).textTheme.bodyTextBold,
+                    ),
+                ],
+              )),
         ),
         ListView.builder(
           shrinkWrap: true,

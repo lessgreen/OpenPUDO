@@ -224,6 +224,57 @@ mixin NetworkManagerPudo on NetworkGeneral {
         }
       }
     } catch (e) {
+      safePrint('ERROR - getPudoRewardSchema: $e');
+      _refreshTokenRetryCounter = 0;
+      _networkActivity.value = false;
+      return e;
+    }
+  }
+
+  Future<dynamic> getPudoRewardPolicy() async {
+    try {
+      if (!isOnline) {
+        throw ("Network is offline");
+      }
+      if (_accessToken != null) {
+        _headers['Authorization'] = 'Bearer $_accessToken';
+      }
+
+      var url = _baseURL + '/api/v2/pudo/me/reward-policy';
+      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+        _networkActivity.value = true;
+      });
+      Response response = await r.retry(
+        () => get(Uri.parse(url), headers: _headers).timeout(Duration(seconds: _timeout)),
+        retryIf: (e) => e is SocketException || e is TimeoutException,
+      );
+      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+        _networkActivity.value = false;
+      });
+      final codeUnits = response.body.codeUnits;
+      var decodedUTF8 = const Utf8Decoder().convert(codeUnits);
+      var json = jsonDecode(decodedUTF8);
+      log(decodedUTF8);
+      var baseResponse = OPBaseResponse.fromJson(json);
+      List<RewardOption> rewardOptions = <RewardOption>[];
+
+      var needHandleTokenRefresh = _handleTokenRefresh(
+        baseResponse,
+        () {
+          getPudoRewardSchema().catchError((onError) => throw onError);
+        },
+      );
+      if (needHandleTokenRefresh == false) {
+        if (baseResponse.returnCode == 0 && baseResponse.payload != null && baseResponse.payload is List) {
+          for (dynamic aRow in baseResponse.payload) {
+            rewardOptions.add(RewardOption.fromJson(aRow));
+          }
+          return rewardOptions;
+        } else {
+          throw ErrorDescription('Error ${baseResponse.returnCode}: ${baseResponse.message}');
+        }
+      }
+    } catch (e) {
       safePrint('ERROR - getPudoRewardPolicy: $e');
       _refreshTokenRetryCounter = 0;
       _networkActivity.value = false;

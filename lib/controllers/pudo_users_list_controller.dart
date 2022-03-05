@@ -44,27 +44,11 @@ class PudoUsersListController extends StatefulWidget {
 }
 
 class _PudoUsersListControllerState extends State<PudoUsersListController> {
-  List<UserSummary>? usersList;
+  List<UserSummary>? _usersList;
 
-  List<UserSummary> get filteredUsersList => usersList != null ? usersList!.where((element) => handleUserSearch(searchedValue, element)).toList() : [];
+  List<UserSummary> get _filteredUsersList => _usersList != null ? _usersList!.where((element) => _handleUserSearch(_searchedValue, element)).toList() : [];
 
-  bool handleUserSearch(String search, UserSummary user) {
-    if (search.isEmpty) {
-      return true;
-    }
-    List<String> splittedSearch = search.toLowerCase().split(" ");
-    List<String> splittedUser = "${user.firstName} ${user.lastName} AC${user.userId.toString()}".toLowerCase().split(" ");
-    for (String splitSearch in splittedSearch) {
-      for (String splitValue in splittedUser) {
-        if (splitValue.contains(splitSearch)) {
-          return true;
-        }
-      }
-    }
-    return false;
-  }
-
-  String searchedValue = "";
+  String _searchedValue = "";
 
   @override
   void initState() {
@@ -100,7 +84,7 @@ class _PudoUsersListControllerState extends State<PudoUsersListController> {
                       padding: const EdgeInsets.only(left: Dimension.padding),
                       child: Icon(
                         CupertinoIcons.search,
-                        color: searchedValue.isEmpty ? AppColors.colorGrey : AppColors.primaryColorDark,
+                        color: _searchedValue.isEmpty ? AppColors.colorGrey : AppColors.primaryColorDark,
                       ),
                     ),
                     placeholderStyle: const TextStyle(color: AppColors.colorGrey),
@@ -109,7 +93,7 @@ class _PudoUsersListControllerState extends State<PudoUsersListController> {
                     textInputAction: TextInputAction.done,
                     onChanged: (newValue) {
                       setState(() {
-                        searchedValue = newValue;
+                        _searchedValue = newValue;
                       });
                     },
                   ),
@@ -122,12 +106,12 @@ class _PudoUsersListControllerState extends State<PudoUsersListController> {
                   Expanded(
                     child: RefreshIndicator(
                       onRefresh: () async {
-                        usersList = null;
+                        _usersList = null;
                         currentUser.triggerReload();
                       },
-                      child: usersList == null
+                      child: _usersList == null
                           ? const SizedBox()
-                          : usersList!.isEmpty
+                          : _usersList!.isEmpty
                               ? const SizedBox()
                               : _buildUsers(),
                     ),
@@ -148,9 +132,9 @@ class _PudoUsersListControllerState extends State<PudoUsersListController> {
       itemBuilder: (context, index) => TableViewCell(
         onTap: () {
           if (widget.isOnReceivePack) {
-            Navigator.pop(context, filteredUsersList[index]);
+            Navigator.pop(context, _filteredUsersList[index]);
           } else {
-            _onUserTap(filteredUsersList[index]);
+            _onUserTap(_filteredUsersList[index]);
             //Navigator.pushNamed("unkwon");
           }
         },
@@ -158,14 +142,14 @@ class _PudoUsersListControllerState extends State<PudoUsersListController> {
         showTrailingChevron: true,
         leading: CustomNetworkImage(
           isCircle: true,
-          url: filteredUsersList[index].profilePicId,
+          url: _filteredUsersList[index].profilePicId,
           width: 50,
           height: 50,
         ),
         leadingWidth: 50,
-        title: "${filteredUsersList[index].firstName} ${filteredUsersList[index].lastName} AC${filteredUsersList[index].userId.toString()}",
+        title: "${_filteredUsersList[index].firstName} ${_filteredUsersList[index].lastName} AC${_filteredUsersList[index].userId.toString()}",
       ),
-      itemCount: filteredUsersList.length,
+      itemCount: _filteredUsersList.length,
     );
   }
 
@@ -185,15 +169,31 @@ class _PudoUsersListControllerState extends State<PudoUsersListController> {
 
   Future<void> _getUsers() {
     //Check if firstFetch was ever done, we need to do this because of the search feature
-    if (usersList == null) {
+    if (_usersList == null) {
       return NetworkManager.instance.getMyPudoUsers().then((value) {
         if (value is List<UserSummary>) {
-          usersList = value;
+          _usersList = value;
         } else {
           NetworkErrorHelper.helper(context, value);
         }
       }).catchError((onError) => SAAlertDialog.displayAlertWithClose(context, "Error", onError));
     }
     return Future.value();
+  }
+
+  bool _handleUserSearch(String search, UserSummary user) {
+    if (search.isEmpty) {
+      return true;
+    }
+    List<String> splittedSearch = search.toLowerCase().split(" ");
+    List<String> splittedUser = "${user.firstName} ${user.lastName} AC${user.userId.toString()}".toLowerCase().split(" ");
+    for (String splitSearch in splittedSearch) {
+      for (String splitValue in splittedUser) {
+        if (splitValue.contains(splitSearch)) {
+          return true;
+        }
+      }
+    }
+    return false;
   }
 }

@@ -51,30 +51,9 @@ class _PackagesStockControllerState extends State<PackagesStockController> {
   List<PackageSummary>? _availablePackages;
   bool _isHistoryToggleVisible = false;
 
-  List<PackageSummary> get filteredUsersList => _availablePackages != null ? _availablePackages!.where((element) => handlePackageSearch(searchedValue, element)).toList() : [];
+  List<PackageSummary> get _filteredUsersList => _availablePackages != null ? _availablePackages!.where((element) => _handlePackageSearch(_searchedValue, element)).toList() : [];
 
-  bool handlePackageSearch(String search, PackageSummary package) {
-    if (search.isEmpty) {
-      return true;
-    }
-    List<String> splittedSearch = search.toLowerCase().split(" ");
-    String plainName = (package.packageName ?? "").toLowerCase();
-    //Search by name
-    for (String splitSearch in splittedSearch) {
-      if (plainName.contains(splitSearch)) {
-        return true;
-      }
-    }
-    //Search by id
-    for (String splitSearch in splittedSearch) {
-      if ("ac${package.userId ?? 0}".contains(splitSearch)) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  String searchedValue = "";
+  String _searchedValue = "";
 
   String? _errorDescription;
 
@@ -139,7 +118,7 @@ class _PackagesStockControllerState extends State<PackagesStockController> {
                               padding: const EdgeInsets.only(left: Dimension.padding),
                               child: Icon(
                                 CupertinoIcons.search,
-                                color: searchedValue.isEmpty ? AppColors.colorGrey : AppColors.primaryColorDark,
+                                color: _searchedValue.isEmpty ? AppColors.colorGrey : AppColors.primaryColorDark,
                               ),
                             ),
                             placeholderStyle: const TextStyle(color: AppColors.colorGrey),
@@ -148,7 +127,7 @@ class _PackagesStockControllerState extends State<PackagesStockController> {
                             textInputAction: TextInputAction.done,
                             onChanged: (newValue) {
                               setState(() {
-                                searchedValue = newValue;
+                                _searchedValue = newValue;
                               });
                             },
                           ),
@@ -222,14 +201,14 @@ class _PackagesStockControllerState extends State<PackagesStockController> {
                         : ListViewHeader(
                             hasScrollbar: true,
                             physics: const AlwaysScrollableScrollPhysics(),
-                            itemCount: filteredUsersList.length,
+                            itemCount: _filteredUsersList.length,
                             contentBuilder: (BuildContext context, int index) {
                               return TableViewCell(
                                 onTap: () {
                                   if (widget.isOnReceivePack) {
-                                    Navigator.pop(context, filteredUsersList[index]);
+                                    Navigator.pop(context, _filteredUsersList[index]);
                                   } else {
-                                    _onPackageCard(filteredUsersList[index]);
+                                    _onPackageCard(_filteredUsersList[index]);
                                   }
                                 },
                                 fullWidth: true,
@@ -241,14 +220,14 @@ class _PackagesStockControllerState extends State<PackagesStockController> {
                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
                                         Text(
-                                          "${filteredUsersList[index].createTms!.ddmmyyyy} ${filteredUsersList[index].packageName ?? ""}",
+                                          "${_filteredUsersList[index].createTms!.ddmmyyyy} ${_filteredUsersList[index].packageName ?? ""}",
                                           style: Theme.of(context).textTheme.bodyTextBold,
                                         ),
                                         RichText(
                                           textAlign: TextAlign.center,
                                           text: TextSpan(style: Theme.of(context).textTheme.bodyTextLight!.copyWith(color: CupertinoColors.secondaryLabel), children: [
                                             const TextSpan(text: "Destinatario: "),
-                                            TextSpan(text: "AC${filteredUsersList[index].userId}", style: Theme.of(context).textTheme.bodyTextBold),
+                                            TextSpan(text: "AC${_filteredUsersList[index].userId}", style: Theme.of(context).textTheme.bodyTextBold),
                                           ]),
                                         ),
                                       ],
@@ -296,5 +275,26 @@ class _PackagesStockControllerState extends State<PackagesStockController> {
     } else {
       return Future.value();
     }
+  }
+
+  bool _handlePackageSearch(String search, PackageSummary package) {
+    if (search.isEmpty) {
+      return true;
+    }
+    List<String> splittedSearch = search.toLowerCase().split(" ");
+    String plainName = (package.packageName ?? "").toLowerCase();
+    //Search by name
+    for (String splitSearch in splittedSearch) {
+      if (plainName.contains(splitSearch)) {
+        return true;
+      }
+    }
+    //Search by id
+    for (String splitSearch in splittedSearch) {
+      if ("ac${package.userId ?? 0}".contains(splitSearch)) {
+        return true;
+      }
+    }
+    return false;
   }
 }

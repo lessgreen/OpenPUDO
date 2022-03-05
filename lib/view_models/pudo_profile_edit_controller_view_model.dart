@@ -23,48 +23,65 @@ import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:qui_green/commons/alert_dialog.dart';
 import 'package:qui_green/commons/utilities/print_helper.dart';
 import 'package:qui_green/models/extra_info.dart';
 import 'package:qui_green/models/geo_marker.dart';
 import 'package:qui_green/models/pudo_profile.dart';
-import 'package:qui_green/models/registration_pudo_model.dart';
-import 'package:qui_green/models/registration_pudo_request.dart';
 import 'package:qui_green/models/reward_option.dart';
+import 'package:qui_green/models/update_pudo_request.dart';
 import 'package:qui_green/resources/routes_enum.dart';
+import 'package:qui_green/singletons/current_user.dart';
 import 'package:qui_green/singletons/network/network_manager.dart';
 
-class PudoRegistrationPreviewControllerViewModel extends ChangeNotifier {
-  PudoRegistrationPreviewControllerViewModel(PudoProfile profile) {
+class PudoProfileEditControllerViewModel extends ChangeNotifier {
+  PudoProfileEditControllerViewModel(BuildContext context, List<RewardOption>? dataSource) {
+    if (dataSource != null) {
+      _dataSource = dataSource;
+    } else {
+      NetworkManager.instance.getPudoRewardPolicy().then((value) {
+        if (value is List<RewardOption>) {
+          this.dataSource = value;
+        } else {
+          SAAlertDialog.displayAlertWithClose(context, "Error", "Qualcosa è andato storto");
+        }
+      }).catchError((error) => SAAlertDialog.displayAlertWithClose(context, "Error", error));
+    }
+  }
+
+  void initFields(PudoProfile profile) {
+    hasBeenDetailsChanged = false;
+    hasBeenRewardPolicyChanged = false;
     businessNameController.text = profile.businessName;
     phoneController.text = profile.publicPhoneNumber ?? "";
     addressController.text = profile.address?.label ?? "";
-  }
-
-  late RegistrationPudoModel dataModel;
-
-  // ************ Navigation *****
-  onSendClick(BuildContext context, RegistrationPudoModel requestModel) {
-    Navigator.of(context).pushReplacementNamed(Routes.pudoRegistrationPreview, arguments: requestModel.copyWith(rewardPolicy: dataSource));
+    _name = null;
+    _phoneNumber = null;
+    _address = null;
+    _image = null;
   }
 
   bool _editEnabled = false;
 
   bool get editEnabled => _editEnabled;
 
-  void handleEdit() {
+  void handleEdit(BuildContext context, PudoProfile profile) {
     if (!_editEnabled) {
+      initFields(profile);
       _editEnabled = true;
       notifyListeners();
     } else {
-      _editEnabled = false;
-      notifyListeners();
-      //TODO implement proper save
+      savePudoChanges(context);
       /*if (isValid) {
         _editEnabled = false;
         notifyListeners();
       }*/
     }
   }
+
+  bool hasBeenDetailsChanged = false;
+  bool hasBeenRewardPolicyChanged = false;
 
   TextEditingController businessNameController = TextEditingController();
 
@@ -120,6 +137,7 @@ class PudoRegistrationPreviewControllerViewModel extends ChangeNotifier {
   }
 
   void onValueChange(int index, bool value) {
+    hasBeenRewardPolicyChanged = true;
     if (isExclusiveSelected) {
       if (dataSource[index].exclusive == false) {
         return;
@@ -130,11 +148,13 @@ class PudoRegistrationPreviewControllerViewModel extends ChangeNotifier {
   }
 
   void onSubSelectValueChange(int rowIndex, int optionIndex, bool value) {
+    hasBeenRewardPolicyChanged = true;
     dataSource[rowIndex].extraInfo?.values?[optionIndex].checked = value;
     notifyListeners();
   }
 
   void onTextChange(int index, String value) {
+    hasBeenRewardPolicyChanged = true;
     RewardOption? aRow = (index < dataSource.length) ? dataSource[index] : null;
     if (aRow == null || aRow.extraInfo == null) {
       return;
@@ -146,6 +166,7 @@ class PudoRegistrationPreviewControllerViewModel extends ChangeNotifier {
   }
 
   void onSubTextChange(int rowIndex, int optionIndex, String value) {
+    hasBeenRewardPolicyChanged = true;
     RewardOption? aRow = (rowIndex < dataSource.length) ? dataSource[rowIndex] : null;
     if (aRow == null || aRow.extraInfo == null) {
       return;
@@ -215,20 +236,22 @@ class PudoRegistrationPreviewControllerViewModel extends ChangeNotifier {
     return false;
   }
 
-  String _name = "";
+  String? _name;
 
-  String get name => _name;
+  String? get name => _name;
 
-  set name(String newVal) {
+  set name(String? newVal) {
+    hasBeenDetailsChanged = true;
     _name = newVal;
     notifyListeners();
   }
 
-  String _phoneNumber = "";
+  String? _phoneNumber;
 
-  String get phoneNumber => _phoneNumber;
+  String? get phoneNumber => _phoneNumber;
 
-  set phoneNumber(String newVal) {
+  set phoneNumber(String? newVal) {
+    hasBeenDetailsChanged = true;
     _phoneNumber = newVal;
     notifyListeners();
   }
@@ -242,20 +265,18 @@ class PudoRegistrationPreviewControllerViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  get isValid {
-    if (_image == null) {
-      return false;
+  UpdateValidation get isValid {
+    if (_name != null) {
+      if (_name!.isEmpty) {
+        return UpdateValidation.businessName;
+      }
     }
-    if (_name.isEmpty) {
-      return false;
+    if (_phoneNumber != null) {
+      if (_phoneNumber!.isEmpty) {
+        return UpdateValidation.phoneNumber;
+      }
     }
-    if (_phoneNumber.isEmpty) {
-      return false;
-    }
-    if (_address == null) {
-      return false;
-    }
-    return true;
+    return UpdateValidation.valid;
   }
 
   PudoAddressMarker? _address;
@@ -267,6 +288,7 @@ class PudoRegistrationPreviewControllerViewModel extends ChangeNotifier {
   }
 
   set address(PudoAddressMarker? newVal) {
+    hasBeenDetailsChanged = true;
     _address = newVal;
     notifyListeners();
   }
@@ -275,7 +297,7 @@ class PudoRegistrationPreviewControllerViewModel extends ChangeNotifier {
   //onSendClick(BuildContext context, PudoProfile? pudoModel) {}
 
   pickFile() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles(allowMultiple: false, type: FileType.media);
+    FilePickerResult? result = await FilePicker.platform.pickFiles(allowMultiple: false, type: FileType.image);
     if (result != null) {
       try {
         File file = File(result.files.first.path ?? "");
@@ -325,7 +347,7 @@ class PudoRegistrationPreviewControllerViewModel extends ChangeNotifier {
 
   Future<void> fetchSuggestions(String val) async {
     if (val.trim().isNotEmpty) {
-      var res = await NetworkManager.instance.getAddresses(text: val);
+      var res = await NetworkManager.instance.getAddresses(text: val, precise: true);
       if (res is List<GeoMarker>) {
         if (res.isNotEmpty) {
           addresses = res;
@@ -345,4 +367,37 @@ class PudoRegistrationPreviewControllerViewModel extends ChangeNotifier {
   void goToInstructions(BuildContext context, PudoProfile profile) {
     Navigator.of(context).pushReplacementNamed(Routes.pudoTutorial, arguments: profile);
   }
+
+  void savePudoChanges(BuildContext context) async {
+    bool changesMade = false;
+    if (hasBeenDetailsChanged) {
+      if (isValid != UpdateValidation.valid) {
+        //TODO show Error wrong changes
+        return;
+      } else {
+        changesMade = true;
+        await NetworkManager.instance.updatePudo(UpdatePudoRequest(
+            pudo: PudoRequest(businessName: businessNameController.text, publicPhoneNumber: phoneController.text.contains("+39") ? phoneController.text : "+39" + phoneController.text),
+            addressMarker: _address));
+      }
+    }
+    if (hasBeenRewardPolicyChanged) {
+      changesMade = true;
+      await NetworkManager.instance.updatePudoPolicy(dataSource);
+    }
+    if (_image != null) {
+      changesMade = true;
+      await NetworkManager.instance.photoUpload(
+        _image!,
+        isPudo: true,
+      );
+    }
+    if (changesMade) {
+      Provider.of<CurrentUser>(context, listen: false).triggerUserReload();
+    }
+    _editEnabled = false;
+    notifyListeners();
+  }
 }
+
+enum UpdateValidation { businessName, phoneNumber, valid }

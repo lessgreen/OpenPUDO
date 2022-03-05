@@ -260,7 +260,6 @@ mixin NetworkManagerPackages on NetworkGeneral {
       } else {
         return ErrorDescription('Error missing parameters.');
       }
-      print(notes);
       var url = _baseURL + '/api/v2/package';
       var body = jsonEncode(request.toJson());
 

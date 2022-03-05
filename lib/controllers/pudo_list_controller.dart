@@ -43,7 +43,7 @@ class PudoListController extends StatefulWidget {
 }
 
 class _PudoListControllerState extends State<PudoListController> {
-  List<PudoSummary>? pudoList;
+  List<PudoSummary>? _pudoList;
 
   @override
   void initState() {
@@ -75,9 +75,9 @@ class _PudoListControllerState extends State<PudoListController> {
                 isLoading: NetworkManager.instance.networkActivity,
                 body: RefreshIndicator(
                   onRefresh: () async => currentUser.triggerReload(),
-                  child: pudoList == null
+                  child: _pudoList == null
                       ? const SizedBox()
-                      : pudoList!.isEmpty
+                      : _pudoList!.isEmpty
                           ? const NoPudosWidget()
                           : _buildPudos(),
                 ),
@@ -102,7 +102,7 @@ class _PudoListControllerState extends State<PudoListController> {
         onTap: () => _openPudo(pudo),
         hasShadow: true,
       ),
-      items: pudoList!,
+      items: _pudoList!,
       idGetter: (PudoSummary pudo) => pudo.pudoId!,
       onDelete: (PudoSummary pudo) => _deletePudo(pudo),
       alertDeleteText: "Sei sicuro di voler rimuovere questo pudo?\nSe continui non riceverai ulteriori notifiche per i pacchi non ancora consegnati",
@@ -132,7 +132,7 @@ class _PudoListControllerState extends State<PudoListController> {
   Future<void> _getPudos() {
     return NetworkManager.instance.getMyPudos().then((value) {
       if (value is List<PudoSummary>) {
-        pudoList = value;
+        _pudoList = value;
       } else {
         NetworkErrorHelper.helper(context, value);
       }

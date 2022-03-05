@@ -23,6 +23,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_qr_bar_scanner/flutter_qr_bar_scanner.dart';
 import 'package:flutter_qr_bar_scanner/qr_bar_scanner_camera.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:qui_green/commons/alert_dialog.dart';
 import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
 import 'package:qui_green/commons/ui/cupertino_navigation_bar_fix.dart';
 import 'package:qui_green/models/package_summary.dart';
@@ -43,7 +44,7 @@ class PackageDeliveredController extends StatefulWidget {
 
 class _PackageDeliveredControllerState extends State<PackageDeliveredController> {
   PackageSummary? selectedPackage;
-  String? code;
+  String? _code;
 
   @override
   void initState() {
@@ -101,27 +102,7 @@ class _PackageDeliveredControllerState extends State<PackageDeliveredController>
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(Dimension.borderRadius),
                       child: QRBarScannerCamera(
-                        qrCodeCallback: (code) {
-                          if (code == null) {
-                            NetworkManager.instance.getPackageDetailsByQrCode(shareLink: code!).then((value) {
-                              if (value is PudoPackage) {
-                                NetworkManager.instance.changePackageStatus(packageId: value.packageId, newStatus: PudoPackageStatus.collected).then((value) {
-                                  if (value is PudoPackage) {
-                                    Navigator.of(context).pop();
-                                  } else {
-                                    code = null;
-                                  }
-                                }).catchError((onError) {
-                                  code = null;
-                                });
-                              } else {
-                                code = null;
-                              }
-                            }).catchError((onError) {
-                              code = null;
-                            });
-                          }
-                        },
+                        qrCodeCallback: _handleQRCode,
                         formats: const [BarcodeFormats.QR_CODE],
                       ),
                     ),
@@ -168,5 +149,28 @@ class _PackageDeliveredControllerState extends State<PackageDeliveredController>
             ),
           )),
     );
+  }
+
+  void _handleQRCode(String? code){
+    if (_code == null && code!=null) {
+      _code = code;
+      NetworkManager.instance.getPackageDetailsByQrCode(shareLink: _code!).then((value) {
+        if (value is PudoPackage) {
+          NetworkManager.instance.changePackageStatus(packageId: value.packageId, newStatus: PudoPackageStatus.collected).then((value) {
+            if (value is PudoPackage) {
+              Navigator.of(context).pop();
+            } else {
+              SAAlertDialog.displayAlertWithClose(context, "Error", value, barrierDismissable: false, then: () => _code = null);
+            }
+          }).catchError((onError) {
+            SAAlertDialog.displayAlertWithClose(context, "Error", onError, barrierDismissable: false, then: () => _code = null);
+          });
+        } else {
+          SAAlertDialog.displayAlertWithClose(context, "Error", value, barrierDismissable: false, then: () => _code = null);
+        }
+      }).catchError((onError) {
+        SAAlertDialog.displayAlertWithClose(context, "Error", onError, barrierDismissable: false, then: () => _code = null);
+      });
+    }
   }
 }

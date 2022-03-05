@@ -26,6 +26,7 @@ import 'package:qui_green/app.dart';
 import 'package:qui_green/commons/utilities/page_route_helper.dart';
 import 'package:qui_green/controllers/error_controller.dart';
 import 'package:qui_green/controllers/notify_sent_controller.dart';
+import 'package:qui_green/controllers/onboarding/pudo_profile_edit_controller.dart';
 import 'package:qui_green/controllers/package_delivered_controller.dart';
 import 'package:qui_green/controllers/package_pickup_controller.dart';
 import 'package:qui_green/controllers/package_received_controller.dart';
@@ -40,6 +41,10 @@ dynamic homePudoRouteWithSetting(RouteSettings settings) {
   log("current route name: ${settings.name}");
   currentRouteName.value = settings.name ?? '/main';
   switch (settings.name) {
+    case Routes.profileEdit:
+      return PageRouteHelper.buildPage(const PudoProfileEditController(
+        isOnHome: true,
+      ));
     case Routes.userDetail:
       return PageRouteHelper.buildPage(UserDetailController(userModel: settings.arguments as UserProfile));
     case Routes.packagePickup:

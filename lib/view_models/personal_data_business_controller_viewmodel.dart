@@ -33,9 +33,9 @@ import 'package:qui_green/models/registration_pudo_request.dart';
 import 'package:qui_green/singletons/network/network_manager.dart';
 
 class PersonalDataBusinessControllerViewModel extends ChangeNotifier {
-  PersonalDataBusinessControllerViewModel(String phoneNumber){
+  PersonalDataBusinessControllerViewModel(String phoneNumber) {
     this.phoneNumber = phoneNumber;
-    phoneNumberController.text=phoneNumber;
+    phoneNumberController.text = phoneNumber;
   }
 
   Function(String)? showErrorDialog;
@@ -73,7 +73,7 @@ class PersonalDataBusinessControllerViewModel extends ChangeNotifier {
     if (_name.isEmpty) {
       return false;
     }
-    if (_phoneNumber.isEmpty || !_phoneNumber.replaceAll("+39","").isValidPhoneNumber()) {
+    if (_phoneNumber.isEmpty || !_phoneNumber.replaceAll("+39", "").isValidPhoneNumber()) {
       return false;
     }
     if (_address == null) {
@@ -128,7 +128,7 @@ class PersonalDataBusinessControllerViewModel extends ChangeNotifier {
   }
 
   pickFile() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles(allowMultiple: false, type: FileType.media);
+    FilePickerResult? result = await FilePicker.platform.pickFiles(allowMultiple: false, type: FileType.image);
     if (result != null) {
       try {
         File file = File(result.files.first.path ?? "");
@@ -178,7 +178,7 @@ class PersonalDataBusinessControllerViewModel extends ChangeNotifier {
 
   Future<void> fetchSuggestions(String val) async {
     if (val.trim().isNotEmpty) {
-      var res = await NetworkManager.instance.getAddresses(text: val,precise: true);
+      var res = await NetworkManager.instance.getAddresses(text: val, precise: true);
       if (res is List<GeoMarker>) {
         if (res.isNotEmpty) {
           addresses = res;

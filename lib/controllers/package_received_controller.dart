@@ -45,32 +45,9 @@ class PackageReceivedController extends StatefulWidget {
 }
 
 class _PackageReceivedControllerState extends State<PackageReceivedController> {
-  UserSummary? selectedUser;
-  File? image;
-  final TextEditingController notesController = TextEditingController();
-
-  void pickImage() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles(allowMultiple: false, type: FileType.media);
-    if (result != null) {
-      File file = File(result.files.first.path ?? "");
-      setState(() {
-        image = file;
-      });
-    }
-  }
-
-  void sendRequest() {
-    NetworkManager.instance.setupDelivery(userId: selectedUser!.userId ?? 0, notes: notesController.text.trim()).then((value) {
-      if (value != null && value is PudoPackage) {
-        if (image != null) {
-          NetworkManager.instance.packagePhotoUpload(image!, value.packageId).catchError((onError) => print(onError));
-        }
-        Navigator.of(context).pushReplacementNamed(Routes.notifySent, arguments: "${selectedUser!.firstName} ${selectedUser!.lastName}");
-      } else {
-        NetworkErrorHelper.helper(context, value);
-      }
-    }).catchError((onError) => SAAlertDialog.displayAlertWithClose(context, "Error", onError));
-  }
+  UserSummary? _selectedUser;
+  File? _image;
+  final TextEditingController _notesController = TextEditingController();
 
   @override
   void initState() {
@@ -100,8 +77,8 @@ class _PackageReceivedControllerState extends State<PackageReceivedController> {
                   height: Dimension.paddingM,
                 ),
                 ProfilePicBox(
-                  onTap: pickImage,
-                  image: image,
+                  onTap: _pickImage,
+                  image: _image,
                   title: "Scatta una foto\nal pacco",
                   mainIconSvgAsset: ImageSrc.shipmentLeadingCell,
                 ),
@@ -113,7 +90,7 @@ class _PackageReceivedControllerState extends State<PackageReceivedController> {
                     Navigator.of(context).pushNamed(Routes.searchRecipient).then((value) {
                       if (value != null && value is UserSummary) {
                         setState(() {
-                          selectedUser = value;
+                          _selectedUser = value;
                         });
                       }
                     });
@@ -121,7 +98,7 @@ class _PackageReceivedControllerState extends State<PackageReceivedController> {
                   fullWidth: true,
                   showTopDivider: true,
                   showTrailingChevron: true,
-                  title: selectedUser == null ? "Scegli un destinatario" : "${selectedUser!.firstName} ${selectedUser!.lastName} AC${selectedUser!.userId.toString()}",
+                  title: _selectedUser == null ? "Scegli un destinatario" : "${_selectedUser!.firstName} ${_selectedUser!.lastName} AC${_selectedUser!.userId.toString()}",
                   leading: const Icon(
                     CupertinoIcons.person,
                     color: AppColors.primaryColorDark,
@@ -144,7 +121,7 @@ class _PackageReceivedControllerState extends State<PackageReceivedController> {
                         padding: const EdgeInsets.all(Dimension.padding),
                         prefixMode: OverlayVisibilityMode.always,
                         placeholderStyle: const TextStyle(color: AppColors.colorGrey),
-                        controller: notesController,
+                        controller: _notesController,
                         decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(Dimension.borderRadiusSearch)),
                         autofocus: false,
                         textInputAction: TextInputAction.done,
@@ -160,10 +137,33 @@ class _PackageReceivedControllerState extends State<PackageReceivedController> {
                 const SizedBox(
                   height: Dimension.paddingL,
                 ),
-                MainButton(enabled: selectedUser != null, text: "Avanti", onPressed: sendRequest)
+                MainButton(enabled: _selectedUser != null, text: "Avanti", onPressed: _sendRequest)
               ],
             ),
           )),
     );
+  }
+
+  void _pickImage() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(allowMultiple: false, type: FileType.image);
+    if (result != null) {
+      File file = File(result.files.first.path ?? "");
+      setState(() {
+        _image = file;
+      });
+    }
+  }
+
+  void _sendRequest() {
+    NetworkManager.instance.setupDelivery(userId: _selectedUser!.userId ?? 0, notes: _notesController.text.trim()).then((value) {
+      if (value != null && value is PudoPackage) {
+        if (_image != null) {
+          NetworkManager.instance.packagePhotoUpload(_image!, value.packageId).catchError((onError) => SAAlertDialog.displayAlertWithClose(context, "Error", onError));
+        }
+        Navigator.of(context).pushReplacementNamed(Routes.notifySent, arguments: "${_selectedUser!.firstName} ${_selectedUser!.lastName}");
+      } else {
+        NetworkErrorHelper.helper(context, value);
+      }
+    }).catchError((onError) => SAAlertDialog.displayAlertWithClose(context, "Error", onError));
   }
 }

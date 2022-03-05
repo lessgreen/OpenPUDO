@@ -22,13 +22,12 @@ import 'package:flutter/material.dart';
 import 'package:qui_green/models/extra_info.dart';
 import 'package:qui_green/models/reward_option.dart';
 import 'package:qui_green/resources/res.dart';
-import 'package:qui_green/view_models/reward_policy_controller_viewmodel.dart';
 
 class RewardOptionWidget extends StatelessWidget {
   final int index;
   final bool hasTopPadding;
   final EdgeInsets edgeInsets;
-  final RewardPolicyControllerViewModel? viewModel;
+  final dynamic viewModel;
 
   const RewardOptionWidget({
     Key? key,
@@ -61,7 +60,11 @@ class RewardOptionWidget extends StatelessWidget {
                               alignment: PlaceholderAlignment.middle,
                               child: Icon(
                                 dataSource.iconData,
-                                color: (viewModel!.isExclusiveSelected) ? (dataSource.checked??false) ?AppColors.cardColor:AppColors.colorGrey:AppColors.cardColor,
+                                color: (viewModel!.isExclusiveSelected)
+                                    ? (dataSource.checked ?? false)
+                                        ? AppColors.cardColor
+                                        : AppColors.colorGrey
+                                    : AppColors.cardColor,
                               ),
                             ),
                             const WidgetSpan(
@@ -81,7 +84,7 @@ class RewardOptionWidget extends StatelessWidget {
                       scale: 1.3,
                       child: Checkbox(
                         activeColor: AppColors.primaryColorDark,
-                        value: dataSource.checked??false,
+                        value: dataSource.checked ?? false,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(25),
                         ),
@@ -100,7 +103,7 @@ class RewardOptionWidget extends StatelessWidget {
                     viewModel: viewModel,
                     index: index,
                   ),
-                  crossFadeState: (dataSource.checked??false) && dataSource.extraInfo != null ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+                  crossFadeState: (dataSource.checked ?? false) && dataSource.extraInfo != null ? CrossFadeState.showSecond : CrossFadeState.showFirst,
                   duration: const Duration(milliseconds: 100),
                 ),
                 Padding(
@@ -114,7 +117,7 @@ class RewardOptionWidget extends StatelessWidget {
 }
 
 class ExtraInfoWidget extends StatelessWidget {
-  final RewardPolicyControllerViewModel? viewModel;
+  final dynamic viewModel;
   final ExtraInfo? extraInfo;
   final int index;
   final int? subIndex;
@@ -172,7 +175,7 @@ class ExtraInfoSelectWidget extends StatelessWidget {
 
   final int rowIndex;
   final ExtraInfo extraInfo;
-  final RewardPolicyControllerViewModel? viewModel;
+  final dynamic viewModel;
 
   @override
   Widget build(BuildContext context) {
@@ -201,7 +204,7 @@ class ExtraInfoOptionWidget extends StatelessWidget {
   final int index;
   final bool hasTopPadding;
   final EdgeInsets edgeInsets;
-  final RewardPolicyControllerViewModel? viewModel;
+  final dynamic viewModel;
 
   const ExtraInfoOptionWidget({
     Key? key,
@@ -254,7 +257,7 @@ class ExtraInfoOptionWidget extends StatelessWidget {
                     ),
                   ],
                 ),
-                (currentItem.checked??false) && currentItem.extraInfo != null
+                (currentItem.checked ?? false) && currentItem.extraInfo != null
                     ? ExtraInfoWidget(
                         extraInfo: currentItem.extraInfo,
                         viewModel: viewModel,
@@ -284,7 +287,7 @@ class ExtraInfoTextWidget extends StatelessWidget {
   }) : super(key: key);
 
   final ExtraInfo extraInfo;
-  final RewardPolicyControllerViewModel viewModel;
+  final dynamic viewModel;
   final int index;
   final int? subIndex;
 
@@ -331,7 +334,7 @@ class ExtraInfoDecimalWidget extends StatefulWidget {
   }) : super(key: key);
 
   final ExtraInfo extraInfo;
-  final RewardPolicyControllerViewModel viewModel;
+  final dynamic viewModel;
   final int index;
   final int? subIndex;
 

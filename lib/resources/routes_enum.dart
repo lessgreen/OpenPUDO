@@ -51,4 +51,5 @@ class Routes {
   static const packagesStock = "/packagesStock";
   static const packagesStockWithHistory = "/packagesStockWithHistory";
   static const userDetail = "/userDetail";
+  static const profileEdit = "/profileEdit";
 }

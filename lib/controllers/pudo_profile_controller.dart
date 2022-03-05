@@ -52,12 +52,15 @@ class _PudoProfileControllerState extends State<PudoProfileController> with Conn
                   'Il tuo profilo',
                   style: Theme.of(context).textTheme.navBarTitle,
                 ),
-                trailing: const Padding(
-                  padding: EdgeInsets.only(right: Dimension.padding),
-                  child: Icon(
-                    CupertinoIcons.pencil_circle,
-                    color: Colors.white,
-                    size: 26,
+                trailing: InkWell(
+                  onTap: () => Navigator.pushNamed(context, Routes.profileEdit),
+                  child: const Padding(
+                    padding: EdgeInsets.only(right: Dimension.padding),
+                    child: Icon(
+                      CupertinoIcons.pencil_circle,
+                      color: Colors.white,
+                      size: 26,
+                    ),
                   ),
                 )),
             child: ListView(
