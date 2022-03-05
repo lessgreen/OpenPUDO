@@ -85,19 +85,8 @@ class _ProfileControllerState extends State<ProfileController> with ConnectionAw
                   kgCO2Saved: 456,
                 ),
                 TableViewCell(
-                    leading: SvgPicture.asset(
-                      ImageSrc.positionLeadingCell,
-                      color: AppColors.cardColor,
-                      width: 36,
-                      height: 36,
-                    ),
-                    title: "I tuoi pudo",
-                    onTap: () {
-                      Navigator.of(context).pushNamed(Routes.pudoList);
-                    }),
-                TableViewCell(
                   leading: SvgPicture.asset(
-                    ImageSrc.packReceivedLeadingIcon,
+                    ImageSrc.positionLeadingCell,
                     color: AppColors.cardColor,
                     width: 36,
                     height: 36,

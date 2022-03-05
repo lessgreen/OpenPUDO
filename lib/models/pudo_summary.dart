@@ -25,21 +25,23 @@ part 'pudo_summary.g.dart';
 
 @JsonSerializable()
 class PudoSummary {
+  int? pudoId;
   String businessName;
   String? pudoPicId;
-  int? pudoId;
   String? label;
   RatingModel? rating;
+  String? customizedAddress;
 
-  PudoSummary(
-      {required this.businessName,
-      this.label,
-      this.pudoId,
-      this.pudoPicId,
-      this.rating});
+  PudoSummary({
+    this.pudoId,
+    required this.businessName,
+    this.label,
+    this.pudoPicId,
+    this.rating,
+    this.customizedAddress,
+  });
 
-  factory PudoSummary.fromJson(Map<String, dynamic> json) =>
-      _$PudoSummaryFromJson(json);
+  factory PudoSummary.fromJson(Map<String, dynamic> json) => _$PudoSummaryFromJson(json);
 
   Map<String, dynamic> toJson() => _$PudoSummaryToJson(this);
 }

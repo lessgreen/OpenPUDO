@@ -19,6 +19,7 @@
 */
 
 import 'package:flutter/material.dart';
+import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
 import 'package:qui_green/commons/ui/custom_network_image.dart';
 import 'package:qui_green/resources/res.dart';
 
@@ -75,23 +76,24 @@ class PudoMapCard extends StatelessWidget {
                   children: [
                     Text(
                       name,
-                      maxLines: 2,
-                      style: const TextStyle(fontSize: 16),
-                    ),
-                    const SizedBox(height: Dimension.paddingXS),
-                    Text(
-                      address,
-                      maxLines: 2,
-                      style: const TextStyle(fontSize: 12),
+                      maxLines: 1,
+                      style: Theme.of(context).textTheme.bodyTextBold, //const TextStyle(fontSize: 16),
                     ),
                     Row(
                       children: List<Widget>.generate(
                         5,
                         (index) => Icon(
                           Icons.star_rounded,
+                          size: 16,
                           color: (index + 1 <= stars) ? Colors.yellow.shade700 : Colors.grey.shade200,
                         ),
                       ),
+                    ),
+                    const SizedBox(height: Dimension.paddingS),
+                    Text(
+                      address,
+                      maxLines: 2,
+                      style: const TextStyle(fontSize: 12),
                     ),
                   ],
                 ),
