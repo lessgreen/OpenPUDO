@@ -127,11 +127,8 @@ class _InstructionControllerState extends State<InstructionController> with Conn
         if (!widget.isForPudo)
           Container(
               padding: const EdgeInsets.only(left: Dimension.padding, right: Dimension.padding),
-              child: Text(
-                'Se vuoi rivedere in seguito l’indirizzo\nda utilizzare per la consegna ti\nbasterà selezionare il PUDO tra i tuoi\nPUDO dalla Home.',
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.subtitle1!.copyWith(height: 1.2)
-              )),
+              child: Text('Se vuoi rivedere in seguito l’indirizzo\nda utilizzare per la consegna ti\nbasterà selezionare il PUDO tra i tuoi\nPUDO dalla Home.',
+                  textAlign: TextAlign.center, style: Theme.of(context).textTheme.subtitle1!.copyWith(height: 1.2))),
       ],
     );
   }
@@ -253,13 +250,16 @@ class _InstructionControllerState extends State<InstructionController> with Conn
                 showTopDivider: true,
                 showTrailingChevron: true,
                 fullWidth: true,
-                leading: Icon(
-                  CupertinoIcons.person,
-                  color: AppColors.cardColor,
-                  size: 26,
+                leading: SizedBox(
+                  height: 36,
+                  child: Icon(
+                    CupertinoIcons.person,
+                    color: AppColors.cardColor,
+                    size: 26,
+                  ),
                 ),
               ),
-              const SizedBox(height: Dimension.padding),
+              const SizedBox(height: Dimension.paddingM),
               Container(
                 width: MediaQuery.of(context).size.width / 3 * 2,
                 alignment: Alignment.center,
