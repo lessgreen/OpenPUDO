@@ -121,7 +121,7 @@ class SAAlertDialog extends StatelessWidget {
     });
   }
 
-  static displayAlertWithClose(BuildContext context, String title, dynamic description, {bool barrierDismissable = true, Function? then}) {
+  static displayAlertWithClose(BuildContext context, String title, dynamic description, {bool barrierDismissable = true, Function? completion}) {
     if (isAlreadyShown) {
       return;
     }
@@ -153,7 +153,7 @@ class SAAlertDialog extends StatelessWidget {
                       onPressed: () {
                         isAlreadyShown = false;
                         Navigator.of(subContext).pop();
-                        then?.call();
+                        completion?.call();
                       },
                     )
                   ]);
@@ -161,7 +161,7 @@ class SAAlertDialog extends StatelessWidget {
             context: context)
         .then((value) {
       isAlreadyShown = false;
-      then?.call();
+      completion?.call();
     });
   }
 

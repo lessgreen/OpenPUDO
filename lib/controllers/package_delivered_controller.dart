@@ -160,16 +160,16 @@ class _PackageDeliveredControllerState extends State<PackageDeliveredController>
             if (value is PudoPackage) {
               Navigator.of(context).pop();
             } else {
-              SAAlertDialog.displayAlertWithClose(context, "Error", value, barrierDismissable: false, then: () => _code = null);
+              SAAlertDialog.displayAlertWithClose(context, "Error", value, barrierDismissable: false, completion: () => _code = null);
             }
           }).catchError((onError) {
-            SAAlertDialog.displayAlertWithClose(context, "Error", onError, barrierDismissable: false, then: () => _code = null);
+            SAAlertDialog.displayAlertWithClose(context, "Error", onError, barrierDismissable: false, completion: () => _code = null);
           });
         } else {
-          SAAlertDialog.displayAlertWithClose(context, "Error", value, barrierDismissable: false, then: () => _code = null);
+          SAAlertDialog.displayAlertWithClose(context, "Error", value, barrierDismissable: false, completion: () => _code = null);
         }
       }).catchError((onError) {
-        SAAlertDialog.displayAlertWithClose(context, "Error", onError, barrierDismissable: false, then: () => _code = null);
+        SAAlertDialog.displayAlertWithClose(context, "Error", onError, barrierDismissable: false, completion: () => _code = null);
       });
     }
   }
