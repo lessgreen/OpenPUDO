@@ -95,7 +95,7 @@ class _HomePudoControllerState extends State<HomePudoController> with Connection
               showTrailingChevron: true,
               title: "Pacchi in giacenza",
               leading: SvgPicture.asset(
-                ImageSrc.boxFillIcon,
+                ImageSrc.waitingPackage,
                 color: AppColors.cardColor,
                 width: 36,
                 height: 36,
