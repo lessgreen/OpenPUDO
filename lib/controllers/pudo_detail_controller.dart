@@ -319,26 +319,30 @@ class _PudoDetailControllerState extends State<PudoDetailController> with Connec
   //MARK: Actions
 
   void _openModal() {
-    SAAlertDialog.displayModalWithButtons(context, "Scegli un'azione", [
-      CupertinoActionSheetAction(
-        child: const Text('Chiama al telefono'),
-        onPressed: () {
-          UrlLauncherHelper.launchUrl(UrlTypes.tel, widget.dataModel.publicPhoneNumber!);
-        },
-      ),
-      CupertinoActionSheetAction(
-        child: const Text('Invia un messaggio'),
-        onPressed: () {
-          UrlLauncherHelper.launchUrl(UrlTypes.sms, widget.dataModel.publicPhoneNumber!);
-        },
-      ),
-      CupertinoActionSheetAction(
-        child: const Text('Invia un WhatsApp'),
-        onPressed: () {
-          UrlLauncherHelper.launchUrl(UrlTypes.whatsapp, widget.dataModel.publicPhoneNumber!);
-        },
-      )
-    ]);
+    SAAlertDialog.displayModalWithButtons(
+      context,
+      "Scegli un'azione",
+      [
+        CupertinoActionSheetAction(
+          child: const Text('Chiama al telefono'),
+          onPressed: () {
+            UrlLauncherHelper.launchUrl(UrlTypes.tel, widget.dataModel.publicPhoneNumber!);
+          },
+        ),
+        CupertinoActionSheetAction(
+          child: const Text('Invia un messaggio'),
+          onPressed: () {
+            UrlLauncherHelper.launchUrl(UrlTypes.sms, widget.dataModel.publicPhoneNumber!);
+          },
+        ),
+        CupertinoActionSheetAction(
+          child: const Text('Invia un WhatsApp'),
+          onPressed: () {
+            UrlLauncherHelper.launchUrl(UrlTypes.whatsapp, widget.dataModel.publicPhoneNumber!);
+          },
+        )
+      ],
+    );
   }
 
   bool _nextVisible = false;

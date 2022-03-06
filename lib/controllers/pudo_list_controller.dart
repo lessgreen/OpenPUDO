@@ -18,6 +18,7 @@
  If not, see <https://github.com/lessgreen/OpenPUDO>.
 */
 
+import 'package:clipboard/clipboard.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -101,12 +102,18 @@ class _PudoListControllerState extends State<PudoListController> {
   Widget _buildPudos() {
     return DeletableListView<PudoSummary>(
       hasScrollBar: true,
-      itemBuilder: (PudoSummary pudo) => PudoCard(
-        dataSource: pudo,
-        onTap: () => _openPudo(pudo),
-        hasShadow: true,
-      ),
-      items: dataSource!,
+      items: dataSource ?? [],
+      itemBuilder: (PudoSummary pudo) {
+        return PudoCard(
+          dataSource: pudo,
+          hasShadow: true,
+          showCustomizedAddress: true,
+          onTap: () => _openPudo(pudo),
+          onLongPress: () {
+            _openModal(pudo.customizedAddress);
+          },
+        );
+      },
       idGetter: (PudoSummary pudo) => pudo.pudoId,
       onDelete: (PudoSummary pudo) => _deletePudo(pudo),
       alertDeleteText: "Sei sicuro di voler rimuovere questo pudo?\nSe continui non riceverai ulteriori notifiche per i pacchi non ancora consegnati",
@@ -141,5 +148,23 @@ class _PudoListControllerState extends State<PudoListController> {
         NetworkErrorHelper.helper(context, value);
       }
     }).catchError((onError) => SAAlertDialog.displayAlertWithClose(context, "Error", onError));
+  }
+
+  void _openModal(String? address) {
+    if (address == null) {
+      return;
+    }
+    SAAlertDialog.displayModalWithButtons(
+      context,
+      "Scegli un'azione",
+      [
+        CupertinoActionSheetAction(
+          child: const Text('Copia indirizzo'),
+          onPressed: () {
+            FlutterClipboard.copy(address);
+          },
+        ),
+      ],
+    );
   }
 }

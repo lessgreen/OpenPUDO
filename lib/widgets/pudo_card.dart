@@ -27,13 +27,17 @@ import 'package:qui_green/resources/res.dart';
 class PudoCard extends StatelessWidget {
   final PudoCardRepresentation dataSource;
   final Function() onTap;
+  final Function()? onLongPress;
   final bool hasShadow;
+  final bool showCustomizedAddress;
 
   const PudoCard({
     Key? key,
     required this.dataSource,
     required this.onTap,
+    this.onLongPress,
     this.hasShadow = false,
+    this.showCustomizedAddress = false,
   }) : super(key: key);
 
   @override
@@ -41,6 +45,7 @@ class PudoCard extends StatelessWidget {
     var computedStars = (dataSource.rating?.stars ?? 0).toInt();
     return GestureDetector(
       onTap: onTap,
+      onLongPress: onLongPress,
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: Dimension.padding),
         height: 100,
@@ -67,33 +72,50 @@ class PudoCard extends StatelessWidget {
               width: Dimension.padding,
             ),
             Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    dataSource.businessName,
-                    maxLines: 1,
-                    style: Theme.of(context).textTheme.bodyTextBold, //const TextStyle(fontSize: 16),
-                  ),
-                  Row(
-                    children: List<Widget>.generate(
-                      5,
-                      (index) => Icon(
-                        Icons.star_rounded,
-                        size: 16,
-                        color: (index + 1 <= computedStars) ? Colors.yellow.shade700 : Colors.grey.shade200,
-                      ),
+              child: showCustomizedAddress == false
+                  ? Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          dataSource.businessName,
+                          maxLines: 1,
+                          style: Theme.of(context).textTheme.bodyTextBold,
+                        ),
+                        Row(
+                          children: List<Widget>.generate(
+                            5,
+                            (index) => Icon(
+                              Icons.star_rounded,
+                              size: 16,
+                              color: (index + 1 <= computedStars) ? Colors.yellow.shade700 : Colors.grey.shade200,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: Dimension.paddingS),
+                        Text(
+                          dataSource.computedAddress ?? "--",
+                          maxLines: 2,
+                          style: const TextStyle(fontSize: 12),
+                        ),
+                      ],
+                    )
+                  : Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'Indirizzo di spedizione:',
+                          style: Theme.of(context).textTheme.caption,
+                        ),
+                        const SizedBox(height: Dimension.paddingS),
+                        Text(
+                          dataSource.customizedAddress ?? "--",
+                          maxLines: 2,
+                          style: const TextStyle(fontSize: 12),
+                        ),
+                      ],
                     ),
-                  ),
-                  const SizedBox(height: Dimension.paddingS),
-                  Text(
-                    dataSource.computedAddress ?? "--",
-                    maxLines: 2,
-                    style: const TextStyle(fontSize: 12),
-                  ),
-                ],
-              ),
             ),
             const SizedBox(
               width: Dimension.padding,
