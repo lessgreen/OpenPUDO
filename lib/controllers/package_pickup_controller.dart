@@ -88,9 +88,6 @@ class _PackagePickupControllerState extends State<PackagePickupController> {
                   height: Dimension.paddingS,
                 ),
               _buildPhoto(),
-              const SizedBox(
-                height: Dimension.paddingS,
-              ),
               _buildEvents(),
               const SizedBox(
                 height: Dimension.padding,
