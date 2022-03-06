@@ -30,14 +30,14 @@ import 'package:qui_green/resources/routes_enum.dart';
 import 'package:qui_green/singletons/network/network_manager.dart';
 import 'package:qui_green/widgets/table_view_cell.dart';
 
-class HomePudoPackages extends StatefulWidget {
-  const HomePudoPackages({Key? key}) : super(key: key);
+class HomePudoController extends StatefulWidget {
+  const HomePudoController({Key? key}) : super(key: key);
 
   @override
-  _HomePudoPackagesState createState() => _HomePudoPackagesState();
+  _HomePudoControllerState createState() => _HomePudoControllerState();
 }
 
-class _HomePudoPackagesState extends State<HomePudoPackages> with ConnectionAware {
+class _HomePudoControllerState extends State<HomePudoController> with ConnectionAware {
   @override
   Widget build(BuildContext context) {
     return Material(
@@ -68,7 +68,7 @@ class _HomePudoPackagesState extends State<HomePudoPackages> with ConnectionAwar
               fullWidth: true,
               showTopDivider: true,
               showTrailingChevron: true,
-              title: "Ho ricevuto un pacco",
+              title: "Ricevi un pacco",
               leading: SvgPicture.asset(
                 ImageSrc.boxFillIcon,
                 color: AppColors.cardColor,
@@ -80,7 +80,7 @@ class _HomePudoPackagesState extends State<HomePudoPackages> with ConnectionAwar
               onTap: () => Navigator.of(context).pushNamed(Routes.packageDelivered),
               fullWidth: true,
               showTrailingChevron: true,
-              title: "Ho consegnato un pacco",
+              title: "Consegna un pacco",
               leading: SvgPicture.asset(
                 ImageSrc.packageDeliveredLeadingIcon,
                 color: AppColors.cardColor,
