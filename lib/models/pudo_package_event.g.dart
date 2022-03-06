@@ -16,6 +16,7 @@ PudoPackageEvent _$PudoPackageEventFromJson(Map<String, dynamic> json) =>
       notes: json['notes'] as String?,
       packageStatus: $enumDecodeNullable(
           _$PudoPackageStatusEnumMap, json['packageStatus']),
+      packageStatusMessage: json['packageStatusMessage'] as String?,
       autoFlag: json['autoFlag'] as bool?,
     );
 
@@ -26,6 +27,7 @@ Map<String, dynamic> _$PudoPackageEventToJson(PudoPackageEvent instance) =>
       'createTms': instance.createTms?.toIso8601String(),
       'notes': instance.notes,
       'packageStatus': _$PudoPackageStatusEnumMap[instance.packageStatus],
+      'packageStatusMessage': instance.packageStatusMessage,
       'autoFlag': instance.autoFlag,
     };
 

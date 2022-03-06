@@ -224,7 +224,7 @@ class _PackagePickupControllerState extends State<PackagePickupController> {
                           text: " - ",
                         ),
                         TextSpan(
-                          text: event.prettifiedNote,
+                          text: event.packageStatusMessage ?? "??",
                         ),
                       ],
                     )),

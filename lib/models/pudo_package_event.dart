@@ -46,9 +46,18 @@ class PudoPackageEvent {
   DateTime? createTms;
   String? notes;
   PudoPackageStatus? packageStatus;
+  String? packageStatusMessage;
   bool? autoFlag;
 
-  PudoPackageEvent({required this.packageEventId, required this.packageId, this.createTms, this.notes, this.packageStatus, this.autoFlag});
+  PudoPackageEvent({
+    required this.packageEventId,
+    required this.packageId,
+    this.createTms,
+    this.notes,
+    this.packageStatus,
+    this.packageStatusMessage,
+    this.autoFlag,
+  });
 
   factory PudoPackageEvent.fromJson(Map<String, dynamic> json) => _$PudoPackageEventFromJson(json);
 
@@ -56,26 +65,5 @@ class PudoPackageEvent {
 
   String? get packageStatusRaw {
     return packageStatus.toString().split('.').last;
-  }
-}
-
-extension PudoPackageEventNotes on PudoPackageEvent {
-  String get prettifiedNote {
-    switch (packageStatus) {
-      case PudoPackageStatus.accepted:
-        return "Accettato";
-      case PudoPackageStatus.collected:
-        return "Raccolto";
-      case PudoPackageStatus.delivered:
-        return "Consegnato";
-      case PudoPackageStatus.notifySent:
-        return "Utente notificato";
-      case PudoPackageStatus.notified:
-        return "Notificato";
-      case PudoPackageStatus.expired:
-        return "Scaduto";
-      default:
-        return "";
-    }
   }
 }
