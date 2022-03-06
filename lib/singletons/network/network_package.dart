@@ -117,7 +117,7 @@ mixin NetworkManagerPackages on NetworkGeneral {
     }
   }
 
-  Future<dynamic> changePackageStatus({required int packageId, required PudoPackageStatus newStatus, String? notes}) async {
+  Future<dynamic> changePackageStatus({required int packageId, required PackageStatus newStatus, String? notes}) async {
     try {
       if (!isOnline) {
         throw ("Network is offline");
@@ -128,13 +128,13 @@ mixin NetworkManagerPackages on NetworkGeneral {
 
       var url = _baseURL;
 
-      if (newStatus == PudoPackageStatus.accepted) {
+      if (newStatus == PackageStatus.accepted) {
         url = _baseURL + '/api/v2/package/$packageId/accepted';
-      } else if (newStatus == PudoPackageStatus.collected) {
+      } else if (newStatus == PackageStatus.collected) {
         url = _baseURL + '/api/v2/package/$packageId/collected';
-      } else if (newStatus == PudoPackageStatus.notified) {
+      } else if (newStatus == PackageStatus.notified) {
         url = _baseURL + '/api/v2/package/$packageId/notified';
-      } else if (newStatus == PudoPackageStatus.notifySent) {
+      } else if (newStatus == PackageStatus.notifySent) {
         url = _baseURL + '/api/v2/package/$packageId/notified';
       } else {
         return ErrorDescription('Error Unsupported PackageStatus specified.');

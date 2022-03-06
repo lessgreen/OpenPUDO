@@ -126,7 +126,7 @@ class _PackageDeliveredControllerState extends State<PackageDeliveredController>
                         setState(() {
                           selectedPackage = value;
                         });
-                        NetworkManager.instance.changePackageStatus(packageId: value.packageId, newStatus: PudoPackageStatus.collected).then((value) {
+                        NetworkManager.instance.changePackageStatus(packageId: value.packageId, newStatus: PackageStatus.collected).then((value) {
                           if (value is PudoPackage) {
                             Navigator.of(context).pop();
                           }
@@ -156,7 +156,7 @@ class _PackageDeliveredControllerState extends State<PackageDeliveredController>
       _code = code;
       NetworkManager.instance.getPackageDetailsByQrCode(shareLink: _code!).then((value) {
         if (value is PudoPackage) {
-          NetworkManager.instance.changePackageStatus(packageId: value.packageId, newStatus: PudoPackageStatus.collected).then((value) {
+          NetworkManager.instance.changePackageStatus(packageId: value.packageId, newStatus: PackageStatus.collected).then((value) {
             if (value is PudoPackage) {
               Navigator.of(context).pop();
             } else {

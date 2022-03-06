@@ -27,6 +27,7 @@ import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
 import 'package:qui_green/commons/ui/cupertino_navigation_bar_fix.dart';
 import 'package:qui_green/commons/ui/custom_network_image.dart';
 import 'package:qui_green/commons/utilities/date_time_extension.dart';
+import 'package:qui_green/models/package_summary.dart';
 import 'package:qui_green/models/pudo_package.dart';
 import 'package:qui_green/models/pudo_package_event.dart';
 import 'package:qui_green/resources/res.dart';
@@ -117,37 +118,85 @@ class _PackagePickupControllerState extends State<PackagePickupController> {
         const SizedBox(
           height: Dimension.paddingL,
         ),
-        RichText(
-            textAlign: TextAlign.center,
-            text: TextSpan(
-              text: '',
-              style: Theme.of(context).textTheme.navBarTitleDark,
-              children: const [
-                TextSpan(
-                  text: "Mostra questo QRCode\nal punto di ritiro ",
+        (widget.packageModel.packageStatus != PackageStatus.collected)
+            ? Column(
+                children: [
+                  RichText(
+                    textAlign: TextAlign.center,
+                    text: TextSpan(
+                      text: '',
+                      style: Theme.of(context).textTheme.navBarTitleDark,
+                      children: const [
+                        TextSpan(
+                          text: "Mostra questo QRCode\nal punto di ritiro ",
+                        ),
+                        TextSpan(text: "QuiGreen", style: TextStyle(color: AppColors.primaryColorDark)),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(
+                    height: Dimension.padding,
+                  ),
+                  Container(
+                    decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width / 2), boxShadow: Shadows.baseShadow),
+                    alignment: Alignment.center,
+                    child: QrImage(
+                      data: widget.packageModel.shareLink ?? "",
+                      version: QrVersions.auto,
+                      size: MediaQuery.of(context).size.width / 3,
+                    ),
+                    height: MediaQuery.of(context).size.width / 2,
+                    width: MediaQuery.of(context).size.width / 2,
+                  ),
+                ],
+              )
+            : Padding(
+                padding: const EdgeInsets.fromLTRB(32, 0, 32, 16),
+                child: Column(
+                  children: [
+                    Text(
+                      'Questo pacco risulta già ritirato.',
+                      style: Theme.of(context).textTheme.bodyTextBold?.copyWith(fontSize: 16),
+                    ),
+                    MaterialButton(
+                      textColor: AppColors.primaryColorDark,
+                      onPressed: () => _confirmReceipt(),
+                      child: const Text('Conferma la ricezione'),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'Problemi con la ricezione?',
+                          style: Theme.of(context).textTheme.bodyTextItalic,
+                        ),
+                        MaterialButton(
+                          textColor: AppColors.primaryColorDark,
+                          onPressed: () {},
+                          child: const Text('Contattaci'),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
-                TextSpan(text: "QuiGreen", style: TextStyle(color: AppColors.primaryColorDark)),
-              ],
-            )),
-        const SizedBox(
-          height: Dimension.padding,
-        ),
-        Container(
-          decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width / 2), boxShadow: Shadows.baseShadow),
-          alignment: Alignment.center,
-          child: QrImage(
-            data: widget.packageModel.shareLink ?? "",
-            version: QrVersions.auto,
-            size: MediaQuery.of(context).size.width / 3,
-          ),
-          height: MediaQuery.of(context).size.width / 2,
-          width: MediaQuery.of(context).size.width / 2,
-        ),
+              ),
         const SizedBox(
           height: Dimension.padding,
         ),
       ],
     );
+  }
+
+  _confirmReceipt() {
+    NetworkManager.instance.changePackageStatus(packageId: widget.packageModel.packageId, newStatus: PackageStatus.accepted).then((value) {
+      if (value is PudoPackage) {
+        Navigator.of(context).pop();
+      } else {
+        SAAlertDialog.displayAlertWithClose(context, "Error", value, barrierDismissable: false);
+      }
+    }).catchError((onError) {
+      SAAlertDialog.displayAlertWithClose(context, "Error", onError, barrierDismissable: false);
+    });
   }
 
   Widget _buildPhoto() {

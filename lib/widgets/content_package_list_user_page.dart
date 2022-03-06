@@ -150,7 +150,9 @@ class _ContentPackagesListUserPageState extends State<ContentPackagesListUserPag
     NetworkManager.instance.getPackageDetails(packageId: package.packageId).then(
       (response) {
         if (response is PudoPackage) {
-          Navigator.of(context).pushNamed(Routes.packagePickup, arguments: response);
+          Navigator.of(context).pushNamed(Routes.packagePickup, arguments: response).then(
+                (value) => _refreshDidTriggered(),
+              );
         } else {
           SAAlertDialog.displayAlertWithClose(context, "Error", "Ops!, Qualcosa e' andato storto");
         }

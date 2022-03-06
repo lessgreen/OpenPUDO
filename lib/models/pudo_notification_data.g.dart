@@ -6,34 +6,27 @@ part of 'pudo_notification_data.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-PudoNotificationData _$PudoNotificationDataFromJson(
-        Map<String, dynamic> json) =>
-    PudoNotificationData(
+PudoNotificationData _$PudoNotificationDataFromJson(Map<String, dynamic> json) => PudoNotificationData(
       notificationId: json['notificationId'] as String?,
-      packageStatus: $enumDecodeNullable(
-          _$PudoPackageStatusEnumMap, json['packageStatus']),
+      packageStatus: $enumDecodeNullable(_$PudoPackageStatusEnumMap, json['packageStatus']),
       packageId: json['packageId'] as String?,
-      notificationType: $enumDecodeNullable(
-          _$PudoNotificationTypeEnumMap, json['notificationType']),
+      notificationType: $enumDecodeNullable(_$PudoNotificationTypeEnumMap, json['notificationType']),
     );
 
-Map<String, dynamic> _$PudoNotificationDataToJson(
-        PudoNotificationData instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$PudoNotificationDataToJson(PudoNotificationData instance) => <String, dynamic>{
       'notificationId': instance.notificationId,
       'packageStatus': _$PudoPackageStatusEnumMap[instance.packageStatus],
       'packageId': instance.packageId,
-      'notificationType':
-          _$PudoNotificationTypeEnumMap[instance.notificationType],
+      'notificationType': _$PudoNotificationTypeEnumMap[instance.notificationType],
     };
 
 const _$PudoPackageStatusEnumMap = {
-  PudoPackageStatus.delivered: 'delivered',
-  PudoPackageStatus.notifySent: 'notify_sent',
-  PudoPackageStatus.notified: 'notified',
-  PudoPackageStatus.collected: 'collected',
-  PudoPackageStatus.accepted: 'accepted',
-  PudoPackageStatus.expired: 'expired',
+  PackageStatus.delivered: 'delivered',
+  PackageStatus.notifySent: 'notify_sent',
+  PackageStatus.notified: 'notified',
+  PackageStatus.collected: 'collected',
+  PackageStatus.accepted: 'accepted',
+  PackageStatus.expired: 'expired',
 };
 
 const _$PudoNotificationTypeEnumMap = {

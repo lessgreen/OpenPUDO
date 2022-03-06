@@ -24,6 +24,7 @@ import 'package:qui_green/commons/alert_dialog.dart';
 import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
 import 'package:qui_green/models/package_summary.dart';
 import 'package:qui_green/models/pudo_package.dart';
+import 'package:qui_green/models/pudo_package_event.dart';
 import 'package:qui_green/resources/res.dart';
 import 'package:qui_green/resources/routes_enum.dart';
 import 'package:qui_green/singletons/network/network_manager.dart';
@@ -96,14 +97,11 @@ class _ContentPackagesPageState extends State<ContentPackagesPage> with ChangeNo
               itemCount: _availablePackages.length,
               scrollController: _scrollController,
               contentBuilder: (BuildContext context, int index) {
+                var currentPackage = _availablePackages[index];
                 return PackageCard(
-                  name: _availablePackages[index].businessName ?? '',
-                  address: _availablePackages[index].label ?? '',
+                  dataSource: currentPackage,
                   stars: 0,
-                  onTap: () => _onPackageCard(_availablePackages[index]),
-                  isRead: true,
-                  deliveryDate: _availablePackages[index].createTms,
-                  image: _availablePackages[index].packagePicId,
+                  onTap: () => _onPackageCard(currentPackage),
                 );
               },
             ),
@@ -129,11 +127,23 @@ class _ContentPackagesPageState extends State<ContentPackagesPage> with ChangeNo
     }).catchError((onError) => SAAlertDialog.displayAlertWithClose(context, "Error", onError));
   }
 
-  _onPackageCard(PackageSummary package) {
+  _onPackageCard(PackageSummary package) async {
+    if (package.packageStatus == PackageStatus.notifySent) {
+      await NetworkManager.instance.changePackageStatus(packageId: package.packageId, newStatus: PackageStatus.notified).then((value) {
+        if (value is! PudoPackage) {
+          SAAlertDialog.displayAlertWithClose(context, "Error", value, barrierDismissable: false);
+        }
+      }).catchError((onError) {
+        SAAlertDialog.displayAlertWithClose(context, "Error", onError, barrierDismissable: false);
+      });
+    }
+
     NetworkManager.instance.getPackageDetails(packageId: package.packageId).then(
       (response) {
         if (response is PudoPackage) {
-          Navigator.of(context).pushNamed(Routes.packagePickup, arguments: response);
+          Navigator.of(context).pushNamed(Routes.packagePickup, arguments: response).then(
+                (value) => _refreshDidTriggered(),
+              );
         } else {
           SAAlertDialog.displayAlertWithClose(context, "Error", "Ops!, Qualcosa e' andato storto");
         }

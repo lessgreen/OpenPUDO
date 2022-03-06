@@ -21,23 +21,9 @@
 // ignore_for_file: constant_identifier_names
 
 import 'package:json_annotation/json_annotation.dart';
+import 'package:qui_green/models/package_summary.dart';
 
 part 'pudo_package_event.g.dart';
-
-enum PudoPackageStatus {
-  @JsonValue("delivered")
-  delivered,
-  @JsonValue("notify_sent")
-  notifySent,
-  @JsonValue("notified")
-  notified,
-  @JsonValue("collected")
-  collected,
-  @JsonValue("accepted")
-  accepted,
-  @JsonValue("expired")
-  expired,
-}
 
 @JsonSerializable()
 class PudoPackageEvent {
@@ -45,7 +31,7 @@ class PudoPackageEvent {
   final int packageId;
   DateTime? createTms;
   String? notes;
-  PudoPackageStatus? packageStatus;
+  PackageStatus? packageStatus;
   String? packageStatusMessage;
   bool? autoFlag;
 
