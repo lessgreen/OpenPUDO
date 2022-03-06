@@ -82,6 +82,12 @@ class _InstructionControllerState extends State<InstructionController> with Conn
               Container(
                   alignment: Alignment.centerLeft,
                   child: Text(
+                    widget.pudoDataModel?.customizedAddress ?? "n/a",
+                    style: const TextStyle(fontSize: 16),
+                  )),
+              /*Container(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
                     '${widget.pudoDataModel?.businessName ?? "n/a"} AC$userId',
                     style: const TextStyle(fontSize: 16),
                   )),
@@ -96,7 +102,7 @@ class _InstructionControllerState extends State<InstructionController> with Conn
                   child: Text(
                     "${widget.pudoDataModel?.address?.zipCode ?? "n/a"} ${widget.pudoDataModel?.address?.city ?? "n/a"}",
                     style: const TextStyle(fontSize: 16),
-                  )),
+                  )),*/
               const SizedBox(height: 30)
             ],
           ),
@@ -121,11 +127,8 @@ class _InstructionControllerState extends State<InstructionController> with Conn
         if (!widget.isForPudo)
           Container(
               padding: const EdgeInsets.only(left: Dimension.padding, right: Dimension.padding),
-              child: const Text(
-                'Se vuoi rivedere in seguito l’indirizzo da utilizzare per la consegna ti basterà selezionare il PUDO tra i tuoi PUDO dalla Home.',
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 18),
-              )),
+              child: Text('Se vuoi rivedere in seguito l’indirizzo\nda utilizzare per la consegna ti\nbasterà selezionare il PUDO tra i tuoi\nPUDO dalla Home.',
+                  textAlign: TextAlign.center, style: Theme.of(context).textTheme.subtitle1!.copyWith(height: 1.2))),
       ],
     );
   }
@@ -194,7 +197,7 @@ class _InstructionControllerState extends State<InstructionController> with Conn
         InstructionCard(
           indicatorOnTop: false,
           title: "É semplicissimo!",
-          description: 'Quando i tuoi clienti invieranno un pacco verso la tua attività, riceverai un destinatario simile a quello riportato sotto.',
+          description: 'Quando i tuoi clienti invieranno un\npacco verso la tua attività, riceverai\nun destinatario simile a quello\nriportato sotto.',
           activeIndex: _currentPage,
           pages: 4,
           bottomWidget: _buildFirstPageWidget("12"),
@@ -211,8 +214,9 @@ class _InstructionControllerState extends State<InstructionController> with Conn
                 title: "Ho ricevuto un pacco",
                 showTrailingChevron: true,
                 showTopDivider: true,
+                fullWidth: true,
                 leading: SvgPicture.asset(
-                  ImageSrc.packReceivedLeadingIcon,
+                  ImageSrc.boxFillIcon,
                   color: AppColors.cardColor,
                   width: 36,
                   height: 36,
@@ -224,9 +228,9 @@ class _InstructionControllerState extends State<InstructionController> with Conn
                 alignment: Alignment.center,
                 child: RichText(
                   textAlign: TextAlign.center,
-                  text: TextSpan(style: Theme.of(context).textTheme.subtitle1, children: const [
+                  text: TextSpan(style: Theme.of(context).textTheme.subtitle1!.copyWith(height: 1.2), children: const [
                     TextSpan(text: "dal menù principale dell'app\n"),
-                    TextSpan(text: "QuiGreen", style: TextStyle(color: AppColors.primaryColorDark)),
+                    TextSpan(text: "QuiGreen", style: TextStyle(color: AppColors.primaryColorDark, fontWeight: FontWeight.w500)),
                   ]),
                 ),
               ),
@@ -241,15 +245,18 @@ class _InstructionControllerState extends State<InstructionController> with Conn
           pages: 4,
           bottomWidget: Column(
             children: [
-              TableViewCell(
+              const TableViewCell(
                 title: "Scegli un destinatario",
                 showTopDivider: true,
                 showTrailingChevron: true,
-                leading: SvgPicture.asset(
-                  ImageSrc.profileArt,
-                  color: AppColors.cardColor,
-                  width: 36,
+                fullWidth: true,
+                leading: SizedBox(
                   height: 36,
+                  child: Icon(
+                    CupertinoIcons.person,
+                    color: AppColors.cardColor,
+                    size: 26,
+                  ),
                 ),
               ),
               const SizedBox(height: Dimension.paddingM),
@@ -258,7 +265,7 @@ class _InstructionControllerState extends State<InstructionController> with Conn
                 alignment: Alignment.center,
                 child: RichText(
                   textAlign: TextAlign.center,
-                  text: TextSpan(style: Theme.of(context).textTheme.subtitle1, children: const [
+                  text: TextSpan(style: Theme.of(context).textTheme.subtitle1!.copyWith(height: 1.2), children: const [
                     TextSpan(text: "tra quelli che hanno scelto la tua attività per la consegna "),
                     TextSpan(text: "QuiGreen", style: TextStyle(color: AppColors.primaryColorDark)),
                   ]),
@@ -279,14 +286,14 @@ class _InstructionControllerState extends State<InstructionController> with Conn
                 title: "Scatta una foto\nal pacco",
                 mainIconSvgAsset: ImageSrc.shipmentLeadingCell,
               ),
-              const SizedBox(height: Dimension.paddingM),
+              const SizedBox(height: Dimension.paddingL),
               Container(
                 width: MediaQuery.of(context).size.width / 3 * 2,
                 alignment: Alignment.center,
                 child: RichText(
                   textAlign: TextAlign.center,
-                  text: TextSpan(style: Theme.of(context).textTheme.subtitle1, children: const [
-                    TextSpan(text: "et voilà!", style: TextStyle(color: AppColors.primaryColorDark)),
+                  text: TextSpan(style: Theme.of(context).textTheme.subtitle1!.copyWith(height: 1.2), children: const [
+                    TextSpan(text: "et voilà!", style: TextStyle(color: AppColors.primaryColorDark, fontWeight: FontWeight.w500)),
                     TextSpan(text: ",il gioco è fatto!"),
                   ]),
                 ),
@@ -299,7 +306,7 @@ class _InstructionControllerState extends State<InstructionController> with Conn
       return [
         InstructionCard(
           title: "É semplicissimo!",
-          description: 'Per poter ricevere il tuo pacco senza pensieri, utilizzando il tuo PUDO come destinatario ti basterà usare il seguente indirizzo di spedizione:',
+          description: 'Per poter ricevere il tuo pacco senza\npensieri, utilizzando il tuo PUDO\ncome destinatario ti basterà usare il\nseguente indirizzo di spedizione:',
           activeIndex: _currentPage,
           pages: 2,
           bottomWidget: _buildFirstPageWidget(
@@ -308,7 +315,7 @@ class _InstructionControllerState extends State<InstructionController> with Conn
         ),
         InstructionCard(
           title: "Notifica in tempo reale",
-          description: 'Riceverai una notifica quando il tuo pacco sarà giunto a destinazione presso il tuo PUDO.',
+          description: 'Riceverai una notifica quando il tuo\npacco sarà giunto a destinazione\npresso il tuo PUDO.',
           activeIndex: _currentPage,
           pages: 2,
           bottomWidget: SvgPicture.asset(ImageSrc.notificationVectorArt, semanticsLabel: 'Art Background'),

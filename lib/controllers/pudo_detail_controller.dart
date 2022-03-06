@@ -25,8 +25,8 @@ import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:qui_green/commons/alert_dialog.dart';
 import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
-import 'package:qui_green/commons/ui/custom_network_image.dart';
 import 'package:qui_green/commons/ui/cupertino_navigation_bar_fix.dart';
+import 'package:qui_green/commons/ui/custom_network_image.dart';
 import 'package:qui_green/commons/utilities/url_launcher_helper.dart';
 import 'package:qui_green/models/pudo_profile.dart';
 import 'package:qui_green/resources/res.dart';
@@ -47,7 +47,7 @@ class PudoDetailController extends StatefulWidget {
 }
 
 class _PudoDetailControllerState extends State<PudoDetailController> with ConnectionAware {
-  bool checkComplete = false;
+  bool _checkComplete = false;
 
   @override
   void initState() {
@@ -56,7 +56,7 @@ class _PudoDetailControllerState extends State<PudoDetailController> with Connec
       _getIfPudoAlreadySelected();
     } else {
       _nextVisible = true;
-      checkComplete = true;
+      _checkComplete = true;
     }
   }
 
@@ -169,7 +169,7 @@ class _PudoDetailControllerState extends State<PudoDetailController> with Connec
       );
 
   Widget _buildTrailingWithCupertinoScaffold() {
-    if (checkComplete) {
+    if (_checkComplete) {
       if (_nextVisible) {
         return TextFieldButton(
           onPressed: _handleSelect,
@@ -194,7 +194,7 @@ class _PudoDetailControllerState extends State<PudoDetailController> with Connec
   }
 
   Widget _buildTrailingWithBaseScaffold() {
-    if (checkComplete) {
+    if (_checkComplete) {
       if (_nextVisible) {
         return TextFieldButton(
           onPressed: _handleSelect,
@@ -348,12 +348,12 @@ class _PudoDetailControllerState extends State<PudoDetailController> with Connec
       final index = value.indexWhere((element) => element.pudoId == widget.dataModel.pudoId);
       if (index > -1) {
         setState(() {
-          checkComplete = true;
+          _checkComplete = true;
           _nextVisible = false;
         });
       } else {
         setState(() {
-          checkComplete = true;
+          _checkComplete = true;
           _nextVisible = true;
         });
       }

@@ -20,17 +20,19 @@
 
 import 'package:json_annotation/json_annotation.dart';
 
-part 'delivery_package_request.g.dart';
+part 'user_summary.g.dart';
 
 @JsonSerializable()
-class DeliveryPackageRequest {
-  final int userId;
-  String? notes;
+class UserSummary {
+  String firstName;
+  String lastName;
+  String? profilePicId;
+  String? customerSuffix;
+  final int? userId;
 
-  DeliveryPackageRequest({
-    required this.userId,
-    this.notes,
-  });
-  factory DeliveryPackageRequest.fromJson(Map<String, dynamic> json) => _$DeliveryPackageRequestFromJson(json);
-  Map<String, dynamic> toJson() => _$DeliveryPackageRequestToJson(this);
+  UserSummary({required this.firstName, required this.lastName, this.customerSuffix, this.profilePicId, this.userId});
+
+  factory UserSummary.fromJson(Map<String, dynamic> json) => _$UserSummaryFromJson(json);
+
+  Map<String, dynamic> toJson() => _$UserSummaryToJson(this);
 }

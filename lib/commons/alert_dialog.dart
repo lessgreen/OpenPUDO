@@ -46,42 +46,41 @@ class SAAlertDialog extends StatelessWidget {
     }
     isAlreadyShown = true;
     showCupertinoModalPopup<void>(
-      context: context,
-      builder: (BuildContext subContext) {
-        List<CupertinoActionSheetAction> modifiedActions = actions
-            .asMap()
-            .map((key, value) {
-          return MapEntry(
-            key,
-            CupertinoActionSheetAction(
-              child: value.child,
+        context: context,
+        builder: (BuildContext subContext) {
+          List<CupertinoActionSheetAction> modifiedActions = actions
+              .asMap()
+              .map((key, value) {
+                return MapEntry(
+                  key,
+                  CupertinoActionSheetAction(
+                    child: value.child,
+                    onPressed: () {
+                      isAlreadyShown = false;
+                      value.onPressed.call();
+                      if (Navigator.of(subContext).canPop() == true) {
+                        Navigator.of(subContext).pop();
+                      }
+                    },
+                  ),
+                );
+              })
+              .values
+              .toList();
+          return CupertinoActionSheet(
+            title: Text(title),
+            cancelButton: CupertinoActionSheetAction(
+              child: const Text('Cancel'),
               onPressed: () {
                 isAlreadyShown = false;
-                value.onPressed.call();
                 if (Navigator.of(subContext).canPop() == true) {
                   Navigator.of(subContext).pop();
                 }
               },
             ),
+            actions: modifiedActions,
           );
-        })
-            .values
-            .toList();
-        return CupertinoActionSheet(
-          title: Text(title),
-          cancelButton: CupertinoActionSheetAction(
-            child: const Text('Cancel'),
-            onPressed: () {
-              isAlreadyShown = false;
-              if (Navigator.of(subContext).canPop() == true) {
-                Navigator.of(subContext).pop();
-              }
-            },
-          ),
-          actions: modifiedActions,
-        );
-      }
-    ).then((value) {
+        }).then((value) {
       isAlreadyShown = false;
     });
   }
@@ -122,12 +121,13 @@ class SAAlertDialog extends StatelessWidget {
     });
   }
 
-  static displayAlertWithClose(BuildContext context, String title, dynamic description) {
+  static displayAlertWithClose(BuildContext context, String title, dynamic description, {bool barrierDismissable = true, Function? completion}) {
     if (isAlreadyShown) {
       return;
     }
     isAlreadyShown = true;
     showDialog(
+            barrierDismissible: barrierDismissable,
             builder: (subContext) {
               return SAAlertDialog(
                   title: title,
@@ -153,6 +153,7 @@ class SAAlertDialog extends StatelessWidget {
                       onPressed: () {
                         isAlreadyShown = false;
                         Navigator.of(subContext).pop();
+                        completion?.call();
                       },
                     )
                   ]);
@@ -160,6 +161,7 @@ class SAAlertDialog extends StatelessWidget {
             context: context)
         .then((value) {
       isAlreadyShown = false;
+      completion?.call();
     });
   }
 

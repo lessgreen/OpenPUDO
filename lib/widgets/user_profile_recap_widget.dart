@@ -28,13 +28,8 @@ class UserProfileRecapWidget extends StatelessWidget {
   final int totalUsage;
   final int kgCO2Saved;
   final Function? onTap;
-
-  const UserProfileRecapWidget({
-    Key? key,
-    required this.totalUsage,
-    required this.kgCO2Saved,
-    this.onTap,
-  }) : super(key: key);
+  final bool isForPudo;
+  const UserProfileRecapWidget({Key? key, required this.totalUsage, required this.kgCO2Saved, this.onTap, this.isForPudo = false}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -56,8 +51,8 @@ class UserProfileRecapWidget extends StatelessWidget {
                     //       color: AppColors.primaryTextColor,
                     //     ),
                     children: [
-                      const TextSpan(
-                        text: "Hai usato il servizio di QuiGreen ",
+                      TextSpan(
+                        text: isForPudo ? "I tuoi utenti hanno usato il servizio di QuiGreen " : "Hai usato il servizio di QuiGreen ",
                       ),
                       TextSpan(
                         text: "$totalUsage",

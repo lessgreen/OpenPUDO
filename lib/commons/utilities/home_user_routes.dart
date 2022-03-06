@@ -30,6 +30,7 @@ import 'package:qui_green/controllers/instruction_controller.dart';
 import 'package:qui_green/controllers/onboarding/insert_address_controller.dart';
 import 'package:qui_green/controllers/onboarding/map_controller.dart';
 import 'package:qui_green/controllers/package_pickup_controller.dart';
+import 'package:qui_green/controllers/packages_list_controller.dart';
 import 'package:qui_green/controllers/pudo_detail_controller.dart';
 import 'package:qui_green/controllers/pudo_list_controller.dart';
 import 'package:qui_green/controllers/registration_complete_controller.dart';
@@ -42,16 +43,18 @@ dynamic homeUserRouteWithSetting(RouteSettings settings) {
   log("current route name: ${settings.name}");
   currentRouteName.value = settings.name ?? '/main';
   switch (settings.name) {
+    case Routes.packagesList:
+      return PageRouteHelper.buildPage(const PackagesListController(
+        isForPudo: false,
+      ));
     case Routes.pudoDetail:
       return PageRouteHelper.buildPage(PudoDetailController(
         useCupertinoScaffold: true,
         dataModel: settings.arguments as PudoProfile,
         checkIsAlreadyAdded: true,
       ));
-
     case Routes.packagePickup:
       return PageRouteHelper.buildPage(PackagePickupController(packageModel: settings.arguments as PudoPackage));
-
     case Routes.instruction:
       return PageRouteHelper.buildPage(
         InstructionController(

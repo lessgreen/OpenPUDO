@@ -33,14 +33,14 @@ import 'package:qui_green/singletons/network/network_manager.dart';
 import 'package:qui_green/widgets/table_view_cell.dart';
 import 'package:qui_green/widgets/user_profile_recap_widget.dart';
 
-class ProfileController extends StatefulWidget {
-  const ProfileController({Key? key}) : super(key: key);
+class PudoProfileController extends StatefulWidget {
+  const PudoProfileController({Key? key}) : super(key: key);
 
   @override
-  _ProfileControllerState createState() => _ProfileControllerState();
+  _PudoProfileControllerState createState() => _PudoProfileControllerState();
 }
 
-class _ProfileControllerState extends State<ProfileController> with ConnectionAware {
+class _PudoProfileControllerState extends State<PudoProfileController> with ConnectionAware {
   @override
   Widget build(BuildContext context) {
     return Consumer<CurrentUser>(
@@ -51,29 +51,34 @@ class _ProfileControllerState extends State<ProfileController> with ConnectionAw
                 middle: Text(
                   'Il tuo profilo',
                   style: Theme.of(context).textTheme.navBarTitle,
+                ),
+                trailing: InkWell(
+                  onTap: () => Navigator.pushNamed(context, Routes.profileEdit),
+                  child: const Padding(
+                    padding: EdgeInsets.only(right: Dimension.padding),
+                    child: Icon(
+                      CupertinoIcons.pencil_circle,
+                      color: Colors.white,
+                      size: 26,
+                    ),
+                  ),
                 )),
             child: ListView(
               children: [
-                const SizedBox(height: 20),
-                Center(
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(100),
-                    child: CustomNetworkImage(height: 150, width: 150, fit: BoxFit.cover, url: currentUser.user?.profilePicId),
-                  ),
-                ),
+                AspectRatio(aspectRatio: 18 / 9, child: CustomNetworkImage(fit: BoxFit.cover, url: currentUser.pudoProfile?.pudoPicId)),
                 const SizedBox(
-                  height: 10,
+                  height: Dimension.paddingM,
                 ),
                 Center(
                   child: Text(
-                    "${currentUser.user?.firstName ?? " "} ${currentUser.user?.lastName ?? " "}",
+                    currentUser.pudoProfile?.businessName ?? " ",
                     style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 20),
                   ),
                 ),
                 const SizedBox(height: 6),
                 Center(
                   child: Text(
-                    'Utente dal ${currentUser.user?.createTms != null ? DateFormat('dd/MM/yyyy').format(DateTime.parse(currentUser.user!.createTms!)) : " "}',
+                    'Utente dal ${currentUser.pudoProfile?.createTms != null ? DateFormat('dd/MM/yyyy').format(DateTime.parse(currentUser.pudoProfile!.createTms!)) : " "}',
                     style: const TextStyle(fontWeight: FontWeight.w300, fontSize: 14, color: AppColors.primaryTextColor),
                   ),
                 ),
@@ -83,17 +88,20 @@ class _ProfileControllerState extends State<ProfileController> with ConnectionAw
                 const UserProfileRecapWidget(
                   totalUsage: 123,
                   kgCO2Saved: 456,
+                  isForPudo: true,
                 ),
                 TableViewCell(
-                  leading: SvgPicture.asset(
-                    ImageSrc.positionLeadingCell,
-                    color: AppColors.cardColor,
-                    width: 36,
-                    height: 36,
-                  ),
-                  title: "Le tue spedizioni",
-                  onTap: () => Navigator.of(context).pushNamed(Routes.packagesList),
-                ),
+                    showTopDivider: true,
+                    fullWidth: true,
+                    leading: const Icon(
+                      CupertinoIcons.person_fill,
+                      color: AppColors.primaryColorDark,
+                      size: 26,
+                    ),
+                    title: "I tuoi utenti",
+                    onTap: () {
+                      Navigator.of(context).pushNamed(Routes.pudoUsersList);
+                    }),
                 TableViewCell(
                   leading: SvgPicture.asset(
                     ImageSrc.logoutIcon,
@@ -107,14 +115,6 @@ class _ProfileControllerState extends State<ProfileController> with ConnectionAw
                     NetworkManager.instance.setAccessToken(null);
                     currentUser.refresh();
                   },
-                ),
-                TableViewCell(
-                  title: "Elimina account",
-                  textAlign: TextAlign.center,
-                  textStyle: Theme.of(context).textTheme.bodyTextBold?.copyWith(
-                        color: Colors.red,
-                      ),
-                  showTrailingChevron: false,
                 ),
               ],
             ),

@@ -21,23 +21,9 @@
 // ignore_for_file: constant_identifier_names
 
 import 'package:json_annotation/json_annotation.dart';
+import 'package:qui_green/models/package_summary.dart';
 
 part 'pudo_package_event.g.dart';
-
-enum PudoPackageStatus {
-  @JsonValue("delivered")
-  delivered,
-  @JsonValue("notify_sent")
-  notifySent,
-  @JsonValue("notified")
-  notified,
-  @JsonValue("collected")
-  collected,
-  @JsonValue("accepted")
-  accepted,
-  @JsonValue("expired")
-  expired,
-}
 
 @JsonSerializable()
 class PudoPackageEvent {
@@ -45,10 +31,19 @@ class PudoPackageEvent {
   final int packageId;
   DateTime? createTms;
   String? notes;
-  PudoPackageStatus? packageStatus;
+  PackageStatus? packageStatus;
+  String? packageStatusMessage;
   bool? autoFlag;
 
-  PudoPackageEvent({required this.packageEventId, required this.packageId, this.createTms, this.notes, this.packageStatus, this.autoFlag});
+  PudoPackageEvent({
+    required this.packageEventId,
+    required this.packageId,
+    this.createTms,
+    this.notes,
+    this.packageStatus,
+    this.packageStatusMessage,
+    this.autoFlag,
+  });
 
   factory PudoPackageEvent.fromJson(Map<String, dynamic> json) => _$PudoPackageEventFromJson(json);
 
@@ -56,26 +51,5 @@ class PudoPackageEvent {
 
   String? get packageStatusRaw {
     return packageStatus.toString().split('.').last;
-  }
-}
-
-extension PudoPackageEventNotes on PudoPackageEvent {
-  String get prettifiedNote {
-    switch (packageStatus) {
-      case PudoPackageStatus.accepted:
-        return "Accettato";
-      case PudoPackageStatus.collected:
-        return "Raccolto";
-      case PudoPackageStatus.delivered:
-        return "Consegnato";
-      case PudoPackageStatus.notifySent:
-        return "Utente notificato";
-      case PudoPackageStatus.notified:
-        return "Notificato";
-      case PudoPackageStatus.expired:
-        return "Scaduto";
-      default:
-        return "";
-    }
   }
 }

@@ -23,6 +23,8 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:qui_green/models/pudo_package_event.dart';
 
+import 'package_summary.dart';
+
 part 'pudo_notification_data.g.dart';
 
 enum PudoNotificationType {
@@ -33,7 +35,7 @@ enum PudoNotificationType {
 @JsonSerializable()
 class PudoNotificationData {
   String? notificationId;
-  PudoPackageStatus? packageStatus;
+  PackageStatus? packageStatus;
   String? packageId;
   PudoNotificationType? notificationType;
 

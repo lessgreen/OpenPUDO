@@ -93,6 +93,8 @@ class ImageSrc {
   static const phoneIcon = "assets/phoneIcon.svg";
   static const phoneIconFill = "assets/phoneIconFill.svg";
   static const notFound = "assets/notFound.svg";
+  static const boxFillIcon = "assets/boxFillIcon.svg";
+  static const waitingPackage = "assets/waitingPackage.svg";
 }
 
 class IconSrc {}

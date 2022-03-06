@@ -25,27 +25,32 @@ import 'package:qui_green/resources/res.dart';
 
 class TableViewCell extends StatelessWidget {
   final Widget? leading;
-  final String? title;
+  final dynamic title;
   final bool showTrailingChevron;
   final TextAlign textAlign;
   final TextStyle? textStyle;
   final Function()? onTap;
   final bool showTopDivider;
+  final bool fullWidth;
+  final double leadingWidth;
 
-  const TableViewCell({
-    Key? key,
-    this.leading,
-    this.title,
-    this.textAlign = TextAlign.left,
-    this.textStyle,
-    this.showTrailingChevron = true,
-    this.onTap,
-    this.showTopDivider = false,
-  }) : super(key: key);
+  const TableViewCell(
+      {Key? key,
+      this.leading,
+      this.title,
+      this.textAlign = TextAlign.left,
+      this.textStyle,
+      this.showTrailingChevron = true,
+      this.onTap,
+      this.showTopDivider = false,
+      this.fullWidth = false,
+      this.leadingWidth = 30})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
+      contentPadding: fullWidth ? EdgeInsets.zero : null,
       dense: true,
       onTap: onTap,
       title: Column(
@@ -59,37 +64,46 @@ class TableViewCell extends StatelessWidget {
                 height: 1,
               ),
             ),
-          Row(
-            children: [
-              leading != null
-                  ? SizedBox(
-                      width: 30,
-                      child: leading,
-                    )
-                  : const SizedBox(),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    title ?? "",
-                    textAlign: textAlign,
-                    style: (textStyle != null)
-                        ? textStyle
-                        : Theme.of(context).textTheme.bodyTextLight?.copyWith(
-                              color: AppColors.primaryTextColor,
-                            ),
+          Padding(
+            padding: fullWidth ? const EdgeInsets.symmetric(horizontal: Dimension.padding) : EdgeInsets.zero,
+            child: Row(
+              children: [
+                leading != null
+                    ? SizedBox(
+                        width: leadingWidth,
+                        child: leading,
+                      )
+                    : const SizedBox(),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: title != null
+                        ? title is String
+                            ? Text(
+                                title ?? "",
+                                textAlign: textAlign,
+                                style: (textStyle != null)
+                                    ? textStyle
+                                    : Theme.of(context).textTheme.bodyTextLight?.copyWith(
+                                          color: AppColors.primaryTextColor,
+                                        ),
+                              )
+                            : title is Widget
+                                ? title
+                                : const SizedBox()
+                        : const SizedBox(),
                   ),
                 ),
-              ),
-              showTrailingChevron
-                  ? SvgPicture.asset(
-                      ImageSrc.chevronRight,
-                      width: 24,
-                      height: 24,
-                      color: AppColors.colorGrey,
-                    )
-                  : const SizedBox(),
-            ],
+                showTrailingChevron
+                    ? SvgPicture.asset(
+                        ImageSrc.chevronRight,
+                        width: 24,
+                        height: 24,
+                        color: AppColors.colorGrey,
+                      )
+                    : const SizedBox(),
+              ],
+            ),
           ),
           const Padding(
             padding: EdgeInsets.only(top: 8.0),

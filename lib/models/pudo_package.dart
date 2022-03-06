@@ -19,6 +19,7 @@
 */
 
 import 'package:json_annotation/json_annotation.dart';
+import 'package:qui_green/models/package_summary.dart';
 import 'package:qui_green/models/pudo_package_event.dart';
 
 part 'pudo_package.g.dart';
@@ -48,4 +49,10 @@ class PudoPackage {
   factory PudoPackage.fromJson(Map<String, dynamic> json) => _$PudoPackageFromJson(json);
 
   Map<String, dynamic> toJson() => _$PudoPackageToJson(this);
+}
+
+extension PudoPackageWithStatus on PudoPackage {
+  PackageStatus? get packageStatus {
+    return events?.first.packageStatus;
+  }
 }

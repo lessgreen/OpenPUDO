@@ -31,15 +31,9 @@ class CustomNetworkImage extends StatefulWidget {
   final double? height;
   final BoxFit? fit;
   final bool useSVGPlaceholder;
+  final bool isCircle;
 
-  const CustomNetworkImage(
-      {Key? key,
-      required this.url,
-      this.width,
-      this.height,
-      this.fit,
-      this.useSVGPlaceholder = true})
-      : super(key: key);
+  const CustomNetworkImage({Key? key, required this.url, this.width, this.height, this.fit, this.useSVGPlaceholder = true, this.isCircle = false}) : super(key: key);
 
   @override
   _CustomNetworkImageState createState() => _CustomNetworkImageState();
@@ -90,8 +84,7 @@ class _CustomNetworkImageState extends State<CustomNetworkImage> {
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
+  Widget _buildImage() {
     return _buffer == null
         ? widget.useSVGPlaceholder
             ? SizedBox(
@@ -116,5 +109,15 @@ class _CustomNetworkImageState extends State<CustomNetworkImage> {
             height: widget.height,
             fit: widget.fit,
           );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return widget.isCircle
+        ? ClipRRect(
+            child: _buildImage(),
+            borderRadius: BorderRadius.circular(50),
+          )
+        : _buildImage();
   }
 }

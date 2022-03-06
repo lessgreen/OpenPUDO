@@ -24,9 +24,10 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:qui_green/commons/alert_dialog.dart';
 import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
-import 'package:qui_green/commons/ui/custom_network_image.dart';
 import 'package:qui_green/commons/ui/cupertino_navigation_bar_fix.dart';
+import 'package:qui_green/commons/ui/custom_network_image.dart';
 import 'package:qui_green/commons/utilities/date_time_extension.dart';
+import 'package:qui_green/models/package_summary.dart';
 import 'package:qui_green/models/pudo_package.dart';
 import 'package:qui_green/models/pudo_package_event.dart';
 import 'package:qui_green/resources/res.dart';
@@ -35,8 +36,9 @@ import 'package:qui_green/widgets/sascaffold.dart';
 import 'package:share_plus/share_plus.dart';
 
 class PackagePickupController extends StatefulWidget {
-  const PackagePickupController({Key? key, required this.packageModel}) : super(key: key);
+  const PackagePickupController({Key? key, required this.packageModel, this.isForPudo = false}) : super(key: key);
   final PudoPackage packageModel;
+  final bool isForPudo;
 
   @override
   _PackagePickupControllerState createState() => _PackagePickupControllerState();
@@ -55,47 +57,43 @@ class _PackagePickupControllerState extends State<PackagePickupController> {
         navigationBar: CupertinoNavigationBarFix.build(
           context,
           middle: Text(
-            'Ritiro del pacco',
+            widget.isForPudo ? 'Dettagli pacco' : 'Ritiro del pacco',
             style: Theme.of(context).textTheme.navBarTitle,
           ),
           leading: CupertinoNavigationBarBackButton(
             color: Colors.white,
             onPressed: () => Navigator.of(context).pop(),
           ),
-          trailing: InkWell(
-            onTap: _sharePackage,
-            child: Padding(
-              padding: const EdgeInsets.only(right: Dimension.paddingS),
-              child: SvgPicture.asset(
-                ImageSrc.shareArt,
-                width: 26,
-                height: 26,
-                color: Colors.white,
-              ),
-            ),
-          ),
+          trailing: !widget.isForPudo
+              ? InkWell(
+                  onTap: _sharePackage,
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: Dimension.paddingS),
+                    child: SvgPicture.asset(
+                      ImageSrc.shareArt,
+                      width: 26,
+                      height: 26,
+                      color: Colors.white,
+                    ),
+                  ),
+                )
+              : null,
         ),
-        //ClipPath is used to avoid the scrolling cards to go outside the screen
-        //and being visible when popping the page
-        child: ClipPath(
-          child: SAScaffold(
-            isLoading: NetworkManager.instance.networkActivity,
-            body: ListView(
-              children: [
-                _buildQr(),
+        child: SAScaffold(
+          isLoading: NetworkManager.instance.networkActivity,
+          body: ListView(
+            children: [
+              if (!widget.isForPudo) _buildQr(),
+              if (!widget.isForPudo)
                 const SizedBox(
                   height: Dimension.paddingS,
                 ),
-                _buildPhoto(),
-                const SizedBox(
-                  height: Dimension.paddingS,
-                ),
-                _buildEvents(),
-                const SizedBox(
-                  height: Dimension.padding,
-                ),
-              ],
-            ),
+              _buildPhoto(),
+              _buildEvents(),
+              const SizedBox(
+                height: Dimension.padding,
+              ),
+            ],
           ),
         ),
       ),
@@ -120,37 +118,85 @@ class _PackagePickupControllerState extends State<PackagePickupController> {
         const SizedBox(
           height: Dimension.paddingL,
         ),
-        RichText(
-            textAlign: TextAlign.center,
-            text: TextSpan(
-              text: '',
-              style: Theme.of(context).textTheme.navBarTitleDark,
-              children: const [
-                TextSpan(
-                  text: "Mostra questo QRCode\nal punto di ritiro ",
+        (widget.packageModel.packageStatus != PackageStatus.collected)
+            ? Column(
+                children: [
+                  RichText(
+                    textAlign: TextAlign.center,
+                    text: TextSpan(
+                      text: '',
+                      style: Theme.of(context).textTheme.navBarTitleDark,
+                      children: const [
+                        TextSpan(
+                          text: "Mostra questo QRCode\nal punto di ritiro ",
+                        ),
+                        TextSpan(text: "QuiGreen", style: TextStyle(color: AppColors.primaryColorDark)),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(
+                    height: Dimension.padding,
+                  ),
+                  Container(
+                    decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width / 2), boxShadow: Shadows.baseShadow),
+                    alignment: Alignment.center,
+                    child: QrImage(
+                      data: widget.packageModel.shareLink ?? "",
+                      version: QrVersions.auto,
+                      size: MediaQuery.of(context).size.width / 3,
+                    ),
+                    height: MediaQuery.of(context).size.width / 2,
+                    width: MediaQuery.of(context).size.width / 2,
+                  ),
+                ],
+              )
+            : Padding(
+                padding: const EdgeInsets.fromLTRB(32, 0, 32, 16),
+                child: Column(
+                  children: [
+                    Text(
+                      'Questo pacco risulta già ritirato.',
+                      style: Theme.of(context).textTheme.bodyTextBold?.copyWith(fontSize: 16),
+                    ),
+                    MaterialButton(
+                      textColor: AppColors.primaryColorDark,
+                      onPressed: () => _confirmReceipt(),
+                      child: const Text('Conferma la ricezione'),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'Problemi con la ricezione?',
+                          style: Theme.of(context).textTheme.bodyTextItalic,
+                        ),
+                        MaterialButton(
+                          textColor: AppColors.primaryColorDark,
+                          onPressed: () {},
+                          child: const Text('Contattaci'),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
-                TextSpan(text: "QuiGreen", style: TextStyle(color: AppColors.primaryColorDark)),
-              ],
-            )),
-        const SizedBox(
-          height: Dimension.padding,
-        ),
-        Container(
-          decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width / 2), boxShadow: Shadows.baseShadow),
-          alignment: Alignment.center,
-          child: QrImage(
-            data: widget.packageModel.shareLink ?? "",
-            version: QrVersions.auto,
-            size: MediaQuery.of(context).size.width / 3,
-          ),
-          height: MediaQuery.of(context).size.width / 2,
-          width: MediaQuery.of(context).size.width / 2,
-        ),
+              ),
         const SizedBox(
           height: Dimension.padding,
         ),
       ],
     );
+  }
+
+  _confirmReceipt() {
+    NetworkManager.instance.changePackageStatus(packageId: widget.packageModel.packageId, newStatus: PackageStatus.accepted).then((value) {
+      if (value is PudoPackage) {
+        Navigator.of(context).pop();
+      } else {
+        SAAlertDialog.displayAlertWithClose(context, "Error", value, barrierDismissable: false);
+      }
+    }).catchError((onError) {
+      SAAlertDialog.displayAlertWithClose(context, "Error", onError, barrierDismissable: false);
+    });
   }
 
   Widget _buildPhoto() {
@@ -183,9 +229,23 @@ class _PackagePickupControllerState extends State<PackagePickupController> {
         Container(
           color: AppColors.boxGrey,
           padding: const EdgeInsets.symmetric(vertical: Dimension.paddingS, horizontal: Dimension.padding),
-          child: Text(
-            "DETTAGLI PACCO",
-            style: Theme.of(context).textTheme.bodyTextBold,
+          child: RichText(
+            textAlign: TextAlign.justify,
+            text: TextSpan(
+              text: 'DETTAGLI PACCO',
+              style: widget.isForPudo ? Theme.of(context).textTheme.bodyTextLight : Theme.of(context).textTheme.bodyTextBold,
+              children: [
+                if (widget.isForPudo)
+                  const TextSpan(
+                    text: " - utente ",
+                  ),
+                if (widget.isForPudo)
+                  TextSpan(
+                    text: "AC${widget.packageModel.userId ?? 0}",
+                    style: Theme.of(context).textTheme.bodyTextBold,
+                  ),
+              ],
+            ),
           ),
         ),
         ListView.builder(
@@ -197,24 +257,34 @@ class _PackagePickupControllerState extends State<PackagePickupController> {
             if (event != null) {
               return Padding(
                 padding: const EdgeInsets.all(Dimension.paddingS),
-                child: RichText(
-                    textAlign: TextAlign.justify,
-                    text: TextSpan(
-                      text: '',
-                      style: Theme.of(context).textTheme.bodyTextLight,
-                      children: [
-                        TextSpan(
-                          text: event.createTms?.ddmmyyyy,
-                          style: Theme.of(context).textTheme.bodyTextBold,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(top: 3),
+                      child: Text(
+                        '${event.createTms?.ddmmyyyy}',
+                        style: Theme.of(context).textTheme.bodyTextBold,
+                      ),
+                    ),
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: Dimension.paddingS),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              event.packageStatusMessage ?? "??",
+                              style: Theme.of(context).textTheme.bodyTextLight,
+                            ),
+                            event.notes != null ? Text(event.notes!, style: Theme.of(context).textTheme.captionSmall) : const SizedBox()
+                          ],
                         ),
-                        const TextSpan(
-                          text: " - ",
-                        ),
-                        TextSpan(
-                          text: event.prettifiedNote,
-                        ),
-                      ],
-                    )),
+                      ),
+                    ),
+                  ],
+                ),
               );
             }
             return const SizedBox();

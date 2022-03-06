@@ -35,7 +35,7 @@ import 'package:qui_green/controllers/onboarding/login_controller.dart';
 import 'package:qui_green/controllers/onboarding/map_controller.dart';
 import 'package:qui_green/controllers/onboarding/personal_data_business_controller.dart';
 import 'package:qui_green/controllers/onboarding/personal_data_controller.dart';
-import 'package:qui_green/controllers/onboarding/pudo_registration_preview_controller.dart';
+import 'package:qui_green/controllers/onboarding/pudo_profile_edit_controller.dart';
 import 'package:qui_green/controllers/onboarding/reward_policy_controller.dart';
 import 'package:qui_green/controllers/pudo_detail_controller.dart';
 import 'package:qui_green/controllers/pudo_home_controller.dart';
@@ -135,7 +135,9 @@ dynamic routeWithSetting(RouteSettings settings) {
         const ThanksController(),
       );
     case Routes.pudoRegistrationPreview:
-      return PageRouteHelper.buildPage(PudoRegistrationPreviewController(dataModel: settings.arguments as RegistrationPudoModel));
+      return PageRouteHelper.buildPage(const PudoProfileEditController(
+        isOnHome: false,
+      ));
     case Routes.rewardPolicy:
       return PageRouteHelper.buildPage(
         RewardPolicyController(

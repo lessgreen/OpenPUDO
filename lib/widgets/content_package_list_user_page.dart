@@ -18,35 +18,36 @@
  If not, see <https://github.com/lessgreen/OpenPUDO>.
 */
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:html_unescape/html_unescape.dart';
 import 'package:qui_green/commons/alert_dialog.dart';
-import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
 import 'package:qui_green/models/package_summary.dart';
 import 'package:qui_green/models/pudo_package.dart';
-import 'package:qui_green/models/pudo_package_event.dart';
 import 'package:qui_green/resources/res.dart';
 import 'package:qui_green/resources/routes_enum.dart';
 import 'package:qui_green/singletons/network/network_manager.dart';
 import 'package:qui_green/widgets/error_screen_widget.dart';
 import 'package:qui_green/widgets/listview_header.dart';
-import 'package:qui_green/widgets/package_card.dart';
+import 'package:qui_green/widgets/package_tile.dart';
 
-class ContentPackagesPage extends StatefulWidget {
-  const ContentPackagesPage({
+class ContentPackagesListUserPage extends StatefulWidget {
+  const ContentPackagesListUserPage({
     Key? key,
   }) : super(key: key);
 
   @override
-  State<ContentPackagesPage> createState() => _ContentPackagesPageState();
+  State<ContentPackagesListUserPage> createState() => _ContentPackagesListUserPageState();
 }
 
-class _ContentPackagesPageState extends State<ContentPackagesPage> with ChangeNotifier {
+class _ContentPackagesListUserPageState extends State<ContentPackagesListUserPage> with ChangeNotifier {
   final ScrollController _scrollController = ScrollController();
   bool _canFetchMore = true;
   final int _fetchLimit = 20;
   List<PackageSummary> _availablePackages = [];
   String? _errorDescription;
+  List<PackageSummary> get _filteredPackagesList => _availablePackages.where((element) => _handlePackageSearch(_searchedValue, element)).toList();
+  String _searchedValue = "";
 
   @override
   void initState() {
@@ -85,32 +86,50 @@ class _ContentPackagesPageState extends State<ContentPackagesPage> with ChangeNo
           ? ErrorScreenWidget(
               description: _errorDescription,
             )
-          : ListViewHeader(
-              hasScrollbar: true,
-              physics: const AlwaysScrollableScrollPhysics(),
-              itemPadding: const EdgeInsets.only(
-                top: Dimension.paddingS,
-                bottom: Dimension.paddingS,
-              ),
-              title: 'I tuoi pacchi:'.toUpperCase(),
-              titleStyle: Theme.of(context).textTheme.headerTitle,
-              itemCount: _availablePackages.length,
-              scrollController: _scrollController,
-              contentBuilder: (BuildContext context, int index) {
-                var currentPackage = _availablePackages[index];
-                return PackageCard(
-                  dataSource: currentPackage,
-                  stars: 0,
-                  onTap: () => _onPackageCard(currentPackage),
-                );
-              },
+          : Column(
+              children: [
+                CupertinoTextField(
+                  placeholder: 'Cerca per nome',
+                  padding: const EdgeInsets.all(Dimension.padding),
+                  prefix: Padding(
+                    padding: const EdgeInsets.only(left: Dimension.padding),
+                    child: Icon(
+                      CupertinoIcons.search,
+                      color: _searchedValue.isEmpty ? AppColors.colorGrey : AppColors.primaryColorDark,
+                    ),
+                  ),
+                  placeholderStyle: const TextStyle(color: AppColors.colorGrey),
+                  decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(Dimension.borderRadiusSearch)),
+                  autofocus: false,
+                  textInputAction: TextInputAction.done,
+                  onChanged: (newValue) {
+                    setState(() {
+                      _searchedValue = newValue;
+                    });
+                  },
+                ),
+                Expanded(
+                  child: ListViewHeader(
+                    hasScrollbar: true,
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    itemCount: _filteredPackagesList.length,
+                    contentBuilder: (BuildContext context, int index) {
+                      return PackageTile(
+                          onTap: (PackageSummary package) {
+                            _onPackageCard(_filteredPackagesList[index]);
+                          },
+                          packageSummary: _filteredPackagesList[index]);
+                    },
+                  ),
+                ),
+              ],
             ),
     );
   }
 
   Future<dynamic> _fetchPackages({bool? appendMode = false}) {
     _errorDescription = null;
-    return NetworkManager.instance.getMyPackages(limit: _fetchLimit, offset: _availablePackages.length).then((response) {
+    return NetworkManager.instance.getMyPackages(limit: _fetchLimit, offset: _availablePackages.length, history: true).then((response) {
       if (response is List<PackageSummary>) {
         _canFetchMore = (response.length == _fetchLimit);
         if (!_scrollController.hasListeners) {
@@ -127,17 +146,7 @@ class _ContentPackagesPageState extends State<ContentPackagesPage> with ChangeNo
     }).catchError((onError) => SAAlertDialog.displayAlertWithClose(context, "Error", onError));
   }
 
-  _onPackageCard(PackageSummary package) async {
-    if (package.packageStatus == PackageStatus.notifySent) {
-      await NetworkManager.instance.changePackageStatus(packageId: package.packageId, newStatus: PackageStatus.notified).then((value) {
-        if (value is! PudoPackage) {
-          SAAlertDialog.displayAlertWithClose(context, "Error", value, barrierDismissable: false);
-        }
-      }).catchError((onError) {
-        SAAlertDialog.displayAlertWithClose(context, "Error", onError, barrierDismissable: false);
-      });
-    }
-
+  _onPackageCard(PackageSummary package) {
     NetworkManager.instance.getPackageDetails(packageId: package.packageId).then(
       (response) {
         if (response is PudoPackage) {
@@ -165,5 +174,26 @@ class _ContentPackagesPageState extends State<ContentPackagesPage> with ChangeNo
         );
       }
     }
+  }
+
+  bool _handlePackageSearch(String search, PackageSummary package) {
+    if (search.isEmpty) {
+      return true;
+    }
+    List<String> splittedSearch = search.toLowerCase().split(" ");
+    String plainName = (package.packageName ?? "").toLowerCase();
+    //Search by name
+    for (String splitSearch in splittedSearch) {
+      if (plainName.contains(splitSearch)) {
+        return true;
+      }
+    }
+    //Search by id
+    for (String splitSearch in splittedSearch) {
+      if ("ac${package.userId ?? 0}".contains(splitSearch)) {
+        return true;
+      }
+    }
+    return false;
   }
 }

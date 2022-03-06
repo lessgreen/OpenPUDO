@@ -32,8 +32,7 @@ mixin NetworkManagerUserPudo on NetworkGeneral {
         _networkActivity.value = true;
       });
       Response response = await r.retry(
-            () => post(Uri.parse(url), body: body, headers: _headers)
-            .timeout(Duration(seconds: _timeout)),
+        () => post(Uri.parse(url), body: body, headers: _headers).timeout(Duration(seconds: _timeout)),
         retryIf: (e) => e is SocketException || e is TimeoutException,
       );
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
@@ -66,7 +65,7 @@ mixin NetworkManagerUserPudo on NetworkGeneral {
         _headers['Authorization'] = 'Bearer $_accessToken';
       }
 
-      var url = _baseURL + '/api/v1/pudos/me/users';
+      var url = _baseURL + '/api/v2/pudo/me/users';
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
@@ -81,7 +80,7 @@ mixin NetworkManagerUserPudo on NetworkGeneral {
       var decodedUTF8 = const Utf8Decoder().convert(codeUnits);
       var json = jsonDecode(decodedUTF8);
       var baseResponse = OPBaseResponse.fromJson(json);
-      List<UserProfile> myUsers = <UserProfile>[];
+      List<UserSummary> myUsers = <UserSummary>[];
 
       var needHandleTokenRefresh = _handleTokenRefresh(
         baseResponse,
@@ -92,7 +91,7 @@ mixin NetworkManagerUserPudo on NetworkGeneral {
       if (needHandleTokenRefresh == false) {
         if (baseResponse.returnCode == 0 && baseResponse.payload != null && baseResponse.payload is List) {
           for (dynamic aRow in baseResponse.payload) {
-            myUsers.add(UserProfile.fromJson(aRow));
+            myUsers.add(UserSummary.fromJson(aRow));
           }
           return myUsers;
         } else {
@@ -241,6 +240,91 @@ mixin NetworkManagerUserPudo on NetworkGeneral {
       }
     } catch (e) {
       safePrint('ERROR - getMyPudoProfile: $e');
+      _refreshTokenRetryCounter = 0;
+      _networkActivity.value = false;
+      return e;
+    }
+  }
+
+  Future<dynamic> updatePudo(UpdatePudoRequest requestModel) async {
+    try {
+      if (!isOnline) {
+        throw ("Network is offline");
+      }
+      var url = _baseURL + '/api/v2/pudo/me';
+      var body = jsonEncode(requestModel.toJson());
+      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+        _networkActivity.value = true;
+      });
+      Response response = await r.retry(
+        () => post(Uri.parse(url), body: body, headers: _headers).timeout(Duration(seconds: _timeout)),
+        retryIf: (e) => e is SocketException || e is TimeoutException,
+      );
+      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+        _networkActivity.value = false;
+      });
+      final codeUnits = response.body.codeUnits;
+      var decodedUTF8 = const Utf8Decoder().convert(codeUnits);
+      var json = jsonDecode(decodedUTF8);
+      var baseResponse = OPBaseResponse.fromJson(json);
+      var needHandleTokenRefresh = _handleTokenRefresh(
+        baseResponse,
+        () {
+          updatePudo(requestModel).catchError((onError) => throw onError);
+        },
+      );
+      if (needHandleTokenRefresh == false) {
+        if (baseResponse.returnCode == 0 && baseResponse.payload != null && baseResponse.payload is Map) {
+          return PudoProfile.fromJson(baseResponse.payload);
+        } else {
+          throw ErrorDescription('Error ${baseResponse.returnCode}: ${baseResponse.message}');
+        }
+      }
+    } catch (e) {
+      safePrint('ERROR - updatePudo: $e');
+      _refreshTokenRetryCounter = 0;
+      _networkActivity.value = false;
+      return e;
+    }
+  }
+
+  Future<dynamic> updatePudoPolicy(List<RewardOption> rewardOptions) async {
+    try {
+      if (!isOnline) {
+        throw ("Network is offline");
+      }
+      var url = _baseURL + '/api/v2/pudo/me/reward-policy';
+      var body = jsonEncode(rewardOptions.map((e) => e.toJson()).toList());
+      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+        _networkActivity.value = true;
+      });
+      Response response = await r.retry(
+        () => post(Uri.parse(url), body: body, headers: _headers).timeout(Duration(seconds: _timeout)),
+        retryIf: (e) => e is SocketException || e is TimeoutException,
+      );
+      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+        _networkActivity.value = false;
+      });
+      final codeUnits = response.body.codeUnits;
+      var decodedUTF8 = const Utf8Decoder().convert(codeUnits);
+      var json = jsonDecode(decodedUTF8);
+      var baseResponse = OPBaseResponse.fromJson(json);
+
+      var needHandleTokenRefresh = _handleTokenRefresh(
+        baseResponse,
+        () {
+          updatePudoPolicy(rewardOptions).catchError((onError) => throw onError);
+        },
+      );
+      if (needHandleTokenRefresh == false) {
+        if (baseResponse.returnCode == 0 && baseResponse.payload != null && baseResponse.payload is Map) {
+          return PudoProfile.fromJson(baseResponse.payload);
+        } else {
+          throw ErrorDescription('Error ${baseResponse.returnCode}: ${baseResponse.message}');
+        }
+      }
+    } catch (e) {
+      safePrint('ERROR - updatePudoRewardPolicy: $e');
       _refreshTokenRetryCounter = 0;
       _networkActivity.value = false;
       return e;

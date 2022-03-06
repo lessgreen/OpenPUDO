@@ -46,8 +46,10 @@ import 'package:qui_green/models/pudo_summary.dart';
 import 'package:qui_green/models/registration_pudo_model.dart';
 import 'package:qui_green/models/registration_request.dart';
 import 'package:qui_green/models/reward_option.dart';
+import 'package:qui_green/models/update_pudo_request.dart';
 import 'package:qui_green/models/user_preferences.dart';
 import 'package:qui_green/models/user_profile.dart';
+import 'package:qui_green/models/user_summary.dart';
 import 'package:qui_green/resources/app_config.dart';
 import 'package:retry/retry.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -193,12 +195,12 @@ mixin NetworkGeneral {
     return false;
   }
 
-  Future<dynamic> getAddresses({double? lat, double? lon, required String text,precise = false}) async {
+  Future<dynamic> getAddresses({double? lat, double? lon, required String text, precise = false}) async {
     var queryString = "?text=$text";
     if (lat != null && lon != null) {
       queryString += "&lat=$lat&lon=$lon";
     }
-    if(precise){
+    if (precise) {
       queryString += "&precise=$precise";
     }
     if (_accessToken != null) {

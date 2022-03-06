@@ -28,7 +28,8 @@ class InstructionCard extends StatelessWidget {
   final int pages;
   final Widget bottomWidget;
   final bool indicatorOnTop;
-  const InstructionCard({Key? key, required this.title, required this.description, required this.activeIndex, required this.pages, required this.bottomWidget,this.indicatorOnTop = true}) : super(key: key);
+  const InstructionCard({Key? key, required this.title, required this.description, required this.activeIndex, required this.pages, required this.bottomWidget, this.indicatorOnTop = true})
+      : super(key: key);
 
   Widget _indicator(bool isActive) {
     return AnimatedContainer(
@@ -37,7 +38,7 @@ class InstructionCard extends StatelessWidget {
       height: 8.0,
       width: 8,
       decoration: BoxDecoration(
-        color: isActive ? AppColors.primaryColorDark : Colors.grey.shade300,
+        color: isActive ? AppColors.primaryColorDark : AppColors.primaryColorDark.withOpacity(0.3),
         borderRadius: const BorderRadius.all(Radius.circular(12)),
       ),
     );
@@ -66,21 +67,21 @@ class InstructionCard extends StatelessWidget {
                 child: Text(
                   description,
                   textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.subtitle1,
+                  style: Theme.of(context).textTheme.subtitle1!.copyWith(height: 1.2),
                 )),
           ),
           const SizedBox(
             height: Dimension.padding,
           ),
-          if(indicatorOnTop)
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: List<Widget>.generate(pages, (index) => index == activeIndex ? _indicator(true) : _indicator(false)),
-          ),
-          if(indicatorOnTop)
-          const SizedBox(
-            height: Dimension.padding,
-          ),
+          if (indicatorOnTop)
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: List<Widget>.generate(pages, (index) => index == activeIndex ? _indicator(true) : _indicator(false)),
+            ),
+          if (indicatorOnTop)
+            const SizedBox(
+              height: Dimension.padding,
+            ),
           //child
           Expanded(
             flex: 7,
@@ -89,12 +90,12 @@ class InstructionCard extends StatelessWidget {
           const SizedBox(
             height: Dimension.paddingL,
           ),
-          if(!indicatorOnTop)
+          if (!indicatorOnTop)
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: List<Widget>.generate(pages, (index) => index == activeIndex ? _indicator(true) : _indicator(false)),
             ),
-          if(!indicatorOnTop)
+          if (!indicatorOnTop)
             const SizedBox(
               height: Dimension.paddingM,
             ),

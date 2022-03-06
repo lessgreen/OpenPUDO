@@ -20,11 +20,13 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
-import 'package:qui_green/commons/ui/cupertino_navigation_bar_fix.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:move_to_background/move_to_background.dart';
+import 'package:qui_green/commons/ui/tab_controller_container.dart';
+import 'package:qui_green/commons/utilities/home_pudo_routes.dart';
+import 'package:qui_green/controllers/pudo_main_controller.dart';
+import 'package:qui_green/controllers/pudo_profile_controller.dart';
 import 'package:qui_green/resources/res.dart';
-import 'package:qui_green/singletons/current_user.dart';
 import 'package:qui_green/singletons/network/network_manager.dart';
 
 class PudoHomeController extends StatefulWidget {
@@ -35,65 +37,81 @@ class PudoHomeController extends StatefulWidget {
 }
 
 class _PudoHomeControllerState extends State<PudoHomeController> with ConnectionAware {
+  int _oldIndex = 0;
+  final CupertinoTabController _tabController = CupertinoTabController();
+  List<TabControllerContainer> _controllers = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _controllers = [
+      TabControllerContainer(
+        tabView: CupertinoTabView(
+          navigatorKey: GlobalKey(),
+          builder: (context) => const PudoMainController(),
+          onGenerateRoute: (RouteSettings settings) => homePudoRouteWithSetting(settings),
+        ),
+        bottomView: BottomNavigationBarItem(
+          icon: SvgPicture.asset(ImageSrc.homeArt, color: Colors.grey.shade400),
+          activeIcon: SvgPicture.asset(ImageSrc.homeArt, color: AppColors.primaryColorDark),
+          label: 'Home',
+        ),
+      ),
+      TabControllerContainer(
+        tabView: CupertinoTabView(
+          navigatorKey: GlobalKey(),
+          builder: (context) => const PudoProfileController(),
+          onGenerateRoute: (RouteSettings settings) => homePudoRouteWithSetting(settings),
+        ),
+        bottomView: BottomNavigationBarItem(
+          icon: SvgPicture.asset(ImageSrc.profileArt, color: Colors.grey.shade400),
+          activeIcon: SvgPicture.asset(ImageSrc.profileArt, color: AppColors.primaryColorDark),
+          label: 'Profile',
+        ),
+      )
+    ];
+  }
+
   @override
   Widget build(BuildContext context) {
     return Material(
-      child: CupertinoTabScaffold(
-        tabBar: CupertinoTabBar(
-          items: const [
-            BottomNavigationBarItem(icon: Icon(Icons.home)),
-            BottomNavigationBarItem(icon: Icon(Icons.account_circle_rounded)),
-          ],
-        ),
-        tabBuilder: (innerContext, index) {
-          switch (index) {
-            case 1:
-              return CupertinoTabView(
-                routes: {
-                  '/': (context) {
-                    return CupertinoPageScaffold(
-                      navigationBar: CupertinoNavigationBarFix.build(
-                        context,
-                        middle: Text(
-                          'Il tuo profilo',
-                          style: Theme.of(context).textTheme.navBarTitle,
-                        ),
-                      ),
-                      child: Container(),
-                    );
-                  },
-                },
-              );
-            default:
-              return CupertinoTabView(
-                routes: {
-                  '/': (context) {
-                    return CupertinoPageScaffold(
-                        navigationBar: CupertinoNavigationBarFix.build(
-                          context,
-                          padding: const EdgeInsetsDirectional.all(0),
-                          brightness: Brightness.dark,
-                          backgroundColor: AppColors.primaryColorDark,
-                          middle: Text(
-                            'HomePudo',
-                            style: Theme.of(context).textTheme.navBarTitle,
-                          ),
-                        ),
-                        child: Center(
-                          child: ElevatedButton(
-                            onPressed: () {
-                              Navigator.pop(context);
-                              NetworkManager.instance.setAccessToken(null);
-                              Provider.of<CurrentUser>(context, listen: false).refresh();
-                            },
-                            child: const Text("Logout"),
-                          ),
-                        ));
-                  },
-                },
-              );
+      child: WillPopScope(
+        onWillPop: () async {
+          var currentIndex = _tabController.index;
+          var currentTab = _controllers[currentIndex].tabView;
+          var currentContext = currentTab.navigatorKey?.currentContext;
+          if (currentContext != null) {
+            if (Navigator.of(currentContext).canPop()) {
+              return !await Navigator.of(currentContext).maybePop();
+            }
           }
+          MoveToBackground.moveTaskToBack();
+          return false;
         },
+        child: CupertinoTabScaffold(
+          controller: _tabController,
+          tabBar: CupertinoTabBar(
+            onTap: (selectedIndex) {
+              if (selectedIndex == _oldIndex) {
+                var currentContext = _controllers[selectedIndex].tabView.navigatorKey?.currentContext;
+                if (currentContext != null) {
+                  Navigator.of(currentContext).popUntil((Route<dynamic> route) => route.isFirst);
+                }
+              }
+              _oldIndex = selectedIndex;
+            },
+            items: _controllers
+                .asMap()
+                .map((index, aChild) {
+                  return MapEntry(index, aChild.bottomView);
+                })
+                .values
+                .toList(),
+          ),
+          tabBuilder: (innerContext, index) {
+            return _controllers[index].tabView;
+          },
+        ),
       ),
     );
   }

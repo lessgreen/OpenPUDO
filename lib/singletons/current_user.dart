@@ -121,4 +121,39 @@ class CurrentUser with ChangeNotifier {
   void triggerReload() {
     notifyListeners();
   }
+
+  void triggerUserReload() {
+    switch (NetworkManager.instance.accessTokenAccess) {
+      case "customer":
+        NetworkManager.instance.getMyProfile().then((profile) {
+          if (profile != null) {
+            user = profile;
+            notifyListeners();
+          }
+        }).catchError((onError) {
+          user = null;
+          pushPage(Routes.login);
+          safePrint(onError);
+        });
+        break;
+      case "pudo":
+        NetworkManager.instance.getMyPudoProfile().then((profile) {
+          if (profile != null) {
+            pudoProfile = profile;
+            notifyListeners();
+          }
+        }).catchError((onError) {
+          pudoProfile = null;
+          pushPage(Routes.login);
+          safePrint(onError);
+        });
+        break;
+      case "guest":
+        pushPage(Routes.aboutYou);
+        break;
+      default:
+        safePrint("wrong access type");
+        break;
+    }
+  }
 }

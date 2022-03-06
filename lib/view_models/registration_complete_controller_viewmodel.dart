@@ -61,6 +61,15 @@ class RegistrationCompleteControllerViewModel extends ChangeNotifier {
   }
 
   onInstructionsClick(BuildContext context, PudoProfile? pudoModel) {
-    Navigator.of(context).pushReplacementNamed(Routes.instruction, arguments: pudoModel);
+    NetworkManager.instance.getPudoDetails(pudoId: pudoModel!.pudoId.toString()).then(
+          (response) {
+        if (response is PudoProfile) {
+          Navigator.of(context).pushReplacementNamed(Routes.instruction, arguments: response);
+        } else {
+          showErrorDialog?.call("Qualcosa e' andato storto");
+        }
+      },
+    ).catchError((onError) => showErrorDialog?.call(onError));
+
   }
 }

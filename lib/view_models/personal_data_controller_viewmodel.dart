@@ -143,7 +143,7 @@ class PersonalDataControllerViewModel extends ChangeNotifier {
   }
 
   pickFile() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles(allowMultiple: false, type: FileType.media);
+    FilePickerResult? result = await FilePicker.platform.pickFiles(allowMultiple: false, type: FileType.image);
     if (result != null) {
       try {
         File file = File(result.files.first.path ?? "");

@@ -43,4 +43,13 @@ class Routes {
   static const rewardPolicy = "/rewardPolicy";
   static const pudoRegistrationPreview = "/pudoRegistrationPreview";
   static const packagePickup = "/packagePickup";
+  static const packageReceived = "/packageReceived";
+  static const searchRecipient = "/searchRecipient";
+  static const pudoUsersList = "/pudoUsersList";
+  static const packageDelivered = "/packageDelivered";
+  static const notifySent = "/notifySent";
+  static const packagesList = "/packagesList";
+  static const packagesListWithHistory = "/packagesListWithHistory";
+  static const userDetail = "/userDetail";
+  static const profileEdit = "/profileEdit";
 }
