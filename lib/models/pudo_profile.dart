@@ -20,34 +20,45 @@
 
 import 'package:json_annotation/json_annotation.dart';
 import 'package:qui_green/models/address_model.dart';
+import 'package:qui_green/models/pudo_summary.dart';
 import 'package:qui_green/models/rating_model.dart';
 
 part 'pudo_profile.g.dart';
 
 @JsonSerializable()
-class PudoProfile {
+class PudoProfile with PudoCardRepresentation {
+  @override
+  int pudoId;
+  @override
   String businessName;
+  @override
+  String? pudoPicId;
+  @override
+  RatingModel? rating;
+  @override
+  String? customizedAddress;
+  @override
+  String? get computedAddress {
+    return address?.label;
+  }
+
   String? contactNotes;
   String? createTms;
   String? publicPhoneNumber;
-  String? pudoPicId;
-  int? pudoId;
   String? updateTms;
   String? vat;
   AddressModel? address;
-  RatingModel? rating;
   int? customerCount;
   int? packageCount;
   String? rewardMessage;
-  String? customizedAddress;
   String? imageUrl;
 
   PudoProfile({
+    required this.pudoId,
     required this.businessName,
     this.contactNotes,
     this.createTms,
     this.publicPhoneNumber,
-    this.pudoId,
     this.updateTms,
     this.vat,
     this.address,
@@ -57,8 +68,22 @@ class PudoProfile {
     this.customizedAddress,
   });
 
-  factory PudoProfile.fromJson(Map<String, dynamic> json) =>
-      _$PudoProfileFromJson(json);
+  static PudoProfile get fakeProfile {
+    return PudoProfile(
+      pudoId: -1,
+      businessName: "Bar - La pinta",
+      address: AddressModel(
+        label: "Via ippolito,8",
+        city: "Milano",
+        province: "Mi",
+        zipCode: "21100",
+        street: "Via ippolito",
+        streetNum: "8",
+      ),
+    );
+  }
+
+  factory PudoProfile.fromJson(Map<String, dynamic> json) => _$PudoProfileFromJson(json);
 
   Map<String, dynamic> toJson() => _$PudoProfileToJson(this);
 }

@@ -7,7 +7,9 @@ part of 'geo_marker.dart';
 // **************************************************************************
 
 GeoMarker _$GeoMarkerFromJson(Map<String, dynamic> json) => GeoMarker(
-      pudo: json['pudo'],
+      pudo: json['pudo'] == null
+          ? null
+          : PudoSummary.fromJson(json['pudo'] as Map<String, dynamic>),
       address: json['address'] == null
           ? null
           : AddressModel.fromJson(json['address'] as Map<String, dynamic>),

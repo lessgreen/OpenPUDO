@@ -25,7 +25,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:qui_green/models/address_model.dart';
-import 'package:qui_green/models/pudo_model.dart';
+import 'package:qui_green/models/pudo_summary.dart';
 import 'package:simple_shadow/simple_shadow.dart';
 
 import '../resources/res.dart';
@@ -34,7 +34,7 @@ part 'geo_marker.g.dart';
 
 @JsonSerializable()
 class GeoMarker {
-  final PudoModel? pudo;
+  final PudoSummary? pudo;
   final AddressModel? address;
   final double? lat;
   final double? lon;
@@ -59,8 +59,8 @@ extension PudoUtilities on List<GeoMarker> {
     return retArray.isNotEmpty ? retArray : null;
   }
 
-  List<PudoModel>? get pudos {
-    List<PudoModel> retArray = [];
+  List<PudoSummary>? get pudos {
+    List<PudoSummary> retArray = [];
     for (final aRow in this) {
       if (aRow.pudo != null) {
         retArray.add(aRow.pudo!);

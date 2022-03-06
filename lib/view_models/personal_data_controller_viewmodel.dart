@@ -25,7 +25,6 @@ import 'package:flutter/material.dart';
 import 'package:location/location.dart';
 import 'package:provider/provider.dart';
 import 'package:qui_green/commons/utilities/print_helper.dart';
-import 'package:qui_green/models/address_model.dart';
 import 'package:qui_green/models/pudo_profile.dart';
 import 'package:qui_green/models/user_profile.dart';
 import 'package:qui_green/resources/routes_enum.dart';
@@ -91,17 +90,7 @@ class PersonalDataControllerViewModel extends ChangeNotifier {
             if (pudoModel != null) {
               Navigator.of(context).pushReplacementNamed(Routes.registrationComplete, arguments: pudoModel);
             } else {
-              Navigator.of(context).pushReplacementNamed(Routes.userPudoTutorial,
-                  arguments: PudoProfile(
-                      businessName: "Bar - La pinta",
-                      address: AddressModel(
-                        label: "Via ippolito,8",
-                        city: "Milano",
-                        province: "Mi",
-                        zipCode: "21100",
-                        street: "Via ippolito",
-                        streetNum: "8",
-                      )));
+              Navigator.of(context).pushReplacementNamed(Routes.userPudoTutorial, arguments: PudoProfile.fakeProfile);
             }
           } else {
             showErrorDialog?.call("Qualcosa è andato storto");

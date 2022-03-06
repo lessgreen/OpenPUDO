@@ -32,7 +32,7 @@ import 'package:qui_green/singletons/current_user.dart';
 import 'package:qui_green/singletons/network/network_manager.dart';
 import 'package:qui_green/widgets/deleteble_listview.dart';
 import 'package:qui_green/widgets/no_pudos_widget.dart';
-import 'package:qui_green/widgets/pudo_map_card.dart';
+import 'package:qui_green/widgets/pudo_card.dart';
 import 'package:qui_green/widgets/sascaffold.dart';
 
 class PudoListController extends StatefulWidget {
@@ -101,16 +101,13 @@ class _PudoListControllerState extends State<PudoListController> {
   Widget _buildPudos() {
     return DeletableListView<PudoSummary>(
       hasScrollBar: true,
-      itemBuilder: (PudoSummary pudo) => PudoMapCard(
-        name: pudo.businessName,
-        address: pudo.label ?? "",
-        stars: (pudo.rating?.stars ?? 0).toInt(),
-        image: pudo.pudoPicId,
+      itemBuilder: (PudoSummary pudo) => PudoCard(
+        dataSource: pudo,
         onTap: () => _openPudo(pudo),
         hasShadow: true,
       ),
       items: dataSource!,
-      idGetter: (PudoSummary pudo) => pudo.pudoId!,
+      idGetter: (PudoSummary pudo) => pudo.pudoId,
       onDelete: (PudoSummary pudo) => _deletePudo(pudo),
       alertDeleteText: "Sei sicuro di voler rimuovere questo pudo?\nSe continui non riceverai ulteriori notifiche per i pacchi non ancora consegnati",
     );

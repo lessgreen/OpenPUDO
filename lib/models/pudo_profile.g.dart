@@ -7,11 +7,11 @@ part of 'pudo_profile.dart';
 // **************************************************************************
 
 PudoProfile _$PudoProfileFromJson(Map<String, dynamic> json) => PudoProfile(
+      pudoId: json['pudoId'] as int,
       businessName: json['businessName'] as String,
       contactNotes: json['contactNotes'] as String?,
       createTms: json['createTms'] as String?,
       publicPhoneNumber: json['publicPhoneNumber'] as String?,
-      pudoId: json['pudoId'] as int?,
       updateTms: json['updateTms'] as String?,
       vat: json['vat'] as String?,
       address: json['address'] == null
@@ -30,19 +30,19 @@ PudoProfile _$PudoProfileFromJson(Map<String, dynamic> json) => PudoProfile(
 
 Map<String, dynamic> _$PudoProfileToJson(PudoProfile instance) =>
     <String, dynamic>{
+      'pudoId': instance.pudoId,
       'businessName': instance.businessName,
+      'pudoPicId': instance.pudoPicId,
+      'rating': instance.rating,
+      'customizedAddress': instance.customizedAddress,
       'contactNotes': instance.contactNotes,
       'createTms': instance.createTms,
       'publicPhoneNumber': instance.publicPhoneNumber,
-      'pudoPicId': instance.pudoPicId,
-      'pudoId': instance.pudoId,
       'updateTms': instance.updateTms,
       'vat': instance.vat,
       'address': instance.address,
-      'rating': instance.rating,
       'customerCount': instance.customerCount,
       'packageCount': instance.packageCount,
       'rewardMessage': instance.rewardMessage,
-      'customizedAddress': instance.customizedAddress,
       'imageUrl': instance.imageUrl,
     };

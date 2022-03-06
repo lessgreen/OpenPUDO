@@ -40,7 +40,6 @@ import 'package:qui_green/models/login_request.dart';
 import 'package:qui_green/models/package_summary.dart';
 import 'package:qui_green/models/pudo_notification.dart';
 import 'package:qui_green/models/pudo_package.dart';
-import 'package:qui_green/models/pudo_package_event.dart';
 import 'package:qui_green/models/pudo_profile.dart';
 import 'package:qui_green/models/pudo_summary.dart';
 import 'package:qui_green/models/registration_pudo_model.dart';

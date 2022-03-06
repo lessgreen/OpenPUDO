@@ -32,7 +32,7 @@ import 'package:qui_green/resources/res.dart';
 import 'package:qui_green/singletons/network/network_manager.dart';
 import 'package:qui_green/view_models/registration_complete_controller_viewmodel.dart';
 import 'package:qui_green/widgets/main_button.dart';
-import 'package:qui_green/widgets/pudo_map_card.dart';
+import 'package:qui_green/widgets/pudo_card.dart';
 import 'package:qui_green/widgets/sascaffold.dart';
 
 class RegistrationCompleteController extends StatefulWidget {
@@ -121,12 +121,9 @@ class _RegistrationCompleteControllerState extends State<RegistrationCompleteCon
                   (widget.pudoDataModel != null)
                       ? Padding(
                           padding: const EdgeInsets.only(top: Dimension.paddingL, left: Dimension.padding, right: Dimension.padding),
-                          child: PudoMapCard(
-                            name: widget.pudoDataModel?.businessName ?? "",
-                            address: widget.pudoDataModel?.address?.label ?? "",
-                            stars: widget.pudoDataModel?.rating?.stars ?? 0,
+                          child: PudoCard(
+                            dataSource: widget.pudoDataModel!,
                             onTap: () {},
-                            image: widget.pudoDataModel?.pudoPicId,
                           ),
                         )
                       : const SizedBox(),

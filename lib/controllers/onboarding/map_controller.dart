@@ -31,13 +31,12 @@ import 'package:qui_green/commons/alert_dialog.dart';
 import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
 import 'package:qui_green/commons/ui/cupertino_navigation_bar_fix.dart';
 import 'package:qui_green/models/geo_marker.dart';
-import 'package:qui_green/models/pudo_summary.dart';
 import 'package:qui_green/resources/res.dart';
 import 'package:qui_green/resources/routes_enum.dart';
 import 'package:qui_green/singletons/network/network_manager.dart';
 import 'package:qui_green/view_models/maps_controller_viewmodel.dart';
 import 'package:qui_green/widgets/adress_field_pudo_search.dart';
-import 'package:qui_green/widgets/pudo_map_card.dart';
+import 'package:qui_green/widgets/pudo_card.dart';
 import 'package:qui_green/widgets/sascaffold.dart';
 import 'package:qui_green/widgets/text_field_button.dart';
 
@@ -263,43 +262,48 @@ class _MapControllerState extends State<MapController> with ConnectionAware, Tic
       );
 
   Widget _buildCards(MapsControllerViewModel viewModel) => AnimatedCrossFade(
-      duration: const Duration(milliseconds: 100),
-      crossFadeState: viewModel.pudos.isEmpty || viewModel.currentZoomLevel < 13 ? CrossFadeState.showFirst : CrossFadeState.showSecond,
-      firstChild: SizedBox(
-        width: MediaQuery.of(context).size.width,
-        height: 0,
-      ),
-      secondChild: SizedBox(
-        height: 100 + (Dimension.paddingM * 2),
-        child: PageView.builder(
-          physics: const BouncingScrollPhysics(),
-          itemCount: viewModel.pudos.length,
-          controller: viewModel.pageController,
-          onPageChanged: (value) async {
-            if (!viewModel.isReloadingPudos) {
-              animateMapTo(viewModel, LatLng(viewModel.pudos[value].lat ?? 0, viewModel.pudos[value].lon ?? 0));
-              viewModel.showingCardPudo = viewModel.pudos[value].pudo!.pudoId;
-            }
-          },
-          itemBuilder: (context, index) => Padding(
-            padding: const EdgeInsets.only(
-              top: Dimension.paddingM,
-              left: Dimension.paddingXS,
-              right: Dimension.paddingXS,
-              bottom: Dimension.paddingM,
-            ),
-            child: PudoMapCard(
-                name: viewModel.pudos[index].pudo?.businessName ?? "",
-                address: viewModel.pudos[index].pudo?.label ?? "",
-                stars: viewModel.pudos[index].pudo?.rating?.reviewCount ?? 0,
-                hasShadow: true,
-                onTap: () {
-                  viewModel.onPudoClick(context, viewModel.pudos[index], widget.isOnboarding);
-                },
-                image: viewModel.pudos[index].pudo?.pudoPicId),
+        duration: const Duration(milliseconds: 100),
+        crossFadeState: viewModel.pudos.isEmpty || viewModel.currentZoomLevel < 13 ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+        firstChild: SizedBox(
+          width: MediaQuery.of(context).size.width,
+          height: 0,
+        ),
+        secondChild: SizedBox(
+          height: 100 + (Dimension.paddingM * 2),
+          child: PageView.builder(
+            physics: const BouncingScrollPhysics(),
+            itemCount: viewModel.pudos.length,
+            controller: viewModel.pageController,
+            onPageChanged: (value) async {
+              if (!viewModel.isReloadingPudos) {
+                animateMapTo(viewModel, LatLng(viewModel.pudos[value].lat ?? 0, viewModel.pudos[value].lon ?? 0));
+                viewModel.showingCardPudo = viewModel.pudos[value].pudo!.pudoId;
+              }
+            },
+            itemBuilder: (context, index) {
+              var pudo = viewModel.pudos[index].pudo;
+              if (pudo != null) {
+                return Padding(
+                  padding: const EdgeInsets.only(
+                    top: Dimension.paddingM,
+                    left: Dimension.paddingXS,
+                    right: Dimension.paddingXS,
+                    bottom: Dimension.paddingM,
+                  ),
+                  child: PudoCard(
+                    dataSource: viewModel.pudos[index].pudo!,
+                    hasShadow: true,
+                    onTap: () {
+                      viewModel.onPudoClick(context, viewModel.pudos[index], widget.isOnboarding);
+                    },
+                  ),
+                );
+              }
+              return const SizedBox();
+            },
           ),
         ),
-      ));
+      );
 
   Widget _buildMap(MapsControllerViewModel viewModel) => SAScaffold(
         isLoading: NetworkManager.instance.networkActivity,

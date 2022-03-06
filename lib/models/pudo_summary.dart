@@ -24,18 +24,25 @@ import 'package:qui_green/models/rating_model.dart';
 part 'pudo_summary.g.dart';
 
 @JsonSerializable()
-class PudoSummary {
+class PudoSummary with PudoCardRepresentation {
+  @override
   int pudoId;
+  @override
   String businessName;
+  @override
   String? pudoPicId;
-  String? label;
+  @override
+  @JsonKey(name: 'label')
+  String? computedAddress;
+  @override
   RatingModel? rating;
+  @override
   String? customizedAddress;
 
   PudoSummary({
     required this.pudoId,
     required this.businessName,
-    this.label,
+    this.computedAddress,
     this.pudoPicId,
     this.rating,
     this.customizedAddress,
@@ -44,4 +51,13 @@ class PudoSummary {
   factory PudoSummary.fromJson(Map<String, dynamic> json) => _$PudoSummaryFromJson(json);
 
   Map<String, dynamic> toJson() => _$PudoSummaryToJson(this);
+}
+
+mixin PudoCardRepresentation {
+  int get pudoId;
+  String get businessName;
+  String? get pudoPicId;
+  String? get computedAddress;
+  RatingModel? get rating;
+  String? get customizedAddress;
 }

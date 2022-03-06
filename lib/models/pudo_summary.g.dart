@@ -9,7 +9,7 @@ part of 'pudo_summary.dart';
 PudoSummary _$PudoSummaryFromJson(Map<String, dynamic> json) => PudoSummary(
       pudoId: json['pudoId'] as int,
       businessName: json['businessName'] as String,
-      label: json['label'] as String?,
+      computedAddress: json['label'] as String?,
       pudoPicId: json['pudoPicId'] as String?,
       rating: json['rating'] == null
           ? null
@@ -22,7 +22,7 @@ Map<String, dynamic> _$PudoSummaryToJson(PudoSummary instance) =>
       'pudoId': instance.pudoId,
       'businessName': instance.businessName,
       'pudoPicId': instance.pudoPicId,
-      'label': instance.label,
+      'label': instance.computedAddress,
       'rating': instance.rating,
       'customizedAddress': instance.customizedAddress,
     };
