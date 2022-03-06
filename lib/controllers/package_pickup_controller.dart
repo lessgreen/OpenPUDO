@@ -184,22 +184,23 @@ class _PackagePickupControllerState extends State<PackagePickupController> {
           color: AppColors.boxGrey,
           padding: const EdgeInsets.symmetric(vertical: Dimension.paddingS, horizontal: Dimension.padding),
           child: RichText(
-              textAlign: TextAlign.justify,
-              text: TextSpan(
-                text: 'DETTAGLI PACCO',
-                style: widget.isForPudo ? Theme.of(context).textTheme.bodyTextLight : Theme.of(context).textTheme.bodyTextBold,
-                children: [
-                  if (widget.isForPudo)
-                    const TextSpan(
-                      text: " - per ",
-                    ),
-                  if (widget.isForPudo)
-                    TextSpan(
-                      text: "AC${widget.packageModel.userId ?? 0}",
-                      style: Theme.of(context).textTheme.bodyTextBold,
-                    ),
-                ],
-              )),
+            textAlign: TextAlign.justify,
+            text: TextSpan(
+              text: 'DETTAGLI PACCO',
+              style: widget.isForPudo ? Theme.of(context).textTheme.bodyTextLight : Theme.of(context).textTheme.bodyTextBold,
+              children: [
+                if (widget.isForPudo)
+                  const TextSpan(
+                    text: " - utente ",
+                  ),
+                if (widget.isForPudo)
+                  TextSpan(
+                    text: "AC${widget.packageModel.userId ?? 0}",
+                    style: Theme.of(context).textTheme.bodyTextBold,
+                  ),
+              ],
+            ),
+          ),
         ),
         ListView.builder(
           shrinkWrap: true,
@@ -210,24 +211,34 @@ class _PackagePickupControllerState extends State<PackagePickupController> {
             if (event != null) {
               return Padding(
                 padding: const EdgeInsets.all(Dimension.paddingS),
-                child: RichText(
-                    textAlign: TextAlign.justify,
-                    text: TextSpan(
-                      text: '',
-                      style: Theme.of(context).textTheme.bodyTextLight,
-                      children: [
-                        TextSpan(
-                          text: event.createTms?.ddmmyyyy,
-                          style: Theme.of(context).textTheme.bodyTextBold,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(top: 3),
+                      child: Text(
+                        '${event.createTms?.ddmmyyyy}',
+                        style: Theme.of(context).textTheme.bodyTextBold,
+                      ),
+                    ),
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: Dimension.paddingS),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              event.packageStatusMessage ?? "??",
+                              style: Theme.of(context).textTheme.bodyTextLight,
+                            ),
+                            event.notes != null ? Text(event.notes!, style: Theme.of(context).textTheme.captionSmall) : const SizedBox()
+                          ],
                         ),
-                        const TextSpan(
-                          text: " - ",
-                        ),
-                        TextSpan(
-                          text: event.packageStatusMessage ?? "??",
-                        ),
-                      ],
-                    )),
+                      ),
+                    ),
+                  ],
+                ),
               );
             }
             return const SizedBox();
