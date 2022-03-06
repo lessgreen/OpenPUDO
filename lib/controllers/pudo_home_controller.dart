@@ -24,7 +24,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:move_to_background/move_to_background.dart';
 import 'package:qui_green/commons/ui/tab_controller_container.dart';
 import 'package:qui_green/commons/utilities/home_pudo_routes.dart';
-import 'package:qui_green/controllers/home_pudo_controller.dart';
+import 'package:qui_green/controllers/pudo_main_controller.dart';
 import 'package:qui_green/controllers/pudo_profile_controller.dart';
 import 'package:qui_green/resources/res.dart';
 import 'package:qui_green/singletons/network/network_manager.dart';
@@ -48,7 +48,7 @@ class _PudoHomeControllerState extends State<PudoHomeController> with Connection
       TabControllerContainer(
         tabView: CupertinoTabView(
           navigatorKey: GlobalKey(),
-          builder: (context) => const HomePudoController(),
+          builder: (context) => const PudoMainController(),
           onGenerateRoute: (RouteSettings settings) => homePudoRouteWithSetting(settings),
         ),
         bottomView: BottomNavigationBarItem(

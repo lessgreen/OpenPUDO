@@ -30,14 +30,14 @@ import 'package:qui_green/resources/routes_enum.dart';
 import 'package:qui_green/singletons/network/network_manager.dart';
 import 'package:qui_green/widgets/table_view_cell.dart';
 
-class HomePudoController extends StatefulWidget {
-  const HomePudoController({Key? key}) : super(key: key);
+class PudoMainController extends StatefulWidget {
+  const PudoMainController({Key? key}) : super(key: key);
 
   @override
-  _HomePudoControllerState createState() => _HomePudoControllerState();
+  _PudoMainControllerState createState() => _PudoMainControllerState();
 }
 
-class _HomePudoControllerState extends State<HomePudoController> with ConnectionAware {
+class _PudoMainControllerState extends State<PudoMainController> with ConnectionAware {
   @override
   Widget build(BuildContext context) {
     return Material(
