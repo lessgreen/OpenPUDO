@@ -7,7 +7,7 @@ part of 'pudo_summary.dart';
 // **************************************************************************
 
 PudoSummary _$PudoSummaryFromJson(Map<String, dynamic> json) => PudoSummary(
-      pudoId: json['pudoId'] as int?,
+      pudoId: json['pudoId'] as int,
       businessName: json['businessName'] as String,
       label: json['label'] as String?,
       pudoPicId: json['pudoPicId'] as String?,

@@ -25,7 +25,7 @@ part 'pudo_summary.g.dart';
 
 @JsonSerializable()
 class PudoSummary {
-  int? pudoId;
+  int pudoId;
   String businessName;
   String? pudoPicId;
   String? label;
@@ -33,7 +33,7 @@ class PudoSummary {
   String? customizedAddress;
 
   PudoSummary({
-    this.pudoId,
+    required this.pudoId,
     required this.businessName,
     this.label,
     this.pudoPicId,
