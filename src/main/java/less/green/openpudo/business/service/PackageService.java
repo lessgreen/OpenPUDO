@@ -346,8 +346,8 @@ public class PackageService {
     }
 
     public List<Long> getPackageIdsToNotifySent() {
-        // get packages in delivered status for more than 5 minutes
-        Date timeThreshold = CalendarUtils.getDateWithOffset(new Date(), Calendar.MINUTE, -5);
+        // get packages in delivered status for more than 30 seconds
+        Date timeThreshold = CalendarUtils.getDateWithOffset(new Date(), Calendar.SECOND, -30);
         return packageDao.getPackageIdsToNotifySent(timeThreshold);
     }
 
