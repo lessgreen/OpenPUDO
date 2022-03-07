@@ -11,6 +11,7 @@ import io.quarkus.qute.TemplateInstance;
 import less.green.openpudo.business.dao.PackageDao;
 import less.green.openpudo.business.model.TbPackage;
 import less.green.openpudo.business.model.TbPackageEvent;
+import less.green.openpudo.business.model.usertype.PackageStatus;
 import less.green.openpudo.cdi.service.CryptoService;
 import less.green.openpudo.common.dto.tuple.Pair;
 import less.green.openpudo.common.dto.tuple.Quartet;
@@ -27,6 +28,7 @@ import javax.ws.rs.core.Response;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -56,13 +58,13 @@ public class ShareService {
             return Response.status(Response.Status.NOT_FOUND).entity(Response.Status.NOT_FOUND.getReasonPhrase()).build();
         }
         Pair<TbPackage, List<TbPackageEvent>> rs = packageDao.getPackage(packageId);
-        if (rs == null) {
+        if (rs == null || !Arrays.asList(PackageStatus.DELIVERED, PackageStatus.NOTIFIED, PackageStatus.NOTIFY_SENT, PackageStatus.COLLECTED).contains(rs.getValue1().get(0).getPackageStatus())) {
             return Response.status(Response.Status.NOT_FOUND).entity(Response.Status.NOT_FOUND.getReasonPhrase()).build();
         }
 
-        List<PackageEvent> events = rs.getValue1().stream().map(i -> dtoMapper.mapPackageEventEntityToDto(new Pair<>(i, packageService.getPackageStatusMessage(i.getPackageStatus())))).collect(Collectors.toList());
-        Package ret = dtoMapper.mapPackageEntityToDto(new Quartet<>(rs.getValue0(), events, cryptoService.hashidEncodeShort(packageId), cryptoService.hashidEncodeLong(packageId)));
-        TemplateInstance templateInstance = packageTemplate.data("package", ret);
+        List<PackageEvent> events = rs.getValue1().stream().map(i -> dtoMapper.mapPackageEventEntityToDto(new Pair<>(i, packageService.getPackageStatusMessage(i.getPackageStatus(), "it")))).collect(Collectors.toList());
+        Package pack = dtoMapper.mapPackageEntityToDto(new Quartet<>(rs.getValue0(), events, cryptoService.hashidEncodeShort(packageId), cryptoService.hashidEncodeLong(packageId)));
+        TemplateInstance templateInstance = packageTemplate.data("package", pack);
         return Response.ok(templateInstance.render()).build();
     }
 
