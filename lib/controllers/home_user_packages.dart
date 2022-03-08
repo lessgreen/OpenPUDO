@@ -1,5 +1,3 @@
-// ignore_for_file: invalid_use_of_protected_member
-
 /*
  OpenPUDO - PUDO and Micro-delivery software for Last Mile Collaboration
  Copyright (C) 2020-2022 LESS SRL - https://less.green
@@ -25,6 +23,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
 import 'package:qui_green/commons/ui/cupertino_navigation_bar_fix.dart';
+import 'package:qui_green/commons/utilities/localization.dart';
 import 'package:qui_green/singletons/current_user.dart';
 import 'package:qui_green/singletons/network/network_manager.dart';
 import 'package:qui_green/widgets/content_package_page.dart';
@@ -45,6 +44,7 @@ class _HomeUserPackagesState extends State<HomeUserPackages> with ConnectionAwar
   bool _hasPackages = false;
 
   List<Future> _buildFutures() {
+    LocalizationManager.of(context).safeLocalizedString("boh", "diocan");
     _hasPackages = (Provider.of<CurrentUser>(context, listen: false).user?.packageCount ?? 0) > 0;
     var future1 = NetworkManager.instance.getMyPudos().then((value) => (value as List).isNotEmpty).catchError((onError) => false);
     return [future1];

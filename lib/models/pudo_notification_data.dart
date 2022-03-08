@@ -21,7 +21,6 @@
 // ignore_for_file: constant_identifier_names
 
 import 'package:json_annotation/json_annotation.dart';
-import 'package:qui_green/models/pudo_package_event.dart';
 
 import 'package_summary.dart';
 
