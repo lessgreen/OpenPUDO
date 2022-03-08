@@ -68,9 +68,23 @@ dynamic homePudoRouteWithSetting(RouteSettings settings) {
           isOnReceivePack: true,
         ),
       );
+    case Routes.packageDeliveryDone:
+      return PageRouteHelper.buildPage(
+        NotifySentController(
+          title: 'Pacco consegnato',
+          username: settings.arguments as String,
+          canGoBack: true,
+          mainText: "Il pacco è stato correttamente consegnato all'utente ",
+        ),
+      );
     case Routes.notifySent:
       return PageRouteHelper.buildPage(
-        NotifySentController(username: settings.arguments as String),
+        NotifySentController(
+          title: 'Notifica invaita',
+          username: settings.arguments as String,
+          canGoBack: true,
+          mainText: "Abbiamo inviato una notifica\nall'utente ",
+        ),
       );
     case Routes.pudoUsersList:
       return PageRouteHelper.buildPage(

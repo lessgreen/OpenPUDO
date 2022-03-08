@@ -52,4 +52,5 @@ class Routes {
   static const packagesListWithHistory = "/packagesListWithHistory";
   static const userDetail = "/userDetail";
   static const profileEdit = "/profileEdit";
+  static const packageDeliveryDone = "/packageDeliveryDone";
 }

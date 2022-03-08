@@ -33,6 +33,7 @@ import 'package:qui_green/resources/routes_enum.dart';
 import 'package:qui_green/singletons/network/network_manager.dart';
 import 'package:qui_green/widgets/sascaffold.dart';
 import 'package:qui_green/widgets/table_view_cell.dart';
+import 'package:vibration/vibration.dart';
 
 class PackageDeliveredController extends StatefulWidget {
   const PackageDeliveredController({Key? key}) : super(key: key);
@@ -127,8 +128,12 @@ class _PackageDeliveredControllerState extends State<PackageDeliveredController>
                         });
                         NetworkManager.instance.changePackageStatus(packageId: value.packageId, newStatus: PackageStatus.collected).then((value) {
                           if (value is PudoPackage) {
-                            Navigator.of(context).pop();
+                            Navigator.of(context).pushReplacementNamed(Routes.packageDeliveryDone, arguments: "AC${value.userId ?? 0}");
+                          } else {
+                            SAAlertDialog.displayAlertWithClose(context, "Error", value, barrierDismissable: false);
                           }
+                        }).catchError((onError) {
+                          SAAlertDialog.displayAlertWithClose(context, "Error", onError, barrierDismissable: false);
                         });
                       }
                     });
@@ -150,14 +155,17 @@ class _PackageDeliveredControllerState extends State<PackageDeliveredController>
     );
   }
 
-  void _handleQRCode(String? code) {
+  void _handleQRCode(String? code) async {
     if (_code == null && code != null) {
       _code = code;
+      if (await Vibration.hasVibrator() ?? false) {
+        Vibration.vibrate();
+      }
       NetworkManager.instance.getPackageDetailsByQrCode(shareLink: _code!).then((value) {
         if (value is PudoPackage) {
           NetworkManager.instance.changePackageStatus(packageId: value.packageId, newStatus: PackageStatus.collected).then((value) {
             if (value is PudoPackage) {
-              Navigator.of(context).pop();
+              Navigator.of(context).pushReplacementNamed(Routes.packageDeliveryDone, arguments: "AC${value.userId ?? 0}");
             } else {
               SAAlertDialog.displayAlertWithClose(context, "Error", value, barrierDismissable: false, completion: () => _code = null);
             }

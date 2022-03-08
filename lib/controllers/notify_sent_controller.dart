@@ -25,8 +25,11 @@ import 'package:qui_green/commons/ui/cupertino_navigation_bar_fix.dart';
 import 'package:qui_green/resources/res.dart';
 
 class NotifySentController extends StatefulWidget {
-  const NotifySentController({Key? key, required this.username}) : super(key: key);
+  const NotifySentController({Key? key, required this.username,required this.title,required  this.mainText,required  this.canGoBack}) : super(key: key);
   final String username;
+  final String title;
+  final String mainText;
+  final bool canGoBack;
 
   @override
   _NotifySentControllerState createState() => _NotifySentControllerState();
@@ -45,9 +48,13 @@ class _NotifySentControllerState extends State<NotifySentController> {
           navigationBar: CupertinoNavigationBarFix.build(
             context,
             middle: Text(
-              'Notifica inviata',
+              widget.title,
               style: Theme.of(context).textTheme.navBarTitle,
             ),
+            leading: widget.canGoBack?CupertinoNavigationBarBackButton(
+              color: Colors.white,
+              onPressed: () => Navigator.of(context).pop(),
+            ):null,
           ),
           child: ListView(
             children: [
@@ -76,8 +83,8 @@ class _NotifySentControllerState extends State<NotifySentController> {
                     text: '',
                     style: Theme.of(context).textTheme.headlineSmall!.copyWith(height: 1.2),
                     children: [
-                      const TextSpan(
-                        text: "Abbiamo inviato una notifica\nall'utente ",
+                      TextSpan(
+                        text: widget.mainText,
                       ),
                       TextSpan(text: widget.username, style: const TextStyle(fontWeight: FontWeight.w500)),
                     ],
