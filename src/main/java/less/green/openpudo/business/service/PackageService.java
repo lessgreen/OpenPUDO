@@ -117,23 +117,19 @@ public class PackageService {
     }
 
     protected String getPackageStatusMessage(PackageStatus packageStatus) {
-        return getPackageStatusMessage(packageStatus, null);
-    }
-
-    protected String getPackageStatusMessage(PackageStatus packageStatus, String forcedLanguage) {
         switch (packageStatus) {
             case DELIVERED:
-                return localizationService.getMessage(forcedLanguage == null ? context.getLanguage() : forcedLanguage, "label.package.delivered");
+                return localizationService.getMessage(context.getLanguage(), "label.package.delivered");
             case NOTIFY_SENT:
-                return localizationService.getMessage(forcedLanguage == null ? context.getLanguage() : forcedLanguage, "label.package.notify_sent");
+                return localizationService.getMessage(context.getLanguage(), "label.package.notify_sent");
             case NOTIFIED:
-                return localizationService.getMessage(forcedLanguage == null ? context.getLanguage() : forcedLanguage, "label.package.notified");
+                return localizationService.getMessage(context.getLanguage(), "label.package.notified");
             case COLLECTED:
-                return localizationService.getMessage(forcedLanguage == null ? context.getLanguage() : forcedLanguage, "label.package.collected");
+                return localizationService.getMessage(context.getLanguage(), "label.package.collected");
             case ACCEPTED:
-                return localizationService.getMessage(forcedLanguage == null ? context.getLanguage() : forcedLanguage, "label.package.accepted");
+                return localizationService.getMessage(context.getLanguage(), "label.package.accepted");
             case EXPIRED:
-                return localizationService.getMessage(forcedLanguage == null ? context.getLanguage() : forcedLanguage, "label.package.expired");
+                return localizationService.getMessage(context.getLanguage(), "label.package.expired");
             default:
                 throw new AssertionError("Unsupported mapping for PackageStatus: " + packageStatus);
         }

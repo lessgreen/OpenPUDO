@@ -79,7 +79,9 @@ public class ShareService {
             return Response.status(Response.Status.NOT_FOUND).entity(Response.Status.NOT_FOUND.getReasonPhrase()).build();
         }
 
-        List<PackageEvent> events = rs.getValue1().stream().map(i -> dtoMapper.mapPackageEventEntityToDto(new Pair<>(i, packageService.getPackageStatusMessage(i.getPackageStatus(), "it")))).collect(Collectors.toList());
+        // forcing italian language before proper localization
+        context.setLanguage("it");
+        List<PackageEvent> events = rs.getValue1().stream().map(i -> dtoMapper.mapPackageEventEntityToDto(new Pair<>(i, packageService.getPackageStatusMessage(i.getPackageStatus())))).collect(Collectors.toList());
         Package pack = dtoMapper.mapPackageEntityToDto(new Quartet<>(rs.getValue0(), events, cryptoService.hashidEncodeShort(packageId), cryptoService.hashidEncodeLong(packageId)));
         TemplateInstance templateInstance = packageTemplate.data("package", pack);
         return Response.ok(templateInstance.render()).build();
