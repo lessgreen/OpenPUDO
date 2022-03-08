@@ -1,6 +1,7 @@
 package less.green.openpudo.rest.resource;
 
 import com.google.zxing.WriterException;
+import io.vertx.core.http.HttpServerRequest;
 import less.green.openpudo.business.service.ShareService;
 import less.green.openpudo.cdi.ExecutionContext;
 import less.green.openpudo.cdi.service.LocalizationService;
@@ -15,9 +16,14 @@ import org.eclipse.microprofile.openapi.annotations.parameters.Parameter;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+
+import static less.green.openpudo.common.StringUtils.isEmpty;
 
 @RequestScoped
 @Path("/share")
@@ -26,6 +32,9 @@ public class ShareResource {
 
     @Inject
     ExecutionContext context;
+
+    @Context
+    HttpServerRequest httpServerRequest;
 
     @Inject
     LocalizationService localizationService;
@@ -56,6 +65,21 @@ public class ShareResource {
             throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.invalid_field", "size"));
         }
         return shareService.getQRCode(shareLink, size);
+    }
+
+    @GET
+    @Path("/redirect/{channel}")
+    @PublicAPI
+    @Operation(summary = "Get QRCode of the provided share link, simulating a static resource served by an http server")
+    public Response redirect(@PathParam(value = "channel") String channel, @HeaderParam("User-Agent") String userAgent) throws URISyntaxException {
+        shareService.redirect(channel, httpServerRequest);
+        if (!isEmpty(userAgent) && (userAgent.toLowerCase().contains("iphone") || userAgent.toLowerCase().contains("ipad"))) {
+            return Response.temporaryRedirect(new URI("https://www.quigreen.it/app-ios/")).build();
+        } else if (!isEmpty(userAgent) && userAgent.toLowerCase().contains("android")) {
+            return Response.temporaryRedirect(new URI("https://www.quigreen.it/app-android/")).build();
+        } else {
+            return Response.temporaryRedirect(new URI("https://www.quigreen.it/")).build();
+        }
     }
 
 }

@@ -285,6 +285,16 @@ CREATE INDEX tb_notification_favourite_customer_user_id_idx ON tb_notification_f
 CREATE INDEX tb_notification_favourite_pudo_id_idx ON tb_notification_favourite(pudo_id);
 
 
+DROP TABLE IF EXISTS tb_redirect_log CASCADE;
+CREATE TABLE IF NOT EXISTS tb_redirect_log (
+	redirect_id BIGSERIAL PRIMARY KEY,
+	create_tms TIMESTAMP(3) NOT NULL,
+	channel TEXT NOT NULL,
+	remote_address TEXT,
+	user_agent TEXT
+);
+
+
 -- views
 CREATE OR REPLACE VIEW vw_package_status AS
 SELECT t1.*, t2.package_event_id, t2.package_status, t2.notes

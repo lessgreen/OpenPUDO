@@ -10,11 +10,16 @@ import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 import io.quarkus.qute.Location;
 import io.quarkus.qute.Template;
 import io.quarkus.qute.TemplateInstance;
+import io.vertx.core.http.HttpServerRequest;
 import less.green.openpudo.business.dao.PackageDao;
+import less.green.openpudo.business.dao.RedirectLogDao;
 import less.green.openpudo.business.model.TbPackage;
 import less.green.openpudo.business.model.TbPackageEvent;
+import less.green.openpudo.business.model.TbRedirectLog;
 import less.green.openpudo.business.model.usertype.PackageStatus;
+import less.green.openpudo.cdi.ExecutionContext;
 import less.green.openpudo.cdi.service.CryptoService;
+import less.green.openpudo.common.ExceptionUtils;
 import less.green.openpudo.common.dto.tuple.Pair;
 import less.green.openpudo.common.dto.tuple.Quartet;
 import less.green.openpudo.rest.dto.DtoMapper;
@@ -31,14 +36,21 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import static less.green.openpudo.common.StringUtils.isEmpty;
+import static less.green.openpudo.common.StringUtils.sanitizeString;
 
 @RequestScoped
 @Transactional(Transactional.TxType.REQUIRED)
 @Log4j2
 public class ShareService {
+
+    @Inject
+    ExecutionContext context;
 
     @Inject
     CryptoService cryptoService;
@@ -48,6 +60,8 @@ public class ShareService {
 
     @Inject
     PackageDao packageDao;
+    @Inject
+    RedirectLogDao redirectLogDao;
 
     @Inject
     DtoMapper dtoMapper;
@@ -88,6 +102,30 @@ public class ShareService {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ImageIO.write(image, "png", baos);
         return Response.ok(baos.toByteArray()).build();
+    }
+
+    public void redirect(String channel, HttpServerRequest request) {
+        try {
+            TbRedirectLog tbRedirectLog = new TbRedirectLog();
+            tbRedirectLog.setCreateTms(new Date());
+            tbRedirectLog.setChannel(sanitizeString(channel));
+            if (!isEmpty(request.getHeader("X-Forwarded-For"))) {
+                tbRedirectLog.setRemoteAddress(request.getHeader("X-Forwarded-For").trim());
+            } else if (!isEmpty(request.getHeader("X-Real-IP"))) {
+                tbRedirectLog.setRemoteAddress(request.getHeader("X-Real-IP"));
+            } else if (request.remoteAddress() != null) {
+                tbRedirectLog.setRemoteAddress(request.remoteAddress().hostAddress());
+            }
+            String userAgent = request.getHeader("User-Agent");
+            if (!isEmpty(userAgent)) {
+                tbRedirectLog.setUserAgent(sanitizeString(userAgent));
+            }
+            redirectLogDao.persist(tbRedirectLog);
+            redirectLogDao.flush();
+        } catch (Exception ex) {
+            // very unlikely to have errors, but we don't want to break redirection anyway
+            log.error("[{}] {}", context.getExecutionId(), ExceptionUtils.getCanonicalFormWithStackTrace(ex));
+        }
     }
 
 }
