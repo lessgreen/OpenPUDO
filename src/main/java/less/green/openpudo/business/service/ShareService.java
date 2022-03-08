@@ -1,10 +1,12 @@
 package less.green.openpudo.business.service;
 
 import com.google.zxing.BarcodeFormat;
+import com.google.zxing.EncodeHintType;
 import com.google.zxing.WriterException;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
+import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 import io.quarkus.qute.Location;
 import io.quarkus.qute.Template;
 import io.quarkus.qute.TemplateInstance;
@@ -30,6 +32,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RequestScoped
@@ -79,7 +82,8 @@ public class ShareService {
         }
 
         QRCodeWriter writer = new QRCodeWriter();
-        BitMatrix bitMatrix = writer.encode(shareLink, BarcodeFormat.QR_CODE, size, size);
+        Map<EncodeHintType, Object> hints = Map.of(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.Q, EncodeHintType.MARGIN, 1);
+        BitMatrix bitMatrix = writer.encode(shareLink, BarcodeFormat.QR_CODE, size, size, hints);
         BufferedImage image = MatrixToImageWriter.toBufferedImage(bitMatrix);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ImageIO.write(image, "png", baos);
