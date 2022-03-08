@@ -18,18 +18,19 @@
  If not, see <https://github.com/lessgreen/OpenPUDO>.
 */
 
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_app_badger/flutter_app_badger.dart';
 import 'package:qui_green/commons/utilities/print_helper.dart';
 import 'package:qui_green/models/base_response.dart';
 import 'package:qui_green/models/pudo_profile.dart';
 import 'package:qui_green/models/user_profile.dart';
 import 'package:qui_green/resources/routes_enum.dart';
+import 'package:qui_green/singletons/device_manager.dart';
 import 'package:qui_green/singletons/network/network_manager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class CurrentUser with ChangeNotifier {
-  bool fetchOnOpenApp = false;
-  bool firstNavigationDone = false;
   UserProfile? _user;
   PudoProfile? _pudo;
   SharedPreferences? sharedPreferences;
@@ -40,7 +41,6 @@ class CurrentUser with ChangeNotifier {
   }
 
   void refresh() {
-    firstNavigationDone = false;
     _refreshToken();
   }
 
@@ -107,6 +107,7 @@ class CurrentUser with ChangeNotifier {
 
   set user(UserProfile? newProfile) {
     _user = newProfile;
+    refreshFcmToken();
     notifyListeners();
   }
 
@@ -155,5 +156,33 @@ class CurrentUser with ChangeNotifier {
         safePrint("wrong access type");
         break;
     }
+  }
+
+  void refreshFcmToken() {
+    FirebaseMessaging.instance.requestPermission().then((NotificationSettings value) {
+      FlutterAppBadger.isAppBadgeSupported().then((value) {
+        if (value == true) {
+          FlutterAppBadger.removeBadge();
+        }
+      });
+      FirebaseMessaging.instance.getToken().then(
+        (token) {
+          DeviceManager().getDeviceInfo().then((deviceInfo) {
+            if (deviceInfo != null) {
+              deviceInfo.deviceToken = token ?? "SIMULATOR-FAKE-TOKEN-DO-NOT-USE";
+              NetworkManager.instance
+                  .setDeviceInfo(infoRequest: deviceInfo)
+                  .then(
+                    (value) => safePrint(value),
+                  )
+                  .catchError(
+                    (onError) => safePrint(onError.toString()),
+                  );
+            }
+          });
+          safePrint('DEBUGTOKEN: $token');
+        },
+      );
+    });
   }
 }

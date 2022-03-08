@@ -357,7 +357,7 @@ mixin NetworkGeneral {
       _headers['Authorization'] = 'Bearer $_accessToken';
     }
 
-    var url = _baseURL + '/api/v1/users/me/device-tokens';
+    var url = _baseURL + '/api/v2/user/me/device-tokens';
     var body = jsonEncode(infoRequest.toJson());
 
     try {

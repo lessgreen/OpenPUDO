@@ -23,6 +23,7 @@ import 'dart:developer';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:qui_green/app.dart';
+import 'package:qui_green/commons/utilities/analytics_helper.dart';
 import 'package:qui_green/commons/utilities/page_route_helper.dart';
 import 'package:qui_green/controllers/error_controller.dart';
 import 'package:qui_green/controllers/notify_sent_controller.dart';
@@ -40,6 +41,9 @@ import 'package:qui_green/resources/routes_enum.dart';
 dynamic homePudoRouteWithSetting(RouteSettings settings) {
   log("current route name: ${settings.name}");
   currentRouteName.value = settings.name ?? '/main';
+  if (settings.name != "/") {
+    AnalyticsHelper.logPageChange(settings.name ?? '/mainPudo');
+  }
   switch (settings.name) {
     case Routes.profileEdit:
       return PageRouteHelper.buildPage(const PudoProfileEditController(
