@@ -21,12 +21,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:qui_green/widgets/main_button.dart';
 import 'package:qui_green/resources/res.dart';
 import 'package:qui_green/resources/routes_enum.dart';
+import 'package:qui_green/widgets/main_button.dart';
 
 class AboutYouController extends StatefulWidget {
-  const AboutYouController({Key? key,this.phoneNumber}) : super(key: key);
+  const AboutYouController({Key? key, this.phoneNumber}) : super(key: key);
   final String? phoneNumber;
   @override
   _AboutYouControllerState createState() => _AboutYouControllerState();
@@ -70,7 +70,7 @@ class _AboutYouControllerState extends State<AboutYouController> {
                 horizontal: Dimension.padding,
               ),
               onPressed: () {
-                Navigator.of(context).pushReplacementNamed(Routes.userPosition);
+                Navigator.of(context).pushNamed(Routes.userPosition);
               },
               text: 'Voglio ricevere un pacco',
             ),
@@ -80,7 +80,7 @@ class _AboutYouControllerState extends State<AboutYouController> {
                 horizontal: Dimension.padding,
               ),
               onPressed: () {
-                Navigator.of(context).pushReplacementNamed(Routes.personalDataBusiness,arguments: widget.phoneNumber);
+                Navigator.of(context).pushNamed(Routes.personalDataBusiness, arguments: widget.phoneNumber);
               },
               text: 'Voglio fornire un servizio',
             ),
