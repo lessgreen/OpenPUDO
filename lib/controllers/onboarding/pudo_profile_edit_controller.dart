@@ -183,32 +183,42 @@ class _PudoProfileEditControllerState extends State<PudoProfileEditController> w
                   PudoEditableImage(picId: currentUser.pudoProfile?.pudoPicId, selectedImage: viewModel.image, editEnabled: viewModel.editEnabled, onTap: viewModel.pickFile),
                   _buildPudoDetail(currentUser, viewModel),
                   const SizedBox(height: Dimension.padding),
-                  Container(
-                    width: MediaQuery.of(context).size.width / 3 * 2,
-                    height: 1,
-                    color: Colors.grey.shade400,
-                  ),
-                  const SizedBox(height: Dimension.padding),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Icon(
-                        Icons.info,
-                        color: AppColors.primaryColorDark,
+                  _buildEditable(
+                      viewModel,
+                      Padding(
+                        padding: const EdgeInsets.only(bottom:Dimension.padding),
+                        child: Container(
+                          width: MediaQuery.of(context).size.width / 3 * 2,
+                          height: 1,
+                          color: Colors.grey.shade400,
+                        ),
                       ),
-                      const SizedBox(
-                        width: Dimension.paddingS,
-                      ),
-                      Text(
-                        'Per utilizzare QuiGreen in questo locale è richiesto:',
-                        style: Theme.of(context).textTheme.caption?.copyWith(
-                              fontStyle: FontStyle.italic,
-                              fontWeight: FontWeight.w300,
+                      const SizedBox()),
+                  _buildEditable(
+                      viewModel,
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 10),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Icon(
+                              Icons.info,
+                              color: AppColors.primaryColorDark,
                             ),
+                            const SizedBox(
+                              width: Dimension.paddingS,
+                            ),
+                            Text(
+                              'Per utilizzare QuiGreen in questo locale è richiesto:',
+                              style: Theme.of(context).textTheme.caption?.copyWith(
+                                    fontStyle: FontStyle.italic,
+                                    fontWeight: FontWeight.w300,
+                                  ),
+                            ),
+                          ],
+                        ),
                       ),
-                    ],
-                  ),
-                  const SizedBox(height: 10),
+                      const SizedBox()),
                   _buildEditable(
                     viewModel,
                     SizedBox(

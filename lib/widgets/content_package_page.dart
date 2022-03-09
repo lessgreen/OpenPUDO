@@ -21,6 +21,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
+import 'package:qui_green/models/package_summary.dart';
+import 'package:qui_green/models/pudo_package.dart';
 import 'package:qui_green/resources/res.dart';
 import 'package:qui_green/view_models/content_package_page_view_model.dart';
 import 'package:qui_green/widgets/error_screen_widget.dart';
