@@ -60,25 +60,34 @@ class _ProfileControllerState extends State<ProfileController> with ConnectionAw
       builder: (_, currentUser, __) {
         return Material(
           child: CupertinoPageScaffold(
-            navigationBar: CupertinoNavigationBarFix.build(context,
-                middle: Text(
-                  'Il tuo profilo',
-                  style: Theme.of(context).textTheme.navBarTitle,
-                ),
-                trailing: InkWell(
-                  onTap: () {
-                    _setEditEnabled(!_editEnabled, currentUser.user!);
-                  },
-                  child: Padding(
-                      padding: const EdgeInsets.only(right: Dimension.padding),
-                      child: _buildEditable(
-                          const Icon(
-                            CupertinoIcons.pencil_circle,
+            navigationBar: CupertinoNavigationBarFix.build(
+              context,
+              middle: Text(
+                'Il tuo profilo',
+                style: Theme.of(context).textTheme.navBarTitle,
+              ),
+              trailing: InkWell(
+                onTap: () {
+                  _setEditEnabled(!_editEnabled, currentUser.user!);
+                },
+                child: Padding(
+                  padding: const EdgeInsets.only(right: Dimension.padding),
+                  child: _buildEditable(
+                    const Icon(
+                      CupertinoIcons.pencil_circle,
+                      color: Colors.white,
+                      size: 26,
+                    ),
+                    Text(
+                      "Fine",
+                      style: Theme.of(context).textTheme.bodyText2?.copyWith(
                             color: Colors.white,
-                            size: 26,
                           ),
-                          Text("Fine", style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Colors.white)))),
-                )),
+                    ),
+                  ),
+                ),
+              ),
+            ),
             child: SAScaffold(
               isLoading: NetworkManager.instance.networkActivity,
               body: Stack(
@@ -97,20 +106,21 @@ class _ProfileControllerState extends State<ProfileController> with ConnectionAw
                         height: 10,
                       ),
                       _buildEditable(
-                          Center(
-                            child: Text(
-                              "${currentUser.user?.firstName ?? " "} ${currentUser.user?.lastName ?? " "}",
-                              style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 20),
-                            ),
+                        Center(
+                          child: Text(
+                            "${currentUser.user?.firstName ?? " "} ${currentUser.user?.lastName ?? " "}",
+                            style: Theme.of(context).textTheme.headline6,
                           ),
-                          const SizedBox(
-                            height: 40,
-                          )),
+                        ),
+                        const SizedBox(
+                          height: 40,
+                        ),
+                      ),
                       const SizedBox(height: 6),
                       Center(
                         child: Text(
                           'Utente dal ${currentUser.user?.createTms != null ? DateFormat('dd/MM/yyyy').format(DateTime.parse(currentUser.user!.createTms!)) : " "}',
-                          style: const TextStyle(fontWeight: FontWeight.w300, fontSize: 14, color: AppColors.primaryTextColor),
+                          style: Theme.of(context).textTheme.bodyTextLight,
                         ),
                       ),
                       const SizedBox(
@@ -224,11 +234,12 @@ class _ProfileControllerState extends State<ProfileController> with ConnectionAw
                                 width: Dimension.padding,
                               ),
                               Expanded(
-                                  child: CupertinoTextField(
-                                controller: _lastNameController,
-                                placeholder: "Cognome",
-                                onChanged: (newVal) => _changesMade = true,
-                              )),
+                                child: CupertinoTextField(
+                                  controller: _lastNameController,
+                                  placeholder: "Cognome",
+                                  onChanged: (newVal) => _changesMade = true,
+                                ),
+                              ),
                               const SizedBox(
                                 width: Dimension.padding,
                               ),
@@ -247,8 +258,12 @@ class _ProfileControllerState extends State<ProfileController> with ConnectionAw
     );
   }
 
-  Widget _buildEditable(Widget view, Widget edit) =>
-      AnimatedCrossFade(firstChild: view, secondChild: edit, crossFadeState: _editEnabled ? CrossFadeState.showSecond : CrossFadeState.showFirst, duration: const Duration(milliseconds: 150));
+  Widget _buildEditable(Widget view, Widget edit) => AnimatedCrossFade(
+        firstChild: view,
+        secondChild: edit,
+        crossFadeState: _editEnabled ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+        duration: const Duration(milliseconds: 150),
+      );
 
   Future<bool> _saveChanges() async {
     CurrentUser currentUser = Provider.of<CurrentUser>(context, listen: false);
