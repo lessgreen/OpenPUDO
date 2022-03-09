@@ -44,7 +44,7 @@ dynamic homeUserRouteWithSetting(RouteSettings settings) {
   log("current route name: ${settings.name}");
   currentRouteName.value = settings.name ?? '/main';
   if (settings.name != "/") {
-    AnalyticsHelper.logPageChange(settings.name ?? '/mainUser');
+    AnalyticsHelper.logPageChange((settings.name ?? 'mainUser').replaceAll("/", ""));
   }
   switch (settings.name) {
     case Routes.packagesList:

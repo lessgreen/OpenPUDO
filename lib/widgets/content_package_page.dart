@@ -24,7 +24,6 @@ import 'package:qui_green/commons/alert_dialog.dart';
 import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
 import 'package:qui_green/models/package_summary.dart';
 import 'package:qui_green/models/pudo_package.dart';
-import 'package:qui_green/models/pudo_package_event.dart';
 import 'package:qui_green/resources/res.dart';
 import 'package:qui_green/resources/routes_enum.dart';
 import 'package:qui_green/singletons/network/network_manager.dart';
@@ -137,7 +136,6 @@ class _ContentPackagesPageState extends State<ContentPackagesPage> with ChangeNo
         SAAlertDialog.displayAlertWithClose(context, "Error", onError, barrierDismissable: false);
       });
     }
-
     NetworkManager.instance.getPackageDetails(packageId: package.packageId).then(
       (response) {
         if (response is PudoPackage) {

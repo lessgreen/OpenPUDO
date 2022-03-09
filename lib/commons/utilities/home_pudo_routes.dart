@@ -42,7 +42,7 @@ dynamic homePudoRouteWithSetting(RouteSettings settings) {
   log("current route name: ${settings.name}");
   currentRouteName.value = settings.name ?? '/main';
   if (settings.name != "/") {
-    AnalyticsHelper.logPageChange(settings.name ?? '/mainPudo');
+    AnalyticsHelper.logPageChange((settings.name ?? 'mainPudo').replaceAll("/", ""));
   }
   switch (settings.name) {
     case Routes.profileEdit:

@@ -58,7 +58,7 @@ dynamic routeWithSetting(RouteSettings settings) {
   //   var arguments = settings.arguments;
   // }
   if (settings.name != "/") {
-    AnalyticsHelper.logPageChange(settings.name ?? '/main');
+    AnalyticsHelper.logPageChange((settings.name ?? 'main').replaceAll("/", ""));
   }
   switch (settings.name) {
     // case '/notificationDetails':

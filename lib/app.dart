@@ -39,13 +39,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 ValueNotifier currentRouteName = ValueNotifier('/');
 late FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 late AndroidNotificationChannel channel;
-Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  // If you're going to use other Firebase services in the background, such as Firestore,
-  // make sure you call `initializeApp` before using other Firebase services.
-  await Firebase.initializeApp();
-  safePrint('Handling a background message ${message.messageId}');
-  safePrint(message.data);
-}
 
 void mainCommon({required String host, required bool isProd}) async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -70,8 +63,6 @@ void mainCommon({required String host, required bool isProd}) async {
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   //Firebase stuff
   await Firebase.initializeApp();
-  // Set the background messaging handler early on, as a named top-level function
-  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
   NotificationAppLaunchDetails? lunchDetails = await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
   if (lunchDetails != null) {
@@ -148,6 +139,9 @@ class App extends StatelessWidget {
             initialRoute: NetworkManager.instance.accessToken.isEmpty ? Routes.login : "/",
             onGenerateRoute: (settings) {
               return routeWithSetting(settings);
+            },
+            builder: (subContext, child) {
+              return child ?? const SizedBox();
             },
           );
         },
