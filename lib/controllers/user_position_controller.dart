@@ -69,7 +69,7 @@ class _UserPositionControllerState extends State<UserPositionController> {
                 color: Colors.white,
                 onPressed: () => Navigator.of(context).pop(),
               )
-            : const SizedBox(),
+            : null,
         middle: Text(
           "Vediamo dove ti trovi",
           style: Theme.of(context).textTheme.navBarTitle,
@@ -91,7 +91,7 @@ class _UserPositionControllerState extends State<UserPositionController> {
                 color: AppColors.primaryColorDark,
                 onPressed: () => Navigator.of(context).pop(),
               )
-            : const SizedBox(),
+            : null,
       ),
       body: _buildBody(viewModel),
     );

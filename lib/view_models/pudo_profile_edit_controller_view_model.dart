@@ -25,6 +25,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:qui_green/commons/alert_dialog.dart';
+import 'package:qui_green/commons/extensions/formfields_validators.dart';
 import 'package:qui_green/commons/utilities/print_helper.dart';
 import 'package:qui_green/models/extra_info.dart';
 import 'package:qui_green/models/geo_marker.dart';
@@ -274,6 +275,10 @@ class PudoProfileEditControllerViewModel extends ChangeNotifier {
     if (_phoneNumber != null) {
       if (_phoneNumber!.isEmpty) {
         return UpdateValidation.phoneNumber;
+      }else{
+        if(!_phoneNumber!.isValidPhoneNumber()){
+          return UpdateValidation.phoneNumber;
+        }
       }
     }
     return UpdateValidation.valid;
@@ -372,7 +377,15 @@ class PudoProfileEditControllerViewModel extends ChangeNotifier {
     bool changesMade = false;
     if (hasBeenDetailsChanged) {
       if (isValid != UpdateValidation.valid) {
-        //TODO show Error wrong changes
+        if(isValid == UpdateValidation.businessName){
+          SAAlertDialog.displayAlertWithClose(context, 'Error', 'Il nome non puo essere vuoto');
+        }else{
+          if(!phoneController.text.isValidPhoneNumber()){
+            SAAlertDialog.displayAlertWithClose(context, 'Error', 'Il numero telefonico non è corretto');
+          }else {
+            SAAlertDialog.displayAlertWithClose(context, 'Error', 'Il numero telefonico non puo essere vuoto');
+          }
+        }
         return;
       } else {
         changesMade = true;
