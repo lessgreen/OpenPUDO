@@ -353,7 +353,7 @@ class _ExtraInfoDecimalWidgetState extends State<ExtraInfoDecimalWidget> {
     }
     try {
       if (newValue == null) {
-        return 'missingValue'.localized(context);
+        return 'missingValue'.localized(context, 'general');
       }
       var doubleValue = double.parse(newValue.replaceAll("€", ""));
       var step = (widget.extraInfo.step ?? 1.0);
@@ -368,7 +368,7 @@ class _ExtraInfoDecimalWidgetState extends State<ExtraInfoDecimalWidget> {
         var tmpValue = double.parse(retValue.toStringAsFixed(scale));
         return tmpValue;
       } else {
-        return "${'outOfRange'.localized(context)} [€$min - €$max]";
+        return "${'outOfRange'.localized(context, 'general')} [€$min - €$max]";
       }
     } catch (e) {
       return null;
