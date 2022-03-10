@@ -50,17 +50,6 @@ class LocalizationManager {
     return unescape.convert(_dataSource[locale.languageCode][page][key]);
   }
 
-  bool pageIsPresent(String page) {
-    var unescape = HtmlUnescape();
-    if (_dataSource.containsKey(locale.languageCode)) {
-      dynamic tmpDataSource = _dataSource[locale.languageCode];
-      if (tmpDataSource is Map && tmpDataSource.containsKey(page)) {
-        return true;
-      }
-    }
-    return false;
-  }
-
   String safeLocalizedString(String page, String key) {
     var unescape = HtmlUnescape();
     if (_dataSource.containsKey(locale.languageCode)) {
