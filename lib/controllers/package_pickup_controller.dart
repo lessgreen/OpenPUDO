@@ -34,6 +34,7 @@ import 'package:qui_green/resources/res.dart';
 import 'package:qui_green/singletons/network/network_manager.dart';
 import 'package:qui_green/widgets/sascaffold.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:qui_green/commons/utilities/localization.dart';
 
 class PackagePickupController extends StatefulWidget {
   const PackagePickupController({Key? key, required this.packageModel, this.isForPudo = false}) : super(key: key);
@@ -57,7 +58,7 @@ class _PackagePickupControllerState extends State<PackagePickupController> {
         navigationBar: CupertinoNavigationBarFix.build(
           context,
           middle: Text(
-            widget.isForPudo ? 'Dettagli pacco' : 'Ritiro del pacco',
+            (widget.isForPudo ? 'shipmentDetails' : 'shipmentPickup').localized(context),
             style: Theme.of(context).textTheme.navBarTitle,
           ),
           leading: CupertinoNavigationBarBackButton(
@@ -105,7 +106,11 @@ class _PackagePickupControllerState extends State<PackagePickupController> {
     if (widget.packageModel.shareLink != null) {
       Share.share(NetworkManager.instance.baseURL + "/api/v2/share/${widget.packageModel.shareLink!}");
     } else {
-      SAAlertDialog.displayAlertWithClose(context, 'Attenzione', 'Si è verificato un problema con la condivisione. Per favore, riprova.');
+      SAAlertDialog.displayAlertWithClose(
+        context,
+        'warningTitle'.localized(context, 'general'),
+        'unknownDescription'.localized(context, 'general'),
+      );
     }
   }
 
@@ -126,11 +131,14 @@ class _PackagePickupControllerState extends State<PackagePickupController> {
                     text: TextSpan(
                       text: '',
                       style: Theme.of(context).textTheme.navBarTitleDark,
-                      children: const [
+                      children: [
                         TextSpan(
-                          text: "Mostra questo QRCode\nal punto di ritiro ",
+                          text: 'showQRCode'.localized(context),
                         ),
-                        TextSpan(text: "QuiGreen", style: TextStyle(color: AppColors.primaryColorDark)),
+                        TextSpan(
+                          text: 'defaultTitle'.localized(context, 'general'),
+                          style: const TextStyle(color: AppColors.primaryColorDark),
+                        ),
                       ],
                     ),
                   ),
@@ -138,7 +146,11 @@ class _PackagePickupControllerState extends State<PackagePickupController> {
                     height: Dimension.padding,
                   ),
                   Container(
-                    decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width / 2), boxShadow: Shadows.baseShadow),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width / 2),
+                      boxShadow: Shadows.baseShadow,
+                    ),
                     alignment: Alignment.center,
                     child: QrImage(
                       data: widget.packageModel.shareLink ?? "",
@@ -155,25 +167,29 @@ class _PackagePickupControllerState extends State<PackagePickupController> {
                 child: Column(
                   children: [
                     Text(
-                      'Questo pacco risulta già ritirato.',
+                      'alreadyPicked'.localized(context),
                       style: Theme.of(context).textTheme.bodyTextBold?.copyWith(fontSize: 16),
                     ),
                     MaterialButton(
                       textColor: AppColors.primaryColorDark,
                       onPressed: () => _confirmReceipt(),
-                      child: const Text('Conferma la ricezione'),
+                      child: Text(
+                        'confirmPickup'.localized(context),
+                      ),
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          'Problemi con la ricezione?',
+                          'troublesWithPickup'.localized(context),
                           style: Theme.of(context).textTheme.bodyTextItalic,
                         ),
                         MaterialButton(
                           textColor: AppColors.primaryColorDark,
                           onPressed: () {},
-                          child: const Text('Contattaci'),
+                          child: Text(
+                            'contactUs'.localized(context),
+                          ),
                         ),
                       ],
                     ),
@@ -192,10 +208,10 @@ class _PackagePickupControllerState extends State<PackagePickupController> {
       if (value is PudoPackage) {
         Navigator.of(context).pop();
       } else {
-        SAAlertDialog.displayAlertWithClose(context, "Error", value, barrierDismissable: false);
+        SAAlertDialog.displayAlertWithClose(context, 'genericErrorTitle'.localized(context, 'general'), value, barrierDismissable: false);
       }
     }).catchError((onError) {
-      SAAlertDialog.displayAlertWithClose(context, "Error", onError, barrierDismissable: false);
+      SAAlertDialog.displayAlertWithClose(context, 'genericErrorTitle'.localized(context, 'general'), onError, barrierDismissable: false);
     });
   }
 
@@ -207,7 +223,7 @@ class _PackagePickupControllerState extends State<PackagePickupController> {
           color: AppColors.boxGrey,
           padding: const EdgeInsets.symmetric(vertical: Dimension.paddingS, horizontal: Dimension.padding),
           child: Text(
-            "FOTO DEL PACCO",
+            'photoTitle'.localized(context),
             style: Theme.of(context).textTheme.bodyTextBold,
           ),
         ),
@@ -232,12 +248,12 @@ class _PackagePickupControllerState extends State<PackagePickupController> {
           child: RichText(
             textAlign: TextAlign.justify,
             text: TextSpan(
-              text: 'DETTAGLI PACCO',
+              text: 'detailTitle'.localized(context),
               style: widget.isForPudo ? Theme.of(context).textTheme.bodyTextLight : Theme.of(context).textTheme.bodyTextBold,
               children: [
                 if (widget.isForPudo)
-                  const TextSpan(
-                    text: " - utente ",
+                  TextSpan(
+                    text: 'userAppend'.localized(context),
                   ),
                 if (widget.isForPudo)
                   TextSpan(

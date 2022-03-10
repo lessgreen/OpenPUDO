@@ -22,6 +22,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
 import 'package:qui_green/commons/ui/cupertino_navigation_bar_fix.dart';
+import 'package:qui_green/commons/utilities/localization.dart';
 import 'package:qui_green/resources/res.dart';
 
 class NotifySentController extends StatefulWidget {
@@ -45,7 +46,7 @@ class _NotifySentControllerState extends State<NotifySentController> {
           navigationBar: CupertinoNavigationBarFix.build(
             context,
             middle: Text(
-              'Notifica inviata',
+              'mainLabel'.localized(context),
               style: Theme.of(context).textTheme.navBarTitle,
             ),
           ),
@@ -55,7 +56,7 @@ class _NotifySentControllerState extends State<NotifySentController> {
                 height: Dimension.paddingL,
               ),
               Text(
-                'Fatto!',
+                'secondaryLabel'.localized(context),
                 style: Theme.of(context).textTheme.headlineSmall,
                 textAlign: TextAlign.center,
               ),
@@ -76,8 +77,8 @@ class _NotifySentControllerState extends State<NotifySentController> {
                     text: '',
                     style: Theme.of(context).textTheme.headlineSmall!.copyWith(height: 1.2),
                     children: [
-                      const TextSpan(
-                        text: "Abbiamo inviato una notifica\nall'utente ",
+                      TextSpan(
+                        text: 'description'.localized(context),
                       ),
                       TextSpan(text: widget.username, style: const TextStyle(fontWeight: FontWeight.w500)),
                     ],

@@ -22,6 +22,7 @@ import 'package:flutter/material.dart';
 import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
 import 'package:qui_green/commons/ui/custom_network_image.dart';
 import 'package:qui_green/commons/utilities/date_time_extension.dart';
+import 'package:qui_green/commons/utilities/localization.dart';
 import 'package:qui_green/models/package_summary.dart';
 import 'package:qui_green/resources/res.dart';
 
@@ -75,7 +76,7 @@ class PackageCard extends StatelessWidget {
                                 if (dataSource.createTms != null) const SizedBox(height: Dimension.paddingS),
                                 if (dataSource.createTms != null)
                                   Text(
-                                    (dataSource.packageStatus == PackageStatus.collected ? 'Pacco consegnato il ' : 'Pacco recapitato il ') + dataSource.createTms!.ddmmyyyy,
+                                    (dataSource.packageStatus == PackageStatus.collected ? 'deliveredOn' : 'retiredOn').localized(context) + dataSource.createTms!.ddmmyyyy,
                                     style: Theme.of(context).textTheme.captionSmall,
                                   ),
                                 if (dataSource.createTms != null) const SizedBox(height: Dimension.padding),

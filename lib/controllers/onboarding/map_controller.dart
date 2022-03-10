@@ -30,6 +30,7 @@ import 'package:provider/provider.dart';
 import 'package:qui_green/commons/alert_dialog.dart';
 import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
 import 'package:qui_green/commons/ui/cupertino_navigation_bar_fix.dart';
+import 'package:qui_green/commons/utilities/localization.dart';
 import 'package:qui_green/models/geo_marker.dart';
 import 'package:qui_green/resources/res.dart';
 import 'package:qui_green/resources/routes_enum.dart';
@@ -74,7 +75,7 @@ class MapController extends StatefulWidget {
     this.getUserPosition = true,
     this.canOpenProfilePage = false,
     this.isOnboarding = false,
-    this.title = "QuiGreen",
+    this.title = 'defaultTitle',
   }) : super(key: key);
 
   @override
@@ -82,7 +83,7 @@ class MapController extends StatefulWidget {
 }
 
 class _MapControllerState extends State<MapController> with ConnectionAware, TickerProviderStateMixin {
-  void _showErrorDialog(BuildContext context, String val) => SAAlertDialog.displayAlertWithClose(context, "Error", val);
+  void _showErrorDialog(BuildContext context, String val) => SAAlertDialog.displayAlertWithClose(context, 'genericErrorTitle'.localized(context, 'general'), val);
 
   void animateMapTo(MapsControllerViewModel viewModel, LatLng pos, {bool forceZoom = false}) {
     final _latTween = Tween<double>(
@@ -155,7 +156,7 @@ class _MapControllerState extends State<MapController> with ConnectionAware, Tic
               )
             : const SizedBox(),
         middle: Text(
-          widget.title,
+          widget.title.localized(context),
           style: Theme.of(context).textTheme.navBarTitle,
         ),
         trailing: widget.canOpenProfilePage
@@ -206,7 +207,7 @@ class _MapControllerState extends State<MapController> with ConnectionAware, Tic
                                 ),
                               if (!widget.canGoBack) const SizedBox(),
                               TextFieldButton(
-                                text: "Salta",
+                                text: "skipButton".localized(context),
                                 onPressed: () => Navigator.of(context).pushNamedAndRemoveUntil(
                                   Routes.personalData,
                                   ModalRoute.withName('/'),
@@ -216,7 +217,7 @@ class _MapControllerState extends State<MapController> with ConnectionAware, Tic
                           ),
                         ),
                         Text(
-                          widget.title,
+                          widget.title.localized(context),
                           style: Theme.of(context).textTheme.navBarTitleDark,
                         ),
                       ],
@@ -312,7 +313,7 @@ class _MapControllerState extends State<MapController> with ConnectionAware, Tic
           options: MapOptions(
             center: widget.initialPosition,
             onMapCreated: (controller) {
-              viewModel.onMapCreate(controller, widget.initialPosition, widget.getUserPosition);
+              viewModel.onMapCreate(context, controller, widget.initialPosition, widget.getUserPosition);
               viewModel.loadPudos(requireZoomLevelRefresh: true);
             },
             interactiveFlags: InteractiveFlag.pinchZoom | InteractiveFlag.drag,
@@ -375,7 +376,13 @@ class _MapControllerState extends State<MapController> with ConnectionAware, Tic
                   viewModel.showingCardPudo = viewModel.pudos[index].pudo!.pudoId;
                   viewModel.isReloadingPudos = true;
                   if (viewModel.pageController.positions.isNotEmpty) {
-                    viewModel.pageController.animateToPage(index, duration: const Duration(milliseconds: 150), curve: Curves.easeIn).then((value) => viewModel.isReloadingPudos = false);
+                    viewModel.pageController
+                        .animateToPage(
+                          index,
+                          duration: const Duration(milliseconds: 150),
+                          curve: Curves.easeIn,
+                        )
+                        .then((value) => viewModel.isReloadingPudos = false);
                   }
                 }
               },

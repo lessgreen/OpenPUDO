@@ -21,6 +21,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:qui_green/commons/utilities/localization.dart';
 import 'package:qui_green/resources/res.dart';
 import 'package:qui_green/resources/routes_enum.dart';
 import 'package:qui_green/singletons/network/network_manager.dart';
@@ -56,7 +57,7 @@ class _LoginControllerState extends State<LoginController> with ConnectionAware 
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      'Non sei ancora un utente?',
+                      'mainLabel'.localized(context),
                       style: Theme.of(context).textTheme.headline5,
                     ),
                   ],
@@ -67,7 +68,7 @@ class _LoginControllerState extends State<LoginController> with ConnectionAware 
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        'Cosa aspetti?',
+                        'secondaryLabel'.localized(context),
                         style: Theme.of(context).textTheme.headline6,
                       ),
                     ],
@@ -81,8 +82,12 @@ class _LoginControllerState extends State<LoginController> with ConnectionAware 
               end: 20,
               bottom: 50,
               child: TextButton(
-                child: const Text('Accedi con il tuo numero di telefono'),
-                onPressed: () => Navigator.of(context).pushReplacementNamed(Routes.insertPhone),
+                child: Text(
+                  'bottomButton'.localized(context),
+                ),
+                onPressed: () {
+                  Navigator.of(context).pushReplacementNamed(Routes.insertPhone);
+                },
               ),
             ),
           ],

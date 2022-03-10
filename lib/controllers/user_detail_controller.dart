@@ -25,6 +25,7 @@ import 'package:qui_green/commons/alert_dialog.dart';
 import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
 import 'package:qui_green/commons/ui/cupertino_navigation_bar_fix.dart';
 import 'package:qui_green/commons/ui/custom_network_image.dart';
+import 'package:qui_green/commons/utilities/localization.dart';
 import 'package:qui_green/commons/utilities/url_launcher_helper.dart';
 import 'package:qui_green/models/user_profile.dart';
 import 'package:qui_green/resources/res.dart';
@@ -47,7 +48,7 @@ class _UserDetailControllerState extends State<UserDetailController> with Connec
         navigationBar: CupertinoNavigationBarFix.build(
           context,
           middle: Text(
-            'I tuoi utenti',
+            'navBarTitle'.localized(context),
             style: Theme.of(context).textTheme.navBarTitle,
           ),
           leading: CupertinoNavigationBarBackButton(
@@ -76,7 +77,7 @@ class _UserDetailControllerState extends State<UserDetailController> with Connec
             const SizedBox(height: 6),
             Center(
               child: Text(
-                'Utente dal ${widget.userModel.createTms != null ? DateFormat('dd/MM/yyyy').format(DateTime.parse(widget.userModel.createTms!)) : " "}',
+                '${'userSince'.localized(context)} ${widget.userModel.createTms != null ? DateFormat('dd/MM/yyyy').format(DateTime.parse(widget.userModel.createTms!)) : " "}',
                 style: const TextStyle(fontWeight: FontWeight.w300, fontSize: 14, color: AppColors.primaryTextColor),
               ),
             ),
@@ -100,25 +101,29 @@ class _UserDetailControllerState extends State<UserDetailController> with Connec
   }
 
   void _openModal() {
-    SAAlertDialog.displayModalWithButtons(context, "Scegli un'azione", [
-      CupertinoActionSheetAction(
-        child: const Text('Chiama al telefono'),
-        onPressed: () {
-          UrlLauncherHelper.launchUrl(UrlTypes.tel, widget.userModel.phoneNumber!);
-        },
-      ),
-      CupertinoActionSheetAction(
-        child: const Text('Invia un messaggio'),
-        onPressed: () {
-          UrlLauncherHelper.launchUrl(UrlTypes.sms, widget.userModel.phoneNumber!);
-        },
-      ),
-      CupertinoActionSheetAction(
-        child: const Text('Invia un WhatsApp'),
-        onPressed: () {
-          UrlLauncherHelper.launchUrl(UrlTypes.whatsapp, widget.userModel.phoneNumber!);
-        },
-      )
-    ]);
+    SAAlertDialog.displayModalWithButtons(
+      context,
+      'chooseAction'.localized(context, 'general'),
+      [
+        CupertinoActionSheetAction(
+          child: Text('phoneCallAction'.localized(context)),
+          onPressed: () {
+            UrlLauncherHelper.launchUrl(UrlTypes.tel, widget.userModel.phoneNumber!);
+          },
+        ),
+        CupertinoActionSheetAction(
+          child: Text('sendSMS'.localized(context)),
+          onPressed: () {
+            UrlLauncherHelper.launchUrl(UrlTypes.sms, widget.userModel.phoneNumber!);
+          },
+        ),
+        CupertinoActionSheetAction(
+          child: Text('sendWhatsApp'.localized(context)),
+          onPressed: () {
+            UrlLauncherHelper.launchUrl(UrlTypes.whatsapp, widget.userModel.phoneNumber!);
+          },
+        )
+      ],
+    );
   }
 }

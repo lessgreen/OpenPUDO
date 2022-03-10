@@ -25,6 +25,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
 import 'package:qui_green/commons/ui/cupertino_navigation_bar_fix.dart';
+import 'package:qui_green/commons/utilities/localization.dart';
 import 'package:qui_green/resources/res.dart';
 import 'package:qui_green/resources/routes_enum.dart';
 import 'package:qui_green/singletons/network/network_manager.dart';
@@ -45,7 +46,7 @@ class _PudoMainControllerState extends State<PudoMainController> with Connection
         navigationBar: CupertinoNavigationBarFix.build(
           context,
           middle: Text(
-            'QuiGreen',
+            'defaultTitle'.localized(context, 'general'),
             style: Theme.of(context).textTheme.navBarTitle,
           ),
         ),
@@ -59,7 +60,7 @@ class _PudoMainControllerState extends State<PudoMainController> with Connection
             Padding(
               padding: const EdgeInsets.only(left: Dimension.padding),
               child: Text(
-                "Azioni disponibili:",
+                'listHeaderTitle'.localized(context),
                 style: Theme.of(context).textTheme.headerTitle,
               ),
             ),
@@ -68,7 +69,7 @@ class _PudoMainControllerState extends State<PudoMainController> with Connection
               fullWidth: true,
               showTopDivider: true,
               showTrailingChevron: true,
-              title: "Ricevi un pacco",
+              title: 'receiveShipment'.localized(context),
               leading: SvgPicture.asset(
                 ImageSrc.boxFillIcon,
                 color: AppColors.cardColor,
@@ -80,7 +81,7 @@ class _PudoMainControllerState extends State<PudoMainController> with Connection
               onTap: () => Navigator.of(context).pushNamed(Routes.packageDelivered),
               fullWidth: true,
               showTrailingChevron: true,
-              title: "Consegna un pacco",
+              title: 'deliverShipment'.localized(context),
               leading: SvgPicture.asset(
                 ImageSrc.packageDeliveredLeadingIcon,
                 color: AppColors.cardColor,
@@ -93,7 +94,7 @@ class _PudoMainControllerState extends State<PudoMainController> with Connection
               onTap: () => Navigator.of(context).pushNamed(Routes.packagesListWithHistory),
               fullWidth: true,
               showTrailingChevron: true,
-              title: "Pacchi in giacenza",
+              title: 'waitingShipment'.localized(context),
               leading: SvgPicture.asset(
                 ImageSrc.waitingPackage,
                 color: AppColors.cardColor,

@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:qui_green/commons/ui/custom_network_image.dart';
+import 'package:qui_green/commons/utilities/localization.dart';
 import 'package:qui_green/resources/res.dart';
 
 class PudoEditableImage extends StatelessWidget {
@@ -25,7 +26,7 @@ class PudoEditableImage extends StatelessWidget {
                 )
               : CustomNetworkImage(
                   url: picId,
-            fit: BoxFit.cover,
+                  fit: BoxFit.cover,
                 ),
         ),
         if (editEnabled)
@@ -35,11 +36,17 @@ class PudoEditableImage extends StatelessWidget {
               child: Container(
                 alignment: Alignment.center,
                 child: Container(
-                    decoration: BoxDecoration(color: Colors.black.withAlpha(50), borderRadius: BorderRadius.circular(Dimension.borderRadiusSearch), border: Border.all(color: Colors.white)),
+                    decoration: BoxDecoration(
+                      color: Colors.black.withAlpha(50),
+                      borderRadius: BorderRadius.circular(Dimension.borderRadiusSearch),
+                      border: Border.all(
+                        color: Colors.white,
+                      ),
+                    ),
                     width: MediaQuery.of(context).size.width / 2,
                     padding: const EdgeInsets.symmetric(vertical: Dimension.paddingS),
                     child: Text(
-                      "Cambia la foto",
+                      'changePhoto'.localized(context),
                       textAlign: TextAlign.center,
                       style: Theme.of(context).textTheme.labelLarge!.copyWith(color: Colors.white),
                     )),

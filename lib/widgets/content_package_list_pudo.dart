@@ -27,6 +27,7 @@ import 'package:qui_green/singletons/network/network_manager.dart';
 import 'package:qui_green/widgets/error_screen_widget.dart';
 import 'package:qui_green/widgets/listview_header.dart';
 import 'package:qui_green/widgets/package_tile.dart';
+import 'package:qui_green/commons/utilities/localization.dart';
 
 class ContentPackagesListPudo extends StatefulWidget {
   const ContentPackagesListPudo({
@@ -102,7 +103,9 @@ class _ContentPackagesListPudoState extends State<ContentPackagesListPudo> {
     _errorDescription = null;
     return NetworkManager.instance.getMyPackages(isPudo: true).then((response) {
       return response;
-    }).catchError((onError) => SAAlertDialog.displayAlertWithClose(context, "Error", onError));
+    }).catchError(
+      (onError) => SAAlertDialog.displayAlertWithClose(context, 'genericErrorTitle'.localized(context, 'general'), onError),
+    );
   }
 
   _onPackageCard(PackageSummary package) {
@@ -114,10 +117,16 @@ class _ContentPackagesListPudoState extends State<ContentPackagesListPudo> {
           if (response is PudoPackage) {
             Navigator.of(context).pushNamed(Routes.packagePickup, arguments: response);
           } else {
-            SAAlertDialog.displayAlertWithClose(context, "Error", "Ops!, Qualcosa e' andato storto");
+            SAAlertDialog.displayAlertWithClose(
+              context,
+              'genericErrorTitle'.localized(context, 'general'),
+              'unknownDescription'.localized(context, 'general'),
+            );
           }
         },
-      ).catchError((onError) => SAAlertDialog.displayAlertWithClose(context, "Error", onError));
+      ).catchError(
+        (onError) => SAAlertDialog.displayAlertWithClose(context, 'genericErrorTitle'.localized(context, 'general'), onError),
+      );
     }
   }
 

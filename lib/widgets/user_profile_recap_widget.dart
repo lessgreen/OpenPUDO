@@ -22,6 +22,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:qui_green/commons/extensions/additional_button_styles.dart';
 import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
+import 'package:qui_green/commons/utilities/localization.dart';
 import 'package:qui_green/resources/res.dart';
 
 class UserProfileRecapWidget extends StatelessWidget {
@@ -46,13 +47,9 @@ class UserProfileRecapWidget extends StatelessWidget {
                   text: TextSpan(
                     text: '',
                     style: Theme.of(context).textTheme.bodyTextLight,
-                    // style: Theme.of(context).textTheme.bodyText2?.copyWith(
-                    //       fontWeight: FontWeight.w300,
-                    //       color: AppColors.primaryTextColor,
-                    //     ),
                     children: [
                       TextSpan(
-                        text: isForPudo ? "I tuoi utenti hanno usato il servizio di QuiGreen " : "Hai usato il servizio di QuiGreen ",
+                        text: (isForPudo ? 'recapPudoTitle' : 'recapUserTitle').localized(context),
                       ),
                       TextSpan(
                         text: "$totalUsage",
@@ -62,8 +59,8 @@ class UserProfileRecapWidget extends StatelessWidget {
                               fontStyle: FontStyle.italic,
                             ),
                       ),
-                      const TextSpan(text: " volte,"),
-                      const TextSpan(text: " contribuendo a ridurre di "),
+                      TextSpan(text: 'nTimes'.localized(context)),
+                      TextSpan(text: 'contribute'.localized(context)),
                       TextSpan(
                         text: "${kgCO2Saved}kg",
                         style: Theme.of(context).textTheme.bodyText1?.copyWith(
@@ -72,7 +69,7 @@ class UserProfileRecapWidget extends StatelessWidget {
                               fontStyle: FontStyle.italic,
                             ),
                       ),
-                      const TextSpan(text: " le emissioni di CO2 "),
+                      TextSpan(text: 'co2Emission'.localized(context)),
                       WidgetSpan(
                         child: SvgPicture.asset(
                           ImageSrc.leaf,
@@ -94,7 +91,9 @@ class UserProfileRecapWidget extends StatelessWidget {
             onPressed: () {
               onTap?.call();
             },
-            child: const Text('condividi'),
+            child: Text(
+              'shareButton'.localized(context),
+            ),
             style: AdditionalButtonStyles.simpleStyle(context),
           )
         ],

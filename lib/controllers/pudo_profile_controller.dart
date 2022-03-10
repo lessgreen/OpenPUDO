@@ -26,6 +26,7 @@ import 'package:provider/provider.dart';
 import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
 import 'package:qui_green/commons/ui/cupertino_navigation_bar_fix.dart';
 import 'package:qui_green/commons/ui/custom_network_image.dart';
+import 'package:qui_green/commons/utilities/localization.dart';
 import 'package:qui_green/resources/res.dart';
 import 'package:qui_green/resources/routes_enum.dart';
 import 'package:qui_green/singletons/current_user.dart';
@@ -49,7 +50,7 @@ class _PudoProfileControllerState extends State<PudoProfileController> with Conn
           child: CupertinoPageScaffold(
             navigationBar: CupertinoNavigationBarFix.build(context,
                 middle: Text(
-                  'Il tuo profilo',
+                  'navTitle'.localized(context),
                   style: Theme.of(context).textTheme.navBarTitle,
                 ),
                 trailing: InkWell(
@@ -78,7 +79,7 @@ class _PudoProfileControllerState extends State<PudoProfileController> with Conn
                 const SizedBox(height: 6),
                 Center(
                   child: Text(
-                    'Utente dal ${currentUser.pudoProfile?.createTms != null ? DateFormat('dd/MM/yyyy').format(DateTime.parse(currentUser.pudoProfile!.createTms!)) : " "}',
+                    '${'userSince'.localized(context)} ${currentUser.pudoProfile?.createTms != null ? DateFormat('dd/MM/yyyy').format(DateTime.parse(currentUser.pudoProfile!.createTms!)) : " "}',
                     style: const TextStyle(fontWeight: FontWeight.w300, fontSize: 14, color: AppColors.primaryTextColor),
                   ),
                 ),
@@ -98,7 +99,7 @@ class _PudoProfileControllerState extends State<PudoProfileController> with Conn
                       color: AppColors.primaryColorDark,
                       size: 26,
                     ),
-                    title: "I tuoi utenti",
+                    title: 'yourUsers'.localized(context),
                     onTap: () {
                       Navigator.of(context).pushNamed(Routes.pudoUsersList);
                     }),
@@ -109,7 +110,7 @@ class _PudoProfileControllerState extends State<PudoProfileController> with Conn
                     width: 36,
                     height: 36,
                   ),
-                  title: "Logout",
+                  title: 'logoutButton'.localized(context),
                   onTap: () {
                     Navigator.pop(context);
                     NetworkManager.instance.setAccessToken(null);
