@@ -38,6 +38,7 @@ import 'package:qui_green/singletons/network/network_manager.dart';
 import 'package:qui_green/widgets/sascaffold.dart';
 import 'package:qui_green/widgets/table_view_cell.dart';
 import 'package:qui_green/widgets/user_profile_recap_widget.dart';
+import 'package:qui_green/commons/utilities/localization.dart';
 
 class ProfileController extends StatefulWidget {
   const ProfileController({Key? key}) : super(key: key);
@@ -63,7 +64,7 @@ class _ProfileControllerState extends State<ProfileController> with ConnectionAw
             navigationBar: CupertinoNavigationBarFix.build(
               context,
               middle: Text(
-                'Il tuo profilo',
+                'navTitle'.localized(context),
                 style: Theme.of(context).textTheme.navBarTitle,
               ),
               trailing: InkWell(
@@ -79,10 +80,8 @@ class _ProfileControllerState extends State<ProfileController> with ConnectionAw
                       size: 26,
                     ),
                     Text(
-                      "Fine",
-                      style: Theme.of(context).textTheme.bodyText2?.copyWith(
-                            color: Colors.white,
-                          ),
+                      'endButton'.localized(context),
+                      style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Colors.white),
                     ),
                   ),
                 ),
@@ -119,7 +118,7 @@ class _ProfileControllerState extends State<ProfileController> with ConnectionAw
                       const SizedBox(height: 6),
                       Center(
                         child: Text(
-                          'Utente dal ${currentUser.user?.createTms != null ? DateFormat('dd/MM/yyyy').format(DateTime.parse(currentUser.user!.createTms!)) : " "}',
+                          '${'userSince'.localized(context)} ${currentUser.user?.createTms != null ? DateFormat('dd/MM/yyyy').format(DateTime.parse(currentUser.user!.createTms!)) : " "}',
                           style: Theme.of(context).textTheme.bodyTextLight,
                         ),
                       ),
@@ -137,7 +136,7 @@ class _ProfileControllerState extends State<ProfileController> with ConnectionAw
                           width: 36,
                           height: 36,
                         ),
-                        title: "Le tue spedizioni",
+                        title: 'yourShipment'.localized(context),
                         onTap: () => Navigator.of(context).pushNamed(Routes.packagesList),
                       ),
                       TableViewCell(
@@ -147,7 +146,7 @@ class _ProfileControllerState extends State<ProfileController> with ConnectionAw
                           width: 36,
                           height: 36,
                         ),
-                        title: "Logout",
+                        title: 'logoutTitle'.localized(context),
                         onTap: () {
                           Navigator.pop(context);
                           NetworkManager.instance.setAccessToken(null);
@@ -155,11 +154,9 @@ class _ProfileControllerState extends State<ProfileController> with ConnectionAw
                         },
                       ),
                       TableViewCell(
-                        title: "Elimina account",
+                        title: "deleteAccount".localized(context),
                         textAlign: TextAlign.center,
-                        textStyle: Theme.of(context).textTheme.bodyTextBold?.copyWith(
-                              color: Colors.red,
-                            ),
+                        textStyle: Theme.of(context).textTheme.bodyTextBold?.copyWith(color: Colors.red),
                         showTrailingChevron: false,
                       )
                     ],
@@ -227,7 +224,7 @@ class _ProfileControllerState extends State<ProfileController> with ConnectionAw
                               Expanded(
                                   child: CupertinoTextField(
                                 controller: _firstNameController,
-                                placeholder: "Nome",
+                                placeholder: 'placeHolderName'.localized(context),
                                 onChanged: (newVal) => _changesMade = true,
                               )),
                               const SizedBox(
@@ -236,7 +233,7 @@ class _ProfileControllerState extends State<ProfileController> with ConnectionAw
                               Expanded(
                                 child: CupertinoTextField(
                                   controller: _lastNameController,
-                                  placeholder: "Cognome",
+                                  placeholder: 'placeHolderSurname'.localized(context),
                                   onChanged: (newVal) => _changesMade = true,
                                 ),
                               ),
@@ -271,14 +268,16 @@ class _ProfileControllerState extends State<ProfileController> with ConnectionAw
       bool pass = false;
       var result = await NetworkManager.instance
           .updateUser(firstName: _firstNameController.text, lastName: _lastNameController.text)
-          .catchError((onError) => SAAlertDialog.displayAlertWithClose(context, "Error", onError));
+          .catchError((onError) => SAAlertDialog.displayAlertWithClose(context, 'genericErrorTitle'.localized(context, 'general'), onError));
       if (result is UserProfile) {
         pass = true;
       } else {
         pass = false;
       }
       if (_image != null) {
-        await NetworkManager.instance.photoUpload(_image!).catchError((onError) => SAAlertDialog.displayAlertWithClose(context, "Error", onError));
+        await NetworkManager.instance.photoUpload(_image!).catchError(
+              (onError) => SAAlertDialog.displayAlertWithClose(context, 'genericErrorTitle'.localized(context, 'general'), onError),
+            );
       }
       currentUser.triggerUserReload();
       return pass;

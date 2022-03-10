@@ -31,6 +31,7 @@ import 'package:qui_green/widgets/profile_pic_box.dart';
 import 'package:qui_green/models/pudo_profile.dart';
 import 'package:qui_green/resources/res.dart';
 import 'package:qui_green/widgets/sascaffold.dart';
+import 'package:qui_green/commons/utilities/localization.dart';
 
 class PersonalDataController extends StatefulWidget {
   const PersonalDataController({Key? key, this.pudoDataModel}) : super(key: key);
@@ -40,8 +41,8 @@ class PersonalDataController extends StatefulWidget {
   _PersonalDataControllerState createState() => _PersonalDataControllerState();
 }
 
-class _PersonalDataControllerState extends State<PersonalDataController> with ConnectionAware{
-  void _showErrorDialog(BuildContext context, String val) => SAAlertDialog.displayAlertWithClose(context, "Error", val);
+class _PersonalDataControllerState extends State<PersonalDataController> with ConnectionAware {
+  void _showErrorDialog(BuildContext context, String val) => SAAlertDialog.displayAlertWithClose(context, 'genericErrorTitle'.localized(context, 'general'), val);
 
   @override
   Widget build(BuildContext context) {
@@ -65,7 +66,7 @@ class _PersonalDataControllerState extends State<PersonalDataController> with Co
                   children: [
                     Center(
                       child: Text(
-                        'Ancora qualche informazione',
+                        'mainLabel'.localized(context),
                         style: Theme.of(context).textTheme.headline6,
                       ),
                     ),
@@ -74,10 +75,10 @@ class _PersonalDataControllerState extends State<PersonalDataController> with Co
                     ),
                     Container(
                         padding: const EdgeInsets.only(left: Dimension.padding, right: Dimension.padding),
-                        child: const Text(
-                          'Per poterti identificare quando il tuo pacco arriverà, abbiamo bisogno di qualche altro dato.',
+                        child: Text(
+                          'secondaryLabel'.localized(context),
                           textAlign: TextAlign.center,
-                          style: TextStyle(fontSize: 18),
+                          style: const TextStyle(fontSize: 18),
                         )),
                     const SizedBox(
                       height: Dimension.paddingM,
@@ -85,18 +86,19 @@ class _PersonalDataControllerState extends State<PersonalDataController> with Co
                     ProfilePicBox(
                       onTap: () => viewModel!.pickFile(),
                       image: viewModel!.image,
+                      title: 'addPhoto'.localized(context),
                     ),
                     const SizedBox(height: Dimension.padding),
-                    const Center(
+                    Center(
                       child: Text(
-                        'oppure',
-                        style: TextStyle(fontStyle: FontStyle.italic),
+                        'or'.localized(context),
+                        style: const TextStyle(fontStyle: FontStyle.italic),
                       ),
                     ),
                     Padding(
                       padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
                       child: CupertinoTextField(
-                        placeholder: 'Nome',
+                        placeholder: 'placeHolderName'.localized(context),
                         decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Theme.of(context).primaryColor))),
                         autofocus: false,
                         textInputAction: TextInputAction.done,
@@ -108,7 +110,7 @@ class _PersonalDataControllerState extends State<PersonalDataController> with Co
                     Padding(
                       padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
                       child: CupertinoTextField(
-                        placeholder: 'Cognome',
+                        placeholder: 'placeHolderSurname'.localized(context),
                         decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Theme.of(context).primaryColor))),
                         autofocus: false,
                         textInputAction: TextInputAction.done,
@@ -118,11 +120,11 @@ class _PersonalDataControllerState extends State<PersonalDataController> with Co
                       ),
                     ),
                     const SizedBox(height: 10),
-                    const Padding(
+                    Padding(
                       padding: EdgeInsets.only(left: Dimension.padding, right: Dimension.padding),
                       child: Text(
-                        'Se usi il nome e cognome come sistema di identificazione, dovrai esibire un documento valido per il ritiro.',
-                        style: TextStyle(fontSize: 12),
+                        'hintNameAndSurname'.localized(context),
+                        style: const TextStyle(fontSize: 12),
                       ),
                     ),
                     //const Spacer(),
@@ -136,7 +138,7 @@ class _PersonalDataControllerState extends State<PersonalDataController> with Co
                   firstChild: MainButton(
                     enabled: viewModel.isValid,
                     onPressed: () => viewModel.onSendClick(context, widget.pudoDataModel),
-                    text: 'Invia',
+                    text: 'submitButton'.localized(context),
                   ),
                   duration: const Duration(milliseconds: 150),
                 ),

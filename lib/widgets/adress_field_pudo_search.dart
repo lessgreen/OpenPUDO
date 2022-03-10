@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:qui_green/commons/utilities/localization.dart';
 import 'package:qui_green/models/address_model.dart';
 import 'package:qui_green/resources/res.dart';
 import 'package:qui_green/view_models/maps_controller_viewmodel.dart';
@@ -27,7 +28,7 @@ class _AdressFieldPudoSearchState extends State<AdressFieldPudoSearch> {
     return Column(
       children: [
         CupertinoTextField(
-          placeholder: 'Ricerca',
+          placeholder: 'search'.localized(context, 'general'),
           padding: const EdgeInsets.all(Dimension.padding),
           prefix: const Padding(
             padding: EdgeInsets.only(left: Dimension.paddingS),

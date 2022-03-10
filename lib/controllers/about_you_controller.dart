@@ -21,6 +21,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:qui_green/commons/utilities/localization.dart';
 import 'package:qui_green/resources/res.dart';
 import 'package:qui_green/resources/routes_enum.dart';
 import 'package:qui_green/widgets/main_button.dart';
@@ -48,7 +49,7 @@ class _AboutYouControllerState extends State<AboutYouController> {
           children: [
             Center(
               child: Text(
-                'Raccontaci qualcosa su di te',
+                'mainLabel'.localized(context),
                 style: Theme.of(context).textTheme.headline6?.copyWith(letterSpacing: 0.6),
               ),
             ),
@@ -56,7 +57,7 @@ class _AboutYouControllerState extends State<AboutYouController> {
               padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
               child: Center(
                 child: Text(
-                  'Sei qui per ricevere un pacco\no per fornire un servizio di ritiro?',
+                  'secondaryLabel'.localized(context),
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.subtitle1,
                 ),
@@ -72,7 +73,7 @@ class _AboutYouControllerState extends State<AboutYouController> {
               onPressed: () {
                 Navigator.of(context).pushNamed(Routes.userPosition);
               },
-              text: 'Voglio ricevere un pacco',
+              text: 'standardUserButton'.localized(context),
             ),
             const SizedBox(height: Dimension.padding),
             MainButton(
@@ -82,7 +83,7 @@ class _AboutYouControllerState extends State<AboutYouController> {
               onPressed: () {
                 Navigator.of(context).pushNamed(Routes.personalDataBusiness, arguments: widget.phoneNumber);
               },
-              text: 'Voglio fornire un servizio',
+              text: 'pudoUserButton'.localized(context),
             ),
             const SizedBox(height: Dimension.paddingL)
           ],

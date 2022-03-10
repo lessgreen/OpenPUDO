@@ -5,11 +5,12 @@ import 'package:qui_green/models/package_summary.dart';
 import 'package:qui_green/models/pudo_package.dart';
 import 'package:qui_green/resources/routes_enum.dart';
 import 'package:qui_green/singletons/network/network_manager.dart';
+import 'package:qui_green/commons/utilities/localization.dart';
 
-class ContentPackagePageViewModel with ChangeNotifier {
+class ContentPackagesListUserPageViewModel with ChangeNotifier {
   BuildContext context;
 
-  ContentPackagePageViewModel(this.context) {
+  ContentPackagesListUserPageViewModel(this.context) {
     _fetchPackages().then(
       (response) {
         if (response is List<PackageSummary>) {
@@ -32,7 +33,16 @@ class ContentPackagePageViewModel with ChangeNotifier {
   List<PackageSummary> _availablePackages = [];
   String? errorDescription;
 
-  List<PackageSummary> get availablePackages => _availablePackages;
+  List<PackageSummary> get filteredPackagesList => _availablePackages.where((element) => _handlePackageSearch(searchedValue, element)).toList();
+
+  String _searchedValue = "";
+
+  String get searchedValue => _searchedValue;
+
+  set searchedValue(String newVal) {
+    _searchedValue = newVal;
+    notifyListeners();
+  }
 
   refreshDidTriggered() {
     _availablePackages.clear();
@@ -41,6 +51,7 @@ class ContentPackagePageViewModel with ChangeNotifier {
       (response) {
         if (response is List<PackageSummary>) {
           _availablePackages = response;
+
           notifyListeners();
         }
       },
@@ -50,7 +61,7 @@ class ContentPackagePageViewModel with ChangeNotifier {
   Future<dynamic> _fetchPackages({bool? appendMode = false}) {
     errorDescription = null;
     notifyListeners();
-    return NetworkManager.instance.getMyPackages(limit: _fetchLimit, offset: _availablePackages.length).then((response) {
+    return NetworkManager.instance.getMyPackages(limit: _fetchLimit, offset: _availablePackages.length, history: true).then((response) {
       if (response is List<PackageSummary>) {
         _canFetchMore = (response.length == _fetchLimit);
         if (!scrollController.hasListeners) {
@@ -61,25 +72,17 @@ class ContentPackagePageViewModel with ChangeNotifier {
           errorDescription = HtmlUnescape().convert(response.value.first.toString());
           notifyListeners();
         } else {
-          errorDescription = "Ops!, qualcosa è andato storto";
+          errorDescription = 'unknownDescription'.localized(context, 'generic');
           notifyListeners();
         }
       }
       return response;
-    }).catchError((onError) => SAAlertDialog.displayAlertWithClose(context, "Error", onError));
+    }).catchError(
+      (onError) => SAAlertDialog.displayAlertWithClose(context, 'genericErrorTitle'.localized(context, 'general'), onError),
+    );
   }
 
-  onPackageCard(PackageSummary package) async {
-    if (package.packageStatus == PackageStatus.notifySent) {
-      await NetworkManager.instance.changePackageStatus(packageId: package.packageId, newStatus: PackageStatus.notified).then((value) {
-        if (value is! PudoPackage) {
-          SAAlertDialog.displayAlertWithClose(context, "Error", value, barrierDismissable: false);
-        }
-      }).catchError((onError) {
-        SAAlertDialog.displayAlertWithClose(context, "Error", onError, barrierDismissable: false);
-      });
-    }
-
+  onPackageCard(PackageSummary package) {
     NetworkManager.instance.getPackageDetails(packageId: package.packageId).then(
       (response) {
         if (response is PudoPackage) {
@@ -87,10 +90,14 @@ class ContentPackagePageViewModel with ChangeNotifier {
                 (value) => refreshDidTriggered(),
               );
         } else {
-          SAAlertDialog.displayAlertWithClose(context, "Error", "Ops!, Qualcosa e' andato storto");
+          SAAlertDialog.displayAlertWithClose(
+            context,
+            'genericErrorTitle'.localized(context, 'general'),
+            'unknownDescription'.localized(context, 'generic'),
+          );
         }
       },
-    ).catchError((onError) => SAAlertDialog.displayAlertWithClose(context, "Error", onError));
+    ).catchError((onError) => SAAlertDialog.displayAlertWithClose(context, 'genericErrorTitle'.localized(context, 'general'), onError));
   }
 
   void _scrollListener() {
@@ -106,5 +113,26 @@ class ContentPackagePageViewModel with ChangeNotifier {
         );
       }
     }
+  }
+
+  bool _handlePackageSearch(String search, PackageSummary package) {
+    if (search.isEmpty) {
+      return true;
+    }
+    List<String> splittedSearch = search.toLowerCase().split(" ");
+    String plainName = (package.packageName ?? "").toLowerCase();
+    //Search by name
+    for (String splitSearch in splittedSearch) {
+      if (plainName.contains(splitSearch)) {
+        return true;
+      }
+    }
+    //Search by id
+    for (String splitSearch in splittedSearch) {
+      if ("ac${package.userId ?? 0}".contains(splitSearch)) {
+        return true;
+      }
+    }
+    return false;
   }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:qui_green/commons/alert_dialog.dart';
 import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
+import 'package:qui_green/commons/utilities/localization.dart';
 import 'package:qui_green/resources/res.dart';
 import 'package:qui_green/widgets/deletable_card.dart';
 
@@ -73,11 +74,11 @@ class _DeletableListViewState<T> extends State<DeletableListView<T>> {
                 maxWidth: MediaQuery.of(context).size.width / 3,
                 id: widget.idGetter(widget.items[index]),
                 onDelete: () {
-                  SAAlertDialog.displayAlertWithButtons(context, "Attenzione", widget.alertDeleteText, [
+                  SAAlertDialog.displayAlertWithButtons(context, 'warningTitle'.localized(context, 'general'), widget.alertDeleteText, [
                     MaterialButton(
                       onPressed: null,
                       child: Text(
-                        'Annulla',
+                        'cancelButtonTitle'.localized(context, 'general'),
                         style: Theme.of(context).textTheme.dialogButtonRefuse,
                       ),
                     ),
@@ -87,7 +88,7 @@ class _DeletableListViewState<T> extends State<DeletableListView<T>> {
                           widget.onDelete(widget.items[index]);
                         },
                         child: Text(
-                          'OK',
+                          'Ok',
                           style: Theme.of(context).textTheme.dialogButtonAccept,
                         )),
                   ]);

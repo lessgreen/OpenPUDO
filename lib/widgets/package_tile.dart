@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
 import 'package:qui_green/commons/utilities/date_time_extension.dart';
+import 'package:qui_green/commons/utilities/localization.dart';
 import 'package:qui_green/models/package_summary.dart';
 import 'package:qui_green/widgets/table_view_cell.dart';
 
@@ -30,7 +31,7 @@ class PackageTile extends StatelessWidget {
               RichText(
                 textAlign: TextAlign.center,
                 text: TextSpan(style: Theme.of(context).textTheme.bodyTextLight!.copyWith(color: CupertinoColors.secondaryLabel), children: [
-                  const TextSpan(text: "Destinatario: "),
+                  TextSpan(text: 'recipient'.localized(context)),
                   TextSpan(text: "AC${packageSummary.userId}", style: Theme.of(context).textTheme.bodyTextBold),
                 ]),
               ),

@@ -24,6 +24,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:move_to_background/move_to_background.dart';
 import 'package:qui_green/commons/ui/tab_controller_container.dart';
 import 'package:qui_green/commons/utilities/home_user_routes.dart';
+import 'package:qui_green/commons/utilities/localization.dart';
 import 'package:qui_green/controllers/home_user_packages.dart';
 import 'package:qui_green/controllers/onboarding/map_controller.dart';
 import 'package:qui_green/controllers/profile_controller.dart';
@@ -46,101 +47,108 @@ class _HomeControllerState extends State<HomeController> with ConnectionAware {
   @override
   void initState() {
     super.initState();
-    _controllers = [
-      TabControllerContainer(
-        tabView: CupertinoTabView(
-          navigatorKey: GlobalKey(),
-          builder: (context) => const HomeUserPackages(),
-          onGenerateRoute: (RouteSettings settings) => homeUserRouteWithSetting(settings),
-        ),
-        bottomView: BottomNavigationBarItem(
-          icon: SvgPicture.asset(ImageSrc.homeArt, color: Colors.grey.shade400),
-          activeIcon: SvgPicture.asset(ImageSrc.homeArt, color: AppColors.primaryColorDark),
-          label: 'Home',
-        ),
-      ),
-      TabControllerContainer(
-        tabView: CupertinoTabView(
-          navigatorKey: GlobalKey(),
-          builder: (context) => const MapController.homeUser(),
-          onGenerateRoute: (RouteSettings settings) => homeUserRouteWithSetting(settings),
-        ),
-        bottomView: BottomNavigationBarItem(
-          icon: SvgPicture.asset(ImageSrc.mapsArt, color: Colors.grey.shade400),
-          activeIcon: SvgPicture.asset(ImageSrc.mapsArt, color: AppColors.primaryColorDark),
-          label: 'Map',
-        ),
-      ),
-      TabControllerContainer(
-        tabView: CupertinoTabView(
-          navigatorKey: GlobalKey(),
-          builder: (context) => const PudoListController(
-            isRootController: true,
+
+    WidgetsBinding.instance?.addPostFrameCallback((timestamp) {
+      setState(() {
+        _controllers = [
+          TabControllerContainer(
+            tabView: CupertinoTabView(
+              navigatorKey: GlobalKey(),
+              builder: (context) => const HomeUserPackages(),
+              onGenerateRoute: (RouteSettings settings) => homeUserRouteWithSetting(settings),
+            ),
+            bottomView: BottomNavigationBarItem(
+              icon: SvgPicture.asset(ImageSrc.homeArt, color: Colors.grey.shade400),
+              activeIcon: SvgPicture.asset(ImageSrc.homeArt, color: AppColors.primaryColorDark),
+              label: 'homeLabel'.localized(context),
+            ),
           ),
-          onGenerateRoute: (RouteSettings settings) => homeUserRouteWithSetting(settings),
-        ),
-        bottomView: BottomNavigationBarItem(
-          icon: SvgPicture.asset(ImageSrc.packReceivedLeadingIcon, color: Colors.grey.shade400),
-          activeIcon: SvgPicture.asset(ImageSrc.packReceivedLeadingIcon, color: AppColors.primaryColorDark),
-          label: 'Pudos',
-        ),
-      ),
-      TabControllerContainer(
-        tabView: CupertinoTabView(
-          navigatorKey: GlobalKey(),
-          builder: (context) => const ProfileController(),
-          onGenerateRoute: (RouteSettings settings) => homeUserRouteWithSetting(settings),
-        ),
-        bottomView: BottomNavigationBarItem(
-          icon: SvgPicture.asset(ImageSrc.profileArt, color: Colors.grey.shade400),
-          activeIcon: SvgPicture.asset(ImageSrc.profileArt, color: AppColors.primaryColorDark),
-          label: 'Profile',
-        ),
-      )
-    ];
+          TabControllerContainer(
+            tabView: CupertinoTabView(
+              navigatorKey: GlobalKey(),
+              builder: (context) => const MapController.homeUser(),
+              onGenerateRoute: (RouteSettings settings) => homeUserRouteWithSetting(settings),
+            ),
+            bottomView: BottomNavigationBarItem(
+              icon: SvgPicture.asset(ImageSrc.mapsArt, color: Colors.grey.shade400),
+              activeIcon: SvgPicture.asset(ImageSrc.mapsArt, color: AppColors.primaryColorDark),
+              label: 'mapLabel'.localized(context),
+            ),
+          ),
+          TabControllerContainer(
+            tabView: CupertinoTabView(
+              navigatorKey: GlobalKey(),
+              builder: (context) => const PudoListController(
+                isRootController: true,
+              ),
+              onGenerateRoute: (RouteSettings settings) => homeUserRouteWithSetting(settings),
+            ),
+            bottomView: BottomNavigationBarItem(
+              icon: SvgPicture.asset(ImageSrc.packReceivedLeadingIcon, color: Colors.grey.shade400),
+              activeIcon: SvgPicture.asset(ImageSrc.packReceivedLeadingIcon, color: AppColors.primaryColorDark),
+              label: 'pudoLabel'.localized(context),
+            ),
+          ),
+          TabControllerContainer(
+            tabView: CupertinoTabView(
+              navigatorKey: GlobalKey(),
+              builder: (context) => const ProfileController(),
+              onGenerateRoute: (RouteSettings settings) => homeUserRouteWithSetting(settings),
+            ),
+            bottomView: BottomNavigationBarItem(
+              icon: SvgPicture.asset(ImageSrc.profileArt, color: Colors.grey.shade400),
+              activeIcon: SvgPicture.asset(ImageSrc.profileArt, color: AppColors.primaryColorDark),
+              label: 'profileLabel'.localized(context),
+            ),
+          )
+        ];
+      });
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      child: WillPopScope(
-        onWillPop: () async {
-          var currentIndex = _tabController.index;
-          var currentTab = _controllers[currentIndex].tabView;
-          var currentContext = currentTab.navigatorKey?.currentContext;
-          if (currentContext != null) {
-            if (Navigator.of(currentContext).canPop()) {
-              return !await Navigator.of(currentContext).maybePop();
-            }
-          }
-          MoveToBackground.moveTaskToBack();
-          return false;
-        },
-        child: CupertinoTabScaffold(
-          controller: _tabController,
-          tabBar: CupertinoTabBar(
-            onTap: (selectedIndex) {
-              if (selectedIndex == _oldIndex) {
-                var currentContext = _controllers[selectedIndex].tabView.navigatorKey?.currentContext;
+    return _controllers.isEmpty
+        ? const SizedBox()
+        : Material(
+            child: WillPopScope(
+              onWillPop: () async {
+                var currentIndex = _tabController.index;
+                var currentTab = _controllers[currentIndex].tabView;
+                var currentContext = currentTab.navigatorKey?.currentContext;
                 if (currentContext != null) {
-                  Navigator.of(currentContext).popUntil((Route<dynamic> route) => route.isFirst);
+                  if (Navigator.of(currentContext).canPop()) {
+                    return !await Navigator.of(currentContext).maybePop();
+                  }
                 }
-              }
-              _oldIndex = selectedIndex;
-            },
-            items: _controllers
-                .asMap()
-                .map((index, aChild) {
-                  return MapEntry(index, aChild.bottomView);
-                })
-                .values
-                .toList(),
-          ),
-          tabBuilder: (innerContext, index) {
-            return _controllers[index].tabView;
-          },
-        ),
-      ),
-    );
+                MoveToBackground.moveTaskToBack();
+                return false;
+              },
+              child: CupertinoTabScaffold(
+                controller: _tabController,
+                tabBar: CupertinoTabBar(
+                  onTap: (selectedIndex) {
+                    if (selectedIndex == _oldIndex) {
+                      var currentContext = _controllers[selectedIndex].tabView.navigatorKey?.currentContext;
+                      if (currentContext != null) {
+                        Navigator.of(currentContext).popUntil((Route<dynamic> route) => route.isFirst);
+                      }
+                    }
+                    _oldIndex = selectedIndex;
+                  },
+                  items: _controllers
+                      .asMap()
+                      .map((index, aChild) {
+                        return MapEntry(index, aChild.bottomView);
+                      })
+                      .values
+                      .toList(),
+                ),
+                tabBuilder: (innerContext, index) {
+                  return _controllers[index].tabView;
+                },
+              ),
+            ),
+          );
   }
 }

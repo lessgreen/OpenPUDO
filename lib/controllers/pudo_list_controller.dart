@@ -35,6 +35,7 @@ import 'package:qui_green/widgets/deleteble_listview.dart';
 import 'package:qui_green/widgets/no_pudos_widget.dart';
 import 'package:qui_green/widgets/pudo_card.dart';
 import 'package:qui_green/widgets/sascaffold.dart';
+import 'package:qui_green/commons/utilities/localization.dart';
 
 class PudoListController extends StatefulWidget {
   final bool isRootController;
@@ -66,7 +67,7 @@ class _PudoListControllerState extends State<PudoListController> {
             navigationBar: CupertinoNavigationBarFix.build(
               context,
               middle: Text(
-                'I tuoi pudo',
+                'navTitle'.localized(context),
                 style: Theme.of(context).textTheme.navBarTitle,
               ),
               leading: widget.isRootController
@@ -116,7 +117,7 @@ class _PudoListControllerState extends State<PudoListController> {
       },
       idGetter: (PudoSummary pudo) => pudo.pudoId,
       onDelete: (PudoSummary pudo) => _deletePudo(pudo),
-      alertDeleteText: "Sei sicuro di voler rimuovere questo pudo?\nSe continui non riceverai ulteriori notifiche per i pacchi non ancora consegnati",
+      alertDeleteText: 'deletePudoWarning'.localized(context),
     );
   }
 
@@ -129,7 +130,7 @@ class _PudoListControllerState extends State<PudoListController> {
       } else {
         NetworkErrorHelper.helper(context, value);
       }
-    }).catchError((onError) => SAAlertDialog.displayAlertWithClose(context, "Error", onError));
+    }).catchError((onError) => SAAlertDialog.displayAlertWithClose(context, 'genericErrorTitle'.localized(context, 'general'), onError));
   }
 
   void _openPudo(PudoSummary pudoSummary) => NetworkManager.instance.getPudoDetails(pudoId: pudoSummary.pudoId.toString()).then((value) {
@@ -138,7 +139,7 @@ class _PudoListControllerState extends State<PudoListController> {
         } else {
           NetworkErrorHelper.helper(context, value);
         }
-      }).catchError((onError) => SAAlertDialog.displayAlertWithClose(context, "Error", onError));
+      }).catchError((onError) => SAAlertDialog.displayAlertWithClose(context, 'genericErrorTitle'.localized(context, 'general'), onError));
 
   Future<void> _getPudos() {
     return NetworkManager.instance.getMyPudos().then((value) {
@@ -147,7 +148,7 @@ class _PudoListControllerState extends State<PudoListController> {
       } else {
         NetworkErrorHelper.helper(context, value);
       }
-    }).catchError((onError) => SAAlertDialog.displayAlertWithClose(context, "Error", onError));
+    }).catchError((onError) => SAAlertDialog.displayAlertWithClose(context, 'genericErrorTitle'.localized(context, 'general'), onError));
   }
 
   void _openModal(String? address) {
@@ -156,10 +157,10 @@ class _PudoListControllerState extends State<PudoListController> {
     }
     SAAlertDialog.displayModalWithButtons(
       context,
-      "Scegli un'azione",
+      'chooseAction'.localized(context, 'general'),
       [
         CupertinoActionSheetAction(
-          child: const Text('Copia indirizzo'),
+          child: Text('copyAddressToClipboard'.localized(context)),
           onPressed: () {
             FlutterClipboard.copy(address);
           },

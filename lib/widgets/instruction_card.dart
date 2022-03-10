@@ -28,8 +28,16 @@ class InstructionCard extends StatelessWidget {
   final int pages;
   final Widget bottomWidget;
   final bool indicatorOnTop;
-  const InstructionCard({Key? key, required this.title, required this.description, required this.activeIndex, required this.pages, required this.bottomWidget, this.indicatorOnTop = true})
-      : super(key: key);
+
+  const InstructionCard({
+    Key? key,
+    required this.title,
+    required this.description,
+    required this.activeIndex,
+    required this.pages,
+    required this.bottomWidget,
+    this.indicatorOnTop = true,
+  }) : super(key: key);
 
   Widget _indicator(bool isActive) {
     return AnimatedContainer(

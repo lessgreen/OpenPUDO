@@ -20,6 +20,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:qui_green/commons/utilities/localization.dart';
 import 'package:qui_green/resources/res.dart';
 
 class ErrorController extends StatelessWidget {
@@ -45,7 +46,7 @@ class ErrorController extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    'Oops!, sembra che ci sia un problema!',
+                    'errorDescription'.localized(context),
                     style: Theme.of(context).textTheme.caption,
                   ),
                 ],
@@ -55,9 +56,9 @@ class ErrorController extends StatelessWidget {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: const Text(
-                'Torna indietro',
-                style: TextStyle(color: AppColors.primaryColorDark),
+              child: Text(
+                'goBack'.localized(context),
+                style: const TextStyle(color: AppColors.primaryColorDark),
               ),
             ),
           ],

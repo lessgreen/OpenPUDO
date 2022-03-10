@@ -30,7 +30,15 @@ class DeletableCard extends StatefulWidget {
   final int? openedId;
   final Widget card;
 
-  const DeletableCard({Key? key, required this.id, required this.onDelete, required this.onOpenStateChange, required this.openedId, this.maxWidth = 100, required this.card}) : super(key: key);
+  const DeletableCard({
+    Key? key,
+    required this.id,
+    required this.onDelete,
+    required this.onOpenStateChange,
+    required this.openedId,
+    this.maxWidth = 100,
+    required this.card,
+  }) : super(key: key);
 
   @override
   State<DeletableCard> createState() => DeletableCardState();

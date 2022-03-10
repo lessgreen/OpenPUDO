@@ -35,6 +35,7 @@ import 'package:qui_green/models/update_pudo_request.dart';
 import 'package:qui_green/resources/routes_enum.dart';
 import 'package:qui_green/singletons/current_user.dart';
 import 'package:qui_green/singletons/network/network_manager.dart';
+import 'package:qui_green/commons/utilities/localization.dart';
 
 class PudoProfileEditControllerViewModel extends ChangeNotifier {
   PudoProfileEditControllerViewModel(BuildContext context, List<RewardOption>? dataSource) {
@@ -45,9 +46,9 @@ class PudoProfileEditControllerViewModel extends ChangeNotifier {
         if (value is List<RewardOption>) {
           this.dataSource = value;
         } else {
-          SAAlertDialog.displayAlertWithClose(context, "Error", "Qualcosa è andato storto");
+          SAAlertDialog.displayAlertWithClose(context, 'genericErrorTitle'.localized(context, 'general'), "Qualcosa è andato storto");
         }
-      }).catchError((error) => SAAlertDialog.displayAlertWithClose(context, "Error", error));
+      }).catchError((error) => SAAlertDialog.displayAlertWithClose(context, 'genericErrorTitle'.localized(context, 'general'), error));
     }
   }
 
@@ -275,8 +276,8 @@ class PudoProfileEditControllerViewModel extends ChangeNotifier {
     if (_phoneNumber != null) {
       if (_phoneNumber!.isEmpty) {
         return UpdateValidation.phoneNumber;
-      }else{
-        if(!_phoneNumber!.isValidPhoneNumber()){
+      } else {
+        if (!_phoneNumber!.isValidPhoneNumber()) {
           return UpdateValidation.phoneNumber;
         }
       }
@@ -377,20 +378,35 @@ class PudoProfileEditControllerViewModel extends ChangeNotifier {
     bool changesMade = false;
     if (hasBeenDetailsChanged) {
       if (isValid != UpdateValidation.valid) {
-        if(isValid == UpdateValidation.businessName){
-          SAAlertDialog.displayAlertWithClose(context, 'Error', 'Il nome non puo essere vuoto');
-        }else{
-          if(!phoneController.text.isValidPhoneNumber()){
-            SAAlertDialog.displayAlertWithClose(context, 'Error', 'Il numero telefonico non è corretto');
-          }else {
-            SAAlertDialog.displayAlertWithClose(context, 'Error', 'Il numero telefonico non puo essere vuoto');
+        if (isValid == UpdateValidation.businessName) {
+          SAAlertDialog.displayAlertWithClose(
+            context,
+            'genericErrorTitle'.localized(context, 'general'),
+            'nameCouldNotBeEmpty'.localized(context, 'general'),
+          );
+        } else {
+          if (!phoneController.text.isValidPhoneNumber()) {
+            SAAlertDialog.displayAlertWithClose(
+              context,
+              'genericErrorTitle'.localized(context, 'general'),
+              'phoneNumberWrong'.localized(context, 'general'),
+            );
+          } else {
+            SAAlertDialog.displayAlertWithClose(
+              context,
+              'genericErrorTitle'.localized(context, 'general'),
+              'phoneCouldNotBeEmpty'.localized(context, 'general'),
+            );
           }
         }
         return;
       } else {
         changesMade = true;
         await NetworkManager.instance.updatePudo(UpdatePudoRequest(
-            pudo: PudoRequest(businessName: businessNameController.text, publicPhoneNumber: phoneController.text.contains("+39") ? phoneController.text : "+39" + phoneController.text),
+            pudo: PudoRequest(
+              businessName: businessNameController.text,
+              publicPhoneNumber: phoneController.text.contains("+39") ? phoneController.text : "+39" + phoneController.text,
+            ),
             addressMarker: _address));
       }
     }

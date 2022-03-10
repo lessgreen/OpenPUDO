@@ -21,10 +21,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
-import 'package:qui_green/models/package_summary.dart';
-import 'package:qui_green/models/pudo_package.dart';
+import 'package:qui_green/commons/utilities/localization.dart';
 import 'package:qui_green/resources/res.dart';
-import 'package:qui_green/view_models/content_package_page_view_model.dart';
+import 'package:qui_green/view_models/content_package_page_viewmodel.dart';
 import 'package:qui_green/widgets/error_screen_widget.dart';
 import 'package:qui_green/widgets/listview_header.dart';
 import 'package:qui_green/widgets/package_card.dart';
@@ -57,7 +56,7 @@ class _ContentPackagesPageState extends State<ContentPackagesPage> {
                     top: Dimension.paddingS,
                     bottom: Dimension.paddingS,
                   ),
-                  title: 'I tuoi pacchi:'.toUpperCase(),
+                  title: 'yourShipment'.localized(context, 'general').toUpperCase(),
                   titleStyle: Theme.of(context).textTheme.headerTitle,
                   itemCount: viewModel.availablePackages.length,
                   scrollController: viewModel.scrollController,

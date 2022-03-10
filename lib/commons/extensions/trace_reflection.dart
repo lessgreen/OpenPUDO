@@ -18,29 +18,22 @@
  If not, see <https://github.com/lessgreen/OpenPUDO>.
 */
 
-import 'package:url_launcher/url_launcher.dart';
+import 'package:stack_trace/stack_trace.dart';
 
-class UrlLauncherHelper {
-  static void launchUrl(UrlTypes type, String url) {
-    switch (type) {
-      case UrlTypes.tel:
-        _launchURL(UrlTypes.tel.name, url);
-        break;
-      case UrlTypes.whatsapp:
-        _launchURL('https://wa.me/', url, addEndSlashes: false);
-        break;
-      case UrlTypes.sms:
-        _launchURL(UrlTypes.sms.name, url);
-        break;
-      default:
-        _launchURL('https', url);
-        break;
+extension TraceReflection on Trace {
+  static List<String>? stackFrame([int index = 0]) {
+    int stackFrame = 0;
+    if (Trace.current().frames.length > index) {
+      stackFrame = index;
     }
-  }
-
-  static void _launchURL(String type, String phoneNumber, {bool addEndSlashes = true}) async {
-    if (!await launch('$type:${addEndSlashes ? '//' : ''}$phoneNumber')) throw 'Could not launch $type:$phoneNumber';
+    return Trace.current()
+        .frames[stackFrame]
+        .member
+        ?.replaceAll('.<fn>', '')
+        .split('.')
+        .map(
+          (e) => (e.replaceFirst('_', '')),
+        )
+        .toList();
   }
 }
-
-enum UrlTypes { whatsapp, tel, sms }
