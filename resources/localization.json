@@ -275,7 +275,8 @@
             "nTimes": " volte,",
             "contribute": " contribuendo a ridurre di ",
             "co2Emission": " le emissioni di CO2 ",
-            "shareButton": "condividi"
+            "shareButton": "condividi",
+            "learnMore": "Scopri di più su https://www.quigreen.it"
         },
         "ContactUsControllerState": {
             "navTitle": "Contattaci",

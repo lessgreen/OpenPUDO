@@ -87,9 +87,9 @@ class _PudoProfileControllerState extends State<PudoProfileController> with Conn
                 const SizedBox(
                   height: 20,
                 ),
-                const UserProfileRecapWidget(
-                  totalUsage: 123,
-                  kgCO2Saved: 456,
+                UserProfileRecapWidget(
+                  totalUsage: currentUser.pudoProfile?.packageCount ?? 0,
+                  kgCO2Saved: currentUser.pudoProfile?.savedCO2 ?? '',
                   isForPudo: true,
                 ),
                 TableViewCell(

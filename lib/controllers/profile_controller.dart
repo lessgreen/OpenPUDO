@@ -39,6 +39,7 @@ import 'package:qui_green/widgets/sascaffold.dart';
 import 'package:qui_green/widgets/table_view_cell.dart';
 import 'package:qui_green/widgets/user_profile_recap_widget.dart';
 import 'package:qui_green/commons/utilities/localization.dart';
+import 'package:share_plus/share_plus.dart';
 
 class ProfileController extends StatefulWidget {
   const ProfileController({Key? key}) : super(key: key);
@@ -125,9 +126,9 @@ class _ProfileControllerState extends State<ProfileController> with ConnectionAw
                       const SizedBox(
                         height: 20,
                       ),
-                      const UserProfileRecapWidget(
-                        totalUsage: 123,
-                        kgCO2Saved: 456,
+                      UserProfileRecapWidget(
+                        totalUsage: currentUser.user?.packageCount ?? 0,
+                        kgCO2Saved: currentUser.user?.savedCO2 ?? '0.0Kg',
                       ),
                       TableViewCell(
                         leading: SvgPicture.asset(

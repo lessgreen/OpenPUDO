@@ -24,10 +24,11 @@ import 'package:qui_green/commons/extensions/additional_button_styles.dart';
 import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
 import 'package:qui_green/commons/utilities/localization.dart';
 import 'package:qui_green/resources/res.dart';
+import 'package:share_plus/share_plus.dart';
 
 class UserProfileRecapWidget extends StatelessWidget {
   final int totalUsage;
-  final int kgCO2Saved;
+  final String kgCO2Saved;
   final Function? onTap;
   final bool isForPudo;
   const UserProfileRecapWidget({Key? key, required this.totalUsage, required this.kgCO2Saved, this.onTap, this.isForPudo = false}) : super(key: key);
@@ -62,7 +63,7 @@ class UserProfileRecapWidget extends StatelessWidget {
                       TextSpan(text: 'nTimes'.localized(context)),
                       TextSpan(text: 'contribute'.localized(context)),
                       TextSpan(
-                        text: "${kgCO2Saved}kg",
+                        text: "$kgCO2Saved ",
                         style: Theme.of(context).textTheme.bodyText1?.copyWith(
                               color: AppColors.accentColor,
                               fontWeight: FontWeight.w500,
@@ -90,6 +91,7 @@ class UserProfileRecapWidget extends StatelessWidget {
           TextButton(
             onPressed: () {
               onTap?.call();
+              _shareDidPress(context);
             },
             child: Text(
               'shareButton'.localized(context),
@@ -99,5 +101,13 @@ class UserProfileRecapWidget extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  _shareDidPress(BuildContext context) {
+    var finalString = (isForPudo ? 'recapPudoTitle' : 'recapUserTitle').localized(context);
+    finalString += '$totalUsage ${'nTimes'.localized(context)}${'contribute'.localized(context)}';
+    finalString += '$kgCO2Saved ${'co2Emission'.localized(context)}.';
+    finalString += '\n${'learnMore'.localized(context)}';
+    Share.share(finalString);
   }
 }
