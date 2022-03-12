@@ -86,7 +86,7 @@ public class AccessTokenFilter implements ContainerRequestFilter {
             payload = jwtService.decodePayload(accessToken.split("\\.", -1)[1]);
         } catch (JsonProcessingException ex) {
             // we have a valid signature for a not parsable payload, this should NEVER happen
-            log.error("[{}] Authorization failed: invalid token payload with valid signature", context.getExecutionId());
+            log.fatal("[{}] Authorization failed: invalid token payload with valid signature", context.getExecutionId());
             throw new ApiException(ApiReturnCodes.INVALID_JWT_TOKEN, localizationService.getMessage(context.getLanguage(), "error.auth.invalid_access_token"));
         }
 

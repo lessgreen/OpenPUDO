@@ -94,7 +94,7 @@ public class PackageResource {
         try {
             uploadedFile = MultipartUtils.readUploadedFile(req);
         } catch (IOException ex) {
-            log.error("[{}] {}", context.getExecutionId(), ExceptionUtils.getCanonicalFormWithStackTrace(ex));
+            log.fatal("[{}] {}", context.getExecutionId(), ExceptionUtils.getCanonicalFormWithStackTrace(ex));
             throw new ApiException(ApiReturnCodes.SERVICE_UNAVAILABLE, localizationService.getMessage(context.getLanguage(), "error.service_unavailable"));
         }
 

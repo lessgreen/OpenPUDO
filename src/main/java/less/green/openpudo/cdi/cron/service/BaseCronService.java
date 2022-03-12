@@ -17,7 +17,7 @@ public abstract class BaseCronService {
         try {
             return cronLockService.acquireLock(lockName);
         } catch (Exception ex) {
-            log.error("[{}] {}", executionId, ExceptionUtils.getCanonicalFormWithStackTrace(ex));
+            log.fatal("[{}] {}", executionId, ExceptionUtils.getCanonicalFormWithStackTrace(ex));
             return false;
         }
     }
@@ -26,7 +26,7 @@ public abstract class BaseCronService {
         try {
             return cronLockService.refreshLock(lockName);
         } catch (Exception ex) {
-            log.error("[{}] {}", executionId, ExceptionUtils.getCanonicalFormWithStackTrace(ex));
+            log.fatal("[{}] {}", executionId, ExceptionUtils.getCanonicalFormWithStackTrace(ex));
             return false;
         }
     }
@@ -35,7 +35,7 @@ public abstract class BaseCronService {
         try {
             return cronLockService.releaseLock(lockName);
         } catch (Exception ex) {
-            log.error("[{}] {}", executionId, ExceptionUtils.getCanonicalFormWithStackTrace(ex));
+            log.fatal("[{}] {}", executionId, ExceptionUtils.getCanonicalFormWithStackTrace(ex));
             return false;
         }
     }

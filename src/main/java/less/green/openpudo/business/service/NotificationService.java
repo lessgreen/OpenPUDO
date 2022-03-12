@@ -10,6 +10,7 @@ import less.green.openpudo.cdi.ExecutionContext;
 import less.green.openpudo.cdi.service.FirebaseMessagingService;
 import less.green.openpudo.cdi.service.LocalizationService;
 import less.green.openpudo.common.ApiReturnCodes;
+import less.green.openpudo.common.ExceptionUtils;
 import less.green.openpudo.rest.config.exception.ApiException;
 import less.green.openpudo.rest.dto.DtoMapper;
 import less.green.openpudo.rest.dto.notification.Notification;
@@ -115,7 +116,13 @@ public class NotificationService {
             for (TbDeviceToken row : deviceTokens) {
                 String title = (titleParams == null || titleParams.length == 0) ? localizationService.getMessage(row.getApplicationLanguage(), titleTemplate) : localizationService.getMessage(row.getApplicationLanguage(), titleTemplate, (Object[]) titleParams);
                 String message = (messageParams == null || messageParams.length == 0) ? localizationService.getMessage(row.getApplicationLanguage(), messageTemplate) : localizationService.getMessage(row.getApplicationLanguage(), messageTemplate, (Object[]) messageParams);
-                String messageId = firebaseMessagingService.sendNotification(row.getDeviceToken(), title, message, data);
+                String messageId;
+                try {
+                    messageId = firebaseMessagingService.sendNotification(row.getDeviceToken(), title, message, data);
+                } catch (RuntimeException ex) {
+                    log.error("[{}] {}", context.getExecutionId(), ExceptionUtils.getCanonicalFormWithStackTrace(ex));
+                    messageId = null;
+                }
                 Date now = new Date();
                 row.setUpdateTms(now);
                 if (messageId != null) {

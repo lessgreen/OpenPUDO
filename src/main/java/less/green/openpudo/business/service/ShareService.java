@@ -126,7 +126,7 @@ public class ShareService {
             redirectLogDao.flush();
         } catch (Exception ex) {
             // very unlikely to have errors, but we don't want to break redirection anyway
-            log.error("[{}] {}", context.getExecutionId(), ExceptionUtils.getCanonicalFormWithStackTrace(ex));
+            log.fatal("[{}] {}", context.getExecutionId(), ExceptionUtils.getCanonicalFormWithStackTrace(ex));
         }
     }
 

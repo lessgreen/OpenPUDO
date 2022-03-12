@@ -51,8 +51,7 @@ public class FirebaseMessagingService {
         try {
             return FirebaseMessaging.getInstance().send(message);
         } catch (FirebaseMessagingException ex) {
-            log.error("Firebase error: {}, {}", ex.getMessagingErrorCode(), ex.getMessage());
-            return null;
+            throw new RuntimeException(String.format("Firebase error: %s, %s", ex.getMessagingErrorCode(), ex.getMessage()));
         }
     }
 

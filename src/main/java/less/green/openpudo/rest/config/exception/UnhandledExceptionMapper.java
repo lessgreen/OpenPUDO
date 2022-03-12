@@ -43,7 +43,7 @@ public class UnhandledExceptionMapper implements ExceptionMapper<Exception> {
             BaseResponse res = new BaseResponse(context.getExecutionId(), ApiReturnCodes.BAD_REQUEST, msg);
             return Response.status(Response.Status.BAD_REQUEST).entity(res).build();
         }
-        log.error("[{}] {}", context.getExecutionId(), ExceptionUtils.getCanonicalFormWithStackTrace(ex));
+        log.fatal("[{}] {}", context.getExecutionId(), ExceptionUtils.getCanonicalFormWithStackTrace(ex));
         BaseResponse res = new BaseResponse(context.getExecutionId(), ApiReturnCodes.INTERNAL_SERVER_ERROR, Response.Status.INTERNAL_SERVER_ERROR.getReasonPhrase());
         return Response.serverError().entity(res).build();
     }

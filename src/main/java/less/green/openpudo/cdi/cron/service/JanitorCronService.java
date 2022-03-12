@@ -33,7 +33,7 @@ public class JanitorCronService extends BaseCronService {
                 log.info("[{}] Removed expired OTP requests: {}", context.getExecutionId(), cnt);
             }
         } catch (Exception ex) {
-            log.error("[{}] {}", context.getExecutionId(), ExceptionUtils.getCanonicalFormWithStackTrace(ex));
+            log.fatal("[{}] {}", context.getExecutionId(), ExceptionUtils.getCanonicalFormWithStackTrace(ex));
         } finally {
             releaseLock(context.getExecutionId(), JANITOR_OTP_REQUEST_LOCK);
         }
@@ -50,7 +50,7 @@ public class JanitorCronService extends BaseCronService {
                 log.info("[{}] Removed failed device tokens: {}", context.getExecutionId(), cnt);
             }
         } catch (Exception ex) {
-            log.error("[{}] {}", context.getExecutionId(), ExceptionUtils.getCanonicalFormWithStackTrace(ex));
+            log.fatal("[{}] {}", context.getExecutionId(), ExceptionUtils.getCanonicalFormWithStackTrace(ex));
         } finally {
             releaseLock(context.getExecutionId(), JANITOR_DEVICE_TOKEN_LOCK);
         }
