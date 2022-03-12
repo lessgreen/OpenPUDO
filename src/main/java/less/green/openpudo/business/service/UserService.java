@@ -9,6 +9,7 @@ import less.green.openpudo.cdi.service.LocalizationService;
 import less.green.openpudo.cdi.service.StorageService;
 import less.green.openpudo.common.ApiReturnCodes;
 import less.green.openpudo.common.CalendarUtils;
+import less.green.openpudo.common.FormatUtils;
 import less.green.openpudo.common.dto.tuple.Quartet;
 import less.green.openpudo.common.dto.tuple.Sextet;
 import less.green.openpudo.rest.config.exception.ApiException;
@@ -91,7 +92,7 @@ public class UserService {
             TbUserPreferences userPreferences = userPreferencesDao.get(userId);
             String phoneNumber = userPreferences.getShowPhoneNumber() ? userDao.get(userId).getPhoneNumber() : null;
             long packageCount = packageDao.getPackageCountByUserId(context.getUserId());
-            return dtoMapper.mapUserProfileEntityToDto(userProfile, phoneNumber, packageCount, userPudoRelation.getCustomerSuffix());
+            return dtoMapper.mapUserProfileEntityToDto(userProfile, phoneNumber, packageCount, FormatUtils.calcSavedCO2(packageCount), userPudoRelation.getCustomerSuffix());
         } else {
             throw new AssertionError("Unsupported AccountType: " + caller.getAccountType());
         }
@@ -104,7 +105,7 @@ public class UserService {
         }
         TbUserProfile userProfile = userProfileDao.get(context.getUserId());
         long packageCount = packageDao.getPackageCountByUserId(context.getUserId());
-        return dtoMapper.mapUserProfileEntityToDto(userProfile, user.getPhoneNumber(), packageCount, null);
+        return dtoMapper.mapUserProfileEntityToDto(userProfile, user.getPhoneNumber(), packageCount, FormatUtils.calcSavedCO2(packageCount), null);
     }
 
     public User updateCurrentUserProfile(User req) {

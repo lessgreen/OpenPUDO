@@ -28,7 +28,7 @@ import java.util.UUID;
 @Mapper(componentModel = "cdi")
 public interface DtoMapper {
 
-    User mapUserProfileEntityToDto(TbUserProfile ent, String phoneNumber, Long packageCount, String customerSuffix);
+    User mapUserProfileEntityToDto(TbUserProfile ent, String phoneNumber, Long packageCount, String savedCO2, String customerSuffix);
 
     UserPreferences mapUserPreferencesEntityToDto(TbUserPreferences ent);
 
@@ -47,8 +47,9 @@ public interface DtoMapper {
     @Mapping(source = "ent.value3", target = "rewardMessage")
     @Mapping(source = "ent.value4", target = "customerCount")
     @Mapping(source = "ent.value5", target = "packageCount")
-    @Mapping(source = "ent.value6", target = "customizedAddress")
-    Pudo mapPudoEntityToDto(Septet<TbPudo, TbAddress, TbRating, String, Long, Long, String> ent);
+    @Mapping(source = "ent.value6", target = "savedCO2")
+    @Mapping(source = "ent.value7", target = "customizedAddress")
+    Pudo mapPudoEntityToDto(Octet<TbPudo, TbAddress, TbRating, String, Long, Long, String, String> ent);
 
     Address mapAddressEntityToDto(TbAddress ent);
 

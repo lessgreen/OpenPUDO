@@ -45,6 +45,9 @@ public class Pudo {
     private Long packageCount;
 
     @Schema(readOnly = true)
+    private String savedCO2;
+
+    @Schema(readOnly = true)
     private String customizedAddress;
 
 }

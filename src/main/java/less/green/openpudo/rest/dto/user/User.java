@@ -35,6 +35,9 @@ public class User {
     private Long packageCount;
 
     @Schema(readOnly = true)
+    private String savedCO2;
+
+    @Schema(readOnly = true)
     private String customerSuffix;
 
 }

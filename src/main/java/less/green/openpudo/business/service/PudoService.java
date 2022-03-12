@@ -8,9 +8,10 @@ import less.green.openpudo.cdi.ExecutionContext;
 import less.green.openpudo.cdi.service.LocalizationService;
 import less.green.openpudo.cdi.service.StorageService;
 import less.green.openpudo.common.ApiReturnCodes;
+import less.green.openpudo.common.FormatUtils;
+import less.green.openpudo.common.dto.tuple.Octet;
 import less.green.openpudo.common.dto.tuple.Quartet;
 import less.green.openpudo.common.dto.tuple.Quintet;
-import less.green.openpudo.common.dto.tuple.Septet;
 import less.green.openpudo.rest.config.exception.ApiException;
 import less.green.openpudo.rest.dto.DtoMapper;
 import less.green.openpudo.rest.dto.pack.PackageSummary;
@@ -83,7 +84,7 @@ public class PudoService {
                 customizedAddress = createCustomizedAddress(rs.getValue0(), rs.getValue1(), "AB123");
             }
         }
-        return dtoMapper.mapPudoEntityToDto(new Septet<>(rs.getValue0(), rs.getValue1(), rs.getValue2(), rewardMessage, customerCount, packageCount, customizedAddress));
+        return dtoMapper.mapPudoEntityToDto(new Octet<>(rs.getValue0(), rs.getValue1(), rs.getValue2(), rewardMessage, customerCount, packageCount, FormatUtils.calcSavedCO2(packageCount), customizedAddress));
     }
 
     public Pudo getCurrentPudo() {

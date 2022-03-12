@@ -41,4 +41,16 @@ public class FormatUtils {
         }
     }
 
+    public static String calcSavedCO2(long packageCount) {
+        // TODO: refine formula
+        long co2g = packageCount * 181;
+        if (co2g < 1_100) {
+            return co2g + " g";
+        } else if (co2g < 1_100_000) {
+            return BigDecimal.valueOf(co2g).divide(BigDecimal.valueOf(1_000), 1, RoundingMode.HALF_UP) + " kg";
+        } else {
+            return BigDecimal.valueOf(co2g).divide(BigDecimal.valueOf(1_000_000), 1, RoundingMode.HALF_UP) + " t";
+        }
+    }
+
 }
