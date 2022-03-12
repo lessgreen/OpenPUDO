@@ -276,6 +276,11 @@
             "contribute": " contribuendo a ridurre di ",
             "co2Emission": " le emissioni di CO2 ",
             "shareButton": "condividi"
+        },
+        "ContactUsControllerState": {
+            "navTitle": "Contattaci",
+            "contactUsPlaceHolder": "Scrivici il tuo problema e faremo il possibile per aiutarti.",
+            "submitButton": "Invia"
         }
     }
 }

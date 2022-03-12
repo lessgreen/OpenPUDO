@@ -31,6 +31,7 @@ import 'package:qui_green/models/package_summary.dart';
 import 'package:qui_green/models/pudo_package.dart';
 import 'package:qui_green/models/pudo_package_event.dart';
 import 'package:qui_green/resources/res.dart';
+import 'package:qui_green/resources/routes_enum.dart';
 import 'package:qui_green/singletons/network/network_manager.dart';
 import 'package:qui_green/widgets/sascaffold.dart';
 import 'package:share_plus/share_plus.dart';
@@ -186,7 +187,7 @@ class _PackagePickupControllerState extends State<PackagePickupController> {
                         ),
                         MaterialButton(
                           textColor: AppColors.primaryColorDark,
-                          onPressed: () {},
+                          onPressed: () => _showContactUS(),
                           child: Text(
                             'contactUs'.localized(context),
                           ),
@@ -201,6 +202,10 @@ class _PackagePickupControllerState extends State<PackagePickupController> {
         ),
       ],
     );
+  }
+
+  _showContactUS() {
+    Navigator.of(context).pushNamed(Routes.contactUs);
   }
 
   _confirmReceipt() {
