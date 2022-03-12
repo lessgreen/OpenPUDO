@@ -169,4 +169,19 @@ public class AuthResource {
         return new LoginConfirmResponse(context.getExecutionId(), ApiReturnCodes.OK, ret);
     }
 
+    @POST
+    @Path("/support")
+    @SecurityRequirement(name = "JWT")
+    @Operation(summary = "Send a support request")
+    public BaseResponse supportRequest(SupportRequest req) {
+        // sanitize input
+        if (req == null) {
+            throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.empty_request"));
+        } else if (isEmpty(req.getMessage())) {
+            throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.empty_mandatory_field", "message"));
+        }
+        authService.supportRequest(req);
+        return new BaseResponse(context.getExecutionId(), ApiReturnCodes.OK);
+    }
+
 }

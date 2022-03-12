@@ -7,6 +7,7 @@ import less.green.openpudo.business.model.usertype.AccountType;
 import less.green.openpudo.business.model.usertype.OtpRequestType;
 import less.green.openpudo.business.model.usertype.RelationType;
 import less.green.openpudo.cdi.ExecutionContext;
+import less.green.openpudo.cdi.service.EmailService;
 import less.green.openpudo.cdi.service.JwtService;
 import less.green.openpudo.cdi.service.LocalizationService;
 import less.green.openpudo.cdi.service.SmsService;
@@ -19,6 +20,7 @@ import less.green.openpudo.rest.config.exception.ApiException;
 import less.green.openpudo.rest.dto.DtoMapper;
 import less.green.openpudo.rest.dto.auth.RegisterCustomerRequest;
 import less.green.openpudo.rest.dto.auth.RegisterPudoRequest;
+import less.green.openpudo.rest.dto.auth.SupportRequest;
 import lombok.extern.log4j.Log4j2;
 
 import javax.enterprise.context.RequestScoped;
@@ -43,6 +45,8 @@ public class AuthService {
     @Inject
     LocalizationService localizationService;
 
+    @Inject
+    EmailService emailService;
     @Inject
     JwtService jwtService;
     @Inject
@@ -265,6 +269,13 @@ public class AuthService {
         TbUser user = userDao.get(context.getUserId());
         user.setLastLoginTms(new Date());
         return jwtService.generateUserTokenData(user.getUserId(), mapAccountTypeToAccessProfile(user.getAccountType()));
+    }
+
+    public void supportRequest(SupportRequest req) {
+        TbUser user = userDao.get(context.getUserId());
+        String subject = String.format("Support request from user: %s (phone: %s)", context.getUserId(), user.getPhoneNumber());
+        emailService.sendSupportEmail(subject, req.getMessage().trim());
+        log.info("[{}] Sent support request for user: {}", context.getExecutionId(), context.getUserId());
     }
 
     private AccessProfile mapAccountTypeToAccessProfile(AccountType accountType) {

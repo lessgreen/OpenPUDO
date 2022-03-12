@@ -5,6 +5,7 @@ import io.quarkus.runtime.Startup;
 import kong.unirest.Unirest;
 import kong.unirest.UnirestException;
 import less.green.openpudo.common.Encoders;
+import less.green.openpudo.common.ExceptionUtils;
 import lombok.extern.log4j.Log4j2;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
@@ -31,8 +32,14 @@ public class EmailService {
     @ConfigProperty(name = "mailjet.email.from.email")
     String fromEmail;
 
-    public void sendEmail(String toName, String toEmail, String subject, String text) {
-        ObjectNode body = createBody(toName, toEmail, subject, text);
+    @ConfigProperty(name = "mailjet.email.support.email")
+    String supportEmail;
+
+    @ConfigProperty(name = "mailjet.email.tech.email")
+    String techEmail;
+
+    public void sendSupportEmail(String subject, String text) {
+        ObjectNode body = createBody(supportEmail, subject, text);
         try {
             var req = Unirest.post(MAILJET_EMAIL_API_URL)
                     .basicAuth(apiKey, secretKey)
@@ -50,7 +57,26 @@ public class EmailService {
         }
     }
 
-    private ObjectNode createBody(String toName, String toEmail, String subject, String text) {
+    public void sendTechEmail(String subject, String text) {
+        ObjectNode body = createBody(techEmail, subject, text);
+        try {
+            var req = Unirest.post(MAILJET_EMAIL_API_URL)
+                    .basicAuth(apiKey, secretKey)
+                    .header("Content-Type", "application/json")
+                    .body(Encoders.writeValueAsStringSafe(body));
+            var res = req.asJson();
+            if (res == null || res.getBody() == null) {
+                throw new RuntimeException("Email service returned empty response");
+            }
+            if (res.getStatus() != 200) {
+                throw new RuntimeException("Email service returned: " + res.getStatus() + " " + res.getStatusText() + " - " + res.getBody().toString());
+            }
+        } catch (UnirestException ex) {
+            log.fatal("Email service unavailable: {}", ExceptionUtils.getCanonicalFormWithStackTrace(ex));
+        }
+    }
+
+    private ObjectNode createBody(String toEmail, String subject, String text) {
         var body = OBJECT_MAPPER.createObjectNode();
         var messages = OBJECT_MAPPER.createArrayNode();
         body.set("Messages", messages);
@@ -65,7 +91,6 @@ public class EmailService {
         var toAddress = OBJECT_MAPPER.createObjectNode();
         toAddresses.add(toAddress);
         toAddress.set("Email", OBJECT_MAPPER.valueToTree(toEmail));
-        toAddress.set("Name", OBJECT_MAPPER.valueToTree(toName));
         message.set("Subject", OBJECT_MAPPER.valueToTree(subject));
         message.set("TextPart", OBJECT_MAPPER.valueToTree(text));
         //body.set("SandboxMode", OBJECT_MAPPER.valueToTree(true));
