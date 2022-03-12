@@ -56,10 +56,12 @@
             "placeHolderName": "Nome attività",
             "placeHolderAddress": "Inserisci il tuo indirizzo",
             "placeHolderPhone": "Telefono",
-            "hintPhone": "Questo è il numero mostrato al pubblico. Se preferisci, puoi modificarlo.",
+            "hintPhone": "Questo è il numero di telefono mostrato al pubblico. Se preferisci, puoi modificarlo con un altro.",
             "doneButton": "Fatto",
             "nextButton": "Avanti",
-            "addPhoto": "Aggiungi una foto"
+            "addPhoto": "Aggiungi una foto",
+            "acceptTermsAndCondition": "Dichiaro di aver preso visione ed accettare i ",
+            "termsAndConditionHyperlink": "termini e le condizioni d'utilizzo."
         },
         "PersonalDataControllerState": {
             "mainLabel":  "Ancora qualche informazione",
@@ -69,7 +71,9 @@
             "placeHolderSurname": "Cognome",
             "hintNameAndSurname": "Se usi il nome e cognome come sistema di identificazione, dovrai esibire un documento valido per il ritiro.",
             "submitButton": "Invia",
-            "addPhoto": "Aggiungi una foto"
+            "addPhoto": "Aggiungi una foto",
+            "acceptTermsAndCondition": "Dichiaro di aver preso visione ed accettare i ",
+            "termsAndConditionHyperlink": "termini e le condizioni d'utilizzo."
         },
         "PudoProfileEditControllerState": {
             "navTitle": "Modifica Profilo",
@@ -179,7 +183,11 @@
             "rewardDescription": "Per utilizzare QuiGreen in questo locale è richiesto:",
             "phoneCallAction": "Chiama al telefono",
             "sendSMS": "Invia un messaggio",
-            "sendWhatsApp": "Invia un WhatsApp"
+            "sendWhatsApp": "Invia un WhatsApp",
+            "termsConditionsTitle": "Termini e Condizioni",
+            "termsConditionsDescription": "Procedendo nella scelta di questo PUDO, dichiari di averne compreso termini e condizioni d'uso mostrate nella schermata di dettaglio precedente.",
+            "termsAcceptButton": "Accetta",
+            "termsDenyButton": "Annulla"
         },
         "PudoHomeControllerState": {
             "homeTitle": "Principale",
