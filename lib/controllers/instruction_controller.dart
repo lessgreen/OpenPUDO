@@ -224,13 +224,16 @@ class _InstructionControllerState extends State<InstructionController> with Conn
                 alignment: Alignment.center,
                 child: RichText(
                   textAlign: TextAlign.center,
-                  text: TextSpan(style: Theme.of(context).textTheme.subtitle1!.copyWith(height: 1.2), children: [
-                    TextSpan(text: 'shipmentReceivedSubtitle'.localized(context)),
-                    TextSpan(
-                      text: 'defaultTitle'.localized(context, 'general'),
-                      style: const TextStyle(color: AppColors.primaryColorDark, fontWeight: FontWeight.w500),
-                    ),
-                  ]),
+                  text: TextSpan(
+                    style: Theme.of(context).textTheme.subtitle1!.copyWith(height: 1.2),
+                    children: [
+                      TextSpan(text: 'shipmentReceivedSubtitle'.localized(context)),
+                      TextSpan(
+                        text: 'defaultTitle'.localized(context, 'general'),
+                        style: const TextStyle(color: AppColors.primaryColorDark, fontWeight: FontWeight.w500),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ],

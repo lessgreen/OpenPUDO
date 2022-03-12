@@ -19,6 +19,7 @@
 */
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -31,6 +32,7 @@ import 'package:qui_green/view_models/personal_data_business_controller_viewmode
 import 'package:qui_green/widgets/address_overlay_search.dart';
 import 'package:qui_green/widgets/main_button.dart';
 import 'package:qui_green/widgets/profile_pic_box.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class PersonalDataBusinessController extends StatefulWidget {
   const PersonalDataBusinessController({Key? key, required this.canGoBack, required this.phoneNumber}) : super(key: key);
@@ -42,6 +44,8 @@ class PersonalDataBusinessController extends StatefulWidget {
 }
 
 class _PersonalDataBusinessControllerState extends State<PersonalDataBusinessController> {
+  bool termsAndConditionsChecked = true;
+
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
@@ -181,6 +185,44 @@ class _PersonalDataBusinessControllerState extends State<PersonalDataBusinessCon
                               ),
                             ),
                             const SizedBox(height: 10),
+                            Padding(
+                              padding: const EdgeInsets.only(left: Dimension.padding, right: Dimension.padding),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Checkbox(
+                                    activeColor: AppColors.primaryColorDark,
+                                    value: termsAndConditionsChecked,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        termsAndConditionsChecked = value ?? false;
+                                      });
+                                    },
+                                  ),
+                                  Expanded(
+                                    child: RichText(
+                                      textAlign: TextAlign.left,
+                                      text: TextSpan(
+                                        style: Theme.of(context).textTheme.caption,
+                                        children: [
+                                          TextSpan(
+                                            text: 'acceptTermsAndCondition'.localized(context),
+                                          ),
+                                          TextSpan(
+                                            text: 'termsAndConditionHyperlink'.localized(context),
+                                            style: const TextStyle(color: AppColors.primaryColorDark, fontWeight: FontWeight.w500),
+                                            recognizer: TapGestureRecognizer()
+                                              ..onTap = () {
+                                                launch('https://tools.quigreen.it/terms.html');
+                                              },
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
                           ],
                         ),
                       ),
@@ -218,7 +260,7 @@ class _PersonalDataBusinessControllerState extends State<PersonalDataBusinessCon
                   crossFadeState: isKeyboardVisible ? CrossFadeState.showSecond : CrossFadeState.showFirst,
                   secondChild: const SizedBox(),
                   firstChild: MainButton(
-                    enabled: viewModel.isValid,
+                    enabled: viewModel.isValid && termsAndConditionsChecked,
                     onPressed: () => Navigator.of(context).pushReplacementNamed(Routes.rewardPolicy, arguments: viewModel.buildRequest()),
                     text: 'nextButton'.localized(context),
                   ),

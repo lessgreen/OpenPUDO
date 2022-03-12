@@ -173,7 +173,10 @@ class _PudoDetailControllerState extends State<PudoDetailController> with Connec
     if (_checkComplete) {
       if (_nextVisible) {
         return TextFieldButton(
-          onPressed: _handleSelect,
+          onPressed: () => _showPolicyAgreement(
+            acceptCallback: () => _handleSelect(),
+            denyCallback: null,
+          ),
           text: 'chooseButton'.localized(context),
           textColor: Colors.white,
         );
@@ -198,7 +201,10 @@ class _PudoDetailControllerState extends State<PudoDetailController> with Connec
     if (_checkComplete) {
       if (_nextVisible) {
         return TextFieldButton(
-          onPressed: _handleSelect,
+          onPressed: () => _showPolicyAgreement(
+            acceptCallback: () => _handleSelect(),
+            denyCallback: null,
+          ),
           text: 'chooseButton'.localized(context),
           textColor: AppColors.primaryColorDark,
         );
@@ -401,6 +407,29 @@ class _PudoDetailControllerState extends State<PudoDetailController> with Connec
       Routes.personalData,
       ModalRoute.withName('/'),
       arguments: widget.dataModel,
+    );
+  }
+
+  void _showPolicyAgreement({Function? acceptCallback, Function? denyCallback}) {
+    SAAlertDialog.displayAlertWithButtons(
+      context,
+      'termsConditionsTitle'.localized(context),
+      'termsConditionsDescription'.localized(context),
+      [
+        MaterialButton(
+          child: Text(
+            'termsAcceptButton'.localized(context),
+            style: const TextStyle(color: AppColors.primaryColorDark),
+          ),
+          onPressed: () => acceptCallback?.call(),
+        ),
+        MaterialButton(
+          child: Text(
+            'termsDenyButton'.localized(context),
+          ),
+          onPressed: () => denyCallback?.call(),
+        ),
+      ],
     );
   }
 }

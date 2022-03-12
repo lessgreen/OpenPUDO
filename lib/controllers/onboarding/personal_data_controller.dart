@@ -19,6 +19,7 @@
 */
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -32,6 +33,7 @@ import 'package:qui_green/models/pudo_profile.dart';
 import 'package:qui_green/resources/res.dart';
 import 'package:qui_green/widgets/sascaffold.dart';
 import 'package:qui_green/commons/utilities/localization.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class PersonalDataController extends StatefulWidget {
   const PersonalDataController({Key? key, this.pudoDataModel}) : super(key: key);
@@ -42,7 +44,13 @@ class PersonalDataController extends StatefulWidget {
 }
 
 class _PersonalDataControllerState extends State<PersonalDataController> with ConnectionAware {
-  void _showErrorDialog(BuildContext context, String val) => SAAlertDialog.displayAlertWithClose(context, 'genericErrorTitle'.localized(context, 'general'), val);
+  bool termsAndConditionsChecked = true;
+
+  void _showErrorDialog(BuildContext context, String val) => SAAlertDialog.displayAlertWithClose(
+        context,
+        'genericErrorTitle'.localized(context, 'general'),
+        val,
+      );
 
   @override
   Widget build(BuildContext context) {
@@ -99,7 +107,11 @@ class _PersonalDataControllerState extends State<PersonalDataController> with Co
                       padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
                       child: CupertinoTextField(
                         placeholder: 'placeHolderName'.localized(context),
-                        decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Theme.of(context).primaryColor))),
+                        decoration: BoxDecoration(
+                          border: Border(
+                            bottom: BorderSide(color: Theme.of(context).primaryColor),
+                          ),
+                        ),
                         autofocus: false,
                         textInputAction: TextInputAction.done,
                         onChanged: (newValue) {
@@ -111,7 +123,11 @@ class _PersonalDataControllerState extends State<PersonalDataController> with Co
                       padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
                       child: CupertinoTextField(
                         placeholder: 'placeHolderSurname'.localized(context),
-                        decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Theme.of(context).primaryColor))),
+                        decoration: BoxDecoration(
+                          border: Border(
+                            bottom: BorderSide(color: Theme.of(context).primaryColor),
+                          ),
+                        ),
                         autofocus: false,
                         textInputAction: TextInputAction.done,
                         onChanged: (newValue) {
@@ -121,13 +137,50 @@ class _PersonalDataControllerState extends State<PersonalDataController> with Co
                     ),
                     const SizedBox(height: 10),
                     Padding(
-                      padding: EdgeInsets.only(left: Dimension.padding, right: Dimension.padding),
+                      padding: const EdgeInsets.only(left: Dimension.padding, right: Dimension.padding),
                       child: Text(
                         'hintNameAndSurname'.localized(context),
                         style: const TextStyle(fontSize: 12),
                       ),
                     ),
-                    //const Spacer(),
+                    Padding(
+                      padding: const EdgeInsets.only(left: Dimension.padding, right: Dimension.padding),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Checkbox(
+                            activeColor: AppColors.primaryColorDark,
+                            value: termsAndConditionsChecked,
+                            onChanged: (value) {
+                              setState(() {
+                                termsAndConditionsChecked = value ?? false;
+                              });
+                            },
+                          ),
+                          Expanded(
+                            child: RichText(
+                              textAlign: TextAlign.left,
+                              text: TextSpan(
+                                style: Theme.of(context).textTheme.caption,
+                                children: [
+                                  TextSpan(
+                                    text: 'acceptTermsAndCondition'.localized(context),
+                                  ),
+                                  TextSpan(
+                                    text: 'termsAndConditionHyperlink'.localized(context),
+                                    style: const TextStyle(color: AppColors.primaryColorDark, fontWeight: FontWeight.w500),
+                                    recognizer: TapGestureRecognizer()
+                                      ..onTap = () {
+                                        launch('https://tools.quigreen.it/terms.html');
+                                      },
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ],
                 ),
                 bottomSheet: AnimatedCrossFade(
@@ -136,7 +189,7 @@ class _PersonalDataControllerState extends State<PersonalDataController> with Co
                     width: double.infinity,
                   ),
                   firstChild: MainButton(
-                    enabled: viewModel.isValid,
+                    enabled: viewModel.isValid && termsAndConditionsChecked,
                     onPressed: () => viewModel.onSendClick(context, widget.pudoDataModel),
                     text: 'submitButton'.localized(context),
                   ),
