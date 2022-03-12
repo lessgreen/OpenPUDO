@@ -272,11 +272,11 @@ class _PudoDetailControllerState extends State<PudoDetailController> with Connec
             child: Column(
               children: [
                 AspectRatio(
-                    aspectRatio: 18 / 9,
-                    child: CustomNetworkImage(
-                      url: widget.dataModel.pudoPicId,
-                      fit: BoxFit.cover,
-                    )),
+                  aspectRatio: 18 / 9,
+                  child: CustomNetworkImage(
+                    url: widget.dataModel.pudoPicId,
+                  ),
+                ),
                 _buildPudoDetail(),
                 const SizedBox(height: Dimension.padding),
                 Container(

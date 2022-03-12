@@ -19,6 +19,7 @@
 */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
 import 'package:qui_green/commons/utilities/localization.dart';
@@ -40,6 +41,12 @@ class ContentPackagesPage extends StatefulWidget {
 class _ContentPackagesPageState extends State<ContentPackagesPage> {
   @override
   Widget build(BuildContext context) {
+    var _placeHolderWidget = SvgPicture.asset(
+      ImageSrc.imageSVGPlaceHolder,
+      width: 110,
+      height: 100,
+      fit: BoxFit.cover,
+    );
     return ChangeNotifierProvider<ContentPackagePageViewModel>(
       create: (_) => ContentPackagePageViewModel(context),
       child: Consumer<ContentPackagePageViewModel>(builder: (context, viewModel, _) {
@@ -65,6 +72,7 @@ class _ContentPackagesPageState extends State<ContentPackagesPage> {
                     return PackageCard(
                       dataSource: currentPackage,
                       stars: 0,
+                      placeHolderWidget: _placeHolderWidget,
                       onTap: () => viewModel.onPackageCard(currentPackage),
                     );
                   },

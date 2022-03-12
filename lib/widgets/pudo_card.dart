@@ -64,9 +64,8 @@ class PudoCard extends StatelessWidget {
               ),
               child: CustomNetworkImage(
                 url: dataSource.pudoPicId,
-                width: 100,
+                width: 110,
                 height: 100,
-                fit: BoxFit.contain,
               ),
             ),
             const SizedBox(

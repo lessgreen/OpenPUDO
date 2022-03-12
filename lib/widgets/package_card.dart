@@ -26,17 +26,21 @@ import 'package:qui_green/commons/utilities/date_time_extension.dart';
 import 'package:qui_green/commons/utilities/localization.dart';
 import 'package:qui_green/models/package_summary.dart';
 import 'package:qui_green/resources/res.dart';
+import 'package:qui_green/singletons/network/network_manager.dart';
+import 'package:transparent_image/transparent_image.dart';
 
 class PackageCard extends StatelessWidget {
   final PackageSummary dataSource;
   final Function() onTap;
   final int stars;
+  final Widget? placeHolderWidget;
 
   const PackageCard({
     Key? key,
     required this.onTap,
     required this.stars,
     required this.dataSource,
+    this.placeHolderWidget,
     /*required this.image, required this.name, required this.address, required this.stars, required this.deliveryDate, required this.isRead*/
   }) : super(key: key);
 
@@ -67,10 +71,11 @@ class PackageCard extends StatelessWidget {
                             ),
                           ),
                           child: CustomNetworkImage(
-                            url: dataSource.packagePicId,
+                            fit: BoxFit.cover,
                             width: 110,
                             height: 100,
-                            fit: BoxFit.cover,
+                            url: dataSource.packagePicId,
+                            placeholderWidget: placeHolderWidget,
                           ),
                         ),
                         Expanded(

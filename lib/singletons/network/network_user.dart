@@ -316,6 +316,11 @@ mixin NetworkManagerUser on NetworkGeneral {
     }
   }
 
+  String getProfilePicID(String id) {
+    return _baseURL + '/api/v2/file/$id';
+  }
+
+/*
   Future<Uint8List> profilePic(String id) async {
     try {
       if (!isOnline) {
@@ -340,7 +345,7 @@ mixin NetworkManagerUser on NetworkGeneral {
       return data.buffer.asUint8List();
     }
   }
-
+*/
   Future<dynamic> getPublicProfile(String userId) async {
     try {
       if (!isOnline) {
