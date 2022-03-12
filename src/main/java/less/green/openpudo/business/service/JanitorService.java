@@ -1,6 +1,7 @@
 package less.green.openpudo.business.service;
 
 import less.green.openpudo.business.dao.DeviceTokenDao;
+import less.green.openpudo.business.dao.ExternalFileDao;
 import less.green.openpudo.business.dao.OtpRequestDao;
 import less.green.openpudo.common.CalendarUtils;
 import lombok.extern.log4j.Log4j2;
@@ -9,6 +10,7 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.util.Calendar;
+import java.util.Set;
 
 @RequestScoped
 @Transactional(Transactional.TxType.REQUIRED)
@@ -17,6 +19,8 @@ public class JanitorService {
 
     @Inject
     DeviceTokenDao deviceTokenDao;
+    @Inject
+    ExternalFileDao externalFileDao;
     @Inject
     OtpRequestDao otpRequestDao;
 
@@ -30,6 +34,10 @@ public class JanitorService {
     public int removeFailedDeviceTokens() {
         // remove device tokens that have failed for 10 or more times
         return deviceTokenDao.removeFailedDeviceTokens();
+    }
+
+    public Set<String> getAllStoredFiles() {
+        return externalFileDao.getAllStoredFiles();
     }
 
 }

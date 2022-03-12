@@ -7,7 +7,9 @@ import javax.enterprise.context.ApplicationScoped;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static less.green.openpudo.common.Encoders.BASE64_DECODER;
 import static less.green.openpudo.common.Encoders.BASE64_ENCODER;
@@ -90,6 +92,14 @@ public class StorageService {
         String firstLevelDir = externalFileId.toString().substring(0, 2);
         String secondLevelDir = externalFileId.toString().substring(2, 4);
         return storagePath.resolve(firstLevelDir).resolve(secondLevelDir).resolve(externalFileId.toString());
+    }
+
+    public Set<String> getAllStoredFiles() {
+        try (var stream = Files.walk(storagePath)) {
+            return stream.filter(i -> !i.equals(storagePath)).filter(Files::isRegularFile).map(i -> i.getFileName().toString()).collect(Collectors.toSet());
+        } catch (IOException ex) {
+            throw new RuntimeException("Error while accessing storage area", ex);
+        }
     }
 
 }
