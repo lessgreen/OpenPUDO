@@ -26,6 +26,7 @@ import less.green.openpudo.rest.dto.DtoMapper;
 import less.green.openpudo.rest.dto.pack.Package;
 import less.green.openpudo.rest.dto.pack.PackageEvent;
 import lombok.extern.log4j.Log4j2;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import javax.enterprise.context.RequestScoped;
 import javax.imageio.ImageIO;
@@ -48,6 +49,9 @@ import static less.green.openpudo.common.StringUtils.sanitizeString;
 @Transactional(Transactional.TxType.REQUIRED)
 @Log4j2
 public class ShareService {
+
+    @ConfigProperty(name = "app.base.url")
+    String appBaseUrl;
 
     @Inject
     ExecutionContext context;
@@ -83,7 +87,7 @@ public class ShareService {
         context.setLanguage("it");
         List<PackageEvent> events = rs.getValue1().stream().map(i -> dtoMapper.mapPackageEventEntityToDto(new Pair<>(i, packageService.getPackageStatusMessage(i.getPackageStatus())))).collect(Collectors.toList());
         Package pack = dtoMapper.mapPackageEntityToDto(new Quartet<>(rs.getValue0(), events, cryptoService.hashidEncodeShort(packageId), cryptoService.hashidEncodeLong(packageId)));
-        TemplateInstance templateInstance = packageTemplate.data("package", pack);
+        TemplateInstance templateInstance = packageTemplate.data("package", pack, "appBaseUrl", appBaseUrl);
         return Response.ok(templateInstance.render()).build();
     }
 
@@ -113,8 +117,6 @@ public class ShareService {
             tbRedirectLog.setChannel(sanitizeString(channel));
             if (!isEmpty(request.getHeader("X-Forwarded-For"))) {
                 tbRedirectLog.setRemoteAddress(request.getHeader("X-Forwarded-For").trim());
-            } else if (!isEmpty(request.getHeader("X-Real-IP"))) {
-                tbRedirectLog.setRemoteAddress(request.getHeader("X-Real-IP"));
             } else if (request.remoteAddress() != null) {
                 tbRedirectLog.setRemoteAddress(request.remoteAddress().hostAddress());
             }

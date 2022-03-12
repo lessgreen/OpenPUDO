@@ -284,7 +284,7 @@ public class PudoService {
         }
         Long pudoId = userPudoRelationDao.getPudoIdByOwnerUserId(context.getUserId());
         if (pudoId == null) {
-            log.error("[{}] User: {} has accountType: {}, but no ownership relation found", context.getExecutionId(), user.getUserId(), user.getAccountType());
+            log.fatal("[{}] User: {} has accountType: {}, but no ownership relation found", context.getExecutionId(), user.getUserId(), user.getAccountType());
             throw new ApiException(ApiReturnCodes.FORBIDDEN, localizationService.getMessage(context.getLanguage(), "error.forbidden.wrong_account_type"));
         }
         return pudoId;

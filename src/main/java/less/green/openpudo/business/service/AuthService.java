@@ -7,28 +7,30 @@ import less.green.openpudo.business.model.usertype.AccountType;
 import less.green.openpudo.business.model.usertype.OtpRequestType;
 import less.green.openpudo.business.model.usertype.RelationType;
 import less.green.openpudo.cdi.ExecutionContext;
-import less.green.openpudo.cdi.service.EmailService;
-import less.green.openpudo.cdi.service.JwtService;
-import less.green.openpudo.cdi.service.LocalizationService;
-import less.green.openpudo.cdi.service.SmsService;
+import less.green.openpudo.cdi.service.*;
 import less.green.openpudo.common.ApiReturnCodes;
 import less.green.openpudo.common.ExceptionUtils;
 import less.green.openpudo.common.dto.jwt.AccessProfile;
 import less.green.openpudo.common.dto.jwt.AccessTokenData;
 import less.green.openpudo.common.dto.jwt.JwtPrivateClaims;
+import less.green.openpudo.common.dto.tuple.Pair;
 import less.green.openpudo.rest.config.exception.ApiException;
 import less.green.openpudo.rest.dto.DtoMapper;
 import less.green.openpudo.rest.dto.auth.RegisterCustomerRequest;
 import less.green.openpudo.rest.dto.auth.RegisterPudoRequest;
 import less.green.openpudo.rest.dto.auth.SupportRequest;
 import lombok.extern.log4j.Log4j2;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Collectors;
 
 import static less.green.openpudo.common.StringUtils.sanitizeString;
 
@@ -39,12 +41,17 @@ public class AuthService {
 
     private static final int LOGIN_ERROR_DELAY_MS = 1_000;
 
+    @ConfigProperty(name = "app.base.url")
+    String appBaseUrl;
+
     @Inject
     ExecutionContext context;
 
     @Inject
     LocalizationService localizationService;
 
+    @Inject
+    CryptoService cryptoService;
     @Inject
     EmailService emailService;
     @Inject
@@ -58,7 +65,11 @@ public class AuthService {
     @Inject
     AddressDao addressDao;
     @Inject
+    DeletedUserDataDao deletedUserDataDao;
+    @Inject
     OtpRequestDao otpRequestDao;
+    @Inject
+    PackageDao packageDao;
     @Inject
     PudoDao pudoDao;
     @Inject
@@ -276,6 +287,68 @@ public class AuthService {
         String subject = String.format("Support request from user: %s (phone: %s)", context.getUserId(), user.getPhoneNumber());
         emailService.sendSupportEmail(subject, req.getMessage().trim());
         log.info("[{}] Sent support request for user: {}", context.getExecutionId(), context.getUserId());
+    }
+
+    public String deleteCurrentAccount() {
+        TbUser user = userDao.get(context.getUserId());
+        if (user == null) {
+            throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.resource_not_exists"));
+        }
+        String phoneNumber = user.getPhoneNumber();
+        String userData = getUserData(user);
+        TbDeletedUserData deletedUserData = new TbDeletedUserData();
+        deletedUserData.setUserDataId(UUID.randomUUID());
+        deletedUserData.setCreateTms(new Date());
+        deletedUserData.setUserData(userData);
+        deletedUserDataDao.persist(deletedUserData);
+        deletedUserDataDao.flush();
+        String downloadUrl = appBaseUrl + "/api/v2/file/user-data/" + deletedUserData.getUserDataId().toString();
+        // skip actual delete for test accounts
+        if (!user.getTestAccountFlag()) {
+            List<Pair<String, Integer>> rs = userDao.deleteUser(context.getUserId(), user.getAccountType() == AccountType.CUSTOMER ? null : pudoService.getCurrentPudoId());
+            rs.forEach(i -> log.info("[{}] Deleted rows from {}: {}", context.getExecutionId(), i.getValue0(), i.getValue1()));
+            smsService.sendSms(phoneNumber, localizationService.getMessage(context.getLanguage(), "message.delete-account", downloadUrl));
+            log.info("[{}] Deleted user: {}", context.getExecutionId(), context.getUserId());
+        }
+        return downloadUrl;
+    }
+
+    private String getUserData(TbUser user) {
+        StringBuilder sb = new StringBuilder();
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        sb.append("Phone number: ").append(user.getPhoneNumber()).append("\r\n");
+        sb.append("Registered at: ").append(sdf.format(user.getCreateTms())).append("\r\n");
+        sb.append("Deleted at: ").append(sdf.format(new Date())).append("\r\n");
+        List<TbPackage> packages = null;
+        if (user.getAccountType() == AccountType.CUSTOMER) {
+            TbUserProfile userProfile = userProfileDao.get(context.getUserId());
+            if (userProfile.getFirstName() != null) {
+                sb.append("First name: ").append(userProfile.getFirstName()).append("\r\n");
+            }
+            if (userProfile.getLastName() != null) {
+                sb.append("Last name: ").append(userProfile.getLastName()).append("\r\n");
+            }
+            packages = packageDao.getAllPackages(user.getAccountType(), context.getUserId());
+        }
+        if (user.getAccountType() == AccountType.PUDO) {
+            Long pudoId = pudoService.getCurrentPudoId();
+            TbPudo pudo = pudoDao.get(pudoId);
+            sb.append("PUDO name: ").append(pudo.getBusinessName()).append("\r\n");
+            if (pudo.getPublicPhoneNumber() != null) {
+                sb.append("PUDO phone number: ").append(pudo.getBusinessName()).append("\r\n");
+            }
+            TbAddress address = addressDao.get(pudoId);
+            sb.append("PUDO address: ").append(address.getLabel()).append("\r\n");
+            packages = packageDao.getAllPackages(user.getAccountType(), pudoId);
+        }
+        if (packages != null && !packages.isEmpty()) {
+            sb.append("\r\n");
+            sb.append("Received packages: ").append("\r\n");
+            sb.append(packages.stream()
+                    .map(i -> String.format("- Package %s, received at: %s", cryptoService.hashidEncodeShort(i.getPackageId()), sdf.format(i.getCreateTms())))
+                    .collect(Collectors.joining("\r\n")));
+        }
+        return sb.toString();
     }
 
     private AccessProfile mapAccountTypeToAccessProfile(AccountType accountType) {

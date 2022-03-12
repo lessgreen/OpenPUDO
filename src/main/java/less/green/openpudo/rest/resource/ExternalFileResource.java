@@ -31,4 +31,13 @@ public class ExternalFileResource {
         return externalFileService.getExternalFile(externalFileId);
     }
 
+    @GET
+    @Path("/user-data/{userDataId}")
+    @PublicAPI
+    @BinaryAPI
+    @Operation(summary = "Download deleted user data, simulating a static resource served by an http server")
+    public Response getDeletedUserData(@PathParam(value = "userDataId") UUID userDataId) {
+        return externalFileService.getDeletedUserData(userDataId);
+    }
+
 }

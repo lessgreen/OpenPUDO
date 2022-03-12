@@ -1,6 +1,8 @@
 package less.green.openpudo.business.service;
 
+import less.green.openpudo.business.dao.DeletedUserDataDao;
 import less.green.openpudo.business.dao.ExternalFileDao;
+import less.green.openpudo.business.model.TbDeletedUserData;
 import less.green.openpudo.business.model.TbExternalFile;
 import less.green.openpudo.cdi.ExecutionContext;
 import less.green.openpudo.cdi.service.LocalizationService;
@@ -31,11 +33,13 @@ public class ExternalFileService {
     StorageService storageService;
 
     @Inject
+    DeletedUserDataDao deletedUserDataDao;
+    @Inject
     ExternalFileDao externalFileDao;
 
     public Response getExternalFile(UUID externalFileId) {
-        TbExternalFile ext = externalFileDao.get(externalFileId);
-        if (ext == null) {
+        TbExternalFile externalFile = externalFileDao.get(externalFileId);
+        if (externalFile == null) {
             return Response.status(Response.Status.NOT_FOUND).entity(Response.Status.NOT_FOUND.getReasonPhrase()).build();
         }
         byte[] bytes;
@@ -49,7 +53,14 @@ public class ExternalFileService {
             log.error("[{}] External file {} exists in database but not on filesystem", context.getExecutionId(), externalFileId);
             return Response.status(Response.Status.NOT_FOUND).entity(Response.Status.NOT_FOUND.getReasonPhrase()).build();
         }
-        return Response.ok(bytes).header("Content-Type", ext.getMimeType()).build();
+        return Response.ok(bytes).header("Content-Type", externalFile.getMimeType()).build();
     }
 
+    public Response getDeletedUserData(UUID userDataId) {
+        TbDeletedUserData deletedUserData = deletedUserDataDao.get(userDataId);
+        if (deletedUserData == null) {
+            return Response.status(Response.Status.NOT_FOUND).entity(Response.Status.NOT_FOUND.getReasonPhrase()).build();
+        }
+        return Response.ok(deletedUserData.getUserData()).header("Content-Type", "text/plain").build();
+    }
 }

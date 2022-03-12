@@ -295,6 +295,14 @@ CREATE TABLE IF NOT EXISTS tb_redirect_log (
 );
 
 
+DROP TABLE IF EXISTS tb_deleted_user_data CASCADE;
+CREATE TABLE IF NOT EXISTS tb_deleted_user_data (
+	user_data_id UUID PRIMARY KEY,
+	create_tms TIMESTAMP(3) NOT NULL,
+	user_data TEXT
+);
+
+
 -- views
 CREATE OR REPLACE VIEW vw_package_status AS
 SELECT t1.*, t2.package_event_id, t2.package_status, t2.notes

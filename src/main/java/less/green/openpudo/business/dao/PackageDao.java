@@ -106,6 +106,22 @@ public class PackageDao extends BaseEntityDao<TbPackage, Long> {
         return rs.isEmpty() ? Collections.emptyList() : rs.stream().map(row -> new Sextet<>((TbPackage) row[0], (TbPackageEvent) row[1], (TbPudo) row[2], (TbAddress) row[3], (TbUserProfile) row[4], (TbUserPudoRelation) row[5])).collect(Collectors.toList());
     }
 
+    public List<TbPackage> getAllPackages(AccountType accountType, Long referenceId) {
+        String qs = "SELECT t FROM TbPackage t ";
+        if (accountType == AccountType.CUSTOMER) {
+            qs += "WHERE t.userId = :referenceId ";
+        } else if (accountType == AccountType.PUDO) {
+            qs += "WHERE t.pudoId = :referenceId ";
+        } else {
+            throw new AssertionError("Unsupported AccountType: " + accountType);
+        }
+        qs += "ORDER BY t.createTms DESC";
+        TypedQuery<TbPackage> q = em.createQuery(qs, TbPackage.class);
+        q.setParameter("referenceId", referenceId);
+        List<TbPackage> rs = q.getResultList();
+        return rs.isEmpty() ? Collections.emptyList() : rs;
+    }
+
     public List<Long> getPackageIdsToNotifySent(Date timeThreshold) {
         String qs = "SELECT t1.packageId "
                     + "FROM TbPackage t1, TbPackageEvent t2 "

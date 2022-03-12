@@ -12,16 +12,14 @@ import less.green.openpudo.rest.config.annotation.PublicAPI;
 import less.green.openpudo.rest.config.exception.ApiException;
 import less.green.openpudo.rest.dto.BaseResponse;
 import less.green.openpudo.rest.dto.auth.*;
+import less.green.openpudo.rest.dto.scalar.StringResponse;
 import lombok.extern.log4j.Log4j2;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.security.SecurityRequirement;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 
 import static less.green.openpudo.common.StringUtils.isEmpty;
@@ -182,6 +180,15 @@ public class AuthResource {
         }
         authService.supportRequest(req);
         return new BaseResponse(context.getExecutionId(), ApiReturnCodes.OK);
+    }
+
+    @DELETE
+    @Path("/account")
+    @SecurityRequirement(name = "JWT")
+    @Operation(summary = "Delete user account permanently")
+    public StringResponse deleteCurrentAccount() {
+        String ret = authService.deleteCurrentAccount();
+        return new StringResponse(context.getExecutionId(), ApiReturnCodes.OK, ret);
     }
 
 }
