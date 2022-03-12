@@ -114,12 +114,12 @@ class AppColors {
 }
 
 class Shadows {
-  static final baseShadow = [
+  static const baseShadow = [
     BoxShadow(
-      color: Colors.black.withAlpha(50),
+      color: Colors.black26,
       blurRadius: 5.0,
       spreadRadius: 0.2,
-      offset: const Offset(
+      offset: Offset(
         0.0,
         0.0,
       ),

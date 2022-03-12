@@ -19,6 +19,7 @@
 */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
 import 'package:qui_green/commons/ui/custom_network_image.dart';
 import 'package:qui_green/commons/utilities/date_time_extension.dart';
@@ -51,15 +52,20 @@ class PackageCard extends StatelessWidget {
                   child: Container(
                     margin: const EdgeInsets.symmetric(horizontal: Dimension.padding),
                     height: 100,
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                       color: AppColors.boxGreyNoOp,
                       boxShadow: Shadows.baseShadow,
-                      borderRadius: const BorderRadius.all(Radius.circular(Dimension.borderRadiusS)),
+                      borderRadius: BorderRadius.all(Radius.circular(Dimension.borderRadiusS)),
                     ),
                     child: Row(
                       children: [
                         ClipRRect(
-                          borderRadius: const BorderRadius.only(topLeft: Radius.circular(Dimension.borderRadiusS), bottomLeft: Radius.circular(Dimension.borderRadiusS)),
+                          borderRadius: const BorderRadius.only(
+                            topLeft: Radius.circular(Dimension.borderRadiusS),
+                            bottomLeft: Radius.circular(
+                              Dimension.borderRadiusS,
+                            ),
+                          ),
                           child: CustomNetworkImage(
                             url: dataSource.packagePicId,
                             width: 110,
@@ -89,14 +95,17 @@ class PackageCard extends StatelessWidget {
                                   dataSource.label ?? "--",
                                   style: Theme.of(context).textTheme.labelSmall,
                                 ),
-                                Row(
-                                  children: List<Widget>.generate(
-                                      stars > 5 ? 5 : stars,
-                                      (index) => Icon(
+                                stars > 0
+                                    ? Row(
+                                        children: List<Widget>.generate(
+                                          stars > 5 ? 5 : stars,
+                                          (index) => Icon(
                                             Icons.star_rounded,
                                             color: Colors.yellow.shade700,
-                                          )),
-                                ),
+                                          ),
+                                        ),
+                                      )
+                                    : const SizedBox(),
                                 const Spacer(),
                               ],
                             ),
@@ -109,7 +118,11 @@ class PackageCard extends StatelessWidget {
                 (dataSource.packageStatus == PackageStatus.notifySent)
                     ? Positioned(
                         child: Container(
-                          decoration: const BoxDecoration(color: Colors.red, borderRadius: BorderRadius.all(Radius.circular(20))),
+                          decoration: const BoxDecoration(
+                              color: Colors.red,
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(20),
+                              )),
                           height: 12,
                           width: 12,
                         ),

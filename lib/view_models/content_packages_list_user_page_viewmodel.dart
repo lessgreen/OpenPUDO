@@ -72,7 +72,7 @@ class ContentPackagesListUserPageViewModel with ChangeNotifier {
           errorDescription = HtmlUnescape().convert(response.value.first.toString());
           notifyListeners();
         } else {
-          errorDescription = 'unknownDescription'.localized(context, 'generic');
+          errorDescription = 'unknownDescription'.localized(context, 'general');
           notifyListeners();
         }
       }
@@ -93,7 +93,7 @@ class ContentPackagesListUserPageViewModel with ChangeNotifier {
           SAAlertDialog.displayAlertWithClose(
             context,
             'genericErrorTitle'.localized(context, 'general'),
-            'unknownDescription'.localized(context, 'generic'),
+            'unknownDescription'.localized(context, 'general'),
           );
         }
       },

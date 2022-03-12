@@ -78,10 +78,11 @@ class _ContentPackagesListUserPageState extends State<ContentPackagesListUserPag
                           itemCount: viewModel.filteredPackagesList.length,
                           contentBuilder: (BuildContext context, int index) {
                             return PackageTile(
-                                onTap: (PackageSummary package) {
-                                  viewModel.onPackageCard(viewModel.filteredPackagesList[index]);
-                                },
-                                packageSummary: viewModel.filteredPackagesList[index]);
+                              onTap: (PackageSummary package) {
+                                viewModel.onPackageCard(viewModel.filteredPackagesList[index]);
+                              },
+                              packageSummary: viewModel.filteredPackagesList[index],
+                            );
                           },
                         ),
                       ),
