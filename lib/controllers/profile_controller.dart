@@ -158,6 +158,7 @@ class _ProfileControllerState extends State<ProfileController> with ConnectionAw
                         textAlign: TextAlign.center,
                         textStyle: Theme.of(context).textTheme.bodyTextBold?.copyWith(color: Colors.red),
                         showTrailingChevron: false,
+                        onTap: () => _showConfirmationDelete(acceptCallback: null, denyCallback: null),
                       )
                     ],
                   ),
@@ -318,5 +319,28 @@ class _ProfileControllerState extends State<ProfileController> with ConnectionAw
     setState(() {
       _editEnabled = newVal;
     });
+  }
+
+  void _showConfirmationDelete({Function? acceptCallback, Function? denyCallback}) {
+    SAAlertDialog.displayAlertWithButtons(
+      context,
+      'deleteAccountTitle'.localized(context),
+      'deleteAccountDescription'.localized(context),
+      [
+        MaterialButton(
+          child: Text(
+            'deleteAccountButton'.localized(context),
+            style: const TextStyle(color: AppColors.primaryColorDark),
+          ),
+          onPressed: () => acceptCallback?.call(),
+        ),
+        MaterialButton(
+          child: Text(
+            'deleteAccountCancel'.localized(context),
+          ),
+          onPressed: () => denyCallback?.call(),
+        ),
+      ],
+    );
   }
 }

@@ -23,6 +23,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:qui_green/commons/alert_dialog.dart';
 import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
 import 'package:qui_green/commons/ui/cupertino_navigation_bar_fix.dart';
 import 'package:qui_green/commons/ui/custom_network_image.dart';
@@ -117,11 +118,41 @@ class _PudoProfileControllerState extends State<PudoProfileController> with Conn
                     currentUser.refresh();
                   },
                 ),
+                TableViewCell(
+                  title: "deleteAccount".localized(context),
+                  textAlign: TextAlign.center,
+                  textStyle: Theme.of(context).textTheme.bodyTextBold?.copyWith(color: Colors.red),
+                  showTrailingChevron: false,
+                  onTap: () => _showConfirmationDelete(acceptCallback: null, denyCallback: null),
+                )
               ],
             ),
           ),
         );
       },
+    );
+  }
+
+  void _showConfirmationDelete({Function? acceptCallback, Function? denyCallback}) {
+    SAAlertDialog.displayAlertWithButtons(
+      context,
+      'deleteAccountTitle'.localized(context),
+      'deleteAccountDescription'.localized(context),
+      [
+        MaterialButton(
+          child: Text(
+            'deleteAccountButton'.localized(context),
+            style: const TextStyle(color: AppColors.primaryColorDark),
+          ),
+          onPressed: () => acceptCallback?.call(),
+        ),
+        MaterialButton(
+          child: Text(
+            'deleteAccountCancel'.localized(context),
+          ),
+          onPressed: () => denyCallback?.call(),
+        ),
+      ],
     );
   }
 }

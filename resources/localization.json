@@ -172,9 +172,13 @@
             "userSince": "Utente dal ",
             "yourShipment": "Le tue spedizioni",
             "logoutTitle": "Esci",
-            "deleteAccount": "Elimina account",
             "placeHolderName": "Nome",
-            "placeHolderSurname": "Cognome"
+            "placeHolderSurname": "Cognome",
+            "deleteAccountTitle": "Attenzione",
+            "deleteAccount": "Elimina account",
+            "deleteAccountButton": "Procedi",
+            "deleteAccountCancel": "Annulla",
+            "deleteAccountDescription": "Attenzione, la procedura eliminerà in maniera permanente il tuo account dai nostri server. Al termine della procedura ti verrà fornito un link web per scaricare la tua attività svolta su QuiGreen sino a questo momento. Lo stesso link ti verrà inviato via SMS al numero fornito in fase di registrazione."
         },
         "PudoDetailControllerState": {
             "numerOfUsers": " persone hanno già scelto quest’attività come punto di ritiro.",
@@ -208,7 +212,12 @@
             "navTitle": "Il tuo profilo",
             "userSince": "Utente dal ",
             "yourUsers": "I tuoi utenti",
-            "logoutButton": "Esci"
+            "logoutButton": "Esci",
+            "deleteAccountTitle": "Attenzione",
+            "deleteAccount": "Elimina account",
+            "deleteAccountButton": "Procedi",
+            "deleteAccountCancel": "Annulla",
+            "deleteAccountDescription": "Attenzione, la procedura eliminerà in maniera permanente il tuo account dai nostri server. Al termine della procedura ti verrà fornito un link web per scaricare la tua attività svolta su QuiGreen sino a questo momento. Lo stesso link ti verrà inviato via SMS al numero fornito in fase di registrazione."
         },
         "PudoUsersListControllerState": {
             "chooseRecipient": "Scegli un destinatario",
