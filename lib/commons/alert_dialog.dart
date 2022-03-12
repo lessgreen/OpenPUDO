@@ -85,13 +85,14 @@ class SAAlertDialog extends StatelessWidget {
     });
   }
 
-  static displayAlertWithButtons(BuildContext context, String title, String description, List<MaterialButton> actions) {
+  static displayAlertWithButtons(BuildContext context, String title, String description, List<MaterialButton> actions, {bool barrierDismissable = false}) {
     if (isAlreadyShown) {
       return;
     }
     isAlreadyShown = true;
 
     showDialog(
+            barrierDismissible: barrierDismissable,
             builder: (subContext) {
               List<MaterialButton> modifiedActions = actions
                   .asMap()
