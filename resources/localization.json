@@ -281,7 +281,9 @@
         "ContactUsControllerState": {
             "navTitle": "Contattaci",
             "contactUsPlaceHolder": "Scrivici il tuo problema e faremo il possibile per aiutarti.",
-            "submitButton": "Invia"
+            "submitButton": "Invia",
+            "thanksFeedback": "Grazie per la segnalazione! Ti contatteremo al più presto.",
+            "feedbackTitle": "Grazie"
         }
     }
 }

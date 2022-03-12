@@ -89,7 +89,7 @@ class _PudoProfileControllerState extends State<PudoProfileController> with Conn
                 ),
                 UserProfileRecapWidget(
                   totalUsage: currentUser.pudoProfile?.packageCount ?? 0,
-                  kgCO2Saved: currentUser.pudoProfile?.savedCO2 ?? '',
+                  kgCO2Saved: currentUser.pudoProfile?.savedCO2 ?? '0.0Kg',
                   isForPudo: true,
                 ),
                 TableViewCell(

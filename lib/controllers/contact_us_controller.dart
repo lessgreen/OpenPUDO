@@ -21,6 +21,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:focus_detector/focus_detector.dart';
+import 'package:qui_green/commons/alert_dialog.dart';
 import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
 import 'package:qui_green/commons/ui/cupertino_navigation_bar_fix.dart';
 import 'package:qui_green/resources/res.dart';
@@ -38,6 +39,7 @@ class ContactUsController extends StatefulWidget {
 
 class _ContactUsControllerState extends State<ContactUsController> {
   FocusNode _formField = FocusNode();
+  String _feedback = "";
 
   @override
   void dispose() {
@@ -73,7 +75,9 @@ class _ContactUsControllerState extends State<ContactUsController> {
                   children: [
                     TextFormField(
                       focusNode: _formField,
-                      onChanged: (newValue) {},
+                      onChanged: (newValue) {
+                        _feedback = newValue;
+                      },
                       maxLines: 10,
                       decoration: InputDecoration(
                         hintText: 'contactUsPlaceHolder'.localized(context),
@@ -90,9 +94,24 @@ class _ContactUsControllerState extends State<ContactUsController> {
                       height: Dimension.paddingM,
                     ),
                     MainButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        NetworkManager.instance.contactUs(_feedback).then(
+                          (value) {
+                            SAAlertDialog.displayAlertWithClose(
+                              context,
+                              'feedbackTitle'.localized(context),
+                              'thanksFeedback'.localized(context),
+                              completion: () {
+                                Navigator.of(context).pop();
+                              },
+                            );
+                          },
+                        ).catchError(
+                          (onError) => SAAlertDialog.displayAlertWithClose(context, 'genericErrorTitle'.localized(context, 'general'), onError),
+                        );
+                      },
                       text: 'submitButton'.localized(context),
-                      enabled: true,
+                      enabled: _feedback.isEmpty == false,
                     ),
                   ],
                 ),
