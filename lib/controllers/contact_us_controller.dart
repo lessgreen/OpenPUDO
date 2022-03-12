@@ -20,6 +20,7 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:focus_detector/focus_detector.dart';
 import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
 import 'package:qui_green/commons/ui/cupertino_navigation_bar_fix.dart';
 import 'package:qui_green/resources/res.dart';
@@ -36,56 +37,65 @@ class ContactUsController extends StatefulWidget {
 }
 
 class _ContactUsControllerState extends State<ContactUsController> {
+  FocusNode _formField = FocusNode();
+
   @override
-  void initState() {
-    super.initState();
+  void dispose() {
+    _formField.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      child: CupertinoPageScaffold(
-        navigationBar: CupertinoNavigationBarFix.build(
-          context,
-          middle: Text(
-            'navTitle'.localized(context),
-            style: Theme.of(context).textTheme.navBarTitle,
+    return FocusDetector(
+      onVisibilityGained: () {
+        _formField.requestFocus();
+      },
+      child: Material(
+        child: CupertinoPageScaffold(
+          navigationBar: CupertinoNavigationBarFix.build(
+            context,
+            middle: Text(
+              'navTitle'.localized(context),
+              style: Theme.of(context).textTheme.navBarTitle,
+            ),
+            leading: CupertinoNavigationBarBackButton(
+              color: Colors.white,
+              onPressed: () => Navigator.of(context).pop(),
+            ),
           ),
-          leading: CupertinoNavigationBarBackButton(
-            color: Colors.white,
-            onPressed: () => Navigator.of(context).pop(),
-          ),
-        ),
-        child: SAScaffold(
-          isLoading: NetworkManager.instance.networkActivity,
-          body: Padding(
-            padding: const EdgeInsets.all(Dimension.paddingM),
-            child: Form(
-              child: Column(
-                children: [
-                  TextFormField(
-                    onChanged: (newValue) {},
-                    maxLines: 10,
-                    decoration: InputDecoration(
-                      hintText: 'contactUsPlaceHolder'.localized(context),
-                      hintStyle: Theme.of(context).textTheme.bodyText2!.copyWith(fontStyle: FontStyle.italic),
-                      border: const OutlineInputBorder(
-                        borderSide: BorderSide(
-                          width: 0.5,
-                          color: AppColors.labelDark,
+          child: SAScaffold(
+            isLoading: NetworkManager.instance.networkActivity,
+            body: Padding(
+              padding: const EdgeInsets.all(Dimension.paddingM),
+              child: Form(
+                child: Column(
+                  children: [
+                    TextFormField(
+                      focusNode: _formField,
+                      onChanged: (newValue) {},
+                      maxLines: 10,
+                      decoration: InputDecoration(
+                        hintText: 'contactUsPlaceHolder'.localized(context),
+                        hintStyle: Theme.of(context).textTheme.bodyText2!.copyWith(fontStyle: FontStyle.italic),
+                        border: const OutlineInputBorder(
+                          borderSide: BorderSide(
+                            width: 0.5,
+                            color: AppColors.labelDark,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  const SizedBox(
-                    height: Dimension.paddingM,
-                  ),
-                  MainButton(
-                    onPressed: () {},
-                    text: 'submitButton'.localized(context),
-                    enabled: true,
-                  ),
-                ],
+                    const SizedBox(
+                      height: Dimension.paddingM,
+                    ),
+                    MainButton(
+                      onPressed: () {},
+                      text: 'submitButton'.localized(context),
+                      enabled: true,
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
