@@ -62,7 +62,13 @@ class _UserDetailControllerState extends State<UserDetailController> with Connec
             Center(
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(100),
-                child: CustomNetworkImage(height: 150, width: 150, fit: BoxFit.cover, url: widget.userModel.profilePicId),
+                child: CustomNetworkImage(
+                  isCircle: true,
+                  height: 150,
+                  width: 150,
+                  fit: BoxFit.cover,
+                  url: widget.userModel.profilePicId,
+                ),
               ),
             ),
             const SizedBox(

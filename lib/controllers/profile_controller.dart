@@ -99,7 +99,13 @@ class _ProfileControllerState extends State<ProfileController> with ConnectionAw
                       Center(
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(100),
-                          child: CustomNetworkImage(height: 150, width: 150, fit: BoxFit.cover, url: currentUser.user?.profilePicId),
+                          child: CustomNetworkImage(
+                            isCircle: true,
+                            height: 150,
+                            width: 150,
+                            fit: BoxFit.cover,
+                            url: currentUser.user?.profilePicId,
+                          ),
                         ),
                       ),
                       const SizedBox(

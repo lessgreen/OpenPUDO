@@ -26,7 +26,8 @@ class PudoEditableImage extends StatelessWidget {
                 )
               : CustomNetworkImage(
                   url: picId,
-                  fit: BoxFit.cover,
+                  height: 2000,
+                  fit: BoxFit.fitWidth,
                 ),
         ),
         if (editEnabled)

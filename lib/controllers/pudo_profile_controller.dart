@@ -67,7 +67,12 @@ class _PudoProfileControllerState extends State<PudoProfileController> with Conn
                 )),
             child: ListView(
               children: [
-                AspectRatio(aspectRatio: 18 / 9, child: CustomNetworkImage(fit: BoxFit.cover, url: currentUser.pudoProfile?.pudoPicId)),
+                AspectRatio(
+                  aspectRatio: 18 / 9,
+                  child: CustomNetworkImage(
+                    url: currentUser.pudoProfile?.pudoPicId,
+                  ),
+                ),
                 const SizedBox(
                   height: Dimension.paddingM,
                 ),
