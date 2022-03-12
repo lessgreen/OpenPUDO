@@ -178,7 +178,11 @@
             "deleteAccount": "Elimina account",
             "deleteAccountButton": "Procedi",
             "deleteAccountCancel": "Annulla",
-            "deleteAccountDescription": "Attenzione, la procedura eliminerà in maniera permanente il tuo account dai nostri server. Al termine della procedura ti verrà fornito un link web per scaricare la tua attività svolta su QuiGreen sino a questo momento. Lo stesso link ti verrà inviato via SMS al numero fornito in fase di registrazione."
+            "deleteAccountDescription": "La procedura eliminerà in maniera permanente il tuo account dai nostri server. Al termine della procedura ti verrà fornito un link web per scaricare la tua attività svolta su QuiGreen sino a questo momento. Lo stesso link ti verrà inviato via SMS al numero fornito in fase di registrazione.",
+            "deleteAccountSuccess": "La procedura di cancellazione è stata completata. Puoi visualizzare l'estratto dei tuoi dati cliccando Visualizza",
+            "viewData": "Visualizza",
+            "close": "Esci",
+            "deleteAccountSuccessTitle": "Completato"
         },
         "PudoDetailControllerState": {
             "numerOfUsers": " persone hanno già scelto quest’attività come punto di ritiro.",
@@ -217,7 +221,11 @@
             "deleteAccount": "Elimina account",
             "deleteAccountButton": "Procedi",
             "deleteAccountCancel": "Annulla",
-            "deleteAccountDescription": "Attenzione, la procedura eliminerà in maniera permanente il tuo account dai nostri server. Al termine della procedura ti verrà fornito un link web per scaricare la tua attività svolta su QuiGreen sino a questo momento. Lo stesso link ti verrà inviato via SMS al numero fornito in fase di registrazione."
+            "deleteAccountDescription": "La procedura eliminerà in maniera permanente il tuo account dai nostri server. Al termine della procedura ti verrà fornito un link web per scaricare la tua attività svolta su QuiGreen sino a questo momento. Lo stesso link ti verrà inviato via SMS al numero fornito in fase di registrazione.",
+            "deleteAccountSuccess": "La procedura di cancellazione è stata completata. Puoi visualizzare l'estratto dei tuoi dati cliccando Visualizza",
+            "viewData": "Visualizza",
+            "close": "Esci",
+            "deleteAccountSuccessTitle": "Completato"
         },
         "PudoUsersListControllerState": {
             "chooseRecipient": "Scegli un destinatario",

@@ -320,32 +320,6 @@ mixin NetworkManagerUser on NetworkGeneral {
     return _baseURL + '/api/v2/file/$id';
   }
 
-/*
-  Future<Uint8List> profilePic(String id) async {
-    try {
-      if (!isOnline) {
-        throw ("Network is offline");
-      }
-      if (_accessToken != null) {
-        _headers['Authorization'] = 'Bearer $_accessToken';
-      }
-      var url = _baseURL + '/api/v2/file/$id';
-      Response response = await r.retry(
-        () => get(Uri.parse(url), headers: _headers).timeout(Duration(seconds: _timeout)),
-        retryIf: (e) => e is SocketException || e is TimeoutException,
-      );
-      if (response.statusCode == 200) {
-        return response.bodyBytes;
-      }
-      throw ErrorDescription('Error ${response.statusCode}: ${response.body}');
-    } catch (e) {
-      safePrint('ERROR - deleteProfilePic: $e');
-      _refreshTokenRetryCounter = 0;
-      var data = await rootBundle.load('assets/placeholderImage.jpg');
-      return data.buffer.asUint8List();
-    }
-  }
-*/
   Future<dynamic> getPublicProfile(String userId) async {
     try {
       if (!isOnline) {
@@ -679,6 +653,53 @@ mixin NetworkManagerUser on NetworkGeneral {
       }
     } catch (e) {
       safePrint('ERROR - contactUs: $e');
+      _refreshTokenRetryCounter = 0;
+      _networkActivity.value = false;
+      return e;
+    }
+  }
+
+  Future<dynamic> deleteUser() async {
+    try {
+      if (!isOnline) {
+        throw ("Network is offline");
+      }
+      if (_accessToken != null) {
+        _headers['Authorization'] = 'Bearer $_accessToken';
+      }
+
+      var url = _baseURL + '/api/v2/auth/account';
+
+      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+        _networkActivity.value = true;
+      });
+      Response response = await r.retry(
+        () => delete(Uri.parse(url), headers: _headers).timeout(Duration(seconds: _timeout)),
+        retryIf: (e) => e is SocketException || e is TimeoutException,
+      );
+      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+        _networkActivity.value = false;
+      });
+      final codeUnits = response.body.codeUnits;
+      var decodedUTF8 = const Utf8Decoder().convert(codeUnits);
+      var json = jsonDecode(decodedUTF8);
+      var baseResponse = OPBaseResponse.fromJson(json);
+
+      var needHandleTokenRefresh = _handleTokenRefresh(
+        baseResponse,
+        () {
+          deleteUser().catchError((onError) => throw onError);
+        },
+      );
+      if (needHandleTokenRefresh == false) {
+        if (baseResponse.returnCode == 0 && baseResponse.payload != null) {
+          return baseResponse.payload;
+        } else {
+          throw ErrorDescription('Error ${baseResponse.returnCode}: ${baseResponse.message}');
+        }
+      }
+    } catch (e) {
+      safePrint('ERROR - deleteUser: $e');
       _refreshTokenRetryCounter = 0;
       _networkActivity.value = false;
       return e;

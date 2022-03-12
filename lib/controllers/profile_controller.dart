@@ -40,6 +40,7 @@ import 'package:qui_green/widgets/table_view_cell.dart';
 import 'package:qui_green/widgets/user_profile_recap_widget.dart';
 import 'package:qui_green/commons/utilities/localization.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ProfileController extends StatefulWidget {
   const ProfileController({Key? key}) : super(key: key);
@@ -165,7 +166,44 @@ class _ProfileControllerState extends State<ProfileController> with ConnectionAw
                         textAlign: TextAlign.center,
                         textStyle: Theme.of(context).textTheme.bodyTextBold?.copyWith(color: Colors.red),
                         showTrailingChevron: false,
-                        onTap: () => _showConfirmationDelete(acceptCallback: null, denyCallback: null),
+                        onTap: () => _showConfirmationDelete(
+                            acceptCallback: () {
+                              NetworkManager.instance.deleteUser().then((value) {
+                                if (value is String) {
+                                  SAAlertDialog.displayAlertWithButtons(
+                                    context,
+                                    'deleteAccountSuccessTitle'.localized(context),
+                                    'deleteAccountSuccess'.localized(context),
+                                    [
+                                      MaterialButton(
+                                        child: Text(
+                                          'viewData'.localized(context),
+                                          style: const TextStyle(color: AppColors.primaryColorDark),
+                                        ),
+                                        onPressed: () {
+                                          launch(value).then((value) {
+                                            Navigator.pop(context);
+                                            NetworkManager.instance.setAccessToken(null);
+                                            currentUser.refresh();
+                                          });
+                                        },
+                                      ),
+                                      MaterialButton(
+                                        child: Text(
+                                          'close'.localized(context),
+                                        ),
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                          NetworkManager.instance.setAccessToken(null);
+                                          currentUser.refresh();
+                                        },
+                                      )
+                                    ],
+                                  );
+                                }
+                              }).catchError((onError) => SAAlertDialog.displayAlertWithClose(context, 'genericErrorTitle'.localized(context, 'general'), onError));
+                            },
+                            denyCallback: null),
                       )
                     ],
                   ),
