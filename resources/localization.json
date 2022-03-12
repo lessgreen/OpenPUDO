@@ -252,10 +252,6 @@
         "PudoEditableImage": {
             "changePhoto": "Cambia la foto"
         },
-        "RewardOptionWidget": {
-           "missingValue": "Valore mancante",
-           "outOfRange": "Valori fuori limite "
-        },
         "UserProfileRecapWidget": {
             "recapPudoTitle": "I tuoi utenti hanno usato il servizio di QuiGreen ",
             "recapUserTitle": "Hai usato il servizio di QuiGreen ",
