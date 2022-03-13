@@ -26,6 +26,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:focus_detector/focus_detector.dart';
 import 'package:intl/intl.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:qui_green/commons/alert_dialog.dart';
 import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
@@ -56,6 +57,17 @@ class _ProfileControllerState extends State<ProfileController> with ConnectionAw
   File? _image;
   bool _editEnabled = false;
   bool _changesMade = false;
+  PackageInfo? _info;
+
+  @override
+  void initState() {
+    super.initState();
+    PackageInfo.fromPlatform().then((value) {
+      setState(() {
+        _info = value;
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -96,6 +108,7 @@ class _ProfileControllerState extends State<ProfileController> with ConnectionAw
               child: SAScaffold(
                 isLoading: NetworkManager.instance.networkActivity,
                 body: Stack(
+                  alignment: Alignment.center,
                   children: [
                     ListView(
                       controller: _scrollController,
@@ -295,7 +308,16 @@ class _ProfileControllerState extends State<ProfileController> with ConnectionAw
                           ],
                         ),
                         crossFadeState: _editEnabled ? CrossFadeState.showSecond : CrossFadeState.showFirst,
-                        duration: const Duration(milliseconds: 100))
+                        duration: const Duration(milliseconds: 100)),
+                    _info == null
+                        ? const SizedBox()
+                        : Positioned(
+                            child: Text(
+                              'v${_info!.version}#${_info!.buildNumber}',
+                              style: Theme.of(context).textTheme.captionSmall,
+                            ),
+                            bottom: 90,
+                          ),
                   ],
                 ),
               ),
