@@ -6,7 +6,6 @@ import less.green.openpudo.business.model.usertype.AccountType;
 import less.green.openpudo.business.model.usertype.RelationType;
 import less.green.openpudo.cdi.ExecutionContext;
 import less.green.openpudo.cdi.service.LocalizationService;
-import less.green.openpudo.cdi.service.StorageService;
 import less.green.openpudo.common.ApiReturnCodes;
 import less.green.openpudo.common.FormatUtils;
 import less.green.openpudo.common.dto.tuple.Octet;
@@ -43,15 +42,12 @@ public class PudoService {
     LocalizationService localizationService;
 
     @Inject
-    StorageService storageService;
-
+    ExternalFileService externalFileService;
     @Inject
     PackageService packageService;
 
     @Inject
     AddressDao addressDao;
-    @Inject
-    ExternalFileDao externalFileDao;
     @Inject
     PackageDao packageDao;
     @Inject
@@ -116,33 +112,19 @@ public class PudoService {
         return getCurrentPudo();
     }
 
-    public UUID updateCurrentPudoPicture(String mimeType, byte[] bytes) {
+    public UUID updateCurrentPudoPicture(byte[] bytes) {
         Long pudoId = getCurrentPudoId();
-        Date now = new Date();
         TbPudo pudo = pudoDao.get(pudoId);
+
+        TbExternalFile externalFile = externalFileService.saveExternalImage(bytes);
         UUID oldId = pudo.getPudoPicId();
-        UUID newId = UUID.randomUUID();
-        // save new file first
-        storageService.saveFileBinary(newId, bytes);
-        // delete old file if any
-        if (oldId != null) {
-            storageService.deleteFile(oldId);
-        }
-        // if everything is ok, we can update database
-        // save new row
-        TbExternalFile ent = new TbExternalFile();
-        ent.setExternalFileId(newId);
-        ent.setCreateTms(now);
-        ent.setMimeType(mimeType);
-        externalFileDao.persist(ent);
-        externalFileDao.flush();
+        UUID newId = externalFile.getExternalFileId();
         // switch foreign key
-        pudo.setUpdateTms(now);
-        pudo.setPudoPicId(newId);
-        pudoDao.flush();
-        // remove old row
-        externalFileDao.delete(oldId);
-        externalFileDao.flush();
+        pudo.setUpdateTms(externalFile.getCreateTms());
+        pudo.setPudoPicId(externalFile.getExternalFileId());
+        if (oldId != null) {
+            externalFileService.deleteExternalFile(oldId);
+        }
         log.info("[{}] Updated profile picture for PUDO: {}", context.getExecutionId(), pudoId);
         return newId;
     }

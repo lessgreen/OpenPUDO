@@ -6,7 +6,6 @@ import less.green.openpudo.business.model.usertype.AccountType;
 import less.green.openpudo.business.model.usertype.RelationType;
 import less.green.openpudo.cdi.ExecutionContext;
 import less.green.openpudo.cdi.service.LocalizationService;
-import less.green.openpudo.cdi.service.StorageService;
 import less.green.openpudo.common.ApiReturnCodes;
 import less.green.openpudo.common.CalendarUtils;
 import less.green.openpudo.common.FormatUtils;
@@ -43,8 +42,7 @@ public class UserService {
     LocalizationService localizationService;
 
     @Inject
-    StorageService storageService;
-
+    ExternalFileService externalFileService;
     @Inject
     PackageService packageService;
     @Inject
@@ -52,8 +50,6 @@ public class UserService {
 
     @Inject
     DeviceTokenDao deviceTokenDao;
-    @Inject
-    ExternalFileDao externalFileDao;
     @Inject
     NotificationDao notificationDao;
     @Inject
@@ -122,36 +118,22 @@ public class UserService {
         return getCurrentUserProfile();
     }
 
-    public UUID updateCurrentUserProfilePicture(String mimeType, byte[] bytes) {
+    public UUID updateCurrentUserProfilePicture(byte[] bytes) {
         TbUser user = userDao.get(context.getUserId());
         if (user.getAccountType() != AccountType.CUSTOMER) {
             throw new ApiException(ApiReturnCodes.FORBIDDEN, localizationService.getMessage(context.getLanguage(), "error.forbidden.wrong_account_type"));
         }
-        Date now = new Date();
         TbUserProfile userProfile = userProfileDao.get(context.getUserId());
+
+        TbExternalFile externalFile = externalFileService.saveExternalImage(bytes);
         UUID oldId = userProfile.getProfilePicId();
-        UUID newId = UUID.randomUUID();
-        // save new file first
-        storageService.saveFileBinary(newId, bytes);
-        // delete old file if any
-        if (oldId != null) {
-            storageService.deleteFile(oldId);
-        }
-        // if everything is ok, we can update database
-        // save new row
-        TbExternalFile ent = new TbExternalFile();
-        ent.setExternalFileId(newId);
-        ent.setCreateTms(now);
-        ent.setMimeType(mimeType);
-        externalFileDao.persist(ent);
-        externalFileDao.flush();
+        UUID newId = externalFile.getExternalFileId();
         // switch foreign key
-        userProfile.setUpdateTms(now);
-        userProfile.setProfilePicId(newId);
-        userProfileDao.flush();
-        // remove old row
-        externalFileDao.delete(oldId);
-        externalFileDao.flush();
+        userProfile.setUpdateTms(externalFile.getCreateTms());
+        userProfile.setProfilePicId(externalFile.getExternalFileId());
+        if (oldId != null) {
+            externalFileService.deleteExternalFile(oldId);
+        }
         log.info("[{}] Updated profile picture for user: {}", context.getExecutionId(), context.getUserId());
         return newId;
     }

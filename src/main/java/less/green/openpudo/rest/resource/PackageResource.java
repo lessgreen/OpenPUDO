@@ -5,7 +5,6 @@ import less.green.openpudo.cdi.ExecutionContext;
 import less.green.openpudo.cdi.service.LocalizationService;
 import less.green.openpudo.common.ApiReturnCodes;
 import less.green.openpudo.common.ExceptionUtils;
-import less.green.openpudo.common.MultipartUtils;
 import less.green.openpudo.common.dto.tuple.Pair;
 import less.green.openpudo.rest.config.annotation.BinaryAPI;
 import less.green.openpudo.rest.config.exception.ApiException;
@@ -26,7 +25,7 @@ import javax.ws.rs.core.MediaType;
 import java.io.IOException;
 import java.util.UUID;
 
-import static less.green.openpudo.common.MultipartUtils.ALLOWED_IMAGE_MIME_TYPES;
+import static less.green.openpudo.common.MultipartUtils.*;
 
 @RequestScoped
 @Path("/package")
@@ -92,7 +91,7 @@ public class PackageResource {
 
         Pair<String, byte[]> uploadedFile;
         try {
-            uploadedFile = MultipartUtils.readUploadedFile(req);
+            uploadedFile = readUploadedFile(req);
         } catch (IOException ex) {
             log.fatal("[{}] {}", context.getExecutionId(), ExceptionUtils.getCanonicalFormWithStackTrace(ex));
             throw new ApiException(ApiReturnCodes.SERVICE_UNAVAILABLE, localizationService.getMessage(context.getLanguage(), "error.service_unavailable"));
@@ -100,13 +99,13 @@ public class PackageResource {
 
         // more sanitizing
         if (uploadedFile == null) {
-            throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.empty_mandatory_field", "multipart name"));
+            throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.empty_mandatory_field", PART_NAME));
         }
         if (!ALLOWED_IMAGE_MIME_TYPES.contains(uploadedFile.getValue0())) {
-            throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.invalid_field", "mimeType"));
+            throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.invalid_field", PART_NAME));
         }
 
-        UUID ret = packageService.updatePackagePicture(packageId, uploadedFile.getValue0(), uploadedFile.getValue1());
+        UUID ret = packageService.updatePackagePicture(packageId, uploadedFile.getValue1());
         return new UUIDResponse(context.getExecutionId(), ApiReturnCodes.OK, ret);
     }
 

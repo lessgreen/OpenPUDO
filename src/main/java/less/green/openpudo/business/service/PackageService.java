@@ -7,7 +7,6 @@ import less.green.openpudo.business.model.usertype.PackageStatus;
 import less.green.openpudo.cdi.ExecutionContext;
 import less.green.openpudo.cdi.service.CryptoService;
 import less.green.openpudo.cdi.service.LocalizationService;
-import less.green.openpudo.cdi.service.StorageService;
 import less.green.openpudo.common.ApiReturnCodes;
 import less.green.openpudo.common.CalendarUtils;
 import less.green.openpudo.common.dto.tuple.Pair;
@@ -42,16 +41,14 @@ public class PackageService {
 
     @Inject
     CryptoService cryptoService;
-    @Inject
-    StorageService storageService;
 
+    @Inject
+    ExternalFileService externalFileService;
     @Inject
     NotificationService notificationService;
     @Inject
     PudoService pudoService;
 
-    @Inject
-    ExternalFileDao externalFileDao;
     @Inject
     NotificationDao notificationDao;
     @Inject
@@ -166,7 +163,7 @@ public class PackageService {
         return getPackage(pack.getPackageId());
     }
 
-    public UUID updatePackagePicture(Long packageId, String mimeType, byte[] bytes) {
+    public UUID updatePackagePicture(Long packageId, byte[] bytes) {
         TbPackage pack = packageDao.get(packageId);
         if (pack == null) {
             throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.resource_not_exists"));
@@ -177,30 +174,15 @@ public class PackageService {
             throw new ApiException(ApiReturnCodes.FORBIDDEN, localizationService.getMessage(context.getLanguage(), "error.forbidden"));
         }
 
-        Date now = new Date();
+        TbExternalFile externalFile = externalFileService.saveExternalImage(bytes);
         UUID oldId = pack.getPackagePicId();
-        UUID newId = UUID.randomUUID();
-        // save new file first
-        storageService.saveFileBinary(newId, bytes);
-        // delete old file if any
-        if (oldId != null) {
-            storageService.deleteFile(oldId);
-        }
-        // if everything is ok, we can update database
-        // save new row
-        TbExternalFile ent = new TbExternalFile();
-        ent.setExternalFileId(newId);
-        ent.setCreateTms(now);
-        ent.setMimeType(mimeType);
-        externalFileDao.persist(ent);
-        externalFileDao.flush();
+        UUID newId = externalFile.getExternalFileId();
         // switch foreign key
-        pack.setUpdateTms(now);
-        pack.setPackagePicId(newId);
-        packageDao.flush();
-        // remove old row
-        externalFileDao.delete(oldId);
-        externalFileDao.flush();
+        pack.setUpdateTms(externalFile.getCreateTms());
+        pack.setPackagePicId(externalFile.getExternalFileId());
+        if (oldId != null) {
+            externalFileService.deleteExternalFile(oldId);
+        }
         log.info("[{}] Updated picture for package: {}", context.getExecutionId(), pack.getPackageId());
         return newId;
     }
