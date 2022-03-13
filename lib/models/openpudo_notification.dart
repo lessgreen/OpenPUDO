@@ -20,31 +20,57 @@
 
 import 'package:json_annotation/json_annotation.dart';
 
-part 'pudo_notification.g.dart';
+part 'openpudo_notification.g.dart';
 
 @JsonSerializable()
-class PudoNotification {
+class OpenPudoNotification {
   final int notificationId;
+  int? userId;
   String? createTms;
-  String? message;
   String? readTms;
   String? title;
-  dynamic optData;
-  int? userId;
+  String? message;
+  NotificationOptData? optData;
 
-  PudoNotification({
+  OpenPudoNotification({
     required this.notificationId,
+    this.userId,
     this.createTms,
-    this.message,
     this.readTms,
     this.title,
+    this.message,
     this.optData,
-    this.userId,
   });
-  factory PudoNotification.fromJson(Map<String, dynamic> json) => _$PudoNotificationFromJson(json);
-  Map<String, dynamic> toJson() => _$PudoNotificationToJson(this);
+  factory OpenPudoNotification.fromJson(Map<String, dynamic> json) => _$OpenPudoNotificationFromJson(json);
+  Map<String, dynamic> toJson() => _$OpenPudoNotificationToJson(this);
 
   bool get isRead {
     return readTms != null;
   }
+}
+
+enum NotificationType {
+  @JsonValue("favourite")
+  favourite,
+  @JsonValue("package")
+  package,
+}
+
+@JsonSerializable()
+class NotificationOptData {
+  final NotificationType? notificationType;
+  String? notificationId;
+  String? userId;
+  String? pudoId;
+  String? packageId;
+
+  NotificationOptData({
+    required this.notificationType,
+    this.notificationId,
+    this.userId,
+    this.pudoId,
+    this.packageId,
+  });
+  factory NotificationOptData.fromJson(Map<String, dynamic> json) => _$NotificationOptDataFromJson(json);
+  Map<String, dynamic> toJson() => _$NotificationOptDataToJson(this);
 }

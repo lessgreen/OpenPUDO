@@ -38,7 +38,7 @@ import 'package:qui_green/models/device_info_model.dart';
 import 'package:qui_green/models/geo_marker.dart';
 import 'package:qui_green/models/login_request.dart';
 import 'package:qui_green/models/package_summary.dart';
-import 'package:qui_green/models/pudo_notification.dart';
+import 'package:qui_green/models/openpudo_notification.dart';
 import 'package:qui_green/models/pudo_package.dart';
 import 'package:qui_green/models/pudo_profile.dart';
 import 'package:qui_green/models/pudo_summary.dart';
