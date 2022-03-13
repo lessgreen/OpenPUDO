@@ -280,6 +280,7 @@
         "UserProfileRecapWidget": {
             "recapPudoTitle": "I tuoi utenti hanno usato il servizio di QuiGreen ",
             "recapUserTitle": "Hai usato il servizio di QuiGreen ",
+            "reacapShareTitle": "Ho usato il servizio di QuiGreen ",
             "nTimes": " volte,",
             "contribute": " contribuendo a ridurre di ",
             "co2Emission": " le emissioni di CO2 ",

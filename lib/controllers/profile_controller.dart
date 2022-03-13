@@ -24,6 +24,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:focus_detector/focus_detector.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:qui_green/commons/alert_dialog.dart';
@@ -39,7 +40,6 @@ import 'package:qui_green/widgets/sascaffold.dart';
 import 'package:qui_green/widgets/table_view_cell.dart';
 import 'package:qui_green/widgets/user_profile_recap_widget.dart';
 import 'package:qui_green/commons/utilities/localization.dart';
-import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ProfileController extends StatefulWidget {
@@ -61,238 +61,243 @@ class _ProfileControllerState extends State<ProfileController> with ConnectionAw
   Widget build(BuildContext context) {
     return Consumer<CurrentUser>(
       builder: (_, currentUser, __) {
-        return Material(
-          child: CupertinoPageScaffold(
-            navigationBar: CupertinoNavigationBarFix.build(
-              context,
-              middle: Text(
-                'navTitle'.localized(context),
-                style: Theme.of(context).textTheme.navBarTitle,
-              ),
-              trailing: InkWell(
-                onTap: () {
-                  _setEditEnabled(!_editEnabled, currentUser.user!);
-                },
-                child: Padding(
-                  padding: const EdgeInsets.only(right: Dimension.padding),
-                  child: _buildEditable(
-                    const Icon(
-                      CupertinoIcons.pencil_circle,
-                      color: Colors.white,
-                      size: 26,
-                    ),
-                    Text(
-                      'endButton'.localized(context),
-                      style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Colors.white),
+        return FocusDetector(
+          onVisibilityGained: () {
+            currentUser.triggerUserReload();
+          },
+          child: Material(
+            child: CupertinoPageScaffold(
+              navigationBar: CupertinoNavigationBarFix.build(
+                context,
+                middle: Text(
+                  'navTitle'.localized(context),
+                  style: Theme.of(context).textTheme.navBarTitle,
+                ),
+                trailing: InkWell(
+                  onTap: () {
+                    _setEditEnabled(!_editEnabled, currentUser.user!);
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: Dimension.padding),
+                    child: _buildEditable(
+                      const Icon(
+                        CupertinoIcons.pencil_circle,
+                        color: Colors.white,
+                        size: 26,
+                      ),
+                      Text(
+                        'endButton'.localized(context),
+                        style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Colors.white),
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
-            child: SAScaffold(
-              isLoading: NetworkManager.instance.networkActivity,
-              body: Stack(
-                children: [
-                  ListView(
-                    controller: _scrollController,
-                    children: [
-                      const SizedBox(height: 20),
-                      Center(
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(100),
-                          child: CustomNetworkImage(
-                            isCircle: true,
-                            height: 150,
-                            width: 150,
-                            fit: BoxFit.cover,
-                            url: currentUser.user?.profilePicId,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      _buildEditable(
+              child: SAScaffold(
+                isLoading: NetworkManager.instance.networkActivity,
+                body: Stack(
+                  children: [
+                    ListView(
+                      controller: _scrollController,
+                      children: [
+                        const SizedBox(height: 20),
                         Center(
-                          child: Text(
-                            "${currentUser.user?.firstName ?? " "} ${currentUser.user?.lastName ?? " "}",
-                            style: Theme.of(context).textTheme.headline6,
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(100),
+                            child: CustomNetworkImage(
+                              isCircle: true,
+                              height: 150,
+                              width: 150,
+                              fit: BoxFit.cover,
+                              url: currentUser.user?.profilePicId,
+                            ),
                           ),
                         ),
                         const SizedBox(
-                          height: 40,
+                          height: 10,
                         ),
-                      ),
-                      const SizedBox(height: 6),
-                      Center(
-                        child: Text(
-                          '${'userSince'.localized(context)} ${currentUser.user?.createTms != null ? DateFormat('dd/MM/yyyy').format(DateTime.parse(currentUser.user!.createTms!)) : " "}',
-                          style: Theme.of(context).textTheme.bodyTextLight,
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      UserProfileRecapWidget(
-                        totalUsage: currentUser.user?.packageCount ?? 0,
-                        kgCO2Saved: currentUser.user?.savedCO2 ?? '0.0Kg',
-                      ),
-                      TableViewCell(
-                        leading: SvgPicture.asset(
-                          ImageSrc.positionLeadingCell,
-                          color: AppColors.cardColor,
-                          width: 36,
-                          height: 36,
-                        ),
-                        title: 'yourShipment'.localized(context),
-                        onTap: () => Navigator.of(context).pushNamed(Routes.packagesList),
-                      ),
-                      TableViewCell(
-                        leading: SvgPicture.asset(
-                          ImageSrc.logoutIcon,
-                          color: AppColors.cardColor,
-                          width: 36,
-                          height: 36,
-                        ),
-                        title: 'logoutTitle'.localized(context),
-                        onTap: () {
-                          Navigator.pop(context);
-                          NetworkManager.instance.setAccessToken(null);
-                          currentUser.refresh();
-                        },
-                      ),
-                      TableViewCell(
-                        title: "deleteAccount".localized(context),
-                        textAlign: TextAlign.center,
-                        textStyle: Theme.of(context).textTheme.bodyTextBold?.copyWith(color: Colors.red),
-                        showTrailingChevron: false,
-                        onTap: () => _showConfirmationDelete(
-                            acceptCallback: () {
-                              NetworkManager.instance.deleteUser().then((value) {
-                                if (value is String) {
-                                  SAAlertDialog.displayAlertWithButtons(
-                                    context,
-                                    'deleteAccountSuccessTitle'.localized(context),
-                                    'deleteAccountSuccess'.localized(context),
-                                    [
-                                      MaterialButton(
-                                        child: Text(
-                                          'viewData'.localized(context),
-                                          style: const TextStyle(color: AppColors.primaryColorDark),
-                                        ),
-                                        onPressed: () {
-                                          launch(value).then((value) {
-                                            Navigator.pop(context);
-                                            NetworkManager.instance.setAccessToken(null);
-                                            currentUser.refresh();
-                                          });
-                                        },
-                                      ),
-                                      MaterialButton(
-                                        child: Text(
-                                          'close'.localized(context),
-                                        ),
-                                        onPressed: () {
-                                          Navigator.pop(context);
-                                          NetworkManager.instance.setAccessToken(null);
-                                          currentUser.refresh();
-                                        },
-                                      )
-                                    ],
-                                  );
-                                }
-                              }).catchError((onError) => SAAlertDialog.displayAlertWithClose(context, 'genericErrorTitle'.localized(context, 'general'), onError));
-                            },
-                            denyCallback: null),
-                      )
-                    ],
-                  ),
-                  IgnorePointer(
-                    ignoring: !_editEnabled,
-                    child: AnimatedContainer(
-                      duration: const Duration(milliseconds: 100),
-                      color: _editEnabled ? Colors.black.withOpacity(0.4) : Colors.transparent,
-                    ),
-                  ),
-                  AnimatedCrossFade(
-                      firstChild: SizedBox(
-                        width: MediaQuery.of(context).size.width,
-                      ),
-                      secondChild: Column(
-                        children: [
-                          const SizedBox(height: 20),
+                        _buildEditable(
                           Center(
-                            child: GestureDetector(
-                              onTap: _pickImage,
-                              child: Stack(
-                                children: [
-                                  ClipRRect(
-                                    borderRadius: BorderRadius.circular(100),
-                                    child: _image != null
-                                        ? Image.file(
-                                            _image!,
-                                            width: 150,
-                                            height: 150,
-                                            fit: BoxFit.cover,
-                                          )
-                                        : CustomNetworkImage(height: 150, width: 150, fit: BoxFit.cover, url: currentUser.user?.profilePicId),
-                                  ),
-                                  Container(
-                                    width: 150,
-                                    padding: const EdgeInsets.all(Dimension.paddingS),
-                                    alignment: Alignment.topRight,
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(40),
-                                      child: Container(
-                                        color: Colors.white,
-                                        width: 32,
-                                        height: 32,
-                                        child: const Icon(
-                                          CupertinoIcons.pencil_circle,
-                                          color: AppColors.primaryColorDark,
-                                          size: 31,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
+                            child: Text(
+                              "${currentUser.user?.firstName ?? " "} ${currentUser.user?.lastName ?? " "}",
+                              style: Theme.of(context).textTheme.headline6,
                             ),
                           ),
                           const SizedBox(
-                            height: 10,
+                            height: 40,
                           ),
-                          Row(
-                            children: [
-                              const SizedBox(
-                                width: Dimension.padding,
-                              ),
-                              Expanded(
-                                  child: CupertinoTextField(
-                                controller: _firstNameController,
-                                placeholder: 'placeHolderName'.localized(context),
-                                onChanged: (newVal) => _changesMade = true,
-                              )),
-                              const SizedBox(
-                                width: Dimension.padding,
-                              ),
-                              Expanded(
-                                child: CupertinoTextField(
-                                  controller: _lastNameController,
-                                  placeholder: 'placeHolderSurname'.localized(context),
-                                  onChanged: (newVal) => _changesMade = true,
+                        ),
+                        const SizedBox(height: 6),
+                        Center(
+                          child: Text(
+                            '${'userSince'.localized(context)} ${currentUser.user?.createTms != null ? DateFormat('dd/MM/yyyy').format(DateTime.parse(currentUser.user!.createTms!)) : " "}',
+                            style: Theme.of(context).textTheme.bodyTextLight,
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        UserProfileRecapWidget(
+                          totalUsage: currentUser.user?.packageCount ?? 0,
+                          kgCO2Saved: currentUser.user?.savedCO2 ?? '0.0Kg',
+                        ),
+                        TableViewCell(
+                          leading: SvgPicture.asset(
+                            ImageSrc.positionLeadingCell,
+                            color: AppColors.cardColor,
+                            width: 36,
+                            height: 36,
+                          ),
+                          title: 'yourShipment'.localized(context),
+                          onTap: () => Navigator.of(context).pushNamed(Routes.packagesList),
+                        ),
+                        TableViewCell(
+                          leading: SvgPicture.asset(
+                            ImageSrc.logoutIcon,
+                            color: AppColors.cardColor,
+                            width: 36,
+                            height: 36,
+                          ),
+                          title: 'logoutTitle'.localized(context),
+                          onTap: () {
+                            Navigator.pop(context);
+                            NetworkManager.instance.setAccessToken(null);
+                            currentUser.refresh();
+                          },
+                        ),
+                        TableViewCell(
+                          title: "deleteAccount".localized(context),
+                          textAlign: TextAlign.center,
+                          textStyle: Theme.of(context).textTheme.bodyTextBold?.copyWith(color: Colors.red),
+                          showTrailingChevron: false,
+                          onTap: () => _showConfirmationDelete(
+                              acceptCallback: () {
+                                NetworkManager.instance.deleteUser().then((value) {
+                                  if (value is String) {
+                                    SAAlertDialog.displayAlertWithButtons(
+                                      context,
+                                      'deleteAccountSuccessTitle'.localized(context),
+                                      'deleteAccountSuccess'.localized(context),
+                                      [
+                                        MaterialButton(
+                                          child: Text(
+                                            'viewData'.localized(context),
+                                            style: const TextStyle(color: AppColors.primaryColorDark),
+                                          ),
+                                          onPressed: () {
+                                            launch(value).then((value) {
+                                              Navigator.pop(context);
+                                              NetworkManager.instance.setAccessToken(null);
+                                              currentUser.refresh();
+                                            });
+                                          },
+                                        ),
+                                        MaterialButton(
+                                          child: Text(
+                                            'close'.localized(context),
+                                          ),
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                            NetworkManager.instance.setAccessToken(null);
+                                            currentUser.refresh();
+                                          },
+                                        )
+                                      ],
+                                    );
+                                  }
+                                }).catchError((onError) => SAAlertDialog.displayAlertWithClose(context, 'genericErrorTitle'.localized(context, 'general'), onError));
+                              },
+                              denyCallback: null),
+                        )
+                      ],
+                    ),
+                    IgnorePointer(
+                      ignoring: !_editEnabled,
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 100),
+                        color: _editEnabled ? Colors.black.withOpacity(0.4) : Colors.transparent,
+                      ),
+                    ),
+                    AnimatedCrossFade(
+                        firstChild: SizedBox(
+                          width: MediaQuery.of(context).size.width,
+                        ),
+                        secondChild: Column(
+                          children: [
+                            const SizedBox(height: 20),
+                            Center(
+                              child: GestureDetector(
+                                onTap: _pickImage,
+                                child: Stack(
+                                  children: [
+                                    ClipRRect(
+                                      borderRadius: BorderRadius.circular(100),
+                                      child: _image != null
+                                          ? Image.file(
+                                              _image!,
+                                              width: 150,
+                                              height: 150,
+                                              fit: BoxFit.cover,
+                                            )
+                                          : CustomNetworkImage(height: 150, width: 150, fit: BoxFit.cover, url: currentUser.user?.profilePicId),
+                                    ),
+                                    Container(
+                                      width: 150,
+                                      padding: const EdgeInsets.all(Dimension.paddingS),
+                                      alignment: Alignment.topRight,
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(40),
+                                        child: Container(
+                                          color: Colors.white,
+                                          width: 32,
+                                          height: 32,
+                                          child: const Icon(
+                                            CupertinoIcons.pencil_circle,
+                                            color: AppColors.primaryColorDark,
+                                            size: 31,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
-                              const SizedBox(
-                                width: Dimension.padding,
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                      crossFadeState: _editEnabled ? CrossFadeState.showSecond : CrossFadeState.showFirst,
-                      duration: const Duration(milliseconds: 100))
-                ],
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Row(
+                              children: [
+                                const SizedBox(
+                                  width: Dimension.padding,
+                                ),
+                                Expanded(
+                                    child: CupertinoTextField(
+                                  controller: _firstNameController,
+                                  placeholder: 'placeHolderName'.localized(context),
+                                  onChanged: (newVal) => _changesMade = true,
+                                )),
+                                const SizedBox(
+                                  width: Dimension.padding,
+                                ),
+                                Expanded(
+                                  child: CupertinoTextField(
+                                    controller: _lastNameController,
+                                    placeholder: 'placeHolderSurname'.localized(context),
+                                    onChanged: (newVal) => _changesMade = true,
+                                  ),
+                                ),
+                                const SizedBox(
+                                  width: Dimension.padding,
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                        crossFadeState: _editEnabled ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+                        duration: const Duration(milliseconds: 100))
+                  ],
+                ),
               ),
             ),
           ),

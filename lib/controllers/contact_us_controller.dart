@@ -76,7 +76,9 @@ class _ContactUsControllerState extends State<ContactUsController> {
                     TextFormField(
                       focusNode: _formField,
                       onChanged: (newValue) {
-                        _feedback = newValue;
+                        setState(() {
+                          _feedback = newValue;
+                        });
                       },
                       maxLines: 10,
                       decoration: InputDecoration(

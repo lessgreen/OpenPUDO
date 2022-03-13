@@ -104,7 +104,7 @@ class UserProfileRecapWidget extends StatelessWidget {
   }
 
   _shareDidPress(BuildContext context) {
-    var finalString = (isForPudo ? 'recapPudoTitle' : 'recapUserTitle').localized(context);
+    var finalString = (isForPudo ? 'recapPudoTitle' : 'reacapShareTitle').localized(context);
     finalString += '$totalUsage ${'nTimes'.localized(context)}${'contribute'.localized(context)}';
     finalString += '$kgCO2Saved ${'co2Emission'.localized(context)}.';
     finalString += '\n${'learnMore'.localized(context)}';
