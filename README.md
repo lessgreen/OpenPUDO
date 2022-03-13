@@ -10,7 +10,7 @@ Code 0 always indicates a successful operation, otherwise the return code reuses
 - 401: `EXPIRED_JWT_TOKEN` -> operation called with an expired JWT token
 - 401: `INVALID_OTP` -> login attempt with an invalid OTP code
 - 403: `FORBIDDEN` -> operation failed for missing privileges (e.g. fetching information about a package owner by another user)
-- 404: `RESOURCE_NOT_FOUND` -> operation failed for updating non-existing entity
+- 404: `RESOURCE_NOT_FOUND` -> endpoint or resource not found
 - 500: `INTERNAL_SERVER_ERROR` -> operation failed for reasons related to our backend server (e.g. uncaught exception, database problems, bugs)
 - 503: `SERVICE_UNAVAILABLE` -> operation failed for reasons related to third party server (e.g. geolocation engine, storage server)
 
