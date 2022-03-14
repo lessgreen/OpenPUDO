@@ -82,4 +82,22 @@ public class NotificationResource {
         return new BaseResponse(context.getExecutionId(), ApiReturnCodes.OK);
     }
 
+    @DELETE
+    @Path("/{notificationId}")
+    @SecurityRequirement(name = "JWT")
+    @Operation(summary = "Delete notification with provided notificationId")
+    public BaseResponse deleteNotification(@PathParam(value = "notificationId") Long notificationId) {
+        notificationService.deleteNotification(notificationId);
+        return new BaseResponse(context.getExecutionId(), ApiReturnCodes.OK);
+    }
+
+    @DELETE
+    @Path("/")
+    @SecurityRequirement(name = "JWT")
+    @Operation(summary = "Delete all notifications for current user")
+    public BaseResponse deleteNotifications() {
+        notificationService.deleteNotifications();
+        return new BaseResponse(context.getExecutionId(), ApiReturnCodes.OK);
+    }
+
 }

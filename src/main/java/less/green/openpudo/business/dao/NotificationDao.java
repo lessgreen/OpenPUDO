@@ -45,6 +45,13 @@ public class NotificationDao extends BaseEntityDao<TbNotification, Long> {
         return q.executeUpdate();
     }
 
+    public int deleteNotifications(Long userId) {
+        String qs = "DELETE FROM TbNotification t WHERE t.userId = :userId AND t.queuedFlag = false";
+        Query q = em.createQuery(qs);
+        q.setParameter("userId", userId);
+        return q.executeUpdate();
+    }
+
     public int removeQueuedNotificationFavourite(Long customerUserId, Long pudoId) {
         String qs = "DELETE FROM TbNotificationFavourite t WHERE t.queuedFlag = true AND t.customerUserId = :customerUserId AND t.pudoId = :pudoId";
         Query q = em.createQuery(qs);

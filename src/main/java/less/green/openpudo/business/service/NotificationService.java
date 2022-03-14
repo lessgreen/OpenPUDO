@@ -53,14 +53,6 @@ public class NotificationService {
         List<TbNotification> rs = notificationDao.getNotifications(context.getUserId(), limit, offset);
         List<Notification> ret = new ArrayList<>(rs.size());
         for (var row : rs) {
-            Notification notification = new Notification();
-            notification.setNotificationId(row.getNotificationId());
-            notification.setUserId(row.getUserId());
-            notification.setCreateTms(row.getCreateTms());
-            notification.setReadTms(row.getReadTms());
-            notification.setTitle((row.getTitleParams() == null || row.getTitleParams().length == 0) ? localizationService.getMessage(context.getLanguage(), row.getTitle()) : localizationService.getMessage(context.getLanguage(), row.getTitle(), (Object[]) row.getTitleParams()));
-            notification.setMessage((row.getMessageParams() == null || row.getMessageParams().length == 0) ? localizationService.getMessage(context.getLanguage(), row.getMessage()) : localizationService.getMessage(context.getLanguage(), row.getMessage(), (Object[]) row.getMessageParams()));
-            ret.add(notification);
             NotificationOptData optData;
             if (row instanceof TbNotificationPackage) {
                 optData = new NotificationPackageOptData(row.getNotificationId().toString(), ((TbNotificationPackage) row).getPackageId().toString());
@@ -69,7 +61,9 @@ public class NotificationService {
             } else {
                 throw new AssertionError("Unsupported notification type: " + row.getClass());
             }
-            notification.setOptData(optData.toMap());
+            String title = (row.getTitleParams() == null || row.getTitleParams().length == 0) ? localizationService.getMessage(context.getLanguage(), row.getTitle()) : localizationService.getMessage(context.getLanguage(), row.getTitle(), (Object[]) row.getTitleParams());
+            String message = (row.getMessageParams() == null || row.getMessageParams().length == 0) ? localizationService.getMessage(context.getLanguage(), row.getMessage()) : localizationService.getMessage(context.getLanguage(), row.getMessage(), (Object[]) row.getMessageParams());
+            ret.add(dtoMapper.mapNotificationDto(row, title, message, optData.toMap()));
         }
         return ret;
     }
@@ -78,8 +72,8 @@ public class NotificationService {
         return notificationDao.getUnreadNotificationCount(context.getUserId());
     }
 
-    public int markNotificationsAsRead() {
-        return notificationDao.markNotificationsAsRead(context.getUserId());
+    public void markNotificationsAsRead() {
+        notificationDao.markNotificationsAsRead(context.getUserId());
     }
 
     public void markNotificationAsRead(Long notificationId) {
@@ -96,6 +90,22 @@ public class NotificationService {
         }
         notification.setReadTms(new Date());
         notificationDao.flush();
+    }
+
+    public void deleteNotification(Long notificationId) {
+        TbNotification notification = notificationDao.get(notificationId);
+        if (notification == null) {
+            throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.resource_not_exists"));
+        }
+        if (!notification.getUserId().equals(context.getUserId())) {
+            throw new ApiException(ApiReturnCodes.FORBIDDEN, localizationService.getMessage(context.getLanguage(), "error.forbidden"));
+        }
+        notificationDao.remove(notification);
+        notificationDao.flush();
+    }
+
+    public void deleteNotifications() {
+        notificationDao.deleteNotifications(context.getUserId());
     }
 
     public List<Long> getQueuedNotificationFavouriteIdsToSend() {

@@ -6,6 +6,7 @@ import less.green.openpudo.common.dto.geojson.Point;
 import less.green.openpudo.rest.dto.map.AddressMarker;
 import less.green.openpudo.rest.dto.map.AddressSearchResult;
 import less.green.openpudo.rest.dto.map.PudoMarker;
+import less.green.openpudo.rest.dto.notification.Notification;
 import less.green.openpudo.rest.dto.pack.Package;
 import less.green.openpudo.rest.dto.pack.PackageEvent;
 import less.green.openpudo.rest.dto.pack.PackageSummary;
@@ -53,6 +54,10 @@ public interface DtoMapper {
     Package mapPackageDto(TbPackage pack, List<PackageEvent> events, String packageName, String shareLink);
 
     PackageEvent mapPackageEventDto(TbPackageEvent packageEvent, String packageStatusMessage);
+
+    @Mapping(source = "localizedTitle", target = "title")
+    @Mapping(source = "localizedMessage", target = "message")
+    Notification mapNotificationDto(TbNotification notification, String localizedTitle, String localizedMessage, Map<String, String> optData);
 
     @Mapping(source = "pack.packageId", target = "packageId")
     @Mapping(source = "pack.createTms", target = "createTms")
