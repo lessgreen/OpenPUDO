@@ -3,7 +3,6 @@ package less.green.openpudo.rest.dto;
 import less.green.openpudo.business.model.*;
 import less.green.openpudo.common.dto.geojson.Feature;
 import less.green.openpudo.common.dto.geojson.Point;
-import less.green.openpudo.common.dto.tuple.*;
 import less.green.openpudo.rest.dto.map.AddressMarker;
 import less.green.openpudo.rest.dto.map.AddressSearchResult;
 import less.green.openpudo.rest.dto.map.PudoMarker;
@@ -28,85 +27,46 @@ import java.util.UUID;
 @Mapper(componentModel = "cdi")
 public interface DtoMapper {
 
-    User mapUserProfileEntityToDto(TbUserProfile ent, String phoneNumber, Long packageCount, String savedCO2, String customerSuffix);
+    User mapUserDto(TbUserProfile userProfile, String phoneNumber, Long packageCount, String savedCO2, String customerSuffix);
 
-    UserPreferences mapUserPreferencesEntityToDto(TbUserPreferences ent);
+    UserPreferences mapUserPreferencesDto(TbUserPreferences userPreferences);
 
-    @Mapping(source = "val.value0", target = "userId")
-    @Mapping(source = "val.value1", target = "firstName")
-    @Mapping(source = "val.value2", target = "lastName")
-    @Mapping(source = "val.value3", target = "profilePicId")
-    @Mapping(source = "val.value4", target = "customerSuffix")
-    UserSummary mapProjectionToUserSummary(Quintet<Long, String, String, UUID, String> val);
+    UserSummary mapUserSummaryDto(Long userId, String firstName, String lastName, UUID profilePicId, String customerSuffix);
 
-    List<UserSummary> mapProjectionListToUserSummaryList(List<Quintet<Long, String, String, UUID, String>> val);
+    @Mapping(source = "pudo.pudoId", target = "pudoId")
+    @Mapping(source = "pudo.createTms", target = "createTms")
+    @Mapping(source = "pudo.updateTms", target = "updateTms")
+    Pudo mapPudoDto(TbPudo pudo, TbAddress address, TbRating rating, String rewardMessage, Long customerCount, Long packageCount, String savedCO2, String customizedAddress);
 
-    @Mapping(source = "ent.value0", target = ".")
-    @Mapping(source = "ent.value1", target = "address")
-    @Mapping(source = "ent.value2", target = "rating")
-    @Mapping(source = "ent.value3", target = "rewardMessage")
-    @Mapping(source = "ent.value4", target = "customerCount")
-    @Mapping(source = "ent.value5", target = "packageCount")
-    @Mapping(source = "ent.value6", target = "savedCO2")
-    @Mapping(source = "ent.value7", target = "customizedAddress")
-    Pudo mapPudoEntityToDto(Octet<TbPudo, TbAddress, TbRating, String, Long, Long, String, String> ent);
+    Address mapAddressDto(TbAddress address);
 
-    Address mapAddressEntityToDto(TbAddress ent);
-
-    Rating mapRatingEntityToDto(TbRating ent);
+    Rating mapRatingDto(TbRating rating);
 
     @Mapping(target = "pudoId", ignore = true)
     @Mapping(target = "createTms", ignore = true)
     @Mapping(target = "updateTms", ignore = true)
-    TbAddress mapAddressSearchResultToAddressEntity(AddressSearchResult dto);
+    TbAddress mapAddressEntity(AddressSearchResult addressSearchResult);
 
-    @Mapping(source = "val.value0", target = "pudoId")
-    @Mapping(source = "val.value1", target = "businessName")
-    @Mapping(source = "val.value2", target = "pudoPicId")
-    @Mapping(source = "val.value3", target = "label")
-    @Mapping(source = "val.value4", target = "rating")
-    @Mapping(source = "val.value5", target = "customizedAddress")
-    PudoSummary mapProjectionToPudoSummary(Sextet<Long, String, UUID, String, TbRating, String> val);
+    @Mapping(source = "pudoId", target = "pudoId")
+    PudoSummary mapPudoSummaryDto(Long pudoId, String businessName, UUID pudoPicId, String label, TbRating rating, String customizedAddress);
 
-    List<PudoSummary> mapProjectionListToPudoSummaryList(List<Sextet<Long, String, UUID, String, TbRating, String>> val);
+    Package mapPackageDto(TbPackage pack, List<PackageEvent> events, String packageName, String shareLink);
 
-    @Mapping(source = "ent.value0", target = ".")
-    @Mapping(source = "ent.value1", target = "events")
-    @Mapping(source = "ent.value2", target = "packageName")
-    @Mapping(source = "ent.value3", target = "shareLink")
-    Package mapPackageEntityToDto(Quartet<TbPackage, List<PackageEvent>, String, String> ent);
+    PackageEvent mapPackageEventDto(TbPackageEvent packageEvent, String packageStatusMessage);
 
-    @Mapping(source = "ent.value0", target = ".")
-    @Mapping(source = "ent.value1", target = "packageStatusMessage")
-    PackageEvent mapPackageEventEntityToDto(Pair<TbPackageEvent, String> ent);
+    @Mapping(source = "pack.packageId", target = "packageId")
+    @Mapping(source = "pack.createTms", target = "createTms")
+    @Mapping(source = "pudo.pudoId", target = "pudoId")
+    @Mapping(source = "userProfile.userId", target = "userId")
+    PackageSummary mapPackageSummaryDto(TbPackage pack, TbPackageEvent event, TbPudo pudo, TbAddress address, TbUserProfile userProfile, TbUserPudoRelation userPudoRelation, String packageName);
 
-    @Mapping(source = "val.value0.packageId", target = "packageId")
-    @Mapping(source = "val.value0.createTms", target = "createTms")
-    @Mapping(source = "val.value0.packagePicId", target = "packagePicId")
-    @Mapping(source = "val.value6", target = "packageName")
-    @Mapping(source = "val.value1.packageStatus", target = "packageStatus")
-    @Mapping(source = "val.value2.pudoId", target = "pudoId")
-    @Mapping(source = "val.value2.businessName", target = "businessName")
-    @Mapping(source = "val.value3.label", target = "label")
-    @Mapping(source = "val.value4.userId", target = "userId")
-    @Mapping(source = "val.value4.firstName", target = "firstName")
-    @Mapping(source = "val.value4.lastName", target = "lastName")
-    @Mapping(source = "val.value5.customerSuffix", target = "customerSuffix")
-    PackageSummary mapProjectionToPackageSummary(Septet<TbPackage, TbPackageEvent, TbPudo, TbAddress, TbUserProfile, TbUserPudoRelation, String> val);
-
-    @Mapping(source = "values.value0", target = "pudo")
-    @Mapping(source = "values.value1", target = "lat")
-    @Mapping(source = "values.value2", target = "lon")
-    @Mapping(source = "values.value3", target = "distanceFromOrigin")
     @Mapping(target = "signature", ignore = true)
-    PudoMarker mapProjectionToPudoMarker(Quartet<PudoSummary, BigDecimal, BigDecimal, BigDecimal> values);
+    PudoMarker mapPudoMarkerDto(PudoSummary pudo, BigDecimal lat, BigDecimal lon, BigDecimal distanceFromOrigin);
 
-    @Mapping(source = "values.value0", target = "address")
-    @Mapping(source = "values.value1", target = "signature")
-    @Mapping(source = "values.value2", target = "lat")
-    @Mapping(source = "values.value3", target = "lon")
-    @Mapping(source = "values.value4", target = "distanceFromOrigin")
-    AddressMarker mapProjectionToAddressMarker(Quintet<AddressSearchResult, String, BigDecimal, BigDecimal, BigDecimal> values);
+    @Mapping(source = "address", target = "address")
+    @Mapping(source = "lat", target = "lat")
+    @Mapping(source = "lon", target = "lon")
+    AddressMarker mapAddressMarkerDto(AddressSearchResult address, String signature, BigDecimal lat, BigDecimal lon, BigDecimal distanceFromOrigin);
 
     default AddressSearchResult mapFeatureToAddressSearchResult(Feature feat) {
         if (feat == null) {

@@ -10,8 +10,6 @@ import less.green.openpudo.cdi.service.LocalizationService;
 import less.green.openpudo.common.ApiReturnCodes;
 import less.green.openpudo.common.CalendarUtils;
 import less.green.openpudo.common.dto.tuple.Pair;
-import less.green.openpudo.common.dto.tuple.Quartet;
-import less.green.openpudo.common.dto.tuple.Septet;
 import less.green.openpudo.common.dto.tuple.Sextet;
 import less.green.openpudo.rest.config.exception.ApiException;
 import less.green.openpudo.rest.dto.DtoMapper;
@@ -84,8 +82,8 @@ public class PackageService {
         } else {
             throw new AssertionError("Unsupported AccountType: " + caller.getAccountType());
         }
-        List<PackageEvent> events = rs.getValue1().stream().map(i -> dtoMapper.mapPackageEventEntityToDto(new Pair<>(i, getPackageStatusMessage(i.getPackageStatus())))).collect(Collectors.toList());
-        return dtoMapper.mapPackageEntityToDto(new Quartet<>(rs.getValue0(), events, cryptoService.hashidEncodeShort(packageId), cryptoService.hashidEncodeLong(packageId)));
+        List<PackageEvent> events = rs.getValue1().stream().map(i -> dtoMapper.mapPackageEventDto(i, getPackageStatusMessage(i.getPackageStatus()))).collect(Collectors.toList());
+        return dtoMapper.mapPackageDto(rs.getValue0(), events, cryptoService.hashidEncodeShort(packageId), cryptoService.hashidEncodeLong(packageId));
     }
 
     public Package getPackageByShareLink(String shareLink) {
@@ -106,11 +104,7 @@ public class PackageService {
             throw new AssertionError("Unsupported AccountType: " + accountType);
         }
         List<Sextet<TbPackage, TbPackageEvent, TbPudo, TbAddress, TbUserProfile, TbUserPudoRelation>> rs = packageDao.getPackages(accountType, referenceId, packageStatuses, history, limit, offset);
-        List<PackageSummary> ret = new ArrayList<>(rs.size());
-        for (var row : rs) {
-            ret.add(dtoMapper.mapProjectionToPackageSummary(new Septet<>(row.getValue0(), row.getValue1(), row.getValue2(), row.getValue3(), row.getValue4(), row.getValue5(), cryptoService.hashidEncodeShort(row.getValue0().getPackageId()))));
-        }
-        return ret;
+        return rs.stream().map(i -> dtoMapper.mapPackageSummaryDto(i.getValue0(), i.getValue1(), i.getValue2(), i.getValue3(), i.getValue4(), i.getValue5(), cryptoService.hashidEncodeShort(i.getValue0().getPackageId()))).collect(Collectors.toList());
     }
 
     protected String getPackageStatusMessage(PackageStatus packageStatus) {

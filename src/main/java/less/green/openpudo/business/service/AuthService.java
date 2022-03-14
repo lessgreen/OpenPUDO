@@ -249,7 +249,7 @@ public class AuthService {
         pudo.setPudoPicId(null);
         pudoDao.persist(pudo);
         pudoDao.flush();
-        TbAddress address = dtoMapper.mapAddressSearchResultToAddressEntity(req.getAddressMarker().getAddress());
+        TbAddress address = dtoMapper.mapAddressEntity(req.getAddressMarker().getAddress());
         address.setPudoId(pudo.getPudoId());
         address.setCreateTms(now);
         address.setUpdateTms(now);

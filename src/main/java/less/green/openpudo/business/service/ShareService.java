@@ -21,7 +21,6 @@ import less.green.openpudo.cdi.ExecutionContext;
 import less.green.openpudo.cdi.service.CryptoService;
 import less.green.openpudo.common.ExceptionUtils;
 import less.green.openpudo.common.dto.tuple.Pair;
-import less.green.openpudo.common.dto.tuple.Quartet;
 import less.green.openpudo.rest.dto.DtoMapper;
 import less.green.openpudo.rest.dto.pack.Package;
 import less.green.openpudo.rest.dto.pack.PackageEvent;
@@ -85,8 +84,8 @@ public class ShareService {
 
         // forcing italian language before proper localization
         context.setLanguage("it");
-        List<PackageEvent> events = rs.getValue1().stream().map(i -> dtoMapper.mapPackageEventEntityToDto(new Pair<>(i, packageService.getPackageStatusMessage(i.getPackageStatus())))).collect(Collectors.toList());
-        Package pack = dtoMapper.mapPackageEntityToDto(new Quartet<>(rs.getValue0(), events, cryptoService.hashidEncodeShort(packageId), cryptoService.hashidEncodeLong(packageId)));
+        List<PackageEvent> events = rs.getValue1().stream().map(i -> dtoMapper.mapPackageEventDto(i, packageService.getPackageStatusMessage(i.getPackageStatus()))).collect(Collectors.toList());
+        Package pack = dtoMapper.mapPackageDto(rs.getValue0(), events, cryptoService.hashidEncodeShort(packageId), cryptoService.hashidEncodeLong(packageId));
         TemplateInstance templateInstance = packageTemplate.data("package", pack, "appBaseUrl", appBaseUrl);
         return Response.ok(templateInstance.render()).build();
     }

@@ -7,8 +7,6 @@ import less.green.openpudo.business.model.usertype.RelationType;
 import less.green.openpudo.cdi.ExecutionContext;
 import less.green.openpudo.cdi.service.LocalizationService;
 import less.green.openpudo.common.ApiReturnCodes;
-import less.green.openpudo.common.FormatUtils;
-import less.green.openpudo.common.dto.tuple.Octet;
 import less.green.openpudo.common.dto.tuple.Quartet;
 import less.green.openpudo.common.dto.tuple.Quintet;
 import less.green.openpudo.rest.config.exception.ApiException;
@@ -26,7 +24,9 @@ import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
+import java.util.stream.Collectors;
 
+import static less.green.openpudo.common.FormatUtils.calcSavedCO2;
 import static less.green.openpudo.common.StringUtils.isEmpty;
 import static less.green.openpudo.common.StringUtils.sanitizeString;
 
@@ -68,8 +68,9 @@ public class PudoService {
             return null;
         }
         String rewardMessage = createPolicyMessage(rs.getValue3());
-        Long customerCount = userPudoRelationDao.getActiveCustomerCountByPudoId(pudoId);
-        Long packageCount = packageDao.getPackageCountByPudoId(pudoId);
+        long customerCount = userPudoRelationDao.getActiveCustomerCountByPudoId(pudoId);
+        long packageCount = packageDao.getPackageCountByPudoId(pudoId);
+        String savedCO2 = calcSavedCO2(packageCount);
         String customizedAddress = null;
         // customized address must be populated only if the caller is a pudo customer, of if it is the pudo owner (with a fake example suffix)
         if (context.getUserId() != null) {
@@ -80,7 +81,7 @@ public class PudoService {
                 customizedAddress = createCustomizedAddress(rs.getValue0(), rs.getValue1(), "AB123");
             }
         }
-        return dtoMapper.mapPudoEntityToDto(new Octet<>(rs.getValue0(), rs.getValue1(), rs.getValue2(), rewardMessage, customerCount, packageCount, FormatUtils.calcSavedCO2(packageCount), customizedAddress));
+        return dtoMapper.mapPudoDto(rs.getValue0(), rs.getValue1(), rs.getValue2(), rewardMessage, customerCount, packageCount, savedCO2, customizedAddress);
     }
 
     public Pudo getCurrentPudo() {
@@ -101,7 +102,7 @@ public class PudoService {
         }
         if (req.getAddressMarker() != null) {
             TbAddress oldAddress = addressDao.get(pudoId);
-            TbAddress newAddress = dtoMapper.mapAddressSearchResultToAddressEntity(req.getAddressMarker().getAddress());
+            TbAddress newAddress = dtoMapper.mapAddressEntity(req.getAddressMarker().getAddress());
             newAddress.setPudoId(oldAddress.getPudoId());
             newAddress.setCreateTms(oldAddress.getCreateTms());
             newAddress.setUpdateTms(now);
@@ -257,7 +258,7 @@ public class PudoService {
     public List<UserSummary> getCurrentPudoUsers() {
         Long pudoId = getCurrentPudoId();
         List<Quintet<Long, String, String, UUID, String>> rs = userPudoRelationDao.getActiveCustomersByPudoId(pudoId);
-        return dtoMapper.mapProjectionListToUserSummaryList(rs);
+        return rs.stream().map(i -> dtoMapper.mapUserSummaryDto(i.getValue0(), i.getValue1(), i.getValue2(), i.getValue3(), i.getValue4())).collect(Collectors.toList());
     }
 
     protected Long getCurrentPudoId() {

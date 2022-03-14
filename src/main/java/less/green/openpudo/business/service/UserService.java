@@ -10,7 +10,6 @@ import less.green.openpudo.common.ApiReturnCodes;
 import less.green.openpudo.common.CalendarUtils;
 import less.green.openpudo.common.FormatUtils;
 import less.green.openpudo.common.dto.tuple.Quartet;
-import less.green.openpudo.common.dto.tuple.Sextet;
 import less.green.openpudo.rest.config.exception.ApiException;
 import less.green.openpudo.rest.dto.DtoMapper;
 import less.green.openpudo.rest.dto.pack.PackageSummary;
@@ -88,7 +87,7 @@ public class UserService {
             TbUserPreferences userPreferences = userPreferencesDao.get(userId);
             String phoneNumber = userPreferences.getShowPhoneNumber() ? userDao.get(userId).getPhoneNumber() : null;
             long packageCount = packageDao.getPackageCountByUserId(context.getUserId());
-            return dtoMapper.mapUserProfileEntityToDto(userProfile, phoneNumber, packageCount, FormatUtils.calcSavedCO2(packageCount), userPudoRelation.getCustomerSuffix());
+            return dtoMapper.mapUserDto(userProfile, phoneNumber, packageCount, FormatUtils.calcSavedCO2(packageCount), userPudoRelation.getCustomerSuffix());
         } else {
             throw new AssertionError("Unsupported AccountType: " + caller.getAccountType());
         }
@@ -101,7 +100,7 @@ public class UserService {
         }
         TbUserProfile userProfile = userProfileDao.get(context.getUserId());
         long packageCount = packageDao.getPackageCountByUserId(context.getUserId());
-        return dtoMapper.mapUserProfileEntityToDto(userProfile, user.getPhoneNumber(), packageCount, FormatUtils.calcSavedCO2(packageCount), null);
+        return dtoMapper.mapUserDto(userProfile, user.getPhoneNumber(), packageCount, FormatUtils.calcSavedCO2(packageCount), null);
     }
 
     public User updateCurrentUserProfile(User req) {
@@ -144,7 +143,7 @@ public class UserService {
             throw new ApiException(ApiReturnCodes.FORBIDDEN, localizationService.getMessage(context.getLanguage(), "error.forbidden.wrong_account_type"));
         }
         TbUserPreferences userPreferences = userPreferencesDao.get(context.getUserId());
-        return dtoMapper.mapUserPreferencesEntityToDto(userPreferences);
+        return dtoMapper.mapUserPreferencesDto(userPreferences);
     }
 
     public UserPreferences updateCurrentUserPreferences(UserPreferences req) {
@@ -157,7 +156,7 @@ public class UserService {
         userPreferences.setShowPhoneNumber(req.getShowPhoneNumber());
         userPreferencesDao.flush();
         log.info("[{}] Updated preferences for user: {}", context.getExecutionId(), context.getUserId());
-        return dtoMapper.mapUserPreferencesEntityToDto(userPreferences);
+        return dtoMapper.mapUserPreferencesDto(userPreferences);
     }
 
     public void upsertDeviceToken(DeviceToken req) {
@@ -205,11 +204,8 @@ public class UserService {
             throw new ApiException(ApiReturnCodes.FORBIDDEN, localizationService.getMessage(context.getLanguage(), "error.forbidden.wrong_account_type"));
         }
         List<Quartet<TbPudo, TbAddress, TbUserPudoRelation, TbRating>> rs = pudoDao.getUserPudos(context.getUserId());
-        List<Sextet<Long, String, UUID, String, TbRating, String>> ret = rs.stream()
-                .map(i -> new Sextet<>(i.getValue0().getPudoId(), i.getValue0().getBusinessName(), i.getValue0().getPudoPicId(), i.getValue1().getLabel(), i.getValue3(),
-                        pudoService.createCustomizedAddress(i.getValue0(), i.getValue1(), i.getValue2().getCustomerSuffix())))
-                .collect(Collectors.toList());
-        return dtoMapper.mapProjectionListToPudoSummaryList(ret);
+        return rs.stream().map(i -> dtoMapper.mapPudoSummaryDto(i.getValue0().getPudoId(), i.getValue0().getBusinessName(), i.getValue0().getPudoPicId(), i.getValue1().getLabel(), i.getValue3(),
+                pudoService.createCustomizedAddress(i.getValue0(), i.getValue1(), i.getValue2().getCustomerSuffix()))).collect(Collectors.toList());
     }
 
     public List<PudoSummary> addPudoToFavourites(Long pudoId) {
