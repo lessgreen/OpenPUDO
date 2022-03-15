@@ -1,11 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:html_unescape/html_unescape_small.dart';
 import 'package:qui_green/commons/alert_dialog.dart';
+import 'package:qui_green/commons/utilities/localization.dart';
 import 'package:qui_green/models/package_summary.dart';
 import 'package:qui_green/models/pudo_package.dart';
 import 'package:qui_green/resources/routes_enum.dart';
 import 'package:qui_green/singletons/network/network_manager.dart';
-import 'package:qui_green/commons/utilities/localization.dart';
 
 class ContentPackagesListUserPageViewModel with ChangeNotifier {
   BuildContext context;
@@ -131,6 +131,18 @@ class ContentPackagesListUserPageViewModel with ChangeNotifier {
     for (String splitSearch in splittedSearch) {
       if ("ac${package.userId ?? 0}".contains(splitSearch)) {
         return true;
+      }
+    }
+    //Search by userName
+    if (package.firstName != null && package.lastName != null) {
+      String fullName = "${package.firstName} ${package.lastName}";
+      List<String> splittedName = fullName.toLowerCase().split(" ");
+      for (String splitSearch in splittedSearch) {
+        for (String splitName in splittedName) {
+          if (splitName.contains(splitSearch)) {
+            return true;
+          }
+        }
       }
     }
     return false;
