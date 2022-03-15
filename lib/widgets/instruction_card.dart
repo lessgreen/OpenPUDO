@@ -75,7 +75,7 @@ class InstructionCard extends StatelessWidget {
                 child: Text(
                   description,
                   textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.subtitle1!.copyWith(height: 1.2),
+                  style: Theme.of(context).textTheme.subtitle1,
                 )),
           ),
           const SizedBox(

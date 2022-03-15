@@ -30,7 +30,7 @@ class PackageTile extends StatelessWidget {
               ),
               RichText(
                 textAlign: TextAlign.center,
-                text: TextSpan(style: Theme.of(context).textTheme.bodyTextLight!.copyWith(color: CupertinoColors.secondaryLabel), children: [
+                text: TextSpan(style: Theme.of(context).textTheme.bodyTextLightSecondary, children: [
                   TextSpan(text: 'recipient'.localized(context)),
                   TextSpan(text: "AC${packageSummary.userId}", style: Theme.of(context).textTheme.bodyTextBold),
                 ]),

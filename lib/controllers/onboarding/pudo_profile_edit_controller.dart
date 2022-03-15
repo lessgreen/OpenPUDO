@@ -211,10 +211,7 @@ class _PudoProfileEditControllerState extends State<PudoProfileEditController> w
                             ),
                             Text(
                               'rewardDescriptionTitle'.localized(context),
-                              style: Theme.of(context).textTheme.caption?.copyWith(
-                                    fontStyle: FontStyle.italic,
-                                    fontWeight: FontWeight.w300,
-                                  ),
+                              style: Theme.of(context).textTheme.captionLightItalic,
                             ),
                           ],
                         ),
@@ -227,11 +224,7 @@ class _PudoProfileEditControllerState extends State<PudoProfileEditController> w
                       child: Text(
                         '“${currentUser.pudoProfile?.rewardMessage ?? ""}”',
                         key: keyText,
-                        style: Theme.of(context).textTheme.subtitle1?.copyWith(
-                              height: 2,
-                              fontStyle: FontStyle.italic,
-                              fontWeight: FontWeight.w300,
-                            ),
+                        style: Theme.of(context).textTheme.pudoRewardPolicy,
                         textAlign: TextAlign.center,
                       ),
                     ),

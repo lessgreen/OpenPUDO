@@ -24,11 +24,11 @@ import 'package:focus_detector/focus_detector.dart';
 import 'package:qui_green/commons/alert_dialog.dart';
 import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
 import 'package:qui_green/commons/ui/cupertino_navigation_bar_fix.dart';
+import 'package:qui_green/commons/utilities/localization.dart';
 import 'package:qui_green/resources/res.dart';
 import 'package:qui_green/singletons/network/network_manager.dart';
 import 'package:qui_green/widgets/main_button.dart';
 import 'package:qui_green/widgets/sascaffold.dart';
-import 'package:qui_green/commons/utilities/localization.dart';
 
 class ContactUsController extends StatefulWidget {
   const ContactUsController({Key? key}) : super(key: key);
@@ -83,7 +83,7 @@ class _ContactUsControllerState extends State<ContactUsController> {
                       maxLines: 10,
                       decoration: InputDecoration(
                         hintText: 'contactUsPlaceHolder'.localized(context),
-                        hintStyle: Theme.of(context).textTheme.bodyText2!.copyWith(fontStyle: FontStyle.italic),
+                        hintStyle: Theme.of(context).textTheme.bodyText2Italic,
                         border: const OutlineInputBorder(
                           borderSide: BorderSide(
                             width: 0.5,

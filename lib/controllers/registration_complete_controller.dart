@@ -27,6 +27,7 @@ import 'package:qui_green/commons/alert_dialog.dart';
 import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
 import 'package:qui_green/commons/ui/cupertino_navigation_bar_fix.dart';
 import 'package:qui_green/commons/utilities/keyboard_visibility.dart';
+import 'package:qui_green/commons/utilities/localization.dart';
 import 'package:qui_green/models/pudo_profile.dart';
 import 'package:qui_green/resources/res.dart';
 import 'package:qui_green/singletons/network/network_manager.dart';
@@ -34,7 +35,6 @@ import 'package:qui_green/view_models/registration_complete_controller_viewmodel
 import 'package:qui_green/widgets/main_button.dart';
 import 'package:qui_green/widgets/pudo_card.dart';
 import 'package:qui_green/widgets/sascaffold.dart';
-import 'package:qui_green/commons/utilities/localization.dart';
 
 class RegistrationCompleteController extends StatefulWidget {
   const RegistrationCompleteController({Key? key, this.pudoDataModel, required this.useCupertinoScaffold, required this.canGoBack}) : super(key: key);
@@ -116,7 +116,7 @@ class _RegistrationCompleteControllerState extends State<RegistrationCompleteCon
                     child: Text(
                       'mainLabel'.localized(context),
                       textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.subtitle1?.copyWith(fontWeight: FontWeight.w400),
+                      style: Theme.of(context).textTheme.subtitle1Regular,
                     ),
                   ),
                   (widget.pudoDataModel != null)
@@ -146,7 +146,7 @@ class _RegistrationCompleteControllerState extends State<RegistrationCompleteCon
                             padding: const EdgeInsets.all(8.0),
                             child: Text(
                               'allowContact'.localized(context),
-                              style: Theme.of(context).textTheme.caption?.copyWith(fontStyle: FontStyle.italic, height: 1.5, letterSpacing: 0),
+                              style: Theme.of(context).textTheme.captionSwitch,
                             ),
                           ),
                         )

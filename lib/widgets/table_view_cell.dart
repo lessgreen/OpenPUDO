@@ -82,11 +82,7 @@ class TableViewCell extends StatelessWidget {
                             ? Text(
                                 title ?? "",
                                 textAlign: textAlign,
-                                style: (textStyle != null)
-                                    ? textStyle
-                                    : Theme.of(context).textTheme.bodyTextLight?.copyWith(
-                                          color: AppColors.primaryTextColor,
-                                        ),
+                                style: (textStyle != null) ? textStyle : Theme.of(context).textTheme.bodyTextLight,
                               )
                             : title is Widget
                                 ? title

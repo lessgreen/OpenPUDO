@@ -122,7 +122,7 @@ class _InstructionControllerState extends State<InstructionController> with Conn
             child: Text(
               'reviewAddressHint'.localized(context),
               textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.subtitle1!.copyWith(height: 1.2),
+              style: Theme.of(context).textTheme.subtitle1,
             ),
           ),
       ],
@@ -225,7 +225,7 @@ class _InstructionControllerState extends State<InstructionController> with Conn
                 child: RichText(
                   textAlign: TextAlign.center,
                   text: TextSpan(
-                    style: Theme.of(context).textTheme.subtitle1!.copyWith(height: 1.2),
+                    style: Theme.of(context).textTheme.subtitle1,
                     children: [
                       TextSpan(text: 'shipmentReceivedSubtitle'.localized(context)),
                       TextSpan(
@@ -267,7 +267,7 @@ class _InstructionControllerState extends State<InstructionController> with Conn
                 alignment: Alignment.center,
                 child: RichText(
                   textAlign: TextAlign.center,
-                  text: TextSpan(style: Theme.of(context).textTheme.subtitle1!.copyWith(height: 1.2), children: [
+                  text: TextSpan(style: Theme.of(context).textTheme.subtitle1, children: [
                     TextSpan(text: 'chooseAnUserSubtitle'.localized(context)),
                     TextSpan(
                       text: 'defaultTitle'.localized(context, 'general'),
@@ -297,7 +297,7 @@ class _InstructionControllerState extends State<InstructionController> with Conn
                 alignment: Alignment.center,
                 child: RichText(
                   textAlign: TextAlign.center,
-                  text: TextSpan(style: Theme.of(context).textTheme.subtitle1!.copyWith(height: 1.2), children: [
+                  text: TextSpan(style: Theme.of(context).textTheme.subtitle1, children: [
                     TextSpan(
                       text: 'shotAPhotoSubtitle1'.localized(context),
                       style: const TextStyle(color: AppColors.primaryColorDark, fontWeight: FontWeight.w500),

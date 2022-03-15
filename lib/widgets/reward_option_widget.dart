@@ -19,6 +19,7 @@
 */
 
 import 'package:flutter/material.dart';
+import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
 import 'package:qui_green/commons/utilities/localization.dart';
 import 'package:qui_green/models/extra_info.dart';
 import 'package:qui_green/models/reward_option.dart';
@@ -75,7 +76,7 @@ class RewardOptionWidget extends StatelessWidget {
                             ),
                             TextSpan(
                               text: dataSource.text,
-                              style: Theme.of(context).textTheme.subtitle1?.copyWith(fontSize: 15, fontWeight: FontWeight.w300, letterSpacing: 0),
+                              style: Theme.of(context).textTheme.rewardOptionBody,
                             ),
                           ],
                         ),
@@ -241,7 +242,7 @@ class ExtraInfoOptionWidget extends StatelessWidget {
                     Expanded(
                       child: Text(
                         currentItem.text,
-                        style: Theme.of(context).textTheme.subtitle1?.copyWith(fontSize: 15, fontWeight: FontWeight.w300, letterSpacing: 0),
+                        style: Theme.of(context).textTheme.rewardOptionBody,
                       ),
                     ),
                     Transform.scale(
@@ -317,7 +318,7 @@ class ExtraInfoTextWidget extends StatelessWidget {
         maxLines: 5,
         decoration: InputDecoration(
           hintText: extraInfo.text,
-          hintStyle: Theme.of(context).textTheme.bodyText2!.copyWith(fontStyle: FontStyle.italic),
+          hintStyle: Theme.of(context).textTheme.bodyText2Italic,
           border: InputBorder.none,
         ),
       ),
@@ -419,7 +420,7 @@ class _ExtraInfoDecimalWidgetState extends State<ExtraInfoDecimalWidget> {
                     children: const [Text('€')],
                   ),
                 ),
-                hintStyle: Theme.of(context).textTheme.bodyText2!.copyWith(fontStyle: FontStyle.italic),
+                hintStyle: Theme.of(context).textTheme.bodyText2Italic,
                 border: InputBorder.none,
               ),
               validator: (newValue) {

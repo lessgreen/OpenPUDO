@@ -75,7 +75,7 @@ class _NotifySentControllerState extends State<NotifySentController> {
                   textAlign: TextAlign.center,
                   text: TextSpan(
                     text: '',
-                    style: Theme.of(context).textTheme.headlineSmall!.copyWith(height: 1.2),
+                    style: Theme.of(context).textTheme.headlineSmall,
                     children: [
                       TextSpan(
                         text: 'description'.localized(context),
