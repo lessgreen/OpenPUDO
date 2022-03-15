@@ -56,7 +56,7 @@ class _PudoProfileEditControllerState extends State<PudoProfileEditController> w
   Widget build(BuildContext context) {
     return Consumer<CurrentUser>(builder: (context, currentUser, _) {
       return ChangeNotifierProvider(
-          create: (context) => PudoProfileEditControllerViewModel(context, widget.rewardOptions),
+          create: (context) => PudoProfileEditControllerViewModel(context, currentUser.pudoProfile!, widget.isOnHome, widget.rewardOptions),
           child: Consumer<PudoProfileEditControllerViewModel>(
             builder: (BuildContext context, viewModel, Widget? child) {
               return widget.isOnHome ? _buildForHome(currentUser, viewModel) : _buildForOnboarding(currentUser, viewModel);
@@ -90,173 +90,157 @@ class _PudoProfileEditControllerState extends State<PudoProfileEditController> w
   Widget _buildForOnboarding(CurrentUser currentUser, PudoProfileEditControllerViewModel viewModel) => Scaffold(
         resizeToAvoidBottomInset: true,
         appBar: AppBar(
-          backgroundColor: ThemeData.light().scaffoldBackgroundColor,
-          systemOverlayStyle: SystemUiOverlayStyle.dark,
-          leading: const SizedBox(),
-          title: Text(
-            currentUser.pudoProfile!.businessName,
-            style: Theme.of(context).textTheme.navBarTitleDark,
-            overflow: TextOverflow.ellipsis,
-            maxLines: 1,
-          ),
-          centerTitle: true,
-          actions: [
-            Padding(
-              padding: const EdgeInsets.only(right: Dimension.paddingS),
-              child: TextFieldButton(
-                onPressed: () => viewModel.handleEdit(context, currentUser.pudoProfile!),
-                text: (viewModel.editEnabled ? "saveButton" : 'editButton').localized(context),
-                textColor: AppColors.primaryColorDark,
-              ),
+            backgroundColor: ThemeData.light().scaffoldBackgroundColor,
+            systemOverlayStyle: SystemUiOverlayStyle.dark,
+            leading: const SizedBox(),
+            title: Text(
+              currentUser.pudoProfile!.businessName,
+              style: Theme.of(context).textTheme.navBarTitleDark,
+              overflow: TextOverflow.ellipsis,
+              maxLines: 1,
             ),
-          ],
-        ),
+            centerTitle: true,
+            actions: [
+              Padding(
+                padding: const EdgeInsets.only(right: Dimension.paddingS),
+                child: TextFieldButton(
+                  onPressed: () => viewModel.handleEdit(context, currentUser.pudoProfile!),
+                  text: (viewModel.editEnabled ? "saveButton" : 'editButton').localized(context),
+                  textColor: AppColors.primaryColorDark,
+                ),
+              ),
+            ]),
         body: SafeArea(
-          child: Stack(
-            children: [
-              _buildBody(currentUser, viewModel),
-              Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Column(
-                    key: keyButtons,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      IgnorePointer(
-                        ignoring: true,
-                        child: ShaderMask(
-                            shaderCallback: (Rect rect) {
-                              return LinearGradient(
-                                begin: Alignment.topCenter,
-                                end: Alignment.bottomCenter,
-                                colors: [Theme.of(context).backgroundColor, Colors.transparent, Colors.transparent, Colors.transparent],
-                                stops: const [0, 0.5, 0.7, 1],
-                              ).createShader(rect);
-                            },
-                            blendMode: BlendMode.dstOut,
-                            child: Container(
-                              color: Colors.white.withAlpha(225),
-                              height: Dimension.paddingL,
-                              width: double.infinity,
-                            )),
+          child: Stack(children: [
+            _buildBody(currentUser, viewModel),
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Column(key: keyButtons, mainAxisSize: MainAxisSize.min, children: [
+                IgnorePointer(
+                  ignoring: true,
+                  child: ShaderMask(
+                      shaderCallback: (Rect rect) {
+                        return LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [Theme.of(context).backgroundColor, Colors.transparent, Colors.transparent, Colors.transparent],
+                          stops: const [0, 0.5, 0.7, 1],
+                        ).createShader(rect);
+                      },
+                      blendMode: BlendMode.dstOut,
+                      child: Container(
+                        color: Colors.white.withAlpha(225),
+                        height: Dimension.paddingL,
+                        width: double.infinity,
+                      )),
+                ),
+                AnimatedCrossFade(
+                    firstChild: MainButton(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: Dimension.padding,
                       ),
-                      AnimatedCrossFade(
-                          firstChild: MainButton(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: Dimension.padding,
-                            ),
-                            onPressed: () => viewModel.goToInstructions(context, currentUser.pudoProfile!),
-                            text: 'showInstructions'.localized(context),
-                          ),
-                          secondChild: const SizedBox(),
-                          crossFadeState: viewModel.editEnabled ? CrossFadeState.showSecond : CrossFadeState.showFirst,
-                          duration: const Duration(milliseconds: 100)),
-                      Container(
-                        height: Dimension.padding,
-                        color: Theme.of(context).scaffoldBackgroundColor,
+                      onPressed: () => viewModel.goToInstructions(context, currentUser.pudoProfile!),
+                      text: 'showInstructions'.localized(context),
+                    ),
+                    secondChild: const SizedBox(),
+                    crossFadeState: viewModel.editEnabled ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+                    duration: const Duration(milliseconds: 100)),
+                Container(
+                  height: Dimension.padding,
+                  color: Theme.of(context).scaffoldBackgroundColor,
+                ),
+                AnimatedCrossFade(
+                    firstChild: MainButton(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: Dimension.padding,
                       ),
-                      AnimatedCrossFade(
-                          firstChild: MainButton(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: Dimension.padding,
-                            ),
-                            onPressed: () => currentUser.refresh(),
-                            text: 'goToHome'.localized(context),
-                          ),
-                          secondChild: const SizedBox(),
-                          crossFadeState: viewModel.editEnabled ? CrossFadeState.showSecond : CrossFadeState.showFirst,
-                          duration: const Duration(milliseconds: 100)),
-                    ],
-                  ))
-            ],
-          ),
+                      onPressed: () => currentUser.refresh(),
+                      text: 'goToHome'.localized(context),
+                    ),
+                    secondChild: const SizedBox(),
+                    crossFadeState: viewModel.editEnabled ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+                    duration: const Duration(milliseconds: 100)),
+              ]),
+            )
+          ]),
         ),
       );
 
   Widget _buildBody(CurrentUser currentUser, PudoProfileEditControllerViewModel viewModel) => SAScaffold(
         isLoading: NetworkManager.instance.networkActivity,
-        body: ListView(
-          children: [
-            Container(
-              padding: const EdgeInsets.only(bottom: Dimension.padding),
-              alignment: Alignment.center,
-              child: Column(
-                children: [
-                  PudoEditableImage(picId: currentUser.pudoProfile?.pudoPicId, selectedImage: viewModel.image, editEnabled: viewModel.editEnabled, onTap: viewModel.pickFile),
-                  _buildPudoDetail(currentUser, viewModel),
-                  const SizedBox(height: Dimension.padding),
-                  _buildEditable(
-                      viewModel,
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: Dimension.padding),
-                        child: Container(
-                          width: MediaQuery.of(context).size.width / 3 * 2,
-                          height: 1,
-                          color: Colors.grey.shade400,
-                        ),
-                      ),
-                      const SizedBox()),
-                  _buildEditable(
-                      viewModel,
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 10),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Icon(
-                              Icons.info,
-                              color: AppColors.primaryColorDark,
-                            ),
-                            const SizedBox(
-                              width: Dimension.paddingS,
-                            ),
-                            Text(
-                              'rewardDescriptionTitle'.localized(context),
-                              style: Theme.of(context).textTheme.caption?.copyWith(
-                                    fontStyle: FontStyle.italic,
-                                    fontWeight: FontWeight.w300,
-                                  ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox()),
-                  _buildEditable(
-                    viewModel,
-                    SizedBox(
+        body: ListView(children: [
+          Container(
+            padding: const EdgeInsets.only(bottom: Dimension.padding),
+            alignment: Alignment.center,
+            child: Column(children: [
+              PudoEditableImage(picId: currentUser.pudoProfile?.pudoPicId, selectedImage: viewModel.image, editEnabled: viewModel.editEnabled, onTap: viewModel.pickFile),
+              _buildPudoDetail(currentUser, viewModel),
+              const SizedBox(height: Dimension.padding),
+              _buildEditable(
+                  viewModel,
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: Dimension.padding),
+                    child: Container(
                       width: MediaQuery.of(context).size.width / 3 * 2,
-                      child: Text(
-                        '“${currentUser.pudoProfile?.rewardMessage ?? ""}”',
-                        key: keyText,
-                        style: Theme.of(context).textTheme.subtitle1?.copyWith(
-                              height: 2,
-                              fontStyle: FontStyle.italic,
-                              fontWeight: FontWeight.w300,
-                            ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                    ListView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: viewModel.dataSource.length,
-                      itemBuilder: (context, index) {
-                        return RewardOptionWidget(
-                          index: index,
-                          viewModel: viewModel,
-                          hasTopPadding: index == 0,
-                        );
-                      },
+                      height: 1,
+                      color: Colors.grey.shade400,
                     ),
                   ),
-                ],
-              ),
-            ),
-            if (_checkIfOverlaps() && !viewModel.editEnabled)
-              SizedBox(
-                height: _getButtonsHeight(),
+                  const SizedBox()),
+              _buildEditable(
+                  viewModel,
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 10),
+                    child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                      const Icon(
+                        Icons.info,
+                        color: AppColors.primaryColorDark,
+                      ),
+                      const SizedBox(
+                        width: Dimension.paddingS,
+                      ),
+                      Text('rewardDescriptionTitle'.localized(context),
+                          style: Theme.of(context).textTheme.caption?.copyWith(
+                                fontStyle: FontStyle.italic,
+                                fontWeight: FontWeight.w300,
+                              )),
+                    ]),
+                  ),
+                  const SizedBox()),
+              _buildEditable(
+                viewModel,
+                SizedBox(
+                  width: MediaQuery.of(context).size.width / 3 * 2,
+                  child: Text(
+                    '“${currentUser.pudoProfile?.rewardMessage ?? ""}”',
+                    key: keyText,
+                    style: Theme.of(context).textTheme.subtitle1?.copyWith(
+                          height: 2,
+                          fontStyle: FontStyle.italic,
+                          fontWeight: FontWeight.w300,
+                        ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                ListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: viewModel.dataSource.length,
+                    itemBuilder: (context, index) {
+                      return RewardOptionWidget(
+                        index: index,
+                        viewModel: viewModel,
+                        hasTopPadding: index == 0,
+                      );
+                    }),
               )
-          ],
-        ),
+            ]),
+          ),
+          if (_checkIfOverlaps() && !viewModel.editEnabled)
+            SizedBox(
+              height: _getButtonsHeight(),
+            )
+        ]),
       );
 
   Widget _buildPudoDetail(CurrentUser currentUser, PudoProfileEditControllerViewModel viewModel) => Padding(
@@ -299,83 +283,73 @@ class _PudoProfileEditControllerState extends State<PudoProfileEditController> w
                 viewModel,
                 RichText(
                   textAlign: TextAlign.start,
-                  text: TextSpan(
-                    text: '',
-                    style: Theme.of(context).textTheme.bodyText2,
-                    children: [
-                      const WidgetSpan(
-                        alignment: PlaceholderAlignment.middle,
-                        child: Icon(
-                          Icons.location_on_rounded,
-                          color: AppColors.primaryColorDark,
-                        ),
+                  text: TextSpan(text: '', style: Theme.of(context).textTheme.bodyText2, children: [
+                    const WidgetSpan(
+                      alignment: PlaceholderAlignment.middle,
+                      child: Icon(
+                        Icons.location_on_rounded,
+                        color: AppColors.primaryColorDark,
                       ),
-                      const WidgetSpan(
-                        child: SizedBox(
-                          width: Dimension.paddingS,
-                        ),
-                      ),
-                      TextSpan(text: currentUser.pudoProfile!.address?.label ?? ""),
-                    ],
-                  ),
-                ),
-                Column(
-                  children: [
-                    CupertinoTextField(
-                      controller: viewModel.addressController,
-                      onChanged: (newValue) => viewModel.onSearchChanged(newValue),
-                      prefix: const Icon(Icons.location_on_rounded, color: AppColors.primaryColorDark, size: 23),
-                      padding: const EdgeInsets.all(Dimension.padding),
-                      placeholderStyle: const TextStyle(color: AppColors.colorGrey),
-                      decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Theme.of(context).primaryColor))),
-                      autofocus: false,
-                      textInputAction: TextInputAction.done,
                     ),
-                    AnimatedCrossFade(
-                      firstChild: SizedBox(width: MediaQuery.of(context).size.width),
-                      secondChild: Container(
-                        decoration: BoxDecoration(boxShadow: Shadows.baseShadow),
-                        margin: const EdgeInsets.symmetric(vertical: Dimension.paddingS, horizontal: Dimension.paddingS),
-                        child: AddressOverlaySearch(
-                          borderRadius: BorderRadius.zero,
-                          onTap: (GeoMarker marker) {
-                            viewModel.address = viewModel.convertGeoMarker(marker);
-                            viewModel.addressController.text = marker.address!.label ?? "";
-                            viewModel.isOpenListAddress = false;
-                          },
-                          addresses: viewModel.addresses,
-                        ),
-                      ),
-                      crossFadeState: viewModel.isOpenListAddress ? CrossFadeState.showSecond : CrossFadeState.showFirst,
-                      duration: const Duration(milliseconds: 150),
-                    ),
-                  ],
-                )),
-            const SizedBox(height: Dimension.paddingS),
-            _buildEditable(
-              viewModel,
-              RichText(
-                textAlign: TextAlign.start,
-                text: TextSpan(
-                  text: '',
-                  style: Theme.of(context).textTheme.bodyText2,
-                  children: [
-                    WidgetSpan(
-                        alignment: PlaceholderAlignment.middle,
-                        child: SvgPicture.asset(
-                          ImageSrc.phoneIconFill,
-                          color: AppColors.primaryColorDark,
-                          width: 23,
-                          height: 23,
-                        )),
                     const WidgetSpan(
                       child: SizedBox(
                         width: Dimension.paddingS,
                       ),
                     ),
-                    TextSpan(text: currentUser.pudoProfile!.publicPhoneNumber ?? ""),
-                  ],
+                    TextSpan(text: currentUser.pudoProfile!.address?.label ?? ""),
+                  ]),
                 ),
+                Column(children: [
+                  CupertinoTextField(
+                    controller: viewModel.addressController,
+                    onChanged: (newValue) => viewModel.onSearchChanged(newValue),
+                    prefix: const Icon(Icons.location_on_rounded, color: AppColors.primaryColorDark, size: 23),
+                    padding: const EdgeInsets.all(Dimension.padding),
+                    placeholderStyle: const TextStyle(color: AppColors.colorGrey),
+                    decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Theme.of(context).primaryColor))),
+                    autofocus: false,
+                    textInputAction: TextInputAction.done,
+                  ),
+                  AnimatedCrossFade(
+                    firstChild: SizedBox(width: MediaQuery.of(context).size.width),
+                    secondChild: Container(
+                      decoration: const BoxDecoration(boxShadow: Shadows.baseShadow),
+                      margin: const EdgeInsets.symmetric(vertical: Dimension.paddingS, horizontal: Dimension.paddingS),
+                      child: AddressOverlaySearch(
+                        borderRadius: BorderRadius.zero,
+                        onTap: (GeoMarker marker) {
+                          viewModel.address = viewModel.convertGeoMarker(marker);
+                          viewModel.addressController.text = marker.address!.label ?? "";
+                          viewModel.isOpenListAddress = false;
+                        },
+                        addresses: viewModel.addresses,
+                      ),
+                    ),
+                    crossFadeState: viewModel.isOpenListAddress ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+                    duration: const Duration(milliseconds: 150),
+                  ),
+                ])),
+            const SizedBox(height: Dimension.paddingS),
+            _buildEditable(
+              viewModel,
+              RichText(
+                textAlign: TextAlign.start,
+                text: TextSpan(text: '', style: Theme.of(context).textTheme.bodyText2, children: [
+                  WidgetSpan(
+                      alignment: PlaceholderAlignment.middle,
+                      child: SvgPicture.asset(
+                        ImageSrc.phoneIconFill,
+                        color: AppColors.primaryColorDark,
+                        width: 23,
+                        height: 23,
+                      )),
+                  const WidgetSpan(
+                    child: SizedBox(
+                      width: Dimension.paddingS,
+                    ),
+                  ),
+                  TextSpan(text: currentUser.pudoProfile!.publicPhoneNumber ?? ""),
+                ]),
               ),
               CupertinoTextField(
                 controller: viewModel.phoneController,

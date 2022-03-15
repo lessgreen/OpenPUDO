@@ -19,15 +19,12 @@
 */
 
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
 import 'package:qui_green/commons/ui/custom_network_image.dart';
 import 'package:qui_green/commons/utilities/date_time_extension.dart';
 import 'package:qui_green/commons/utilities/localization.dart';
 import 'package:qui_green/models/package_summary.dart';
 import 'package:qui_green/resources/res.dart';
-import 'package:qui_green/singletons/network/network_manager.dart';
-import 'package:transparent_image/transparent_image.dart';
 
 class PackageCard extends StatelessWidget {
   final PackageSummary dataSource;
@@ -41,7 +38,6 @@ class PackageCard extends StatelessWidget {
     required this.stars,
     required this.dataSource,
     this.placeHolderWidget,
-    /*required this.image, required this.name, required this.address, required this.stars, required this.deliveryDate, required this.isRead*/
   }) : super(key: key);
 
   @override
@@ -61,63 +57,58 @@ class PackageCard extends StatelessWidget {
                       boxShadow: Shadows.baseShadow,
                       borderRadius: BorderRadius.all(Radius.circular(Dimension.borderRadiusS)),
                     ),
-                    child: Row(
-                      children: [
-                        ClipRRect(
-                          borderRadius: const BorderRadius.only(
-                            topLeft: Radius.circular(Dimension.borderRadiusS),
-                            bottomLeft: Radius.circular(
-                              Dimension.borderRadiusS,
-                            ),
-                          ),
-                          child: CustomNetworkImage(
-                            fit: BoxFit.cover,
-                            width: 110,
-                            height: 100,
-                            url: dataSource.packagePicId,
-                            placeholderWidget: placeHolderWidget,
+                    child: Row(children: [
+                      ClipRRect(
+                        borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(Dimension.borderRadiusS),
+                          bottomLeft: Radius.circular(
+                            Dimension.borderRadiusS,
                           ),
                         ),
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.only(left: Dimension.padding, right: Dimension.paddingXS),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                              children: [
-                                if (dataSource.createTms != null) const SizedBox(height: Dimension.paddingS),
-                                if (dataSource.createTms != null)
-                                  Text(
-                                    (dataSource.packageStatus == PackageStatus.collected ? 'deliveredOn' : 'retiredOn').localized(context) + dataSource.createTms!.ddmmyyyy,
-                                    style: Theme.of(context).textTheme.captionSmall,
-                                  ),
-                                if (dataSource.createTms != null) const SizedBox(height: Dimension.padding),
-                                Text(
-                                  dataSource.businessName ?? "??",
-                                  style: Theme.of(context).textTheme.titleMedium,
-                                ),
-                                const SizedBox(height: Dimension.paddingXS),
-                                Text(
-                                  dataSource.label ?? "--",
-                                  style: Theme.of(context).textTheme.labelSmall,
-                                ),
-                                stars > 0
-                                    ? Row(
-                                        children: List<Widget>.generate(
-                                          stars > 5 ? 5 : stars,
-                                          (index) => Icon(
-                                            Icons.star_rounded,
-                                            color: Colors.yellow.shade700,
-                                          ),
-                                        ),
-                                      )
-                                    : const SizedBox(),
-                                const Spacer(),
-                              ],
-                            ),
-                          ),
+                        child: CustomNetworkImage(
+                          fit: BoxFit.cover,
+                          width: 110,
+                          height: 100,
+                          url: dataSource.packagePicId,
+                          placeholderWidget: placeHolderWidget,
                         ),
-                      ],
-                    ),
+                      ),
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: Dimension.padding, right: Dimension.paddingXS),
+                          child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+                            if (dataSource.createTms != null) const SizedBox(height: Dimension.paddingS),
+                            if (dataSource.createTms != null)
+                              Text(
+                                (dataSource.packageStatus == PackageStatus.collected ? 'deliveredOn' : 'retiredOn').localized(context) + dataSource.createTms!.ddmmyyyy,
+                                style: Theme.of(context).textTheme.captionSmall,
+                              ),
+                            if (dataSource.createTms != null) const SizedBox(height: Dimension.padding),
+                            Text(
+                              dataSource.businessName ?? "??",
+                              style: Theme.of(context).textTheme.titleMedium,
+                            ),
+                            const SizedBox(height: Dimension.paddingXS),
+                            Text(
+                              dataSource.label ?? "--",
+                              style: Theme.of(context).textTheme.labelSmall,
+                            ),
+                            stars > 0
+                                ? Row(
+                                    children: List<Widget>.generate(
+                                      stars > 5 ? 5 : stars,
+                                      (index) => Icon(
+                                        Icons.star_rounded,
+                                        color: Colors.yellow.shade700,
+                                      ),
+                                    ),
+                                  )
+                                : const SizedBox(),
+                            const Spacer(),
+                          ]),
+                        ),
+                      ),
+                    ]),
                   ),
                 ),
                 (dataSource.packageStatus == PackageStatus.notifySent)

@@ -24,11 +24,11 @@ import 'package:focus_detector/focus_detector.dart';
 import 'package:qui_green/commons/alert_dialog.dart';
 import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
 import 'package:qui_green/commons/ui/cupertino_navigation_bar_fix.dart';
+import 'package:qui_green/commons/utilities/localization.dart';
 import 'package:qui_green/resources/res.dart';
 import 'package:qui_green/singletons/network/network_manager.dart';
 import 'package:qui_green/widgets/main_button.dart';
 import 'package:qui_green/widgets/sascaffold.dart';
-import 'package:qui_green/commons/utilities/localization.dart';
 
 class ContactUsController extends StatefulWidget {
   const ContactUsController({Key? key}) : super(key: key);
@@ -38,7 +38,7 @@ class ContactUsController extends StatefulWidget {
 }
 
 class _ContactUsControllerState extends State<ContactUsController> {
-  FocusNode _formField = FocusNode();
+  final FocusNode _formField = FocusNode();
   String _feedback = "";
 
   @override
@@ -71,52 +71,50 @@ class _ContactUsControllerState extends State<ContactUsController> {
             body: Padding(
               padding: const EdgeInsets.all(Dimension.paddingM),
               child: Form(
-                child: Column(
-                  children: [
-                    TextFormField(
-                      focusNode: _formField,
-                      onChanged: (newValue) {
-                        setState(() {
-                          _feedback = newValue;
-                        });
-                      },
-                      maxLines: 10,
-                      decoration: InputDecoration(
-                        hintText: 'contactUsPlaceHolder'.localized(context),
-                        hintStyle: Theme.of(context).textTheme.bodyText2!.copyWith(fontStyle: FontStyle.italic),
-                        border: const OutlineInputBorder(
-                          borderSide: BorderSide(
-                            width: 0.5,
-                            color: AppColors.labelDark,
-                          ),
+                child: Column(children: [
+                  TextFormField(
+                    focusNode: _formField,
+                    onChanged: (newValue) {
+                      setState(() {
+                        _feedback = newValue;
+                      });
+                    },
+                    maxLines: 10,
+                    decoration: InputDecoration(
+                      hintText: 'contactUsPlaceHolder'.localized(context),
+                      hintStyle: Theme.of(context).textTheme.bodyText2!.copyWith(fontStyle: FontStyle.italic),
+                      border: const OutlineInputBorder(
+                        borderSide: BorderSide(
+                          width: 0.5,
+                          color: AppColors.labelDark,
                         ),
                       ),
                     ),
-                    const SizedBox(
-                      height: Dimension.paddingM,
-                    ),
-                    MainButton(
-                      onPressed: () {
-                        NetworkManager.instance.contactUs(_feedback).then(
-                          (value) {
-                            SAAlertDialog.displayAlertWithClose(
-                              context,
-                              'feedbackTitle'.localized(context),
-                              'thanksFeedback'.localized(context),
-                              completion: () {
-                                Navigator.of(context).pop();
-                              },
-                            );
-                          },
-                        ).catchError(
-                          (onError) => SAAlertDialog.displayAlertWithClose(context, 'genericErrorTitle'.localized(context, 'general'), onError),
-                        );
-                      },
-                      text: 'submitButton'.localized(context),
-                      enabled: _feedback.isEmpty == false,
-                    ),
-                  ],
-                ),
+                  ),
+                  const SizedBox(
+                    height: Dimension.paddingM,
+                  ),
+                  MainButton(
+                    onPressed: () {
+                      NetworkManager.instance.contactUs(_feedback).then(
+                        (value) {
+                          SAAlertDialog.displayAlertWithClose(
+                            context,
+                            'feedbackTitle'.localized(context),
+                            'thanksFeedback'.localized(context),
+                            completion: () {
+                              Navigator.of(context).pop();
+                            },
+                          );
+                        },
+                      ).catchError(
+                        (onError) => SAAlertDialog.displayAlertWithClose(context, 'genericErrorTitle'.localized(context, 'general'), onError),
+                      );
+                    },
+                    text: 'submitButton'.localized(context),
+                    enabled: _feedback.isEmpty == false,
+                  ),
+                ]),
               ),
             ),
           ),
@@ -125,6 +123,6 @@ class _ContactUsControllerState extends State<ContactUsController> {
     );
   }
 
-  //MARK: Actions
+//MARK: Actions
 
 }

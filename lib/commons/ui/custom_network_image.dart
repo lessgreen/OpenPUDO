@@ -18,8 +18,6 @@
  If not, see <https://github.com/lessgreen/OpenPUDO>.
 */
 
-import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:qui_green/resources/res.dart';
