@@ -18,6 +18,7 @@
  If not, see <https://github.com/lessgreen/OpenPUDO>.
 */
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
@@ -43,7 +44,10 @@ class _AboutYouControllerState extends State<AboutYouController> {
         appBar: AppBar(
           backgroundColor: Colors.transparent,
           systemOverlayStyle: SystemUiOverlayStyle.dark,
-          leading: const SizedBox(),
+          leading: CupertinoNavigationBarBackButton(
+            color: AppColors.primaryColorDark,
+            onPressed: () => Navigator.of(context).pushReplacementNamed(Routes.insertPhone),
+          ),
         ),
         body: Column(
           children: [
