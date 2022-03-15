@@ -1,5 +1,3 @@
-// ignore_for_file: invalid_use_of_protected_member
-
 /*
  OpenPUDO - PUDO and Micro-delivery software for Last Mile Collaboration
  Copyright (C) 2020-2022 LESS SRL - https://less.green

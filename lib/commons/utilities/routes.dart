@@ -86,7 +86,7 @@ dynamic routeWithSetting(RouteSettings settings) {
     case Routes.userPosition:
       return PageRouteHelper.buildPage(
         const UserPositionController(
-          canGoBack: false,
+          canGoBack: true,
           useCupertinoScaffold: false,
         ),
       );
@@ -151,6 +151,7 @@ dynamic routeWithSetting(RouteSettings settings) {
     case Routes.personalDataBusiness:
       return PageRouteHelper.buildPage(
         PersonalDataBusinessController(
+          canGoBack: true,
           phoneNumber: settings.arguments as String,
         ),
       );
