@@ -19,7 +19,7 @@ class PackageTile extends StatelessWidget {
       fullWidth: true,
       showTrailingChevron: true,
       title: SizedBox(
-          height: 40,
+          height: 50,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -29,10 +29,13 @@ class PackageTile extends StatelessWidget {
                 style: Theme.of(context).textTheme.bodyTextBold,
               ),
               RichText(
-                textAlign: TextAlign.center,
+                textAlign: TextAlign.start,
                 text: TextSpan(style: Theme.of(context).textTheme.bodyTextLight!.copyWith(color: CupertinoColors.secondaryLabel), children: [
                   TextSpan(text: 'recipient'.localized(context)),
-                  TextSpan(text: "AC${packageSummary.userId}", style: Theme.of(context).textTheme.bodyTextBold),
+                  TextSpan(text: "AC${packageSummary.userId}\n", style: Theme.of(context).textTheme.bodyTextBold),
+                  if (packageSummary.firstName != null && packageSummary.lastName != null) TextSpan(text: 'recipient'.localized(context), style: Theme.of(context).textTheme.transparentText),
+                  if (packageSummary.firstName != null && packageSummary.lastName != null)
+                    TextSpan(text: "${packageSummary.firstName} ${packageSummary.lastName}", style: Theme.of(context).textTheme.captionSmall),
                 ]),
               ),
             ],
