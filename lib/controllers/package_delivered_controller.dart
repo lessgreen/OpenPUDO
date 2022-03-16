@@ -34,6 +34,7 @@ import 'package:qui_green/resources/routes_enum.dart';
 import 'package:qui_green/singletons/network/network_manager.dart';
 import 'package:qui_green/widgets/sascaffold.dart';
 import 'package:qui_green/widgets/table_view_cell.dart';
+import 'package:vibration/vibration.dart';
 
 class PackageDeliveredController extends StatefulWidget {
   const PackageDeliveredController({Key? key}) : super(key: key);
@@ -132,10 +133,15 @@ class _PackageDeliveredControllerState extends State<PackageDeliveredController>
                         setState(() {
                           selectedPackage = value;
                         });
-                        NetworkManager.instance.changePackageStatus(packageId: value.packageId, newStatus: PackageStatus.collected).then((value) {
-                          if (value is PudoPackage) {
-                            Navigator.of(context).pop();
+                        NetworkManager.instance.changePackageStatus(packageId: value.packageId, newStatus: PackageStatus.collected).then((valueUpdated) {
+                          if (valueUpdated is PudoPackage) {
+                            Navigator.of(context).pushReplacementNamed(Routes.packageDeliveryDone,
+                                arguments: value.firstName != null && value.lastName != null ? "${value.firstName} ${value.lastName}" : "AC${value.userId ?? 0}");
+                          } else {
+                            SAAlertDialog.displayAlertWithClose(context, "Error", valueUpdated, barrierDismissable: false);
                           }
+                        }).catchError((onError) {
+                          SAAlertDialog.displayAlertWithClose(context, "Error", onError, barrierDismissable: false);
                         });
                       }
                     });
@@ -162,16 +168,19 @@ class _PackageDeliveredControllerState extends State<PackageDeliveredController>
         color: Colors.white,
       );
 
-  void _handleQRCode(String? code) {
+  void _handleQRCode(String? code) async {
     if (_code == null && code != null) {
       _code = code;
+      if (await Vibration.hasVibrator() ?? false) {
+        Vibration.vibrate();
+      }
       NetworkManager.instance.getPackageDetailsByQrCode(shareLink: _code!).then((value) {
         if (value is PudoPackage) {
-          NetworkManager.instance.changePackageStatus(packageId: value.packageId, newStatus: PackageStatus.collected).then((value) {
-            if (value is PudoPackage) {
-              Navigator.of(context).pop();
+          NetworkManager.instance.changePackageStatus(packageId: value.packageId, newStatus: PackageStatus.collected).then((valueUpdated) {
+            if (valueUpdated is PudoPackage) {
+              Navigator.of(context).pushReplacementNamed(Routes.packageDeliveryDone, arguments: "AC${value.userId ?? 0}");
             } else {
-              SAAlertDialog.displayAlertWithClose(context, 'genericErrorTitle'.localized(context, 'general'), value, barrierDismissable: false, completion: () => _code = null);
+              SAAlertDialog.displayAlertWithClose(context, 'genericErrorTitle'.localized(context, 'general'), valueUpdated, barrierDismissable: false, completion: () => _code = null);
             }
           }).catchError((onError) {
             SAAlertDialog.displayAlertWithClose(context, 'genericErrorTitle'.localized(context, 'general'), onError, barrierDismissable: false, completion: () => _code = null);

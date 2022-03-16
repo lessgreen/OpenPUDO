@@ -7,8 +7,8 @@ part of 'user_summary.dart';
 // **************************************************************************
 
 UserSummary _$UserSummaryFromJson(Map<String, dynamic> json) => UserSummary(
-      firstName: json['firstName'] as String,
-      lastName: json['lastName'] as String,
+      firstName: json['firstName'] as String?,
+      lastName: json['lastName'] as String?,
       customerSuffix: json['customerSuffix'] as String?,
       profilePicId: json['profilePicId'] as String?,
       userId: json['userId'] as int?,

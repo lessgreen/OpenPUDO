@@ -24,8 +24,8 @@ part 'user_summary.g.dart';
 
 @JsonSerializable()
 class UserSummary {
-  String firstName;
-  String lastName;
+  String? firstName;
+  String? lastName;
   String? profilePicId;
   String? customerSuffix;
   final int? userId;
