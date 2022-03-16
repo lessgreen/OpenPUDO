@@ -39,63 +39,22 @@ class MyAppTheme {
                 ),
               ),
               foregroundColor: MaterialStateProperty.all(Colors.white),
-              textStyle: MaterialStateProperty.all(
-                  Theme.of(context).textTheme.bodyText2),
-              backgroundColor:
-                  MaterialStateProperty.all(AppColors.primaryColorDark))),
+              textStyle: MaterialStateProperty.all(Theme.of(context).textTheme.bodyText2),
+              backgroundColor: MaterialStateProperty.all(AppColors.primaryColorDark))),
       textTheme: TextTheme(
-        headline1: Theme.of(context)
-            .textTheme
-            .headline1
-            ?.copyWith(letterSpacing: Dimension.letterSpacing,fontFamily: fontFamilyName),
-        headline2: Theme.of(context)
-            .textTheme
-            .headline2
-            ?.copyWith(letterSpacing: Dimension.letterSpacing,fontFamily: fontFamilyName),
-        headline3: Theme.of(context)
-            .textTheme
-            .headline3
-            ?.copyWith(letterSpacing: Dimension.letterSpacing,fontFamily: fontFamilyName),
-        headline4: Theme.of(context)
-            .textTheme
-            .headline4
-            ?.copyWith(letterSpacing: Dimension.letterSpacing,fontFamily: fontFamilyName),
-        headline5: Theme.of(context)
-            .textTheme
-            .headline5
-            ?.copyWith(letterSpacing: Dimension.letterSpacing,fontFamily: fontFamilyName),
-        headline6: Theme.of(context)
-            .textTheme
-            .headline6
-            ?.copyWith(letterSpacing: Dimension.letterSpacing,fontFamily: fontFamilyName),
-        subtitle1: Theme.of(context)
-            .textTheme
-            .subtitle1
-            ?.copyWith(letterSpacing: Dimension.letterSpacing,fontFamily: fontFamilyName),
-        subtitle2: Theme.of(context)
-            .textTheme
-            .subtitle2
-            ?.copyWith(letterSpacing: Dimension.letterSpacing,fontFamily: fontFamilyName),
-        bodyText1: Theme.of(context)
-            .textTheme
-            .bodyText1
-            ?.copyWith(letterSpacing: Dimension.letterSpacing,fontFamily: fontFamilyName),
-        bodyText2: Theme.of(context)
-            .textTheme
-            .bodyText2
-            ?.copyWith(letterSpacing: Dimension.letterSpacing,fontFamily: fontFamilyName),
-        button: Theme.of(context)
-            .textTheme
-            .button
-            ?.copyWith(letterSpacing: Dimension.letterSpacing,fontFamily: fontFamilyName),
-        caption: Theme.of(context)
-            .textTheme
-            .caption
-            ?.copyWith(letterSpacing: Dimension.letterSpacing,fontFamily: fontFamilyName),
-        overline: Theme.of(context)
-            .textTheme
-            .overline
-            ?.copyWith(letterSpacing: Dimension.letterSpacing,fontFamily: fontFamilyName),
+        headline1: Theme.of(context).textTheme.headline1?.copyWith(letterSpacing: Dimension.letterSpacing, fontFamily: fontFamilyName, height: 1.2),
+        headline2: Theme.of(context).textTheme.headline2?.copyWith(letterSpacing: Dimension.letterSpacing, fontFamily: fontFamilyName, height: 1.2),
+        headline3: Theme.of(context).textTheme.headline3?.copyWith(letterSpacing: Dimension.letterSpacing, fontFamily: fontFamilyName, height: 1.2),
+        headline4: Theme.of(context).textTheme.headline4?.copyWith(letterSpacing: Dimension.letterSpacing, fontFamily: fontFamilyName, height: 1.2),
+        headline5: Theme.of(context).textTheme.headline5?.copyWith(letterSpacing: Dimension.letterSpacing, fontFamily: fontFamilyName, height: 1.2),
+        headline6: Theme.of(context).textTheme.headline6?.copyWith(letterSpacing: Dimension.letterSpacing, fontFamily: fontFamilyName, height: 1.2),
+        subtitle1: Theme.of(context).textTheme.subtitle1?.copyWith(letterSpacing: Dimension.letterSpacing, fontFamily: fontFamilyName, height: 1.2),
+        subtitle2: Theme.of(context).textTheme.subtitle2?.copyWith(letterSpacing: Dimension.letterSpacing, fontFamily: fontFamilyName, height: 1.2),
+        bodyText1: Theme.of(context).textTheme.bodyText1?.copyWith(letterSpacing: Dimension.letterSpacing, fontFamily: fontFamilyName, height: 1.2),
+        bodyText2: Theme.of(context).textTheme.bodyText2?.copyWith(letterSpacing: Dimension.letterSpacing, fontFamily: fontFamilyName, height: 1.2),
+        button: Theme.of(context).textTheme.button?.copyWith(letterSpacing: Dimension.letterSpacing, fontFamily: fontFamilyName, height: 1.2),
+        caption: Theme.of(context).textTheme.caption?.copyWith(letterSpacing: Dimension.letterSpacing, fontFamily: fontFamilyName, height: 1.2),
+        overline: Theme.of(context).textTheme.overline?.copyWith(letterSpacing: Dimension.letterSpacing, fontFamily: fontFamilyName, height: 1.2),
       ),
       primarySwatch: AppColors.primarySwatch.materialColor,
       fontFamily: fontFamilyName,
@@ -110,16 +69,12 @@ class MyAppTheme {
       appBarTheme: const AppBarTheme(
         foregroundColor: Colors.white,
         elevation: 0,
-        systemOverlayStyle:
-            SystemUiOverlayStyle(statusBarBrightness: Brightness.dark), // 2
+        systemOverlayStyle: SystemUiOverlayStyle(statusBarBrightness: Brightness.dark), // 2
       ),
       buttonTheme: ButtonThemeData(
-        colorScheme: Theme.of(context)
-            .colorScheme
-            .copyWith(primary: Colors.white), // Text color
+        colorScheme: Theme.of(context).colorScheme.copyWith(primary: Colors.white), // Text color
       ),
-      floatingActionButtonTheme: const FloatingActionButtonThemeData(
-          foregroundColor: Colors.white, elevation: 0),
+      floatingActionButtonTheme: const FloatingActionButtonThemeData(foregroundColor: Colors.white, elevation: 0),
     );
   }
 
@@ -137,16 +92,12 @@ class MyAppTheme {
       appBarTheme: const AppBarTheme(
         foregroundColor: Colors.white,
         elevation: 0,
-        systemOverlayStyle:
-            SystemUiOverlayStyle(statusBarBrightness: Brightness.dark), // 2
+        systemOverlayStyle: SystemUiOverlayStyle(statusBarBrightness: Brightness.dark), // 2
       ),
       buttonTheme: ButtonThemeData(
-        colorScheme: Theme.of(context)
-            .colorScheme
-            .copyWith(primary: Colors.white), // Text color
+        colorScheme: Theme.of(context).colorScheme.copyWith(primary: Colors.white), // Text color
       ),
-      floatingActionButtonTheme: const FloatingActionButtonThemeData(
-          foregroundColor: Colors.white, elevation: 0),
+      floatingActionButtonTheme: const FloatingActionButtonThemeData(foregroundColor: Colors.white, elevation: 0),
       textButtonTheme: TextButtonThemeData(
           style: ButtonStyle(
               padding: MaterialStateProperty.all(const EdgeInsets.all(18)),
@@ -157,37 +108,22 @@ class MyAppTheme {
                 ),
               ),
               foregroundColor: MaterialStateProperty.all(Colors.white),
-              textStyle: MaterialStateProperty.all(
-                  Theme.of(context).textTheme.bodyText2),
-              backgroundColor:
-                  MaterialStateProperty.all(AppColors.primaryColorDark))),
+              textStyle: MaterialStateProperty.all(Theme.of(context).textTheme.bodyText2),
+              backgroundColor: MaterialStateProperty.all(AppColors.primaryColorDark))),
       textTheme: TextTheme(
-        headline1: Theme.of(context).textTheme.headline1?.copyWith(
-            letterSpacing: Dimension.letterSpacing, color: Colors.white,fontFamily: fontFamilyName),
-        headline2: Theme.of(context).textTheme.headline2?.copyWith(
-            letterSpacing: Dimension.letterSpacing, color: Colors.white,fontFamily: fontFamilyName),
-        headline3: Theme.of(context).textTheme.headline3?.copyWith(
-            letterSpacing: Dimension.letterSpacing, color: Colors.white,fontFamily: fontFamilyName),
-        headline4: Theme.of(context).textTheme.headline4?.copyWith(
-            letterSpacing: Dimension.letterSpacing, color: Colors.white,fontFamily: fontFamilyName),
-        headline5: Theme.of(context).textTheme.headline5?.copyWith(
-            letterSpacing: Dimension.letterSpacing, color: Colors.white,fontFamily: fontFamilyName),
-        headline6: Theme.of(context).textTheme.headline6?.copyWith(
-            letterSpacing: Dimension.letterSpacing, color: Colors.white,fontFamily: fontFamilyName),
-        subtitle1: Theme.of(context).textTheme.subtitle1?.copyWith(
-            letterSpacing: Dimension.letterSpacing, color: Colors.white,fontFamily: fontFamilyName),
-        subtitle2: Theme.of(context).textTheme.subtitle2?.copyWith(
-            letterSpacing: Dimension.letterSpacing, color: Colors.white,fontFamily: fontFamilyName),
-        bodyText1: Theme.of(context).textTheme.bodyText1?.copyWith(
-            letterSpacing: Dimension.letterSpacing, color: Colors.white,fontFamily: fontFamilyName),
-        bodyText2: Theme.of(context).textTheme.bodyText2?.copyWith(
-            letterSpacing: Dimension.letterSpacing, color: Colors.white,fontFamily: fontFamilyName),
-        button: Theme.of(context).textTheme.button?.copyWith(
-            letterSpacing: Dimension.letterSpacing, color: Colors.white,fontFamily: fontFamilyName),
-        caption: Theme.of(context).textTheme.caption?.copyWith(
-            letterSpacing: Dimension.letterSpacing, color: Colors.white,fontFamily: fontFamilyName),
-        overline: Theme.of(context).textTheme.overline?.copyWith(
-            letterSpacing: Dimension.letterSpacing, color: Colors.white,fontFamily: fontFamilyName),
+        headline1: Theme.of(context).textTheme.headline1?.copyWith(letterSpacing: Dimension.letterSpacing, color: Colors.white, fontFamily: fontFamilyName, height: 1.2),
+        headline2: Theme.of(context).textTheme.headline2?.copyWith(letterSpacing: Dimension.letterSpacing, color: Colors.white, fontFamily: fontFamilyName, height: 1.2),
+        headline3: Theme.of(context).textTheme.headline3?.copyWith(letterSpacing: Dimension.letterSpacing, color: Colors.white, fontFamily: fontFamilyName, height: 1.2),
+        headline4: Theme.of(context).textTheme.headline4?.copyWith(letterSpacing: Dimension.letterSpacing, color: Colors.white, fontFamily: fontFamilyName, height: 1.2),
+        headline5: Theme.of(context).textTheme.headline5?.copyWith(letterSpacing: Dimension.letterSpacing, color: Colors.white, fontFamily: fontFamilyName, height: 1.2),
+        headline6: Theme.of(context).textTheme.headline6?.copyWith(letterSpacing: Dimension.letterSpacing, color: Colors.white, fontFamily: fontFamilyName, height: 1.2),
+        subtitle1: Theme.of(context).textTheme.subtitle1?.copyWith(letterSpacing: Dimension.letterSpacing, color: Colors.white, fontFamily: fontFamilyName, height: 1.2),
+        subtitle2: Theme.of(context).textTheme.subtitle2?.copyWith(letterSpacing: Dimension.letterSpacing, color: Colors.white, fontFamily: fontFamilyName, height: 1.2),
+        bodyText1: Theme.of(context).textTheme.bodyText1?.copyWith(letterSpacing: Dimension.letterSpacing, color: Colors.white, fontFamily: fontFamilyName, height: 1.2),
+        bodyText2: Theme.of(context).textTheme.bodyText2?.copyWith(letterSpacing: Dimension.letterSpacing, color: Colors.white, fontFamily: fontFamilyName, height: 1.2),
+        button: Theme.of(context).textTheme.button?.copyWith(letterSpacing: Dimension.letterSpacing, color: Colors.white, fontFamily: fontFamilyName, height: 1.2),
+        caption: Theme.of(context).textTheme.caption?.copyWith(letterSpacing: Dimension.letterSpacing, color: Colors.white, fontFamily: fontFamilyName, height: 1.2),
+        overline: Theme.of(context).textTheme.overline?.copyWith(letterSpacing: Dimension.letterSpacing, color: Colors.white, fontFamily: fontFamilyName, height: 1.2),
       ),
       brightness: Brightness.dark,
     );

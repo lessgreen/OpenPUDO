@@ -21,11 +21,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
 import 'package:qui_green/commons/utilities/keyboard_visibility.dart';
 import 'package:qui_green/commons/utilities/localization.dart';
-import 'package:qui_green/widgets/main_button.dart';
 import 'package:qui_green/resources/res.dart';
 import 'package:qui_green/resources/routes_enum.dart';
+import 'package:qui_green/widgets/main_button.dart';
 
 class ThanksController extends StatefulWidget {
   const ThanksController({Key? key}) : super(key: key);
@@ -64,7 +65,7 @@ class _ThanksControllerState extends State<ThanksController> {
                   child: Text(
                     'secondaryLabel'.localized(context),
                     textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.subtitle1?.copyWith(fontWeight: FontWeight.w400),
+                    style: Theme.of(context).textTheme.subtitle1Regular,
                   ),
                 ),
                 const Spacer(),

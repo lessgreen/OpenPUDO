@@ -27,6 +27,7 @@ import 'package:qui_green/commons/alert_dialog.dart';
 import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
 import 'package:qui_green/commons/ui/cupertino_navigation_bar_fix.dart';
 import 'package:qui_green/commons/ui/custom_network_image.dart';
+import 'package:qui_green/commons/utilities/localization.dart';
 import 'package:qui_green/commons/utilities/url_launcher_helper.dart';
 import 'package:qui_green/models/pudo_profile.dart';
 import 'package:qui_green/resources/res.dart';
@@ -34,7 +35,6 @@ import 'package:qui_green/resources/routes_enum.dart';
 import 'package:qui_green/singletons/current_user.dart';
 import 'package:qui_green/singletons/network/network_manager.dart';
 import 'package:qui_green/widgets/text_field_button.dart';
-import 'package:qui_green/commons/utilities/localization.dart';
 
 class PudoDetailController extends StatefulWidget {
   const PudoDetailController({Key? key, required this.dataModel, required this.checkIsAlreadyAdded, this.nextRoute, required this.useCupertinoScaffold}) : super(key: key);
@@ -297,10 +297,7 @@ class _PudoDetailControllerState extends State<PudoDetailController> with Connec
                     ),
                     Text(
                       'rewardDescription'.localized(context),
-                      style: Theme.of(context).textTheme.caption?.copyWith(
-                            fontStyle: FontStyle.italic,
-                            fontWeight: FontWeight.w300,
-                          ),
+                      style: Theme.of(context).textTheme.captionLightItalic,
                     ),
                   ],
                 ),
@@ -309,11 +306,7 @@ class _PudoDetailControllerState extends State<PudoDetailController> with Connec
                   width: MediaQuery.of(context).size.width / 3 * 2,
                   child: Text(
                     '“${widget.dataModel.rewardMessage ?? ""}”',
-                    style: Theme.of(context).textTheme.subtitle1?.copyWith(
-                          height: 2,
-                          fontStyle: FontStyle.italic,
-                          fontWeight: FontWeight.w300,
-                        ),
+                    style: Theme.of(context).textTheme.pudoRewardPolicy,
                     textAlign: TextAlign.center,
                   ),
                 ),

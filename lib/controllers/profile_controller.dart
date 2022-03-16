@@ -32,6 +32,7 @@ import 'package:qui_green/commons/alert_dialog.dart';
 import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
 import 'package:qui_green/commons/ui/cupertino_navigation_bar_fix.dart';
 import 'package:qui_green/commons/ui/custom_network_image.dart';
+import 'package:qui_green/commons/utilities/localization.dart';
 import 'package:qui_green/models/user_profile.dart';
 import 'package:qui_green/resources/res.dart';
 import 'package:qui_green/resources/routes_enum.dart';
@@ -40,7 +41,6 @@ import 'package:qui_green/singletons/network/network_manager.dart';
 import 'package:qui_green/widgets/sascaffold.dart';
 import 'package:qui_green/widgets/table_view_cell.dart';
 import 'package:qui_green/widgets/user_profile_recap_widget.dart';
-import 'package:qui_green/commons/utilities/localization.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ProfileController extends StatefulWidget {
@@ -99,7 +99,7 @@ class _ProfileControllerState extends State<ProfileController> with ConnectionAw
                       ),
                       Text(
                         'endButton'.localized(context),
-                        style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Colors.white),
+                        style: Theme.of(context).textTheme.bodyText2White,
                       ),
                     ),
                   ),
@@ -181,7 +181,7 @@ class _ProfileControllerState extends State<ProfileController> with ConnectionAw
                         TableViewCell(
                           title: "deleteAccount".localized(context),
                           textAlign: TextAlign.center,
-                          textStyle: Theme.of(context).textTheme.bodyTextBold?.copyWith(color: Colors.red),
+                          textStyle: Theme.of(context).textTheme.bodyTextBoldRed,
                           showTrailingChevron: false,
                           onTap: () => _showConfirmationDelete(
                               acceptCallback: () {

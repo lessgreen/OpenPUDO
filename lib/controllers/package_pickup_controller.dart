@@ -27,6 +27,7 @@ import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
 import 'package:qui_green/commons/ui/cupertino_navigation_bar_fix.dart';
 import 'package:qui_green/commons/ui/custom_network_image.dart';
 import 'package:qui_green/commons/utilities/date_time_extension.dart';
+import 'package:qui_green/commons/utilities/localization.dart';
 import 'package:qui_green/models/package_summary.dart';
 import 'package:qui_green/models/pudo_package.dart';
 import 'package:qui_green/models/pudo_package_event.dart';
@@ -35,7 +36,6 @@ import 'package:qui_green/resources/routes_enum.dart';
 import 'package:qui_green/singletons/network/network_manager.dart';
 import 'package:qui_green/widgets/sascaffold.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:qui_green/commons/utilities/localization.dart';
 
 class PackagePickupController extends StatefulWidget {
   const PackagePickupController({Key? key, required this.packageModel, this.isForPudo = false}) : super(key: key);
@@ -169,7 +169,7 @@ class _PackagePickupControllerState extends State<PackagePickupController> {
                   children: [
                     Text(
                       'alreadyPicked'.localized(context),
-                      style: Theme.of(context).textTheme.bodyTextBold?.copyWith(fontSize: 16),
+                      style: Theme.of(context).textTheme.subtitle1,
                     ),
                     MaterialButton(
                       textColor: AppColors.primaryColorDark,

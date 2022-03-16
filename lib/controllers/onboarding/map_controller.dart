@@ -399,7 +399,7 @@ class _MapControllerState extends State<MapController> with ConnectionAware, Tic
                   heroTag: Key(markers.length.toString() + markers.first.point.toSexagesimal()),
                   child: Text(
                     markers.length.toString(),
-                    style: Theme.of(context).textTheme.caption?.copyWith(color: Colors.white),
+                    style: Theme.of(context).textTheme.captionWhite,
                   ),
                   onPressed: null,
                 );

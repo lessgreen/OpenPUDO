@@ -26,6 +26,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:qui_green/commons/alert_dialog.dart';
 import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
 import 'package:qui_green/commons/ui/cupertino_navigation_bar_fix.dart';
+import 'package:qui_green/commons/utilities/localization.dart';
 import 'package:qui_green/models/package_summary.dart';
 import 'package:qui_green/models/pudo_package.dart';
 import 'package:qui_green/resources/res.dart';
@@ -33,7 +34,6 @@ import 'package:qui_green/resources/routes_enum.dart';
 import 'package:qui_green/singletons/network/network_manager.dart';
 import 'package:qui_green/widgets/sascaffold.dart';
 import 'package:qui_green/widgets/table_view_cell.dart';
-import 'package:qui_green/commons/utilities/localization.dart';
 
 class PackageDeliveredController extends StatefulWidget {
   const PackageDeliveredController({Key? key}) : super(key: key);
@@ -77,7 +77,7 @@ class _PackageDeliveredControllerState extends State<PackageDeliveredController>
                     textAlign: TextAlign.center,
                     text: TextSpan(
                       text: '',
-                      style: Theme.of(context).textTheme.navBarTitleDark!.copyWith(height: 1.2),
+                      style: Theme.of(context).textTheme.navBarTitleDark,
                       children: [
                         TextSpan(
                           text: 'mainLabel'.localized(context),
@@ -117,7 +117,7 @@ class _PackageDeliveredControllerState extends State<PackageDeliveredController>
                 Text(
                   'orLabel'.localized(context),
                   textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.bodyTextLight?.copyWith(fontStyle: FontStyle.italic, color: Colors.grey),
+                  style: Theme.of(context).textTheme.bodyTextItalicSecondary,
                 ),
                 const SizedBox(
                   height: Dimension.paddingXS,
