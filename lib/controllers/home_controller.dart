@@ -14,15 +14,17 @@
  GNU Affero General Public License version 3 for more details.
 
  You should have received a copy of the GNU Affero General Public License
- version 3 published by the Copyright Owner along with OpenPUDO.  
+ version 3 published by the Copyright Owner along with OpenPUDO.
  If not, see <https://github.com/lessgreen/OpenPUDO>.
 */
 
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:move_to_background/move_to_background.dart';
 import 'package:qui_green/commons/ui/tab_controller_container.dart';
+import 'package:qui_green/commons/utilities/fcm_helper.dart';
 import 'package:qui_green/commons/utilities/home_user_routes.dart';
 import 'package:qui_green/commons/utilities/localization.dart';
 import 'package:qui_green/controllers/home_user_packages.dart';
@@ -47,63 +49,82 @@ class _HomeControllerState extends State<HomeController> with ConnectionAware {
   @override
   void initState() {
     super.initState();
-
-    WidgetsBinding.instance?.addPostFrameCallback((timestamp) {
-      setState(() {
-        _controllers = [
-          TabControllerContainer(
-            tabView: CupertinoTabView(
-              navigatorKey: GlobalKey(),
-              builder: (context) => const HomeUserPackages(),
-              onGenerateRoute: (RouteSettings settings) => homeUserRouteWithSetting(settings),
-            ),
-            bottomView: BottomNavigationBarItem(
-              icon: SvgPicture.asset(ImageSrc.homeArt, color: Colors.grey.shade400),
-              activeIcon: SvgPicture.asset(ImageSrc.homeArt, color: AppColors.primaryColorDark),
-              label: 'homeLabel'.localized(context),
-            ),
+    _controllers = [
+      TabControllerContainer(
+        tabView: CupertinoTabView(
+          navigatorKey: GlobalKey(),
+          builder: (subContext) {
+            return const HomeUserPackages();
+          },
+          onGenerateRoute: (RouteSettings settings) => homeUserRouteWithSetting(settings),
+        ),
+        bottomView: BottomNavigationBarItem(
+          icon: SvgPicture.asset(ImageSrc.homeArt, color: Colors.grey.shade400),
+          activeIcon: SvgPicture.asset(ImageSrc.homeArt, color: AppColors.primaryColorDark),
+          label: 'Home',
+        ),
+      ),
+      TabControllerContainer(
+        tabView: CupertinoTabView(
+          navigatorKey: GlobalKey(),
+          builder: (context) => const MapController.homeUser(),
+          onGenerateRoute: (RouteSettings settings) => homeUserRouteWithSetting(settings),
+        ),
+        bottomView: BottomNavigationBarItem(
+          icon: SvgPicture.asset(ImageSrc.mapsArt, color: Colors.grey.shade400),
+          activeIcon: SvgPicture.asset(ImageSrc.mapsArt, color: AppColors.primaryColorDark),
+          label: 'Map',
+        ),
+      ),
+      TabControllerContainer(
+        tabView: CupertinoTabView(
+          navigatorKey: GlobalKey(),
+          builder: (context) => const PudoListController(
+            isRootController: true,
           ),
-          TabControllerContainer(
-            tabView: CupertinoTabView(
-              navigatorKey: GlobalKey(),
-              builder: (context) => const MapController.homeUser(),
-              onGenerateRoute: (RouteSettings settings) => homeUserRouteWithSetting(settings),
-            ),
-            bottomView: BottomNavigationBarItem(
-              icon: SvgPicture.asset(ImageSrc.mapsArt, color: Colors.grey.shade400),
-              activeIcon: SvgPicture.asset(ImageSrc.mapsArt, color: AppColors.primaryColorDark),
-              label: 'mapLabel'.localized(context),
-            ),
-          ),
-          TabControllerContainer(
-            tabView: CupertinoTabView(
-              navigatorKey: GlobalKey(),
-              builder: (context) => const PudoListController(
-                isRootController: true,
-              ),
-              onGenerateRoute: (RouteSettings settings) => homeUserRouteWithSetting(settings),
-            ),
-            bottomView: BottomNavigationBarItem(
-              icon: SvgPicture.asset(ImageSrc.packReceivedLeadingIcon, color: Colors.grey.shade400),
-              activeIcon: SvgPicture.asset(ImageSrc.packReceivedLeadingIcon, color: AppColors.primaryColorDark),
-              label: 'pudoLabel'.localized(context),
-            ),
-          ),
-          TabControllerContainer(
-            tabView: CupertinoTabView(
-              navigatorKey: GlobalKey(),
-              builder: (context) => const ProfileController(),
-              onGenerateRoute: (RouteSettings settings) => homeUserRouteWithSetting(settings),
-            ),
-            bottomView: BottomNavigationBarItem(
-              icon: SvgPicture.asset(ImageSrc.profileArt, color: Colors.grey.shade400),
-              activeIcon: SvgPicture.asset(ImageSrc.profileArt, color: AppColors.primaryColorDark),
-              label: 'profileLabel'.localized(context),
-            ),
-          )
-        ];
-      });
+          onGenerateRoute: (RouteSettings settings) => homeUserRouteWithSetting(settings),
+        ),
+        bottomView: BottomNavigationBarItem(
+          icon: SvgPicture.asset(ImageSrc.packReceivedLeadingIcon, color: Colors.grey.shade400),
+          activeIcon: SvgPicture.asset(ImageSrc.packReceivedLeadingIcon, color: AppColors.primaryColorDark),
+          label: 'Pudos',
+        ),
+      ),
+      TabControllerContainer(
+        tabView: CupertinoTabView(
+          navigatorKey: GlobalKey(),
+          builder: (context) => const ProfileController(),
+          onGenerateRoute: (RouteSettings settings) => homeUserRouteWithSetting(settings),
+        ),
+        bottomView: BottomNavigationBarItem(
+          icon: SvgPicture.asset(ImageSrc.profileArt, color: Colors.grey.shade400),
+          activeIcon: SvgPicture.asset(ImageSrc.profileArt, color: AppColors.primaryColorDark),
+          label: 'Profile',
+        ),
+      )
+    ];
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
+      _handleInitialMessage(_controllers.first.tabView.navigatorKey!.currentContext!);
+      _handleMessages(_controllers.first.tabView.navigatorKey!.currentContext!);
     });
+  }
+
+  void _handleMessages(BuildContext subContext) {
+    ///Handles what to do when a notification is opened when app is in background
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) => firebaseMessagingOpenedAppHandler(subContext, message));
+
+    ///Handles showing the material banner when a notification is received
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) => firebaseMessagingHandler(subContext, message));
+  }
+
+  ///Checks if an initialMessage is available from the app in a closed state (open app from notification)
+  void _handleInitialMessage(BuildContext subContext) async {
+    RemoteMessage? message = await FirebaseMessaging.instance.getInitialMessage();
+    if (message != null) {
+      if (message.data.containsKey("packageId")) {
+        handlePackageRouting(subContext, int.parse(message.data["packageId"]));
+      }
+    }
   }
 
   @override

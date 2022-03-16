@@ -24,6 +24,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:qui_green/app.dart';
+import 'package:qui_green/commons/utilities/analytics_helper.dart';
 import 'package:qui_green/commons/utilities/page_route_helper.dart';
 import 'package:qui_green/controllers/about_you_controller.dart';
 import 'package:qui_green/controllers/home_controller.dart';
@@ -56,6 +57,9 @@ dynamic routeWithSetting(RouteSettings settings) {
   // if (settings.arguments != null) {
   //   var arguments = settings.arguments;
   // }
+  if (settings.name != "/") {
+    AnalyticsHelper.logPageChange((settings.name ?? 'main').replaceAll("/", ""));
+  }
   switch (settings.name) {
     // case '/notificationDetails':
     //   return MaterialPageRoute(

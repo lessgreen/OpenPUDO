@@ -355,10 +355,8 @@ mixin NetworkGeneral {
     if (_accessToken != null) {
       _headers['Authorization'] = 'Bearer $_accessToken';
     }
-
-    var url = _baseURL + '/api/v1/users/me/device-tokens';
+    var url = _baseURL + '/api/v2/user/me/device-tokens';
     var body = jsonEncode(infoRequest.toJson());
-
     try {
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
@@ -382,8 +380,8 @@ mixin NetworkGeneral {
         },
       );
       if (needHandleTokenRefresh == false) {
-        if (baseResponse.returnCode == 0 && baseResponse.payload != null && baseResponse.payload is Map) {
-          return UserProfile.fromJson(baseResponse.payload);
+        if (baseResponse.returnCode == 0) {
+          return true;
         } else {
           throw ErrorDescription('Error ${baseResponse.returnCode}: ${baseResponse.message}');
         }
