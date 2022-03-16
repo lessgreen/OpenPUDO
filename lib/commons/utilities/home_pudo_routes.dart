@@ -68,9 +68,21 @@ dynamic homePudoRouteWithSetting(RouteSettings settings) {
           isOnReceivePack: true,
         ),
       );
+    case Routes.packageDeliveryDone:
+      return PageRouteHelper.buildPage(
+        NotifySentController(
+          username: settings.arguments as String,
+          canGoBack: true,
+          type: NotifySentControllerTypes.PackageDelivered,
+        ),
+      );
     case Routes.notifySent:
       return PageRouteHelper.buildPage(
-        NotifySentController(username: settings.arguments as String),
+        NotifySentController(
+          username: settings.arguments as String,
+          canGoBack: true,
+          type: NotifySentControllerTypes.PackageReceived,
+        ),
       );
     case Routes.pudoUsersList:
       return PageRouteHelper.buildPage(

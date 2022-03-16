@@ -76,4 +76,6 @@ extension AdditionalTextTheme on TextTheme {
   TextStyle? get captionSwitch => caption?.copyWith(fontStyle: FontStyle.italic, height: 1.5, letterSpacing: 0);
 
   TextStyle? get transparentText => bodyText1?.copyWith(fontWeight: FontWeight.w300, color: Colors.transparent);
+
+  TextStyle? get subtitle1Secondary => subtitle1?.copyWith(color: CupertinoColors.secondaryLabel);
 }

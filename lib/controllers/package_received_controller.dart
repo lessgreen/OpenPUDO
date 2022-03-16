@@ -171,7 +171,8 @@ class _PackageReceivedControllerState extends State<PackageReceivedController> {
               .packagePhotoUpload(_image!, value.packageId)
               .catchError((onError) => SAAlertDialog.displayAlertWithClose(context, 'genericErrorTitle'.localized(context, 'general'), onError));
         }
-        Navigator.of(context).pushReplacementNamed(Routes.notifySent, arguments: "${_selectedUser!.firstName} ${_selectedUser!.lastName}");
+        Navigator.of(context).pushReplacementNamed(Routes.notifySent,
+            arguments: _selectedUser!.firstName != null && _selectedUser!.lastName != null ? "${_selectedUser!.firstName} ${_selectedUser!.lastName}" : "AC${_selectedUser!.userId ?? 0}");
       } else {
         NetworkErrorHelper.helper(context, value);
       }
