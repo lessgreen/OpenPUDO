@@ -82,7 +82,7 @@ class _ContactUsControllerState extends State<ContactUsController> {
                     maxLines: 10,
                     decoration: InputDecoration(
                       hintText: 'contactUsPlaceHolder'.localized(context),
-                      hintStyle: Theme.of(context).textTheme.bodyText2!.copyWith(fontStyle: FontStyle.italic),
+                      hintStyle: Theme.of(context).textTheme.bodyText2Italic,
                       border: const OutlineInputBorder(
                         borderSide: BorderSide(
                           width: 0.5,

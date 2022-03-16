@@ -151,7 +151,7 @@ class _PudoProfileControllerState extends State<PudoProfileController> with Conn
                         TableViewCell(
                           title: "deleteAccount".localized(context),
                           textAlign: TextAlign.center,
-                          textStyle: Theme.of(context).textTheme.bodyTextBold?.copyWith(color: Colors.red),
+                          textStyle: Theme.of(context).textTheme.bodyTextBoldRed,
                           showTrailingChevron: false,
                           onTap: () => _showConfirmationDelete(
                               acceptCallback: () {

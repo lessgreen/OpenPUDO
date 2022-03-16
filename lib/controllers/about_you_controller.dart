@@ -54,7 +54,7 @@ class _AboutYouControllerState extends State<AboutYouController> {
             Center(
               child: Text(
                 'mainLabel'.localized(context),
-                style: Theme.of(context).textTheme.headline6?.copyWith(letterSpacing: 0.6),
+                style: Theme.of(context).textTheme.headline6,
               ),
             ),
             Padding(

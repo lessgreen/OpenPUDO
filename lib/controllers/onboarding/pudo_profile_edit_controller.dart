@@ -170,71 +170,74 @@ class _PudoProfileEditControllerState extends State<PudoProfileEditController> w
         isLoading: NetworkManager.instance.networkActivity,
         body: ListView(children: [
           Container(
-            padding: const EdgeInsets.only(bottom: Dimension.padding),
-            alignment: Alignment.center,
-            child: Column(children: [
-              PudoEditableImage(picId: currentUser.pudoProfile?.pudoPicId, selectedImage: viewModel.image, editEnabled: viewModel.editEnabled, onTap: viewModel.pickFile),
-              _buildPudoDetail(currentUser, viewModel),
-              const SizedBox(height: Dimension.padding),
-              _buildEditable(
-                  viewModel,
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: Dimension.padding),
-                    child: Container(
-                      width: MediaQuery.of(context).size.width / 3 * 2,
-                      height: 1,
-                      color: Colors.grey.shade400,
+              padding: const EdgeInsets.only(bottom: Dimension.padding),
+              alignment: Alignment.center,
+              child: Column(children: [
+                PudoEditableImage(picId: currentUser.pudoProfile?.pudoPicId, selectedImage: viewModel.image, editEnabled: viewModel.editEnabled, onTap: viewModel.pickFile),
+                _buildPudoDetail(currentUser, viewModel),
+                const SizedBox(height: Dimension.padding),
+                _buildEditable(
+                    viewModel,
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: Dimension.padding),
+                      child: Container(
+                        width: MediaQuery.of(context).size.width / 3 * 2,
+                        height: 1,
+                        color: Colors.grey.shade400,
+                      ),
                     ),
-                  ),
-                  const SizedBox()),
-              _buildEditable(
-                  viewModel,
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 10),
-                    child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                      const Icon(
-                        Icons.info,
-                        color: AppColors.primaryColorDark,
+                    const SizedBox()),
+                _buildEditable(
+                    viewModel,
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 10),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Icon(
+                            Icons.info,
+                            color: AppColors.primaryColorDark,
+                          ),
+                          const SizedBox(
+                            width: Dimension.paddingS,
+                          ),
+                          Text(
+                            'rewardDescriptionTitle'.localized(context),
+                            style: Theme.of(context).textTheme.captionLightItalic,
+                          ),
+                        ],
                       ),
-                      const SizedBox(
-                        width: Dimension.paddingS,
-                      ),
-                      Text('rewardDescriptionTitle'.localized(context),
-                          style: Theme.of(context).textTheme.caption?.copyWith(
-                                fontStyle: FontStyle.italic,
-                                fontWeight: FontWeight.w300,
-                              )),
-                    ]),
-                  ),
-                  const SizedBox()),
-              _buildEditable(
-                viewModel,
-                SizedBox(
-                  width: MediaQuery.of(context).size.width / 3 * 2,
-                  child: Text(
-                    '“${currentUser.pudoProfile?.rewardMessage ?? ""}”',
-                    key: keyText,
-                    style: Theme.of(context).textTheme.subtitle1?.copyWith(
-                          height: 2,
-                          fontStyle: FontStyle.italic,
-                          fontWeight: FontWeight.w300,
-                        ),
-                    textAlign: TextAlign.center,
-                  ),
+                    ),
+                    const SizedBox())
+              ])),
+          _buildEditable(
+            viewModel,
+            Center(
+              child: SizedBox(
+                width: MediaQuery.of(context).size.width / 3 * 2,
+                child: Text(
+                  '“${currentUser.pudoProfile?.rewardMessage ?? ""}”',
+                  key: keyText,
+                  style: Theme.of(context).textTheme.pudoRewardPolicy,
+                  textAlign: TextAlign.center,
                 ),
-                ListView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: viewModel.dataSource.length,
-                    itemBuilder: (context, index) {
-                      return RewardOptionWidget(
-                        index: index,
-                        viewModel: viewModel,
-                        hasTopPadding: index == 0,
-                      );
-                    }),
-              )
-            ]),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(bottom: Dimension.paddingL),
+              child: ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: viewModel.dataSource.length,
+                itemBuilder: (context, index) {
+                  return RewardOptionWidget(
+                    index: index,
+                    viewModel: viewModel,
+                    hasTopPadding: index == 0,
+                  );
+                },
+              ),
+            ),
           ),
           if (_checkIfOverlaps() && !viewModel.editEnabled)
             SizedBox(

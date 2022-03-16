@@ -19,6 +19,7 @@
 */
 
 import 'package:flutter/material.dart';
+import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
 import 'package:qui_green/models/exhange_option_model.dart';
 import 'package:qui_green/resources/res.dart';
 
@@ -72,7 +73,7 @@ class RewardOptionTile extends StatelessWidget {
                       ),
                       TextSpan(
                         text: model.name,
-                        style: Theme.of(context).textTheme.subtitle1?.copyWith(fontSize: 15, fontWeight: FontWeight.w300, letterSpacing: 0),
+                        style: Theme.of(context).textTheme.rewardOptionBody,
                       ),
                     ],
                   ),
@@ -108,7 +109,7 @@ class RewardOptionTile extends StatelessWidget {
                   maxLines: 5,
                   decoration: InputDecoration(
                     hintText: model.hintText,
-                    hintStyle: Theme.of(context).textTheme.bodyText2!.copyWith(fontStyle: FontStyle.italic),
+                    hintStyle: Theme.of(context).textTheme.bodyText2Italic,
                     border: InputBorder.none,
                   ),
                 ),

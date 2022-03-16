@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
 import 'package:qui_green/commons/utilities/date_time_extension.dart';
@@ -18,28 +17,26 @@ class PackageTile extends StatelessWidget {
       onTap: () => onTap(packageSummary),
       fullWidth: true,
       showTrailingChevron: true,
-      title: SizedBox(
-          height: 50,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                "${packageSummary.createTms!.ddmmyyyy} ${packageSummary.packageName ?? ""}",
-                style: Theme.of(context).textTheme.bodyTextBold,
-              ),
-              RichText(
-                textAlign: TextAlign.start,
-                text: TextSpan(style: Theme.of(context).textTheme.bodyTextLight!.copyWith(color: CupertinoColors.secondaryLabel), children: [
-                  TextSpan(text: 'recipient'.localized(context)),
-                  TextSpan(text: "AC${packageSummary.userId}\n", style: Theme.of(context).textTheme.bodyTextBold),
-                  if (packageSummary.firstName != null && packageSummary.lastName != null) TextSpan(text: 'recipient'.localized(context), style: Theme.of(context).textTheme.transparentText),
-                  if (packageSummary.firstName != null && packageSummary.lastName != null)
-                    TextSpan(text: "${packageSummary.firstName} ${packageSummary.lastName}", style: Theme.of(context).textTheme.captionSmall),
-                ]),
-              ),
-            ],
-          )),
+      title: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            "${packageSummary.createTms!.ddmmyyyy} ${packageSummary.packageName ?? ""}",
+            style: Theme.of(context).textTheme.bodyTextBold,
+          ),
+          RichText(
+            textAlign: TextAlign.start,
+            text: TextSpan(style: Theme.of(context).textTheme.bodyTextLightSecondary, children: [
+              TextSpan(text: 'recipient'.localized(context)),
+              TextSpan(text: "AC${packageSummary.userId}\n", style: Theme.of(context).textTheme.bodyTextBold),
+              if (packageSummary.firstName != null && packageSummary.lastName != null) TextSpan(text: 'recipient'.localized(context), style: Theme.of(context).textTheme.transparentText),
+              if (packageSummary.firstName != null && packageSummary.lastName != null)
+                TextSpan(text: "${packageSummary.firstName} ${packageSummary.lastName}", style: Theme.of(context).textTheme.captionSmall),
+            ]),
+          ),
+        ],
+      ),
     );
   }
 }

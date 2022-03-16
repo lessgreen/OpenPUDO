@@ -78,7 +78,7 @@ class _PackageDeliveredControllerState extends State<PackageDeliveredController>
                     textAlign: TextAlign.center,
                     text: TextSpan(
                       text: '',
-                      style: Theme.of(context).textTheme.navBarTitleDark!.copyWith(height: 1.2),
+                      style: Theme.of(context).textTheme.navBarTitleDark,
                       children: [
                         TextSpan(
                           text: 'mainLabel'.localized(context),
@@ -106,6 +106,9 @@ class _PackageDeliveredControllerState extends State<PackageDeliveredController>
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(Dimension.borderRadius),
                       child: QRBarScannerCamera(
+                        onError: (context, _) => _buildEmptyQrBox(),
+                        notStartedBuilder: (context) => _buildEmptyQrBox(),
+                        offscreenBuilder: (context) => _buildEmptyQrBox(),
                         qrCodeCallback: _handleQRCode,
                         formats: const [BarcodeFormats.QR_CODE],
                       ),
@@ -118,7 +121,7 @@ class _PackageDeliveredControllerState extends State<PackageDeliveredController>
                 Text(
                   'orLabel'.localized(context),
                   textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.bodyTextLight?.copyWith(fontStyle: FontStyle.italic, color: Colors.grey),
+                  style: Theme.of(context).textTheme.bodyTextItalicSecondary,
                 ),
                 const SizedBox(
                   height: Dimension.paddingXS,
@@ -159,6 +162,11 @@ class _PackageDeliveredControllerState extends State<PackageDeliveredController>
           )),
     );
   }
+
+  Widget _buildEmptyQrBox() => Container(
+        constraints: BoxConstraints(minHeight: MediaQuery.of(context).size.width / 10 * 8, minWidth: MediaQuery.of(context).size.width / 10 * 8),
+        color: Colors.white,
+      );
 
   void _handleQRCode(String? code) async {
     if (_code == null && code != null) {

@@ -20,9 +20,9 @@
 
 import 'dart:io';
 
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:qui_green/commons/alert_dialog.dart';
 import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
 import 'package:qui_green/commons/ui/cupertino_navigation_bar_fix.dart';
@@ -153,9 +153,10 @@ class _PackageReceivedControllerState extends State<PackageReceivedController> {
   }
 
   void _pickImage() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles(allowMultiple: false, type: FileType.image);
+    final ImagePicker _picker = ImagePicker();
+    final XFile? result = await _picker.pickImage(source: ImageSource.gallery);
     if (result != null) {
-      File file = File(result.files.first.path ?? "");
+      File file = File(result.path);
       setState(() {
         _image = file;
       });

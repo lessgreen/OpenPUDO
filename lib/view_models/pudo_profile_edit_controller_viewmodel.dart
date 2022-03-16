@@ -21,13 +21,12 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:qui_green/commons/alert_dialog.dart';
 import 'package:qui_green/commons/extensions/formfields_validators.dart';
 import 'package:qui_green/commons/utilities/localization.dart';
-import 'package:qui_green/commons/utilities/print_helper.dart';
 import 'package:qui_green/models/extra_info.dart';
 import 'package:qui_green/models/geo_marker.dart';
 import 'package:qui_green/models/pudo_profile.dart';
@@ -305,17 +304,11 @@ class PudoProfileEditControllerViewModel extends ChangeNotifier {
   //onSendClick(BuildContext context, PudoProfile? pudoModel) {}
 
   pickFile() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles(allowMultiple: false, type: FileType.image);
+    final ImagePicker _picker = ImagePicker();
+    final XFile? result = await _picker.pickImage(source: ImageSource.gallery);
     if (result != null) {
-      try {
-        File file = File(result.files.first.path ?? "");
-        image = file;
-      } catch (e) {
-        //showErrorDialog?.call(e.toString());
-        safePrint(e.toString());
-      }
-    } else {
-      // User canceled the picker
+      File file = File(result.path);
+      image = file;
     }
   }
 

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
 import 'package:qui_green/commons/ui/custom_network_image.dart';
 import 'package:qui_green/commons/utilities/localization.dart';
 import 'package:qui_green/resources/res.dart';
@@ -49,7 +50,7 @@ class PudoEditableImage extends StatelessWidget {
                     child: Text(
                       'changePhoto'.localized(context),
                       textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.labelLarge!.copyWith(color: Colors.white),
+                      style: Theme.of(context).textTheme.labelLargeWhite,
                     )),
               ),
             ),
