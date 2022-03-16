@@ -216,7 +216,7 @@ class _PudoProfileEditControllerState extends State<PudoProfileEditController> w
               child: SizedBox(
                 width: MediaQuery.of(context).size.width / 3 * 2,
                 child: Text(
-                  '“${currentUser.pudoProfile?.rewardMessage ?? ""}\na\na\na\na\na”',
+                  '“${currentUser.pudoProfile?.rewardMessage ?? ""}”',
                   key: keyText,
                   style: Theme.of(context).textTheme.pudoRewardPolicy,
                   textAlign: TextAlign.center,
