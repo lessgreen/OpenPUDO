@@ -18,11 +18,13 @@
  If not, see <https://github.com/lessgreen/OpenPUDO>.
 */
 
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:move_to_background/move_to_background.dart';
 import 'package:qui_green/commons/ui/tab_controller_container.dart';
+import 'package:qui_green/commons/utilities/fcm_helper.dart';
 import 'package:qui_green/commons/utilities/home_pudo_routes.dart';
 import 'package:qui_green/commons/utilities/localization.dart';
 import 'package:qui_green/controllers/pudo_main_controller.dart';
@@ -74,7 +76,37 @@ class _PudoHomeControllerState extends State<PudoHomeController> with Connection
           )
         ];
       });
+      WidgetsBinding.instance!.addPostFrameCallback((_) {
+        _handleInitialMessage(_controllers.first.tabView.navigatorKey!.currentContext!);
+        _handleMessages(_controllers.first.tabView.navigatorKey!.currentContext!);
+      });
     });
+  }
+
+  void _handleMessages(BuildContext subContext) {
+    ///Handles what to do when a notification is opened when app is in background
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) => firebaseMessagingOpenedAppHandler(getCurrentContext, message));
+
+    ///Handles showing the material banner when a notification is received
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) => firebaseMessagingHandler(getCurrentContext, message));
+  }
+
+  ///Checks if an initialMessage is available from the app in a closed state (open app from notification)
+  void _handleInitialMessage(BuildContext subContext) async {
+    RemoteMessage? message = await FirebaseMessaging.instance.getInitialMessage();
+    if (message != null) {
+      if (message.data.containsKey("packageId")) {
+        handlePackageRouting(subContext, int.parse(message.data["packageId"]));
+      } else if (message.data.containsKey("userId")) {
+        handleUserRouting(subContext, int.parse(message.data["userId"]));
+      }
+    }
+  }
+
+  BuildContext getCurrentContext() {
+    var currentIndex = _tabController.index;
+    var currentTab = _controllers[currentIndex].tabView;
+    return currentTab.navigatorKey!.currentContext!;
   }
 
   @override

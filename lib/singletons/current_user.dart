@@ -102,6 +102,7 @@ class CurrentUser with ChangeNotifier {
 
   set pudoProfile(PudoProfile? newProfile) {
     _pudo = newProfile;
+    refreshFcmToken();
     notifyListeners();
   }
 
