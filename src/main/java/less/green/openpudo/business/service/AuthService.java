@@ -106,7 +106,7 @@ public class AuthService {
         if (otpRequest == null) {
             // if no request found, send message and create row
             String otp = Integer.toString(ThreadLocalRandom.current().nextInt(100_000, 1_000_000));
-            sendOtpMessage(phoneNumber, otp, context.getLanguage());
+            sendOtpMessage(phoneNumber, otp);
             Date now = new Date();
             otpRequest = new TbOtpRequest();
             otpRequest.setRequestId(UUID.randomUUID());
@@ -128,7 +128,7 @@ public class AuthService {
                 delayFailureResponse();
                 throw new ApiException(ApiReturnCodes.INVALID_OTP, localizationService.getMessage(context.getLanguage(), "error.otp.too_many_attempts"));
             }
-            sendOtpMessage(phoneNumber, otpRequest.getOtp(), context.getLanguage());
+            sendOtpMessage(phoneNumber, otpRequest.getOtp());
             otpRequest.setUpdateTms(new Date());
             otpRequest.setSendCount(otpRequest.getSendCount() + 1);
         }
@@ -307,7 +307,12 @@ public class AuthService {
         if (!user.getTestAccountFlag()) {
             List<Pair<String, Integer>> rs = userDao.deleteUser(context.getUserId(), user.getAccountType() == AccountType.CUSTOMER ? null : pudoService.getCurrentPudoId());
             rs.forEach(i -> log.info("[{}] Deleted rows from {}: {}", context.getExecutionId(), i.getValue0(), i.getValue1()));
-            smsService.sendSms(phoneNumber, localizationService.getMessage(context.getLanguage(), "message.delete-account", downloadUrl));
+            try {
+                smsService.sendSms(phoneNumber, localizationService.getMessage(context.getLanguage(), "message.delete-account", downloadUrl));
+            } catch (RuntimeException ex) {
+                log.fatal("[{}] {}", context.getExecutionId(), ExceptionUtils.getCanonicalFormWithStackTrace(ex));
+                throw new ApiException(ApiReturnCodes.SERVICE_UNAVAILABLE, localizationService.getMessage(context.getLanguage(), "error.service_unavailable"));
+            }
             log.info("[{}] Deleted user: {}", context.getExecutionId(), context.getUserId());
         }
         return downloadUrl;
@@ -362,13 +367,13 @@ public class AuthService {
         }
     }
 
-    private void sendOtpMessage(String phoneNumber, String otp, String language) {
-        String text = localizationService.getMessage(language, "message.otp", otp);
+    private void sendOtpMessage(String phoneNumber, String otp) {
+        String text = localizationService.getMessage(context.getLanguage(), "message.otp", otp);
         try {
             smsService.sendSms(phoneNumber, text);
         } catch (RuntimeException ex) {
             log.fatal("[{}] {}", context.getExecutionId(), ExceptionUtils.getCanonicalFormWithStackTrace(ex));
-            throw new ApiException(ApiReturnCodes.SERVICE_UNAVAILABLE, localizationService.getMessage(language, "error.service_unavailable"));
+            throw new ApiException(ApiReturnCodes.SERVICE_UNAVAILABLE, localizationService.getMessage(context.getLanguage(), "error.service_unavailable"));
         }
     }
 

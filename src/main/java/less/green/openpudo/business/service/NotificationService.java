@@ -1,5 +1,7 @@
 package less.green.openpudo.business.service;
 
+import com.google.firebase.messaging.FirebaseMessagingException;
+import com.google.firebase.messaging.MessagingErrorCode;
 import less.green.openpudo.business.dao.DeviceTokenDao;
 import less.green.openpudo.business.dao.NotificationDao;
 import less.green.openpudo.business.model.TbDeviceToken;
@@ -129,8 +131,12 @@ public class NotificationService {
                 String messageId;
                 try {
                     messageId = firebaseMessagingService.sendNotification(row.getDeviceToken(), title, message, data);
-                } catch (RuntimeException ex) {
-                    log.error("[{}] {}", context.getExecutionId(), ExceptionUtils.getCanonicalFormWithStackTrace(ex));
+                } catch (FirebaseMessagingException ex) {
+                    if (ex.getMessagingErrorCode() == MessagingErrorCode.UNREGISTERED) {
+                        log.error("[{}] Unregistered device token for user: {}, {}", context.getExecutionId(), userId, ex.getMessage());
+                    } else {
+                        log.fatal("[{}] {}", context.getExecutionId(), ExceptionUtils.getCanonicalFormWithStackTrace(ex));
+                    }
                     messageId = null;
                 }
                 Date now = new Date();
