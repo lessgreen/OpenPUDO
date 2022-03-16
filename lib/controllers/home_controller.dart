@@ -14,7 +14,7 @@
  GNU Affero General Public License version 3 for more details.
 
  You should have received a copy of the GNU Affero General Public License
- version 3 published by the Copyright Owner along with OpenPUDO.  
+ version 3 published by the Copyright Owner along with OpenPUDO.
  If not, see <https://github.com/lessgreen/OpenPUDO>.
 */
 
@@ -26,6 +26,7 @@ import 'package:move_to_background/move_to_background.dart';
 import 'package:qui_green/commons/ui/tab_controller_container.dart';
 import 'package:qui_green/commons/utilities/fcm_helper.dart';
 import 'package:qui_green/commons/utilities/home_user_routes.dart';
+import 'package:qui_green/commons/utilities/localization.dart';
 import 'package:qui_green/controllers/home_user_packages.dart';
 import 'package:qui_green/controllers/onboarding/map_controller.dart';
 import 'package:qui_green/controllers/profile_controller.dart';
@@ -128,45 +129,47 @@ class _HomeControllerState extends State<HomeController> with ConnectionAware {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      child: WillPopScope(
-        onWillPop: () async {
-          var currentIndex = _tabController.index;
-          var currentTab = _controllers[currentIndex].tabView;
-          var currentContext = currentTab.navigatorKey?.currentContext;
-          if (currentContext != null) {
-            if (Navigator.of(currentContext).canPop()) {
-              return !await Navigator.of(currentContext).maybePop();
-            }
-          }
-          MoveToBackground.moveTaskToBack();
-          return false;
-        },
-        child: CupertinoTabScaffold(
-          controller: _tabController,
-          tabBar: CupertinoTabBar(
-            onTap: (selectedIndex) {
-              if (selectedIndex == _oldIndex) {
-                var currentContext = _controllers[selectedIndex].tabView.navigatorKey?.currentContext;
+    return _controllers.isEmpty
+        ? const SizedBox()
+        : Material(
+            child: WillPopScope(
+              onWillPop: () async {
+                var currentIndex = _tabController.index;
+                var currentTab = _controllers[currentIndex].tabView;
+                var currentContext = currentTab.navigatorKey?.currentContext;
                 if (currentContext != null) {
-                  Navigator.of(currentContext).popUntil((Route<dynamic> route) => route.isFirst);
+                  if (Navigator.of(currentContext).canPop()) {
+                    return !await Navigator.of(currentContext).maybePop();
+                  }
                 }
-              }
-              _oldIndex = selectedIndex;
-            },
-            items: _controllers
-                .asMap()
-                .map((index, aChild) {
-                  return MapEntry(index, aChild.bottomView);
-                })
-                .values
-                .toList(),
-          ),
-          tabBuilder: (innerContext, index) {
-            return _controllers[index].tabView;
-          },
-        ),
-      ),
-    );
+                MoveToBackground.moveTaskToBack();
+                return false;
+              },
+              child: CupertinoTabScaffold(
+                controller: _tabController,
+                tabBar: CupertinoTabBar(
+                  onTap: (selectedIndex) {
+                    if (selectedIndex == _oldIndex) {
+                      var currentContext = _controllers[selectedIndex].tabView.navigatorKey?.currentContext;
+                      if (currentContext != null) {
+                        Navigator.of(currentContext).popUntil((Route<dynamic> route) => route.isFirst);
+                      }
+                    }
+                    _oldIndex = selectedIndex;
+                  },
+                  items: _controllers
+                      .asMap()
+                      .map((index, aChild) {
+                        return MapEntry(index, aChild.bottomView);
+                      })
+                      .values
+                      .toList(),
+                ),
+                tabBuilder: (innerContext, index) {
+                  return _controllers[index].tabView;
+                },
+              ),
+            ),
+          );
   }
 }

@@ -26,6 +26,7 @@ import 'package:qui_green/models/user_preferences.dart';
 import 'package:qui_green/resources/routes_enum.dart';
 import 'package:qui_green/singletons/current_user.dart';
 import 'package:qui_green/singletons/network/network_manager.dart';
+import 'package:qui_green/commons/utilities/localization.dart';
 
 class RegistrationCompleteControllerViewModel extends ChangeNotifier {
   Function(dynamic)? showErrorDialog;
@@ -56,20 +57,21 @@ class RegistrationCompleteControllerViewModel extends ChangeNotifier {
         }
       },
     ).catchError(
-      (onError) => SAAlertDialog.displayAlertWithClose(context, "Error", onError),
+      (onError) => SAAlertDialog.displayAlertWithClose(context, 'genericErrorTitle'.localized(context, 'general'), onError),
     );
   }
 
   onInstructionsClick(BuildContext context, PudoProfile? pudoModel) {
     NetworkManager.instance.getPudoDetails(pudoId: pudoModel!.pudoId.toString()).then(
-          (response) {
+      (response) {
         if (response is PudoProfile) {
           Navigator.of(context).pushReplacementNamed(Routes.instruction, arguments: response);
         } else {
-          showErrorDialog?.call("Qualcosa e' andato storto");
+          showErrorDialog?.call(
+            'unknownDescription'.localized(context, 'general'),
+          );
         }
       },
     ).catchError((onError) => showErrorDialog?.call(onError));
-
   }
 }

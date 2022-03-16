@@ -70,7 +70,7 @@ class SAAlertDialog extends StatelessWidget {
           return CupertinoActionSheet(
             title: Text(title),
             cancelButton: CupertinoActionSheetAction(
-              child: const Text('Cancel'),
+              child: Text('cancelButtonTitle'.localized(context, 'general')),
               onPressed: () {
                 isAlreadyShown = false;
                 if (Navigator.of(subContext).canPop() == true) {
@@ -85,13 +85,14 @@ class SAAlertDialog extends StatelessWidget {
     });
   }
 
-  static displayAlertWithButtons(BuildContext context, String title, String description, List<MaterialButton> actions) {
+  static displayAlertWithButtons(BuildContext context, String title, String description, List<MaterialButton> actions, {bool barrierDismissable = false}) {
     if (isAlreadyShown) {
       return;
     }
     isAlreadyShown = true;
 
     showDialog(
+            barrierDismissible: barrierDismissable,
             builder: (subContext) {
               List<MaterialButton> modifiedActions = actions
                   .asMap()
@@ -130,33 +131,38 @@ class SAAlertDialog extends StatelessWidget {
             barrierDismissible: barrierDismissable,
             builder: (subContext) {
               return SAAlertDialog(
-                  title: title,
-                  description: (description is OPBaseResponse)
-                      ? HtmlUnescape().convert(description.message ?? "General error")
-                      : (description is Error)
-                          ? HtmlUnescape().convert(description.toString())
-                          : (description is ErrorDescription)
-                              ? HtmlUnescape().convert(description.value.first.toString())
-                              : (description is SocketException)
-                                  ? HtmlUnescape().convert(description.message)
-                                  : (description is TimeoutException)
-                                      ? HtmlUnescape().convert(description.message ?? "Timeout exception")
-                                      : (description is String)
-                                          ? HtmlUnescape().convert(description)
-                                          : 'Unknown error occurred. Please try again',
-                  actions: <Widget>[
-                    MaterialButton(
-                      elevation: 0,
-                      child: Text(
-                        'closeButton'.localized(context, 'alert'),
-                      ),
-                      onPressed: () {
-                        isAlreadyShown = false;
-                        Navigator.of(subContext).pop();
-                        completion?.call();
-                      },
-                    )
-                  ]);
+                title: title,
+                description: (description is OPBaseResponse)
+                    ? HtmlUnescape().convert(
+                        description.message ?? 'genericErrorDescription'.localized(context, 'general'),
+                      )
+                    : (description is Error)
+                        ? HtmlUnescape().convert(description.toString())
+                        : (description is ErrorDescription)
+                            ? HtmlUnescape().convert(description.value.first.toString())
+                            : (description is SocketException)
+                                ? HtmlUnescape().convert(description.message)
+                                : (description is TimeoutException)
+                                    ? HtmlUnescape().convert(
+                                        description.message ?? 'timeoutDescription'.localized(context, 'general'),
+                                      )
+                                    : (description is String)
+                                        ? HtmlUnescape().convert(description)
+                                        : 'unknownDescription'.localized(context, 'general'),
+                actions: <Widget>[
+                  MaterialButton(
+                    elevation: 0,
+                    child: Text(
+                      'closeButtonTitle'.localized(context, 'general'),
+                    ),
+                    onPressed: () {
+                      isAlreadyShown = false;
+                      Navigator.of(subContext).pop();
+                      completion?.call();
+                    },
+                  )
+                ],
+              );
             },
             context: context)
         .then((value) {
@@ -168,7 +174,9 @@ class SAAlertDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Center(child: Text(title)),
+      title: Center(
+        child: Text(title),
+      ),
       content: Text(
         description,
         textAlign: TextAlign.center,

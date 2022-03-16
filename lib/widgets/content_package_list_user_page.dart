@@ -21,9 +21,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:qui_green/commons/utilities/localization.dart';
 import 'package:qui_green/models/package_summary.dart';
 import 'package:qui_green/resources/res.dart';
-import 'package:qui_green/view_models/content_packages_list_user_page_view_model.dart';
+import 'package:qui_green/view_models/content_packages_list_user_page_viewmodel.dart';
 import 'package:qui_green/widgets/error_screen_widget.dart';
 import 'package:qui_green/widgets/listview_header.dart';
 import 'package:qui_green/widgets/package_tile.dart';
@@ -52,7 +53,7 @@ class _ContentPackagesListUserPageState extends State<ContentPackagesListUserPag
                 : Column(
                     children: [
                       CupertinoTextField(
-                        placeholder: 'Cerca per nome',
+                        placeholder: 'searchByName'.localized(context, 'general'),
                         padding: const EdgeInsets.all(Dimension.padding),
                         prefix: Padding(
                           padding: const EdgeInsets.only(left: Dimension.padding),
@@ -77,10 +78,11 @@ class _ContentPackagesListUserPageState extends State<ContentPackagesListUserPag
                           itemCount: viewModel.filteredPackagesList.length,
                           contentBuilder: (BuildContext context, int index) {
                             return PackageTile(
-                                onTap: (PackageSummary package) {
-                                  viewModel.onPackageCard(viewModel.filteredPackagesList[index]);
-                                },
-                                packageSummary: viewModel.filteredPackagesList[index]);
+                              onTap: (PackageSummary package) {
+                                viewModel.onPackageCard(viewModel.filteredPackagesList[index]);
+                              },
+                              packageSummary: viewModel.filteredPackagesList[index],
+                            );
                           },
                         ),
                       ),

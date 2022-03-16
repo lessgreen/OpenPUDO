@@ -23,6 +23,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:html_unescape/html_unescape.dart';
 import 'package:intl/intl.dart';
+import 'package:qui_green/commons/extensions/trace_reflection.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LocalizationManager {
@@ -65,8 +66,14 @@ class LocalizationManager {
 }
 
 extension LocalizedString on String {
-  String localized(BuildContext context, String page) {
-    return LocalizationManager.of(context).safeLocalizedString(page, this);
+  String localized(BuildContext context, [String? page]) {
+    String buildPage;
+    if (page == null) {
+      buildPage = TraceReflection.stackFrame(2)?.first ?? 'general';
+    } else {
+      buildPage = page;
+    }
+    return LocalizationManager.of(context).safeLocalizedString(buildPage, this);
   }
 
   String localizedSubstitutingPlaceholder(BuildContext context, String value, String page) {

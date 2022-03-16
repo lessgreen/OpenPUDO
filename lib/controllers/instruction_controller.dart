@@ -25,6 +25,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
 import 'package:qui_green/commons/ui/cupertino_navigation_bar_fix.dart';
+import 'package:qui_green/commons/utilities/localization.dart';
 import 'package:qui_green/models/pudo_profile.dart';
 import 'package:qui_green/resources/res.dart';
 import 'package:qui_green/singletons/current_user.dart';
@@ -77,47 +78,38 @@ class _InstructionControllerState extends State<InstructionController> with Conn
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Container(alignment: Alignment.centerLeft, child: const Text('Destinatario:')),
+              Container(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  'receiverLabel'.localized(context),
+                ),
+              ),
               const SizedBox(height: 10),
               Container(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    widget.pudoDataModel?.customizedAddress ?? "n/a",
-                    style: const TextStyle(fontSize: 16),
-                  )),
-              /*Container(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    '${widget.pudoDataModel?.businessName ?? "n/a"} AC$userId',
-                    style: const TextStyle(fontSize: 16),
-                  )),
-              Container(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    "${widget.pudoDataModel?.address?.street ?? "n/a"} ${widget.pudoDataModel?.address?.streetNum ?? "n/a"}",
-                    style: const TextStyle(fontSize: 16),
-                  )),
-              Container(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    "${widget.pudoDataModel?.address?.zipCode ?? "n/a"} ${widget.pudoDataModel?.address?.city ?? "n/a"}",
-                    style: const TextStyle(fontSize: 16),
-                  )),*/
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  widget.pudoDataModel?.customizedAddress ?? "n/a",
+                  style: const TextStyle(fontSize: 16),
+                ),
+              ),
               const SizedBox(height: 30)
             ],
           ),
           decoration: BoxDecoration(
-              color: Colors.white,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.5),
-                  spreadRadius: 1,
-                  blurRadius: 5,
-                  offset: const Offset(0, 3), // changes position of shadow
-                ),
-              ],
-              border: Border.all(color: Colors.grey),
-              borderRadius: const BorderRadius.all(Radius.circular(Dimension.borderRadiusS))),
+            color: Colors.white,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.5),
+                spreadRadius: 1,
+                blurRadius: 5,
+                offset: const Offset(0, 3), // changes position of shadow
+              ),
+            ],
+            border: Border.all(color: Colors.grey),
+            borderRadius: const BorderRadius.all(
+              Radius.circular(Dimension.borderRadiusS),
+            ),
+          ),
         ),
         if (widget.isForPudo) const Spacer(),
         if (!widget.isForPudo)
@@ -126,9 +118,13 @@ class _InstructionControllerState extends State<InstructionController> with Conn
           ),
         if (!widget.isForPudo)
           Container(
-              padding: const EdgeInsets.only(left: Dimension.padding, right: Dimension.padding),
-              child: Text('Se vuoi rivedere in seguito l’indirizzo\nda utilizzare per la consegna ti\nbasterà selezionare il PUDO tra i tuoi\nPUDO dalla Home.',
-                  textAlign: TextAlign.center, style: Theme.of(context).textTheme.subtitle1!.copyWith(height: 1.2))),
+            padding: const EdgeInsets.only(left: Dimension.padding, right: Dimension.padding),
+            child: Text(
+              'reviewAddressHint'.localized(context),
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.subtitle1!.copyWith(height: 1.2),
+            ),
+          ),
       ],
     );
   }
@@ -137,7 +133,7 @@ class _InstructionControllerState extends State<InstructionController> with Conn
     return CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBarFix.build(context,
           middle: Text(
-            'Istruzioni',
+            'instructionsLabel'.localized(context),
             style: Theme.of(context).textTheme.navBarTitle,
           ),
           leading: widget.canGoBack
@@ -184,7 +180,7 @@ class _InstructionControllerState extends State<InstructionController> with Conn
           ),
           MainButton(
             onPressed: () => currentUser.refresh(),
-            text: 'Vai alla home',
+            text: 'goToHome'.localized(context),
           ),
         ],
       ),
@@ -196,22 +192,22 @@ class _InstructionControllerState extends State<InstructionController> with Conn
       return [
         InstructionCard(
           indicatorOnTop: false,
-          title: "É semplicissimo!",
-          description: 'Quando i tuoi clienti invieranno un\npacco verso la tua attività, riceverai\nun destinatario simile a quello\nriportato sotto.',
+          title: 'mainLabel'.localized(context),
+          description: 'secondaryLabel'.localized(context),
           activeIndex: _currentPage,
           pages: 4,
           bottomWidget: _buildFirstPageWidget("12"),
         ),
         InstructionCard(
           indicatorOnTop: false,
-          title: "Gestisci la ricezione del pacco",
-          description: 'Ti basterà scegliere la voce:',
+          title: 'handleReceiptTitle'.localized(context),
+          description: 'handleReceiptSubtitle'.localized(context),
           activeIndex: _currentPage,
           pages: 4,
           bottomWidget: Column(
             children: [
               TableViewCell(
-                title: "Ho ricevuto un pacco",
+                title: 'shipmentReceivedTitle'.localized(context),
                 showTrailingChevron: true,
                 showTopDivider: true,
                 fullWidth: true,
@@ -228,10 +224,16 @@ class _InstructionControllerState extends State<InstructionController> with Conn
                 alignment: Alignment.center,
                 child: RichText(
                   textAlign: TextAlign.center,
-                  text: TextSpan(style: Theme.of(context).textTheme.subtitle1!.copyWith(height: 1.2), children: const [
-                    TextSpan(text: "dal menù principale dell'app\n"),
-                    TextSpan(text: "QuiGreen", style: TextStyle(color: AppColors.primaryColorDark, fontWeight: FontWeight.w500)),
-                  ]),
+                  text: TextSpan(
+                    style: Theme.of(context).textTheme.subtitle1!.copyWith(height: 1.2),
+                    children: [
+                      TextSpan(text: 'shipmentReceivedSubtitle'.localized(context)),
+                      TextSpan(
+                        text: 'defaultTitle'.localized(context, 'general'),
+                        style: const TextStyle(color: AppColors.primaryColorDark, fontWeight: FontWeight.w500),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ],
@@ -239,18 +241,18 @@ class _InstructionControllerState extends State<InstructionController> with Conn
         ),
         InstructionCard(
           indicatorOnTop: false,
-          title: "Scegli il tuo utente",
-          description: 'Scegli il destinatario del pacco',
+          title: 'chooseUserTitle'.localized(context),
+          description: 'chooseUserSubtitle'.localized(context),
           activeIndex: _currentPage,
           pages: 4,
           bottomWidget: Column(
             children: [
-              const TableViewCell(
-                title: "Scegli un destinatario",
+              TableViewCell(
+                title: 'chooseAnUserTitle'.localized(context),
                 showTopDivider: true,
                 showTrailingChevron: true,
                 fullWidth: true,
-                leading: SizedBox(
+                leading: const SizedBox(
                   height: 36,
                   child: Icon(
                     CupertinoIcons.person,
@@ -265,9 +267,12 @@ class _InstructionControllerState extends State<InstructionController> with Conn
                 alignment: Alignment.center,
                 child: RichText(
                   textAlign: TextAlign.center,
-                  text: TextSpan(style: Theme.of(context).textTheme.subtitle1!.copyWith(height: 1.2), children: const [
-                    TextSpan(text: "tra quelli che hanno scelto la tua attività per la consegna "),
-                    TextSpan(text: "QuiGreen", style: TextStyle(color: AppColors.primaryColorDark)),
+                  text: TextSpan(style: Theme.of(context).textTheme.subtitle1!.copyWith(height: 1.2), children: [
+                    TextSpan(text: 'chooseAnUserSubtitle'.localized(context)),
+                    TextSpan(
+                      text: 'defaultTitle'.localized(context, 'general'),
+                      style: const TextStyle(color: AppColors.primaryColorDark),
+                    ),
                   ]),
                 ),
               ),
@@ -276,14 +281,14 @@ class _InstructionControllerState extends State<InstructionController> with Conn
         ),
         InstructionCard(
           indicatorOnTop: false,
-          title: "Notificagli l'arrivo",
-          description: "Scatta una foto al pacco",
+          title: 'notifyDeliveryTitle'.localized(context),
+          description: 'notifyDeliverySubtitle'.localized(context),
           activeIndex: _currentPage,
           pages: 4,
           bottomWidget: Column(
             children: [
-              const ProfilePicBox(
-                title: "Scatta una foto\nal pacco",
+              ProfilePicBox(
+                title: 'shotAPhotoTitle'.localized(context),
                 mainIconSvgAsset: ImageSrc.shipmentLeadingCell,
               ),
               const SizedBox(height: Dimension.paddingL),
@@ -292,9 +297,14 @@ class _InstructionControllerState extends State<InstructionController> with Conn
                 alignment: Alignment.center,
                 child: RichText(
                   textAlign: TextAlign.center,
-                  text: TextSpan(style: Theme.of(context).textTheme.subtitle1!.copyWith(height: 1.2), children: const [
-                    TextSpan(text: "et voilà!", style: TextStyle(color: AppColors.primaryColorDark, fontWeight: FontWeight.w500)),
-                    TextSpan(text: ",il gioco è fatto!"),
+                  text: TextSpan(style: Theme.of(context).textTheme.subtitle1!.copyWith(height: 1.2), children: [
+                    TextSpan(
+                      text: 'shotAPhotoSubtitle1'.localized(context),
+                      style: const TextStyle(color: AppColors.primaryColorDark, fontWeight: FontWeight.w500),
+                    ),
+                    TextSpan(
+                      text: 'shotAPhotoSubtitle2'.localized(context),
+                    ),
                   ]),
                 ),
               ),
@@ -305,8 +315,8 @@ class _InstructionControllerState extends State<InstructionController> with Conn
     } else {
       return [
         InstructionCard(
-          title: "É semplicissimo!",
-          description: 'Per poter ricevere il tuo pacco senza\npensieri, utilizzando il tuo PUDO\ncome destinatario ti basterà usare il\nseguente indirizzo di spedizione:',
+          title: 'mainLabelUser'.localized(context),
+          description: 'secondayLabelUser'.localized(context),
           activeIndex: _currentPage,
           pages: 2,
           bottomWidget: _buildFirstPageWidget(
@@ -314,8 +324,8 @@ class _InstructionControllerState extends State<InstructionController> with Conn
           ),
         ),
         InstructionCard(
-          title: "Notifica in tempo reale",
-          description: 'Riceverai una notifica quando il tuo\npacco sarà giunto a destinazione\npresso il tuo PUDO.',
+          title: 'notificationTitleUser'.localized(context),
+          description: 'notificationSubtitleUser'.localized(context),
           activeIndex: _currentPage,
           pages: 2,
           bottomWidget: SvgPicture.asset(ImageSrc.notificationVectorArt, semanticsLabel: 'Art Background'),

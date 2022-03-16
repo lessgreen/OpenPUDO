@@ -26,6 +26,7 @@ import 'package:latlong2/latlong.dart';
 import 'package:qui_green/app.dart';
 import 'package:qui_green/commons/utilities/analytics_helper.dart';
 import 'package:qui_green/commons/utilities/page_route_helper.dart';
+import 'package:qui_green/controllers/contact_us_controller.dart';
 import 'package:qui_green/controllers/error_controller.dart';
 import 'package:qui_green/controllers/instruction_controller.dart';
 import 'package:qui_green/controllers/onboarding/insert_address_controller.dart';
@@ -120,7 +121,13 @@ dynamic homeUserRouteWithSetting(RouteSettings settings) {
         ),
       );
     case Routes.pudoList:
-      return PageRouteHelper.buildPage(const PudoListController());
+      return PageRouteHelper.buildPage(
+        const PudoListController(),
+      );
+    case Routes.contactUs:
+      return PageRouteHelper.buildPage(
+        const ContactUsController(),
+      );
     default:
       return PageRouteHelper.buildPage(
         const ErrorController(),

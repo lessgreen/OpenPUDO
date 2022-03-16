@@ -26,6 +26,7 @@ import 'package:provider/provider.dart';
 import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
 import 'package:qui_green/commons/ui/cupertino_navigation_bar_fix.dart';
 import 'package:qui_green/commons/utilities/keyboard_visibility.dart';
+import 'package:qui_green/commons/utilities/localization.dart';
 import 'package:qui_green/resources/res.dart';
 import 'package:qui_green/singletons/network/network_manager.dart';
 import 'package:qui_green/view_models/insert_address_controller_viewmodel.dart';
@@ -55,7 +56,7 @@ class _InsertAddressControllerState extends State<InsertAddressController> with 
       navigationBar: CupertinoNavigationBarFix.build(
         context,
         middle: Text(
-          'Inserisci il tuo indirizzo',
+          'mainLabel'.localized(context),
           style: Theme.of(context).textTheme.navBarTitle,
         ),
         leading: CupertinoNavigationBarBackButton(
@@ -84,7 +85,7 @@ class _InsertAddressControllerState extends State<InsertAddressController> with 
           if (!widget.useCupertinoScaffold)
             Center(
               child: Text(
-                'Inserisci il tuo indirizzo',
+                'mainLabel'.localized(context),
                 style: Theme.of(context).textTheme.headline6,
               ),
             ),
@@ -106,7 +107,7 @@ class _InsertAddressControllerState extends State<InsertAddressController> with 
             secondChild: const SizedBox(),
             firstChild: MainButton(
               onPressed: () => viewModel.onSendClick(context),
-              text: 'Invia',
+              text: 'submitButton'.localized(context),
             ),
             duration: const Duration(milliseconds: 150),
           ),
@@ -116,11 +117,21 @@ class _InsertAddressControllerState extends State<InsertAddressController> with 
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-        create: (context) => InsertAddressControllerViewModel(),
-        child: Consumer<InsertAddressControllerViewModel?>(builder: (_, viewModel, __) {
-          return KeyboardVisibilityBuilder(builder: (context, child, isKeyboardVisible) {
-            return widget.useCupertinoScaffold ? _buildPageWithCupertinoScaffold(viewModel!, isKeyboardVisible) : _buildPageWithBaseScaffold(viewModel!, isKeyboardVisible);
-          });
-        }));
+      create: (context) => InsertAddressControllerViewModel(),
+      child: Consumer<InsertAddressControllerViewModel?>(
+        builder: (_, viewModel, __) {
+          return KeyboardVisibilityBuilder(
+            builder: (context, child, isKeyboardVisible) {
+              return widget.useCupertinoScaffold
+                  ? _buildPageWithCupertinoScaffold(viewModel!, isKeyboardVisible)
+                  : _buildPageWithBaseScaffold(
+                      viewModel!,
+                      isKeyboardVisible,
+                    );
+            },
+          );
+        },
+      ),
+    );
   }
 }

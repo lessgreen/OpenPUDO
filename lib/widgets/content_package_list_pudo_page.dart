@@ -20,6 +20,7 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:qui_green/commons/utilities/localization.dart';
 import 'package:qui_green/resources/res.dart';
 import 'package:qui_green/widgets/content_package_list_pudo.dart';
 import 'package:qui_green/widgets/content_package_list_pudo_history.dart';
@@ -49,7 +50,7 @@ class _ContentPackagesListPudoPageState extends State<ContentPackagesListPudoPag
           children: [
             Expanded(
               child: CupertinoTextField(
-                placeholder: 'Cerca per nome',
+                placeholder: 'searchByName'.localized(context, 'general'),
                 padding: const EdgeInsets.all(Dimension.padding),
                 prefix: Padding(
                   padding: const EdgeInsets.only(left: Dimension.padding),
@@ -105,7 +106,10 @@ class _ContentPackagesListPudoPageState extends State<ContentPackagesListPudoPag
                   const SizedBox(
                     width: Dimension.padding,
                   ),
-                  const Text("Cerca tra lo storico dei dati", style: TextStyle(color: AppColors.colorGrey)),
+                  Text(
+                    'searchHistory'.localized(context, 'general'),
+                    style: const TextStyle(color: AppColors.colorGrey),
+                  ),
                   const Spacer(),
                   CupertinoSwitch(
                       value: state == ContentPackagesListPudoPageState.history,

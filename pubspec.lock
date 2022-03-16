@@ -490,6 +490,13 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  focus_detector:
+    dependency: "direct main"
+    description:
+      name: focus_detector
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.1"
   frontend_server_client:
     dependency: transitive
     description:
@@ -1056,7 +1063,7 @@ packages:
     source: hosted
     version: "1.8.1"
   stack_trace:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: stack_trace
       url: "https://pub.dartlang.org"
@@ -1112,7 +1119,7 @@ packages:
     source: hosted
     version: "1.0.0"
   transparent_image:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: transparent_image
       url: "https://pub.dartlang.org"
@@ -1202,6 +1209,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.1"
+  visibility_detector:
+    dependency: transitive
+    description:
+      name: visibility_detector
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.2.2"
   watcher:
     dependency: transitive
     description:

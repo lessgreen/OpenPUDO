@@ -36,6 +36,7 @@ import 'package:qui_green/widgets/main_button.dart';
 import 'package:qui_green/widgets/profile_pic_box.dart';
 import 'package:qui_green/widgets/sascaffold.dart';
 import 'package:qui_green/widgets/table_view_cell.dart';
+import 'package:qui_green/commons/utilities/localization.dart';
 
 class PackageReceivedController extends StatefulWidget {
   const PackageReceivedController({Key? key}) : super(key: key);
@@ -61,7 +62,7 @@ class _PackageReceivedControllerState extends State<PackageReceivedController> {
           navigationBar: CupertinoNavigationBarFix.build(
             context,
             middle: Text(
-              'Ho ricevuto un pacco',
+              'navTitle'.localized(context),
               style: Theme.of(context).textTheme.navBarTitle,
             ),
             leading: CupertinoNavigationBarBackButton(
@@ -79,7 +80,7 @@ class _PackageReceivedControllerState extends State<PackageReceivedController> {
                 ProfilePicBox(
                   onTap: _pickImage,
                   image: _image,
-                  title: "Scatta una foto\nal pacco",
+                  title: 'mainLabel'.localized(context),
                   mainIconSvgAsset: ImageSrc.shipmentLeadingCell,
                 ),
                 const SizedBox(
@@ -98,7 +99,7 @@ class _PackageReceivedControllerState extends State<PackageReceivedController> {
                   fullWidth: true,
                   showTopDivider: true,
                   showTrailingChevron: true,
-                  title: _selectedUser == null ? "Scegli un destinatario" : "${_selectedUser!.firstName} ${_selectedUser!.lastName} AC${_selectedUser!.userId.toString()}",
+                  title: _selectedUser == null ? 'secondaryLabel'.localized(context) : "${_selectedUser!.firstName} ${_selectedUser!.lastName} AC${_selectedUser!.userId.toString()}",
                   leading: const Icon(
                     CupertinoIcons.person,
                     color: AppColors.primaryColorDark,
@@ -117,12 +118,15 @@ class _PackageReceivedControllerState extends State<PackageReceivedController> {
                     ),
                     Expanded(
                       child: CupertinoTextField(
-                        placeholder: "Aggiungi una descrizione opzionale utile per la notifica di consegna al tuo utente",
+                        placeholder: 'placeHolderNotes'.localized(context),
                         padding: const EdgeInsets.all(Dimension.padding),
                         prefixMode: OverlayVisibilityMode.always,
                         placeholderStyle: const TextStyle(color: AppColors.colorGrey),
                         controller: _notesController,
-                        decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(Dimension.borderRadiusSearch)),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(Dimension.borderRadiusSearch),
+                        ),
                         autofocus: false,
                         textInputAction: TextInputAction.done,
                         minLines: 2,
@@ -137,7 +141,11 @@ class _PackageReceivedControllerState extends State<PackageReceivedController> {
                 const SizedBox(
                   height: Dimension.paddingL,
                 ),
-                MainButton(enabled: _selectedUser != null, text: "Avanti", onPressed: _sendRequest)
+                MainButton(
+                  enabled: _selectedUser != null,
+                  text: 'nextButton'.localized(context),
+                  onPressed: _sendRequest,
+                )
               ],
             ),
           )),
@@ -158,12 +166,14 @@ class _PackageReceivedControllerState extends State<PackageReceivedController> {
     NetworkManager.instance.setupDelivery(userId: _selectedUser!.userId ?? 0, notes: _notesController.text.trim()).then((value) {
       if (value != null && value is PudoPackage) {
         if (_image != null) {
-          NetworkManager.instance.packagePhotoUpload(_image!, value.packageId).catchError((onError) => SAAlertDialog.displayAlertWithClose(context, "Error", onError));
+          NetworkManager.instance
+              .packagePhotoUpload(_image!, value.packageId)
+              .catchError((onError) => SAAlertDialog.displayAlertWithClose(context, 'genericErrorTitle'.localized(context, 'general'), onError));
         }
         Navigator.of(context).pushReplacementNamed(Routes.notifySent, arguments: "${_selectedUser!.firstName} ${_selectedUser!.lastName}");
       } else {
         NetworkErrorHelper.helper(context, value);
       }
-    }).catchError((onError) => SAAlertDialog.displayAlertWithClose(context, "Error", onError));
+    }).catchError((onError) => SAAlertDialog.displayAlertWithClose(context, 'genericErrorTitle'.localized(context, 'general'), onError));
   }
 }

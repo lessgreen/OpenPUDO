@@ -22,6 +22,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:qui_green/commons/utilities/keyboard_visibility.dart';
+import 'package:qui_green/commons/utilities/localization.dart';
 import 'package:qui_green/widgets/main_button.dart';
 import 'package:qui_green/resources/res.dart';
 import 'package:qui_green/resources/routes_enum.dart';
@@ -51,7 +52,7 @@ class _ThanksControllerState extends State<ThanksController> {
               children: [
                 Center(
                   child: Text(
-                    'Grazie per averci scelto!',
+                    'mainLabel'.localized(context),
                     style: Theme.of(context).textTheme.headline6,
                   ),
                 ),
@@ -61,7 +62,7 @@ class _ThanksControllerState extends State<ThanksController> {
                 Padding(
                   padding: const EdgeInsets.only(left: Dimension.padding, right: Dimension.padding),
                   child: Text(
-                    'Divendando un PUDO QuiGreen potrai fornire un servizio a tutti gli utenti che vorranno ricevere un pacco, ricevendolo tu per loro.',
+                    'secondaryLabel'.localized(context),
                     textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.subtitle1?.copyWith(fontWeight: FontWeight.w400),
                   ),
@@ -74,7 +75,7 @@ class _ThanksControllerState extends State<ThanksController> {
                     horizontal: Dimension.padding,
                   ),
                   onPressed: () => Navigator.of(context).pushReplacementNamed(Routes.personalDataBusiness),
-                  text: 'Avanti',
+                  text: 'nextButton'.localized(context),
                 ),
                 const SizedBox(height: Dimension.padding),
                 AnimatedCrossFade(
@@ -82,7 +83,7 @@ class _ThanksControllerState extends State<ThanksController> {
                   secondChild: const SizedBox(),
                   firstChild: MainButton(
                     onPressed: () => Navigator.of(context).pop(),
-                    text: 'Indietro',
+                    text: 'backButton'.localized(context),
                   ),
                   duration: const Duration(milliseconds: 150),
                 ),

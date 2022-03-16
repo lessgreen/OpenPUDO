@@ -30,6 +30,7 @@ import 'package:qui_green/models/reward_option.dart';
 import 'package:qui_green/resources/routes_enum.dart';
 import 'package:qui_green/singletons/current_user.dart';
 import 'package:qui_green/singletons/network/network_manager.dart';
+import 'package:qui_green/commons/utilities/localization.dart';
 
 class RewardPolicyControllerViewModel extends ChangeNotifier {
   RewardPolicyControllerViewModel(BuildContext context) {
@@ -37,9 +38,15 @@ class RewardPolicyControllerViewModel extends ChangeNotifier {
       if (value is List<RewardOption>) {
         dataSource = value;
       } else {
-        SAAlertDialog.displayAlertWithClose(context, "Error", "Qualcosa è andato storto");
+        SAAlertDialog.displayAlertWithClose(
+          context,
+          'genericErrorTitle'.localized(context, 'general'),
+          'unknownDescription'.localized(context, 'general'),
+        );
       }
-    }).catchError((error) => SAAlertDialog.displayAlertWithClose(context, "Error", error));
+    }).catchError(
+      (error) => SAAlertDialog.displayAlertWithClose(context, 'genericErrorTitle'.localized(context, 'general'), error),
+    );
   }
 
   // ************ Navigation *****
@@ -48,25 +55,32 @@ class RewardPolicyControllerViewModel extends ChangeNotifier {
       if (value != null && value is OPBaseResponse) {
         if (value.returnCode == 0) {
           if (requestModel.profilePic != null) {
-            NetworkManager.instance.photoUpload(requestModel.profilePic!, isPudo: true).catchError((onError) => SAAlertDialog.displayAlertWithClose(context, "Error", onError));
+            NetworkManager.instance.photoUpload(requestModel.profilePic!, isPudo: true).catchError(
+                  (onError) => SAAlertDialog.displayAlertWithClose(context, 'genericErrorTitle'.localized(context, 'general'), onError),
+                );
           }
           NetworkManager.instance.getMyPudoProfile().then((profile) {
             if (profile is PudoProfile) {
-              Provider
-                  .of<CurrentUser>(context, listen: false)
-                  .pudoProfile = profile;
-              Navigator.of(context).pushReplacementNamed(Routes.pudoRegistrationPreview, arguments: requestModel.copyWith(rewardPolicy: dataSource));
+              Provider.of<CurrentUser>(context, listen: false).pudoProfile = profile;
+              Navigator.of(context).pushReplacementNamed(
+                Routes.pudoRegistrationPreview,
+                arguments: requestModel.copyWith(rewardPolicy: dataSource),
+              );
             } else {
               NetworkErrorHelper.helper(context, value);
             }
-          }).catchError((onError) => SAAlertDialog.displayAlertWithClose(context, "Error", onError));
+          }).catchError(
+            (onError) => SAAlertDialog.displayAlertWithClose(context, 'genericErrorTitle'.localized(context, 'general'), onError),
+          );
         } else {
           NetworkErrorHelper.helper(context, value);
         }
       } else {
         NetworkErrorHelper.helper(context, value);
       }
-    }).catchError((onError) => SAAlertDialog.displayAlertWithClose(context, "Error", onError));
+    }).catchError(
+      (onError) => SAAlertDialog.displayAlertWithClose(context, 'genericErrorTitle'.localized(context, 'general'), onError),
+    );
   }
 
   List<RewardOption> _dataSource = [];
@@ -142,9 +156,9 @@ class RewardPolicyControllerViewModel extends ChangeNotifier {
     int length = dataSource[rowIndex].extraInfo?.values?.length ?? 0;
     for (int i = 0; i < length; i++) {
       if (i == optionIndex) {
-        dataSource[rowIndex].extraInfo?.values ? [optionIndex].checked = value;
+        dataSource[rowIndex].extraInfo?.values?[optionIndex].checked = value;
       } else {
-        dataSource[rowIndex].extraInfo?.values ? [i].checked = false;
+        dataSource[rowIndex].extraInfo?.values?[i].checked = false;
       }
     }
     notifyListeners();
@@ -170,7 +184,7 @@ class RewardPolicyControllerViewModel extends ChangeNotifier {
     if (aRow.extraInfo == null || aRow.extraInfo!.values == null || optionIndex >= aRow.extraInfo!.values!.length) {
       return;
     }
-    ExtraInfoSelectItem? subItem = aRow.extraInfo?.values ? [optionIndex];
+    ExtraInfoSelectItem? subItem = aRow.extraInfo?.values?[optionIndex];
     if (subItem == null) {
       return;
     }

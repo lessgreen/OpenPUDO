@@ -15,6 +15,7 @@ UserProfile _$UserProfileFromJson(Map<String, dynamic> json) => UserProfile(
       userId: json['userId'] as int?,
       pudoOwner: json['pudoOwner'] as bool?,
       packageCount: json['packageCount'] as int?,
+      savedCO2: json['savedCO2'] as String?,
       phoneNumber: json['phoneNumber'] as String?,
     );
 
@@ -28,5 +29,6 @@ Map<String, dynamic> _$UserProfileToJson(UserProfile instance) =>
       'userId': instance.userId,
       'pudoOwner': instance.pudoOwner,
       'packageCount': instance.packageCount,
+      'savedCO2': instance.savedCO2,
       'phoneNumber': instance.phoneNumber,
     };

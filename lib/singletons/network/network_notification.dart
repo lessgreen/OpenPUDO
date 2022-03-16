@@ -30,7 +30,7 @@ mixin NetworkManagerNotification on NetworkGeneral {
         _headers['Authorization'] = 'Bearer $_accessToken';
       }
 
-      var url = _baseURL + '/api/v1/notifications/count';
+      var url = _baseURL + '/api/v2/notification/count';
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
@@ -77,7 +77,7 @@ mixin NetworkManagerNotification on NetworkGeneral {
         _headers['Authorization'] = 'Bearer $_accessToken';
       }
 
-      var url = _baseURL + '/api/v1/notifications/$notificationId/mark-as-read';
+      var url = _baseURL + '/api/v2/notification/$notificationId/mark-as-read';
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
@@ -110,7 +110,7 @@ mixin NetworkManagerNotification on NetworkGeneral {
     }
   }
 
-  Future<dynamic> readAllMyNotifications() async {
+  Future<dynamic> markAllNotificationsAsRead() async {
     try {
       if (!isOnline) {
         throw ("Network is offline");
@@ -119,7 +119,7 @@ mixin NetworkManagerNotification on NetworkGeneral {
         _headers['Authorization'] = 'Bearer $_accessToken';
       }
 
-      var url = _baseURL + '/api/v1/notifications/mark-as-read';
+      var url = _baseURL + '/api/v1/notification/mark-as-read';
 
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
@@ -139,7 +139,7 @@ mixin NetworkManagerNotification on NetworkGeneral {
       var needHandleTokenRefresh = _handleTokenRefresh(
         baseResponse,
         () {
-          readAllMyNotifications().catchError((onError) => throw onError);
+          markAllNotificationsAsRead().catchError((onError) => throw onError);
         },
       );
       if (needHandleTokenRefresh == false) {
@@ -153,7 +153,7 @@ mixin NetworkManagerNotification on NetworkGeneral {
     }
   }
 
-  Future<dynamic> getMyNotifications({int limit = 20, int offset = 0}) async {
+  Future<dynamic> getNotifications({int limit = 20, int offset = 0}) async {
     try {
       if (!isOnline) {
         throw ("Network is offline");
@@ -164,7 +164,7 @@ mixin NetworkManagerNotification on NetworkGeneral {
 
       var queryString = "?limit=$limit&offset=$offset";
 
-      var url = _baseURL + '/api/v1/notifications$queryString';
+      var url = _baseURL + '/api/v2/notification$queryString';
 
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
@@ -181,18 +181,18 @@ mixin NetworkManagerNotification on NetworkGeneral {
       var decodedUTF8 = const Utf8Decoder().convert(codeUnits);
       var json = jsonDecode(decodedUTF8);
       var baseResponse = OPBaseResponse.fromJson(json);
-      List<PudoNotification> myNotifications = <PudoNotification>[];
+      List<OpenPudoNotification> myNotifications = <OpenPudoNotification>[];
 
       var needHandleTokenRefresh = _handleTokenRefresh(
         baseResponse,
         () {
-          getMyNotifications().catchError((onError) => throw onError);
+          getNotifications().catchError((onError) => throw onError);
         },
       );
       if (needHandleTokenRefresh == false) {
         if (baseResponse.returnCode == 0 && baseResponse.payload != null && baseResponse.payload is List) {
           for (dynamic aRow in baseResponse.payload) {
-            myNotifications.add(PudoNotification.fromJson(aRow));
+            myNotifications.add(OpenPudoNotification.fromJson(aRow));
           }
           return myNotifications;
         } else {

@@ -105,7 +105,7 @@ dynamic routeWithSetting(RouteSettings settings) {
           enableAddressSearch: false,
           enablePudoCards: true,
           getUserPosition: false,
-          title: "Ecco i punti di ritiro vicino a te",
+          title: 'poiNearbyTitle',
           isOnboarding: false,
         ),
       );

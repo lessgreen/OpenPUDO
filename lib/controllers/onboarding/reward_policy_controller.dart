@@ -22,6 +22,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:qui_green/commons/utilities/keyboard_visibility.dart';
+import 'package:qui_green/commons/utilities/localization.dart';
 import 'package:qui_green/models/registration_pudo_model.dart';
 import 'package:qui_green/resources/res.dart';
 import 'package:qui_green/singletons/network/network_manager.dart';
@@ -69,7 +70,7 @@ class _RewardPolicyControllerState extends State<RewardPolicyController> {
                     ),
                     Center(
                       child: Text(
-                        'Desideri qualcosa in cambio?',
+                        'rewardWanted'.localized(context),
                         textAlign: TextAlign.center,
                         style: Theme.of(context).textTheme.headline6,
                       ),
@@ -79,10 +80,15 @@ class _RewardPolicyControllerState extends State<RewardPolicyController> {
                     ),
                     Container(
                         padding: const EdgeInsets.only(left: Dimension.padding, right: Dimension.padding),
-                        child: const Text(
-                          'Puoi decidere di fornire il servizio QuiGreen in maniera completamente gratuita oppure puoi essere pagato in uno dei seguenti modi:',
+                        child: Text(
+                          'hintReward'.localized(context),
                           textAlign: TextAlign.center,
-                          style: TextStyle(fontSize: 15, fontStyle: FontStyle.italic, fontWeight: FontWeight.w300, color: Colors.grey),
+                          style: const TextStyle(
+                            fontSize: 15,
+                            fontStyle: FontStyle.italic,
+                            fontWeight: FontWeight.w300,
+                            color: Colors.grey,
+                          ),
                         )),
                     const SizedBox(
                       height: Dimension.paddingM,
@@ -129,9 +135,9 @@ class _RewardPolicyControllerState extends State<RewardPolicyController> {
                                     onPressed: () {
                                       FocusManager.instance.primaryFocus?.unfocus();
                                     },
-                                    child: const Text(
-                                      'Done',
-                                      style: TextStyle(color: AppColors.primaryColorDark),
+                                    child: Text(
+                                      'doneButton'.localized(context),
+                                      style: const TextStyle(color: AppColors.primaryColorDark),
                                     ),
                                   )
                                 ],
@@ -140,8 +146,8 @@ class _RewardPolicyControllerState extends State<RewardPolicyController> {
                           )),
                       firstChild: MainButton(
                         enabled: viewModel!.mandatoryFulfilled,
-                        onPressed: () => viewModel.onSendClick(context,widget.pudoRegistrationModel),
-                        text: 'Avanti',
+                        onPressed: () => viewModel.onSendClick(context, widget.pudoRegistrationModel),
+                        text: 'nextButton'.localized(context),
                       ),
                       duration: const Duration(milliseconds: 150),
                     ),

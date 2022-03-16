@@ -5,6 +5,7 @@ import 'package:qui_green/models/package_summary.dart';
 import 'package:qui_green/models/pudo_package.dart';
 import 'package:qui_green/resources/routes_enum.dart';
 import 'package:qui_green/singletons/network/network_manager.dart';
+import 'package:qui_green/commons/utilities/localization.dart';
 
 class ContentPackagesListPudoHistoryViewModel with ChangeNotifier {
   BuildContext context;
@@ -62,12 +63,14 @@ class ContentPackagesListPudoHistoryViewModel with ChangeNotifier {
           errorDescription = HtmlUnescape().convert(response.value.first.toString());
           notifyListeners();
         } else {
-          errorDescription = "Ops!, qualcosa è andato storto";
+          errorDescription = 'unknownDescription'.localized(context, 'general');
           notifyListeners();
         }
       }
       return response;
-    }).catchError((onError) => SAAlertDialog.displayAlertWithClose(context, "Error", onError));
+    }).catchError(
+      (onError) => SAAlertDialog.displayAlertWithClose(context, 'genericErrorTitle'.localized(context, 'general'), onError),
+    );
   }
 
   onPackageCard(PackageSummary package) {
@@ -76,10 +79,16 @@ class ContentPackagesListPudoHistoryViewModel with ChangeNotifier {
         if (response is PudoPackage) {
           Navigator.of(context).pushNamed(Routes.packagePickup, arguments: response);
         } else {
-          SAAlertDialog.displayAlertWithClose(context, "Error", "Ops!, Qualcosa e' andato storto");
+          SAAlertDialog.displayAlertWithClose(
+            context,
+            'genericErrorTitle'.localized(context, 'general'),
+            'unknownDescription'.localized(context, 'general'),
+          );
         }
       },
-    ).catchError((onError) => SAAlertDialog.displayAlertWithClose(context, "Error", onError));
+    ).catchError(
+      (onError) => SAAlertDialog.displayAlertWithClose(context, 'genericErrorTitle'.localized(context, 'general'), onError),
+    );
   }
 
   void _scrollListener() {
