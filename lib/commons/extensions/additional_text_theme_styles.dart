@@ -78,5 +78,4 @@ extension AdditionalTextTheme on TextTheme {
   TextStyle? get transparentText => bodyText1?.copyWith(fontWeight: FontWeight.w300, color: Colors.transparent);
 
   TextStyle? get subtitle1Secondary => subtitle1?.copyWith(color: CupertinoColors.secondaryLabel);
-  TextStyle? get subtitle1Bold => subtitle1?.copyWith(fontWeight: FontWeight.w500);
 }
