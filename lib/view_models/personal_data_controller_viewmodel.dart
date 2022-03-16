@@ -20,8 +20,8 @@
 
 import 'dart:io';
 
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:location/location.dart';
 import 'package:provider/provider.dart';
 import 'package:qui_green/commons/utilities/localization.dart';
@@ -133,17 +133,15 @@ class PersonalDataControllerViewModel extends ChangeNotifier {
   }
 
   pickFile() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles(allowMultiple: false, type: FileType.image);
+    final ImagePicker _picker = ImagePicker();
+    final XFile? result = await _picker.pickImage(source: ImageSource.gallery);
     if (result != null) {
       try {
-        File file = File(result.files.first.path ?? "");
+        File file = File(result.path);
         image = file;
       } catch (e) {
-        showErrorDialog?.call(e.toString());
         safePrint(e.toString());
       }
-    } else {
-      // User canceled the picker
     }
   }
 }

@@ -54,21 +54,13 @@ class UserProfileRecapWidget extends StatelessWidget {
                       ),
                       TextSpan(
                         text: "$totalUsage",
-                        style: Theme.of(context).textTheme.bodyText1?.copyWith(
-                              color: AppColors.accentColor,
-                              fontWeight: FontWeight.w500,
-                              fontStyle: FontStyle.italic,
-                            ),
+                        style: Theme.of(context).textTheme.bodyTextItalicBoldAccent,
                       ),
                       TextSpan(text: 'nTimes'.localized(context)),
                       TextSpan(text: 'contribute'.localized(context)),
                       TextSpan(
                         text: "$kgCO2Saved ",
-                        style: Theme.of(context).textTheme.bodyText1?.copyWith(
-                              color: AppColors.accentColor,
-                              fontWeight: FontWeight.w500,
-                              fontStyle: FontStyle.italic,
-                            ),
+                        style: Theme.of(context).textTheme.bodyTextItalicBoldAccent,
                       ),
                       TextSpan(text: 'co2Emission'.localized(context)),
                       WidgetSpan(

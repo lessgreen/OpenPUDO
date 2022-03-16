@@ -20,12 +20,13 @@
 
 import 'dart:io';
 
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:qui_green/commons/alert_dialog.dart';
 import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
 import 'package:qui_green/commons/ui/cupertino_navigation_bar_fix.dart';
+import 'package:qui_green/commons/utilities/localization.dart';
 import 'package:qui_green/commons/utilities/network_error_helper.dart';
 import 'package:qui_green/models/pudo_package.dart';
 import 'package:qui_green/models/user_summary.dart';
@@ -36,7 +37,6 @@ import 'package:qui_green/widgets/main_button.dart';
 import 'package:qui_green/widgets/profile_pic_box.dart';
 import 'package:qui_green/widgets/sascaffold.dart';
 import 'package:qui_green/widgets/table_view_cell.dart';
-import 'package:qui_green/commons/utilities/localization.dart';
 
 class PackageReceivedController extends StatefulWidget {
   const PackageReceivedController({Key? key}) : super(key: key);
@@ -153,9 +153,10 @@ class _PackageReceivedControllerState extends State<PackageReceivedController> {
   }
 
   void _pickImage() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles(allowMultiple: false, type: FileType.image);
+    final ImagePicker _picker = ImagePicker();
+    final XFile? result = await _picker.pickImage(source: ImageSource.gallery);
     if (result != null) {
-      File file = File(result.files.first.path ?? "");
+      File file = File(result.path);
       setState(() {
         _image = file;
       });
