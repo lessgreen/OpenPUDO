@@ -105,6 +105,9 @@ class _PackageDeliveredControllerState extends State<PackageDeliveredController>
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(Dimension.borderRadius),
                       child: QRBarScannerCamera(
+                        onError: (context, _) => _buildEmptyQrBox(),
+                        notStartedBuilder: (context) => _buildEmptyQrBox(),
+                        offscreenBuilder: (context) => _buildEmptyQrBox(),
                         qrCodeCallback: _handleQRCode,
                         formats: const [BarcodeFormats.QR_CODE],
                       ),
@@ -153,6 +156,11 @@ class _PackageDeliveredControllerState extends State<PackageDeliveredController>
           )),
     );
   }
+
+  Widget _buildEmptyQrBox() => Container(
+        constraints: BoxConstraints(minHeight: MediaQuery.of(context).size.width / 10 * 8, minWidth: MediaQuery.of(context).size.width / 10 * 8),
+        color: Colors.white,
+      );
 
   void _handleQRCode(String? code) {
     if (_code == null && code != null) {
