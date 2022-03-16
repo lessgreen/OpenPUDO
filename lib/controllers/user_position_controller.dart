@@ -25,6 +25,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
 import 'package:qui_green/commons/ui/cupertino_navigation_bar_fix.dart';
+import 'package:qui_green/commons/utilities/localization.dart';
 import 'package:qui_green/resources/res.dart';
 import 'package:qui_green/view_models/user_position_controller_viewmodel.dart';
 import 'package:qui_green/widgets/main_button.dart';
@@ -69,9 +70,9 @@ class _UserPositionControllerState extends State<UserPositionController> {
                 color: Colors.white,
                 onPressed: () => Navigator.of(context).pop(),
               )
-            : const SizedBox(),
+            : null,
         middle: Text(
-          "Vediamo dove ti trovi",
+          'navBarTitle'.localized(context),
           style: Theme.of(context).textTheme.navBarTitle,
           maxLines: 1,
         ),
@@ -91,7 +92,7 @@ class _UserPositionControllerState extends State<UserPositionController> {
                 color: AppColors.primaryColorDark,
                 onPressed: () => Navigator.of(context).pop(),
               )
-            : const SizedBox(),
+            : null,
       ),
       body: _buildBody(viewModel),
     );
@@ -107,7 +108,7 @@ class _UserPositionControllerState extends State<UserPositionController> {
               if (!widget.useCupertinoScaffold)
                 Center(
                   child: Text(
-                    'Vediamo dove ti trovi',
+                    'navBarTitle'.localized(context),
                     style: Theme.of(context).textTheme.headline6,
                   ),
                 ),
@@ -116,7 +117,7 @@ class _UserPositionControllerState extends State<UserPositionController> {
                 padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
                 child: Center(
                   child: Text(
-                    'Per poterti fornire informazioni rilevanti\nabbiamo bisogno di accedere alla tua posizione.',
+                    'mainLabel'.localized(context),
                     textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.subtitle1,
                   ),
@@ -132,7 +133,7 @@ class _UserPositionControllerState extends State<UserPositionController> {
                     }
                   });
                 },
-                text: 'Ok, grazie!',
+                text: 'allowGPSButton'.localized(context),
               ),
               const SizedBox(height: Dimension.padding),
               MainButton(
@@ -140,7 +141,7 @@ class _UserPositionControllerState extends State<UserPositionController> {
                   horizontal: Dimension.padding,
                 ),
                 onPressed: () => viewModel.onAddAddressClick(context),
-                text: 'Inserisci indirizzo',
+                text: 'chooseAddressButton'.localized(context),
               ),
               const SizedBox(height: Dimension.paddingL)
             ],

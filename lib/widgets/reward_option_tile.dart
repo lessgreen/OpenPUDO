@@ -99,11 +99,18 @@ class RewardOptionTile extends StatelessWidget {
               secondChild: Container(
                 margin: const EdgeInsets.all(Dimension.paddingS),
                 padding: const EdgeInsets.symmetric(horizontal: Dimension.paddingS),
-                decoration: BoxDecoration(color: Colors.grey.shade200, borderRadius: BorderRadius.circular(Dimension.borderRadiusS)),
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade200,
+                  borderRadius: BorderRadius.circular(Dimension.borderRadiusS),
+                ),
                 child: TextFormField(
                   onChanged: (newVal) => onTextChange(newVal),
                   maxLines: 5,
-                  decoration: InputDecoration(hintText: model.hintText, hintStyle: Theme.of(context).textTheme.bodyText2!.copyWith(fontStyle: FontStyle.italic), border: InputBorder.none),
+                  decoration: InputDecoration(
+                    hintText: model.hintText,
+                    hintStyle: Theme.of(context).textTheme.bodyText2!.copyWith(fontStyle: FontStyle.italic),
+                    border: InputBorder.none,
+                  ),
                 ),
               ),
               crossFadeState: value && model.hasField ? CrossFadeState.showSecond : CrossFadeState.showFirst,

@@ -42,27 +42,26 @@ class PudoProfile with PudoCardRepresentation {
     return address?.label;
   }
 
-  String? contactNotes;
   String? createTms;
   String? publicPhoneNumber;
   String? updateTms;
-  String? vat;
   AddressModel? address;
   int? customerCount;
   int? packageCount;
+  String? savedCO2;
   String? rewardMessage;
   String? imageUrl;
 
   PudoProfile({
     required this.pudoId,
     required this.businessName,
-    this.contactNotes,
     this.createTms,
     this.publicPhoneNumber,
     this.updateTms,
-    this.vat,
     this.address,
     this.customerCount,
+    this.packageCount,
+    this.savedCO2,
     this.pudoPicId,
     this.rewardMessage,
     this.customizedAddress,

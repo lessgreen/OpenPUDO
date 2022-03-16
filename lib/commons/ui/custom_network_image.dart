@@ -18,106 +18,64 @@
  If not, see <https://github.com/lessgreen/OpenPUDO>.
 */
 
-import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:qui_green/resources/res.dart';
 import 'package:qui_green/singletons/network/network_manager.dart';
+import 'package:transparent_image/transparent_image.dart';
 
-class CustomNetworkImage extends StatefulWidget {
+class CustomNetworkImage extends StatelessWidget {
   final String? url;
   final double? width;
   final double? height;
   final BoxFit? fit;
   final bool useSVGPlaceholder;
   final bool isCircle;
+  final Widget? placeholderWidget;
 
-  const CustomNetworkImage({Key? key, required this.url, this.width, this.height, this.fit, this.useSVGPlaceholder = true, this.isCircle = false}) : super(key: key);
-
-  @override
-  _CustomNetworkImageState createState() => _CustomNetworkImageState();
-}
-
-class _CustomNetworkImageState extends State<CustomNetworkImage> {
-  Uint8List? _buffer;
-
-  set buffer(Uint8List? val) {
-    if (mounted) {
-      setState(() {
-        _buffer = val;
-      });
-    }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _refreshData(widget.url);
-  }
-
-  _refreshData(String? pictureId) {
-    if (pictureId == null) {
-      buffer = null;
-      return;
-    }
-    NetworkManager.instance.profilePic(pictureId).then((value) {
-      decodeImageFromList(value).then(
-        (image) {
-          buffer = value;
-        },
-      ).catchError((onError) {
-        buffer = null;
-      });
-    }).catchError(
-      (onError) {
-        buffer = null;
-      },
-    );
-  }
-
-  @override
-  void didUpdateWidget(covariant CustomNetworkImage oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.url != widget.url) {
-      _refreshData(widget.url);
-    }
-  }
-
-  Widget _buildImage() {
-    return _buffer == null
-        ? widget.useSVGPlaceholder
-            ? SizedBox(
-                width: widget.width,
-                height: widget.height,
-                child: SvgPicture.asset(
-                  ImageSrc.imageSVGPlaceHolder,
-                  width: widget.width,
-                  height: widget.height,
-                  fit: BoxFit.cover,
-                ),
-              )
-            : Image.asset(
-                ImageSrc.imagePlaceHolder,
-                width: widget.width,
-                height: widget.height,
-                fit: widget.fit,
-              )
-        : Image.memory(
-            _buffer!,
-            width: widget.width,
-            height: widget.height,
-            fit: widget.fit,
-          );
-  }
+  const CustomNetworkImage({
+    Key? key,
+    this.url,
+    this.width,
+    this.height,
+    this.fit,
+    this.placeholderWidget,
+    this.useSVGPlaceholder = true,
+    this.isCircle = false,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return widget.isCircle
+    var sizedBox = SizedBox(
+      width: width,
+      height: height,
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
+          placeholderWidget ??
+              SvgPicture.asset(
+                ImageSrc.imageSVGPlaceHolder,
+                width: width,
+                height: height,
+                fit: fit ?? BoxFit.cover,
+              ),
+          url == null
+              ? const SizedBox()
+              : FadeInImage.memoryNetwork(
+                  placeholder: kTransparentImage,
+                  image: NetworkManager.instance.getProfilePicID(url!),
+                  fit: fit ?? BoxFit.cover,
+                )
+        ],
+      ),
+    );
+    return isCircle
         ? ClipRRect(
-            child: _buildImage(),
+            child: sizedBox,
             borderRadius: BorderRadius.circular(50),
           )
-        : _buildImage();
+        : ClipRect(
+            child: sizedBox,
+          );
   }
 }

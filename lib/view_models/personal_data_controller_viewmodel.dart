@@ -24,6 +24,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:location/location.dart';
 import 'package:provider/provider.dart';
+import 'package:qui_green/commons/utilities/localization.dart';
 import 'package:qui_green/commons/utilities/print_helper.dart';
 import 'package:qui_green/models/pudo_profile.dart';
 import 'package:qui_green/models/user_profile.dart';
@@ -93,11 +94,11 @@ class PersonalDataControllerViewModel extends ChangeNotifier {
               Navigator.of(context).pushReplacementNamed(Routes.userPudoTutorial, arguments: PudoProfile.fakeProfile);
             }
           } else {
-            showErrorDialog?.call("Qualcosa è andato storto");
+            showErrorDialog?.call('unknownDescription'.localized(context, 'general'));
           }
         }).catchError((onError) => showErrorDialog?.call(onError));
       } else {
-        showErrorDialog?.call("Qualcosa è andato storto");
+        showErrorDialog?.call('unknownDescription'.localized(context, 'general'));
       }
     }).catchError((onError) => showErrorDialog?.call(onError));
   }

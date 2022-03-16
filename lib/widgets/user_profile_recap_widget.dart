@@ -22,11 +22,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:qui_green/commons/extensions/additional_button_styles.dart';
 import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
+import 'package:qui_green/commons/utilities/localization.dart';
 import 'package:qui_green/resources/res.dart';
+import 'package:share_plus/share_plus.dart';
 
 class UserProfileRecapWidget extends StatelessWidget {
   final int totalUsage;
-  final int kgCO2Saved;
+  final String kgCO2Saved;
   final Function? onTap;
   final bool isForPudo;
   const UserProfileRecapWidget({Key? key, required this.totalUsage, required this.kgCO2Saved, this.onTap, this.isForPudo = false}) : super(key: key);
@@ -46,13 +48,9 @@ class UserProfileRecapWidget extends StatelessWidget {
                   text: TextSpan(
                     text: '',
                     style: Theme.of(context).textTheme.bodyTextLight,
-                    // style: Theme.of(context).textTheme.bodyText2?.copyWith(
-                    //       fontWeight: FontWeight.w300,
-                    //       color: AppColors.primaryTextColor,
-                    //     ),
                     children: [
                       TextSpan(
-                        text: isForPudo ? "I tuoi utenti hanno usato il servizio di QuiGreen " : "Hai usato il servizio di QuiGreen ",
+                        text: (isForPudo ? 'recapPudoTitle' : 'recapUserTitle').localized(context),
                       ),
                       TextSpan(
                         text: "$totalUsage",
@@ -62,17 +60,17 @@ class UserProfileRecapWidget extends StatelessWidget {
                               fontStyle: FontStyle.italic,
                             ),
                       ),
-                      const TextSpan(text: " volte,"),
-                      const TextSpan(text: " contribuendo a ridurre di "),
+                      TextSpan(text: 'nTimes'.localized(context)),
+                      TextSpan(text: 'contribute'.localized(context)),
                       TextSpan(
-                        text: "${kgCO2Saved}kg",
+                        text: "$kgCO2Saved ",
                         style: Theme.of(context).textTheme.bodyText1?.copyWith(
                               color: AppColors.accentColor,
                               fontWeight: FontWeight.w500,
                               fontStyle: FontStyle.italic,
                             ),
                       ),
-                      const TextSpan(text: " le emissioni di CO2 "),
+                      TextSpan(text: 'co2Emission'.localized(context)),
                       WidgetSpan(
                         child: SvgPicture.asset(
                           ImageSrc.leaf,
@@ -93,12 +91,23 @@ class UserProfileRecapWidget extends StatelessWidget {
           TextButton(
             onPressed: () {
               onTap?.call();
+              _shareDidPress(context);
             },
-            child: const Text('condividi'),
+            child: Text(
+              'shareButton'.localized(context),
+            ),
             style: AdditionalButtonStyles.simpleStyle(context),
           )
         ],
       ),
     );
+  }
+
+  _shareDidPress(BuildContext context) {
+    var finalString = (isForPudo ? 'recapPudoTitle' : 'reacapShareTitle').localized(context);
+    finalString += '$totalUsage ${'nTimes'.localized(context)}${'contribute'.localized(context)}';
+    finalString += '$kgCO2Saved ${'co2Emission'.localized(context)}.';
+    finalString += '\n${'learnMore'.localized(context)}';
+    Share.share(finalString);
   }
 }

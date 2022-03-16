@@ -34,6 +34,8 @@ import 'package:qui_green/singletons/network/network_manager.dart';
 import 'package:qui_green/widgets/sascaffold.dart';
 import 'package:qui_green/widgets/table_view_cell.dart';
 import 'package:vibration/vibration.dart';
+import 'package:qui_green/commons/utilities/localization.dart';
+
 
 class PackageDeliveredController extends StatefulWidget {
   const PackageDeliveredController({Key? key}) : super(key: key);
@@ -58,7 +60,7 @@ class _PackageDeliveredControllerState extends State<PackageDeliveredController>
           navigationBar: CupertinoNavigationBarFix.build(
             context,
             middle: Text(
-              'Ho consegnato un pacco',
+              'navTitle'.localized(context),
               style: Theme.of(context).textTheme.navBarTitle,
             ),
             leading: CupertinoNavigationBarBackButton(
@@ -78,13 +80,16 @@ class _PackageDeliveredControllerState extends State<PackageDeliveredController>
                     text: TextSpan(
                       text: '',
                       style: Theme.of(context).textTheme.navBarTitleDark!.copyWith(height: 1.2),
-                      children: const [
+                      children: [
                         TextSpan(
-                          text: "Chiedi al tuo cliente ",
+                          text: 'mainLabel'.localized(context),
                         ),
-                        TextSpan(text: "QuiGreen\n", style: TextStyle(color: AppColors.primaryColorDark, fontWeight: FontWeight.w500)),
                         TextSpan(
-                          text: "di mostrarti il QRCode di ritiro",
+                          text: "${'defaultTitle'.localized(context, 'general')}\n",
+                          style: const TextStyle(color: AppColors.primaryColorDark, fontWeight: FontWeight.w500),
+                        ),
+                        TextSpan(
+                          text: 'secondaryLabel'.localized(context),
                         ),
                       ],
                     )),
@@ -112,7 +117,7 @@ class _PackageDeliveredControllerState extends State<PackageDeliveredController>
                   height: Dimension.paddingM,
                 ),
                 Text(
-                  'oppure, seleziona il pacco\n tra quelli in giacenza',
+                  'orLabel'.localized(context),
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.bodyTextLight?.copyWith(fontStyle: FontStyle.italic, color: Colors.grey),
                 ),
@@ -141,7 +146,7 @@ class _PackageDeliveredControllerState extends State<PackageDeliveredController>
                   fullWidth: true,
                   showTopDivider: true,
                   showTrailingChevron: true,
-                  title: selectedPackage == null ? "Pacchi in giacenza" : selectedPackage!.packageName ?? "",
+                  title: selectedPackage == null ? 'waitingShipmentLabel'.localized(context) : selectedPackage!.packageName ?? "",
                   leading: SvgPicture.asset(
                     ImageSrc.boxFillIcon,
                     color: AppColors.primaryColorDark,
@@ -167,16 +172,16 @@ class _PackageDeliveredControllerState extends State<PackageDeliveredController>
             if (value is PudoPackage) {
               Navigator.of(context).pushReplacementNamed(Routes.packageDeliveryDone, arguments: "AC${value.userId ?? 0}");
             } else {
-              SAAlertDialog.displayAlertWithClose(context, "Error", value, barrierDismissable: false, completion: () => _code = null);
+              SAAlertDialog.displayAlertWithClose(context, 'genericErrorTitle'.localized(context, 'general'), value, barrierDismissable: false, completion: () => _code = null);
             }
           }).catchError((onError) {
-            SAAlertDialog.displayAlertWithClose(context, "Error", onError, barrierDismissable: false, completion: () => _code = null);
+            SAAlertDialog.displayAlertWithClose(context, 'genericErrorTitle'.localized(context, 'general'), onError, barrierDismissable: false, completion: () => _code = null);
           });
         } else {
-          SAAlertDialog.displayAlertWithClose(context, "Error", value, barrierDismissable: false, completion: () => _code = null);
+          SAAlertDialog.displayAlertWithClose(context, 'genericErrorTitle'.localized(context, 'general'), value, barrierDismissable: false, completion: () => _code = null);
         }
       }).catchError((onError) {
-        SAAlertDialog.displayAlertWithClose(context, "Error", onError, barrierDismissable: false, completion: () => _code = null);
+        SAAlertDialog.displayAlertWithClose(context, 'genericErrorTitle'.localized(context, 'general'), onError, barrierDismissable: false, completion: () => _code = null);
       });
     }
   }

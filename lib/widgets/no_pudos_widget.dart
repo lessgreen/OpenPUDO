@@ -21,6 +21,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
+import 'package:qui_green/commons/utilities/localization.dart';
 import 'package:qui_green/resources/res.dart';
 
 class NoPudosWidget extends StatelessWidget {
@@ -41,7 +42,7 @@ class NoPudosWidget extends StatelessWidget {
                   flex: 2,
                   child: Center(
                     child: Text(
-                      'Non hai ancora aggiunto un pudo\nper le tue consegne!',
+                      'description'.localized(context),
                       style: Theme.of(context).textTheme.bodyTextLight,
                       textAlign: TextAlign.center,
                     ),

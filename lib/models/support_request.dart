@@ -14,41 +14,21 @@
  GNU Affero General Public License version 3 for more details.
 
  You should have received a copy of the GNU Affero General Public License
- version 3 published by the Copyright Owner along with OpenPUDO.  
+ version 3 published by the Copyright Owner along with OpenPUDO.
  If not, see <https://github.com/lessgreen/OpenPUDO>.
 */
 
 import 'package:json_annotation/json_annotation.dart';
 
-part 'user_profile.g.dart';
+part 'support_request.g.dart';
 
 @JsonSerializable()
-class UserProfile {
-  String firstName;
-  String lastName;
-  String? ssn;
-  String? createTms;
-  String? profilePicId;
-  final int? userId;
-  bool? pudoOwner;
-  final int? packageCount;
-  final String? savedCO2;
-  String? phoneNumber;
+class SupportRequest {
+  final String message;
 
-  UserProfile({
-    required this.firstName,
-    required this.lastName,
-    this.ssn,
-    this.createTms,
-    this.profilePicId,
-    this.userId,
-    this.pudoOwner,
-    this.packageCount,
-    this.savedCO2,
-    this.phoneNumber,
-  });
+  SupportRequest({required this.message});
 
-  factory UserProfile.fromJson(Map<String, dynamic> json) => _$UserProfileFromJson(json);
+  factory SupportRequest.fromJson(Map<String, dynamic> json) => _$SupportRequestFromJson(json);
 
-  Map<String, dynamic> toJson() => _$UserProfileToJson(this);
+  Map<String, dynamic> toJson() => _$SupportRequestToJson(this);
 }

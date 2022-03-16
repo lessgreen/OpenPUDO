@@ -28,7 +28,14 @@ class PudoTutorialCard extends StatelessWidget {
   final int pages;
   final Widget bottomWidget;
 
-  const PudoTutorialCard({Key? key, required this.title, required this.description, required this.activeIndex, required this.pages, required this.bottomWidget}) : super(key: key);
+  const PudoTutorialCard({
+    Key? key,
+    required this.title,
+    required this.description,
+    required this.activeIndex,
+    required this.pages,
+    required this.bottomWidget,
+  }) : super(key: key);
 
   Widget _indicator(bool isActive) {
     return AnimatedContainer(

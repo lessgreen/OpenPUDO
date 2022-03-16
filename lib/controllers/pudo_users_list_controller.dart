@@ -34,6 +34,7 @@ import 'package:qui_green/singletons/current_user.dart';
 import 'package:qui_green/singletons/network/network_manager.dart';
 import 'package:qui_green/widgets/sascaffold.dart';
 import 'package:qui_green/widgets/table_view_cell.dart';
+import 'package:qui_green/commons/utilities/localization.dart';
 
 class PudoUsersListController extends StatefulWidget {
   const PudoUsersListController({Key? key, this.isOnReceivePack = false}) : super(key: key);
@@ -65,7 +66,7 @@ class _PudoUsersListControllerState extends State<PudoUsersListController> {
             navigationBar: CupertinoNavigationBarFix.build(
               context,
               middle: Text(
-                widget.isOnReceivePack ? 'Scegli un destinatario' : "I tuoi utenti",
+                (widget.isOnReceivePack ? 'chooseRecipient' : "yourUsers").localized(context),
                 style: Theme.of(context).textTheme.navBarTitle,
               ),
               leading: CupertinoNavigationBarBackButton(
@@ -78,7 +79,7 @@ class _PudoUsersListControllerState extends State<PudoUsersListController> {
               body: Column(
                 children: [
                   CupertinoTextField(
-                    placeholder: 'Cerca per nome',
+                    placeholder: 'searchByName'.localized(context),
                     padding: const EdgeInsets.all(Dimension.padding),
                     prefix: Padding(
                       padding: const EdgeInsets.only(left: Dimension.padding),
@@ -159,10 +160,10 @@ class _PudoUsersListControllerState extends State<PudoUsersListController> {
         if (response is UserProfile) {
           Navigator.of(context).pushNamed(Routes.userDetail, arguments: response);
         } else {
-          SAAlertDialog.displayAlertWithClose(context, "Error", "Ops!, Qualcosa e' andato storto");
+          SAAlertDialog.displayAlertWithClose(context, 'genericErrorTitle'.localized(context, 'general'), "Ops!, Qualcosa e' andato storto");
         }
       },
-    ).catchError((onError) => SAAlertDialog.displayAlertWithClose(context, "Error", onError));
+    ).catchError((onError) => SAAlertDialog.displayAlertWithClose(context, 'genericErrorTitle'.localized(context, 'general'), onError));
   }
 
   //MARK: Actions
@@ -176,7 +177,7 @@ class _PudoUsersListControllerState extends State<PudoUsersListController> {
         } else {
           NetworkErrorHelper.helper(context, value);
         }
-      }).catchError((onError) => SAAlertDialog.displayAlertWithClose(context, "Error", onError));
+      }).catchError((onError) => SAAlertDialog.displayAlertWithClose(context, 'genericErrorTitle'.localized(context, 'general'), onError));
     }
     return Future.value();
   }

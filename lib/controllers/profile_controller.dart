@@ -18,20 +18,30 @@
  If not, see <https://github.com/lessgreen/OpenPUDO>.
 */
 
+import 'dart:io';
+
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:focus_detector/focus_detector.dart';
 import 'package:intl/intl.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
+import 'package:qui_green/commons/alert_dialog.dart';
 import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
 import 'package:qui_green/commons/ui/cupertino_navigation_bar_fix.dart';
 import 'package:qui_green/commons/ui/custom_network_image.dart';
+import 'package:qui_green/models/user_profile.dart';
 import 'package:qui_green/resources/res.dart';
 import 'package:qui_green/resources/routes_enum.dart';
 import 'package:qui_green/singletons/current_user.dart';
 import 'package:qui_green/singletons/network/network_manager.dart';
+import 'package:qui_green/widgets/sascaffold.dart';
 import 'package:qui_green/widgets/table_view_cell.dart';
 import 'package:qui_green/widgets/user_profile_recap_widget.dart';
+import 'package:qui_green/commons/utilities/localization.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ProfileController extends StatefulWidget {
   const ProfileController({Key? key}) : super(key: key);
@@ -41,86 +51,368 @@ class ProfileController extends StatefulWidget {
 }
 
 class _ProfileControllerState extends State<ProfileController> with ConnectionAware {
+  final TextEditingController _firstNameController = TextEditingController();
+  final TextEditingController _lastNameController = TextEditingController();
+  final ScrollController _scrollController = ScrollController();
+  File? _image;
+  bool _editEnabled = false;
+  bool _changesMade = false;
+  PackageInfo? _info;
+
+  @override
+  void initState() {
+    super.initState();
+    PackageInfo.fromPlatform().then((value) {
+      setState(() {
+        _info = value;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<CurrentUser>(
       builder: (_, currentUser, __) {
-        return Material(
-          child: CupertinoPageScaffold(
-            navigationBar: CupertinoNavigationBarFix.build(context,
+        return FocusDetector(
+          onVisibilityGained: () {
+            currentUser.triggerUserReload();
+          },
+          child: Material(
+            child: CupertinoPageScaffold(
+              navigationBar: CupertinoNavigationBarFix.build(
+                context,
                 middle: Text(
-                  'Il tuo profilo',
+                  'navTitle'.localized(context),
                   style: Theme.of(context).textTheme.navBarTitle,
-                )),
-            child: ListView(
-              children: [
-                const SizedBox(height: 20),
-                Center(
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(100),
-                    child: CustomNetworkImage(height: 150, width: 150, fit: BoxFit.cover, url: currentUser.user?.profilePicId),
-                  ),
                 ),
-                const SizedBox(
-                  height: 10,
-                ),
-                Center(
-                  child: Text(
-                    "${currentUser.user?.firstName ?? " "} ${currentUser.user?.lastName ?? " "}",
-                    style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 20),
-                  ),
-                ),
-                const SizedBox(height: 6),
-                Center(
-                  child: Text(
-                    'Utente dal ${currentUser.user?.createTms != null ? DateFormat('dd/MM/yyyy').format(DateTime.parse(currentUser.user!.createTms!)) : " "}',
-                    style: const TextStyle(fontWeight: FontWeight.w300, fontSize: 14, color: AppColors.primaryTextColor),
-                  ),
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                const UserProfileRecapWidget(
-                  totalUsage: 123,
-                  kgCO2Saved: 456,
-                ),
-                TableViewCell(
-                  leading: SvgPicture.asset(
-                    ImageSrc.positionLeadingCell,
-                    color: AppColors.cardColor,
-                    width: 36,
-                    height: 36,
-                  ),
-                  title: "Le tue spedizioni",
-                  onTap: () => Navigator.of(context).pushNamed(Routes.packagesList),
-                ),
-                TableViewCell(
-                  leading: SvgPicture.asset(
-                    ImageSrc.logoutIcon,
-                    color: AppColors.cardColor,
-                    width: 36,
-                    height: 36,
-                  ),
-                  title: "Logout",
+                trailing: InkWell(
                   onTap: () {
-                    Navigator.pop(context);
-                    NetworkManager.instance.setAccessToken(null);
-                    currentUser.refresh();
+                    _setEditEnabled(!_editEnabled, currentUser.user!);
                   },
-                ),
-                TableViewCell(
-                  title: "Elimina account",
-                  textAlign: TextAlign.center,
-                  textStyle: Theme.of(context).textTheme.bodyTextBold?.copyWith(
-                        color: Colors.red,
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: Dimension.padding),
+                    child: _buildEditable(
+                      const Icon(
+                        CupertinoIcons.pencil_circle,
+                        color: Colors.white,
+                        size: 26,
                       ),
-                  showTrailingChevron: false,
+                      Text(
+                        'endButton'.localized(context),
+                        style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Colors.white),
+                      ),
+                    ),
+                  ),
                 ),
-              ],
+              ),
+              child: SAScaffold(
+                isLoading: NetworkManager.instance.networkActivity,
+                body: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    ListView(
+                      controller: _scrollController,
+                      children: [
+                        const SizedBox(height: 20),
+                        Center(
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(100),
+                            child: CustomNetworkImage(
+                              isCircle: true,
+                              height: 150,
+                              width: 150,
+                              fit: BoxFit.cover,
+                              url: currentUser.user?.profilePicId,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        _buildEditable(
+                          Center(
+                            child: Text(
+                              "${currentUser.user?.firstName ?? " "} ${currentUser.user?.lastName ?? " "}",
+                              style: Theme.of(context).textTheme.headline6,
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 40,
+                          ),
+                        ),
+                        const SizedBox(height: 6),
+                        Center(
+                          child: Text(
+                            '${'userSince'.localized(context)} ${currentUser.user?.createTms != null ? DateFormat('dd/MM/yyyy').format(DateTime.parse(currentUser.user!.createTms!)) : " "}',
+                            style: Theme.of(context).textTheme.bodyTextLight,
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        UserProfileRecapWidget(
+                          totalUsage: currentUser.user?.packageCount ?? 0,
+                          kgCO2Saved: currentUser.user?.savedCO2 ?? '0.0Kg',
+                        ),
+                        TableViewCell(
+                          leading: SvgPicture.asset(
+                            ImageSrc.positionLeadingCell,
+                            color: AppColors.cardColor,
+                            width: 36,
+                            height: 36,
+                          ),
+                          title: 'yourShipment'.localized(context),
+                          onTap: () => Navigator.of(context).pushNamed(Routes.packagesList),
+                        ),
+                        TableViewCell(
+                          leading: SvgPicture.asset(
+                            ImageSrc.logoutIcon,
+                            color: AppColors.cardColor,
+                            width: 36,
+                            height: 36,
+                          ),
+                          title: 'logoutTitle'.localized(context),
+                          onTap: () {
+                            Navigator.pop(context);
+                            NetworkManager.instance.setAccessToken(null);
+                            currentUser.refresh();
+                          },
+                        ),
+                        TableViewCell(
+                          title: "deleteAccount".localized(context),
+                          textAlign: TextAlign.center,
+                          textStyle: Theme.of(context).textTheme.bodyTextBold?.copyWith(color: Colors.red),
+                          showTrailingChevron: false,
+                          onTap: () => _showConfirmationDelete(
+                              acceptCallback: () {
+                                NetworkManager.instance.deleteUser().then((value) {
+                                  if (value is String) {
+                                    SAAlertDialog.displayAlertWithButtons(
+                                      context,
+                                      'deleteAccountSuccessTitle'.localized(context),
+                                      'deleteAccountSuccess'.localized(context),
+                                      [
+                                        MaterialButton(
+                                          child: Text(
+                                            'viewData'.localized(context),
+                                            style: const TextStyle(color: AppColors.primaryColorDark),
+                                          ),
+                                          onPressed: () {
+                                            launch(value).then((value) {
+                                              Navigator.pop(context);
+                                              NetworkManager.instance.setAccessToken(null);
+                                              currentUser.refresh();
+                                            });
+                                          },
+                                        ),
+                                        MaterialButton(
+                                          child: Text(
+                                            'close'.localized(context),
+                                          ),
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                            NetworkManager.instance.setAccessToken(null);
+                                            currentUser.refresh();
+                                          },
+                                        )
+                                      ],
+                                    );
+                                  }
+                                }).catchError((onError) => SAAlertDialog.displayAlertWithClose(context, 'genericErrorTitle'.localized(context, 'general'), onError));
+                              },
+                              denyCallback: null),
+                        )
+                      ],
+                    ),
+                    IgnorePointer(
+                      ignoring: !_editEnabled,
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 100),
+                        color: _editEnabled ? Colors.black.withOpacity(0.4) : Colors.transparent,
+                      ),
+                    ),
+                    AnimatedCrossFade(
+                        firstChild: SizedBox(
+                          width: MediaQuery.of(context).size.width,
+                        ),
+                        secondChild: Column(
+                          children: [
+                            const SizedBox(height: 20),
+                            Center(
+                              child: GestureDetector(
+                                onTap: _pickImage,
+                                child: Stack(
+                                  children: [
+                                    ClipRRect(
+                                      borderRadius: BorderRadius.circular(100),
+                                      child: _image != null
+                                          ? Image.file(
+                                              _image!,
+                                              width: 150,
+                                              height: 150,
+                                              fit: BoxFit.cover,
+                                            )
+                                          : CustomNetworkImage(height: 150, width: 150, fit: BoxFit.cover, url: currentUser.user?.profilePicId),
+                                    ),
+                                    Container(
+                                      width: 150,
+                                      padding: const EdgeInsets.all(Dimension.paddingS),
+                                      alignment: Alignment.topRight,
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(40),
+                                        child: Container(
+                                          color: Colors.white,
+                                          width: 32,
+                                          height: 32,
+                                          child: const Icon(
+                                            CupertinoIcons.pencil_circle,
+                                            color: AppColors.primaryColorDark,
+                                            size: 31,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Row(
+                              children: [
+                                const SizedBox(
+                                  width: Dimension.padding,
+                                ),
+                                Expanded(
+                                    child: CupertinoTextField(
+                                  controller: _firstNameController,
+                                  placeholder: 'placeHolderName'.localized(context),
+                                  onChanged: (newVal) => _changesMade = true,
+                                )),
+                                const SizedBox(
+                                  width: Dimension.padding,
+                                ),
+                                Expanded(
+                                  child: CupertinoTextField(
+                                    controller: _lastNameController,
+                                    placeholder: 'placeHolderSurname'.localized(context),
+                                    onChanged: (newVal) => _changesMade = true,
+                                  ),
+                                ),
+                                const SizedBox(
+                                  width: Dimension.padding,
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                        crossFadeState: _editEnabled ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+                        duration: const Duration(milliseconds: 100)),
+                    _info == null
+                        ? const SizedBox()
+                        : Positioned(
+                            child: Text(
+                              'v${_info!.version}#${_info!.buildNumber}',
+                              style: Theme.of(context).textTheme.captionSmall,
+                            ),
+                            bottom: 90,
+                          ),
+                  ],
+                ),
+              ),
             ),
           ),
         );
       },
+    );
+  }
+
+  Widget _buildEditable(Widget view, Widget edit) => AnimatedCrossFade(
+        firstChild: view,
+        secondChild: edit,
+        crossFadeState: _editEnabled ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+        duration: const Duration(milliseconds: 150),
+      );
+
+  Future<bool> _saveChanges() async {
+    CurrentUser currentUser = Provider.of<CurrentUser>(context, listen: false);
+    if (_firstNameController.text.trim().isNotEmpty && _lastNameController.text.trim().isNotEmpty) {
+      bool pass = false;
+      var result = await NetworkManager.instance
+          .updateUser(firstName: _firstNameController.text, lastName: _lastNameController.text)
+          .catchError((onError) => SAAlertDialog.displayAlertWithClose(context, 'genericErrorTitle'.localized(context, 'general'), onError));
+      if (result is UserProfile) {
+        pass = true;
+      } else {
+        pass = false;
+      }
+      if (_image != null) {
+        await NetworkManager.instance.photoUpload(_image!).catchError(
+              (onError) => SAAlertDialog.displayAlertWithClose(context, 'genericErrorTitle'.localized(context, 'general'), onError),
+            );
+      }
+      currentUser.triggerUserReload();
+      return pass;
+    } else {
+      return false;
+    }
+  }
+
+  void _pickImage() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(allowMultiple: false, type: FileType.image);
+    if (result != null) {
+      File file = File(result.files.first.path ?? "");
+      setState(() {
+        _image = file;
+      });
+      _changesMade = true;
+    }
+  }
+
+  void _setEditEnabled(bool newVal, UserProfile profile) async {
+    if (newVal) {
+      ///Jump main listView onTop
+      _changesMade = false;
+      _scrollController.jumpTo(0);
+      _firstNameController.text = profile.firstName;
+      _lastNameController.text = profile.lastName;
+    } else {
+      if (_changesMade) {
+        bool result = await _saveChanges();
+        if (result) {
+          _changesMade = false;
+          _image = null;
+          _firstNameController.clear();
+          _lastNameController.clear();
+        }
+      }
+    }
+    setState(() {
+      _editEnabled = newVal;
+    });
+  }
+
+  void _showConfirmationDelete({Function? acceptCallback, Function? denyCallback}) {
+    SAAlertDialog.displayAlertWithButtons(
+      context,
+      'deleteAccountTitle'.localized(context),
+      'deleteAccountDescription'.localized(context),
+      [
+        MaterialButton(
+          child: Text(
+            'deleteAccountButton'.localized(context),
+            style: const TextStyle(color: AppColors.primaryColorDark),
+          ),
+          onPressed: () => acceptCallback?.call(),
+        ),
+        MaterialButton(
+          child: Text(
+            'deleteAccountCancel'.localized(context),
+          ),
+          onPressed: () => denyCallback?.call(),
+        ),
+      ],
     );
   }
 }

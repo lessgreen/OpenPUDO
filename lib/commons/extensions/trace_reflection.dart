@@ -18,37 +18,22 @@
  If not, see <https://github.com/lessgreen/OpenPUDO>.
 */
 
-import 'package:json_annotation/json_annotation.dart';
+import 'package:stack_trace/stack_trace.dart';
 
-part 'user_profile.g.dart';
-
-@JsonSerializable()
-class UserProfile {
-  String firstName;
-  String lastName;
-  String? ssn;
-  String? createTms;
-  String? profilePicId;
-  final int? userId;
-  bool? pudoOwner;
-  final int? packageCount;
-  final String? savedCO2;
-  String? phoneNumber;
-
-  UserProfile({
-    required this.firstName,
-    required this.lastName,
-    this.ssn,
-    this.createTms,
-    this.profilePicId,
-    this.userId,
-    this.pudoOwner,
-    this.packageCount,
-    this.savedCO2,
-    this.phoneNumber,
-  });
-
-  factory UserProfile.fromJson(Map<String, dynamic> json) => _$UserProfileFromJson(json);
-
-  Map<String, dynamic> toJson() => _$UserProfileToJson(this);
+extension TraceReflection on Trace {
+  static List<String>? stackFrame([int index = 0]) {
+    int stackFrame = 0;
+    if (Trace.current().frames.length > index) {
+      stackFrame = index;
+    }
+    return Trace.current()
+        .frames[stackFrame]
+        .member
+        ?.replaceAll('.<fn>', '')
+        .split('.')
+        .map(
+          (e) => (e.replaceFirst('_', '')),
+        )
+        .toList();
+  }
 }

@@ -32,6 +32,7 @@ import 'package:qui_green/models/base_response.dart';
 import 'package:qui_green/resources/res.dart';
 import 'package:qui_green/resources/routes_enum.dart';
 import 'package:qui_green/singletons/network/network_manager.dart';
+import 'package:qui_green/commons/utilities/localization.dart';
 
 class InsertPhoneController extends StatefulWidget {
   const InsertPhoneController({Key? key}) : super(key: key);
@@ -53,7 +54,7 @@ class _InsertPhoneControllerState extends State<InsertPhoneController> with Conn
         throw response;
       }
     }).catchError((onError) {
-      SAAlertDialog.displayAlertWithClose(context, "Error", onError);
+      SAAlertDialog.displayAlertWithClose(context, 'genericErrorTitle'.localized(context, 'general'), onError);
     });
   }
 
@@ -78,7 +79,7 @@ class _InsertPhoneControllerState extends State<InsertPhoneController> with Conn
                   children: [
                     Center(
                       child: Text(
-                        'Inserisci il tuo numero telefonico',
+                        'mainLabel'.localized(context),
                         style: Theme.of(context).textTheme.headline6,
                       ),
                     ),
@@ -86,7 +87,7 @@ class _InsertPhoneControllerState extends State<InsertPhoneController> with Conn
                       padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
                       child: Center(
                         child: Text(
-                          'Ti invieremo un sms di conferma\nper assicurarci che sei tu.',
+                          'secondaryLabel'.localized(context),
                           textAlign: TextAlign.center,
                           style: Theme.of(context).textTheme.subtitle1,
                         ),
@@ -104,7 +105,7 @@ class _InsertPhoneControllerState extends State<InsertPhoneController> with Conn
                               _phoneNumber.unfocus();
                             });
                           },
-                          text: isKeyboardVisible ? 'DONE' : "",
+                          text: isKeyboardVisible ? 'doneButton'.localized(context) : "",
                         ),
                         keyboardType: TextInputType.phone,
                         textInputAction: TextInputAction.done,
@@ -118,7 +119,7 @@ class _InsertPhoneControllerState extends State<InsertPhoneController> with Conn
                     const Spacer(),
                     MainButton(
                       onPressed: sendRequest,
-                      text: 'Invia',
+                      text: 'submitButton'.localized(context),
                       enabled: _phoneNumberValue.isValidPhoneNumber(),
                     ),
                   ],

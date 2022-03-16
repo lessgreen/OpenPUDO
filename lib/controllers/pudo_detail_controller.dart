@@ -34,6 +34,7 @@ import 'package:qui_green/resources/routes_enum.dart';
 import 'package:qui_green/singletons/current_user.dart';
 import 'package:qui_green/singletons/network/network_manager.dart';
 import 'package:qui_green/widgets/text_field_button.dart';
+import 'package:qui_green/commons/utilities/localization.dart';
 
 class PudoDetailController extends StatefulWidget {
   const PudoDetailController({Key? key, required this.dataModel, required this.checkIsAlreadyAdded, this.nextRoute, required this.useCupertinoScaffold}) : super(key: key);
@@ -161,7 +162,7 @@ class _PudoDetailControllerState extends State<PudoDetailController> with Connec
                   text: (widget.dataModel.customerCount ?? 0).toString(),
                   style: const TextStyle(fontWeight: FontWeight.w500),
                 ),
-                const TextSpan(text: ' persone hanno già scelto quest’attività come punto di ritiro QuiGreen.'),
+                TextSpan(text: 'numerOfUsers'.localized(context)),
               ],
             ),
           ),
@@ -172,8 +173,11 @@ class _PudoDetailControllerState extends State<PudoDetailController> with Connec
     if (_checkComplete) {
       if (_nextVisible) {
         return TextFieldButton(
-          onPressed: _handleSelect,
-          text: 'Scegli',
+          onPressed: () => _showPolicyAgreement(
+            acceptCallback: () => _handleSelect(),
+            denyCallback: null,
+          ),
+          text: 'chooseButton'.localized(context),
           textColor: Colors.white,
         );
       } else if (widget.dataModel.publicPhoneNumber != null) {
@@ -197,8 +201,11 @@ class _PudoDetailControllerState extends State<PudoDetailController> with Connec
     if (_checkComplete) {
       if (_nextVisible) {
         return TextFieldButton(
-          onPressed: _handleSelect,
-          text: 'Scegli',
+          onPressed: () => _showPolicyAgreement(
+            acceptCallback: () => _handleSelect(),
+            denyCallback: null,
+          ),
+          text: 'chooseButton'.localized(context),
           textColor: AppColors.primaryColorDark,
         );
       } else if (widget.dataModel.publicPhoneNumber != null) {
@@ -228,7 +235,7 @@ class _PudoDetailControllerState extends State<PudoDetailController> with Connec
           onPressed: () => Navigator.of(context).pop(),
         ),
         middle: Text(
-          'Dettagli Pudo',
+          'pudoDetails'.localized(context),
           style: Theme.of(context).textTheme.navBarTitle,
           overflow: TextOverflow.ellipsis,
           maxLines: 1,
@@ -243,7 +250,7 @@ class _PudoDetailControllerState extends State<PudoDetailController> with Connec
         backgroundColor: ThemeData.light().scaffoldBackgroundColor,
         systemOverlayStyle: SystemUiOverlayStyle.dark,
         title: Text(
-          'Dettagli Pudo',
+          'pudoDetails'.localized(context),
           style: Theme.of(context).textTheme.navBarTitleDark,
           overflow: TextOverflow.ellipsis,
           maxLines: 1,
@@ -265,11 +272,11 @@ class _PudoDetailControllerState extends State<PudoDetailController> with Connec
             child: Column(
               children: [
                 AspectRatio(
-                    aspectRatio: 18 / 9,
-                    child: CustomNetworkImage(
-                      url: widget.dataModel.pudoPicId,
-                      fit: BoxFit.cover,
-                    )),
+                  aspectRatio: 18 / 9,
+                  child: CustomNetworkImage(
+                    url: widget.dataModel.pudoPicId,
+                  ),
+                ),
                 _buildPudoDetail(),
                 const SizedBox(height: Dimension.padding),
                 Container(
@@ -289,7 +296,7 @@ class _PudoDetailControllerState extends State<PudoDetailController> with Connec
                       width: Dimension.paddingS,
                     ),
                     Text(
-                      'Per utilizzare QuiGreen in questo locale è richiesto:',
+                      'rewardDescription'.localized(context),
                       style: Theme.of(context).textTheme.caption?.copyWith(
                             fontStyle: FontStyle.italic,
                             fontWeight: FontWeight.w300,
@@ -321,22 +328,22 @@ class _PudoDetailControllerState extends State<PudoDetailController> with Connec
   void _openModal() {
     SAAlertDialog.displayModalWithButtons(
       context,
-      "Scegli un'azione",
+      'chooseAction'.localized(context, 'general'),
       [
         CupertinoActionSheetAction(
-          child: const Text('Chiama al telefono'),
+          child: Text('phoneCallAction'.localized(context)),
           onPressed: () {
             UrlLauncherHelper.launchUrl(UrlTypes.tel, widget.dataModel.publicPhoneNumber!);
           },
         ),
         CupertinoActionSheetAction(
-          child: const Text('Invia un messaggio'),
+          child: Text('sendSMS'.localized(context)),
           onPressed: () {
             UrlLauncherHelper.launchUrl(UrlTypes.sms, widget.dataModel.publicPhoneNumber!);
           },
         ),
         CupertinoActionSheetAction(
-          child: const Text('Invia un WhatsApp'),
+          child: Text('sendWhatsApp'.localized(context)),
           onPressed: () {
             UrlLauncherHelper.launchUrl(UrlTypes.whatsapp, widget.dataModel.publicPhoneNumber!);
           },
@@ -361,7 +368,7 @@ class _PudoDetailControllerState extends State<PudoDetailController> with Connec
           _nextVisible = true;
         });
       }
-    }).catchError((onError) => SAAlertDialog.displayAlertWithClose(context, "Error", onError));
+    }).catchError((onError) => SAAlertDialog.displayAlertWithClose(context, 'genericErrorTitle'.localized(context, 'general'), onError));
   }
 
   void _handleSelect() {
@@ -385,14 +392,14 @@ class _PudoDetailControllerState extends State<PudoDetailController> with Connec
               Routes.registrationComplete,
               arguments: widget.dataModel,
             ))
-        .catchError((onError) => SAAlertDialog.displayAlertWithClose(context, "Error", onError));
+        .catchError((onError) => SAAlertDialog.displayAlertWithClose(context, 'genericErrorTitle'.localized(context, 'general'), onError));
   }
 
   void _selectPudo() {
     NetworkManager.instance.addPudoFavorite(widget.dataModel.pudoId.toString()).then((value) {
       Provider.of<CurrentUser>(context, listen: false).triggerReload();
       Navigator.of(context).pop();
-    }).catchError((onError) => SAAlertDialog.displayAlertWithClose(context, "Error", onError));
+    }).catchError((onError) => SAAlertDialog.displayAlertWithClose(context, 'genericErrorTitle'.localized(context, 'general'), onError));
   }
 
   void _goToPersonalData() {
@@ -400,6 +407,29 @@ class _PudoDetailControllerState extends State<PudoDetailController> with Connec
       Routes.personalData,
       ModalRoute.withName('/'),
       arguments: widget.dataModel,
+    );
+  }
+
+  void _showPolicyAgreement({Function? acceptCallback, Function? denyCallback}) {
+    SAAlertDialog.displayAlertWithButtons(
+      context,
+      'termsConditionsTitle'.localized(context),
+      'termsConditionsDescription'.localized(context),
+      [
+        MaterialButton(
+          child: Text(
+            'termsAcceptButton'.localized(context),
+            style: const TextStyle(color: AppColors.primaryColorDark),
+          ),
+          onPressed: () => acceptCallback?.call(),
+        ),
+        MaterialButton(
+          child: Text(
+            'termsDenyButton'.localized(context),
+          ),
+          onPressed: () => denyCallback?.call(),
+        ),
+      ],
     );
   }
 }

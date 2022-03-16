@@ -19,12 +19,9 @@
 */
 
 import 'package:flutter/material.dart';
-import 'package:html_unescape/html_unescape.dart';
-import 'package:qui_green/commons/alert_dialog.dart';
+import 'package:provider/provider.dart';
 import 'package:qui_green/models/package_summary.dart';
-import 'package:qui_green/models/pudo_package.dart';
-import 'package:qui_green/resources/routes_enum.dart';
-import 'package:qui_green/singletons/network/network_manager.dart';
+import 'package:qui_green/view_models/content_packages_list_pudo_history_viewmodel.dart';
 import 'package:qui_green/widgets/error_screen_widget.dart';
 import 'package:qui_green/widgets/listview_header.dart';
 import 'package:qui_green/widgets/package_tile.dart';
@@ -40,132 +37,37 @@ class ContentPackagesListPudoHistory extends StatefulWidget {
   State<ContentPackagesListPudoHistory> createState() => _ContentPackagesListPudoHistoryState();
 }
 
-class _ContentPackagesListPudoHistoryState extends State<ContentPackagesListPudoHistory> with ChangeNotifier {
-  final ScrollController _scrollController = ScrollController();
-  bool _canFetchMore = true;
-  final int _fetchLimit = 20;
-  List<PackageSummary> _availablePackages = [];
-  String? _errorDescription;
-
-  List<PackageSummary> get _filteredPackagesList => _availablePackages.where((element) => _handlePackageSearch(widget.searchValue, element)).toList();
-
-  @override
-  void initState() {
-    super.initState();
-    _fetchPackages().then(
-      (response) {
-        if (response is List<PackageSummary>) {
-          setState(() {
-            _availablePackages = response;
-          });
-        }
-      },
-    );
-  }
-
-  _refreshDidTriggered() {
-    setState(() {
-      _availablePackages.clear();
-    });
-    _fetchPackages().then(
-      (response) {
-        if (response is List<PackageSummary>) {
-          setState(() {
-            _availablePackages = response;
-          });
-        }
-      },
-    );
-  }
-
+class _ContentPackagesListPudoHistoryState extends State<ContentPackagesListPudoHistory> {
   @override
   Widget build(BuildContext context) {
-    return RefreshIndicator(
-      onRefresh: () async => _refreshDidTriggered(),
-      child: _errorDescription != null
-          ? ErrorScreenWidget(
-              description: _errorDescription,
-            )
-          : ListViewHeader(
-              hasScrollbar: true,
-              physics: const AlwaysScrollableScrollPhysics(),
-              itemCount: _filteredPackagesList.length,
-              contentBuilder: (BuildContext context, int index) {
-                return PackageTile(
-                    onTap: (PackageSummary package) {
-                      _onPackageCard(_filteredPackagesList[index]);
-                    },
-                    packageSummary: _filteredPackagesList[index]);
-              },
-            ),
+    return ChangeNotifierProvider<ContentPackagesListPudoHistoryViewModel>(
+      create: (_) => ContentPackagesListPudoHistoryViewModel(context),
+      child: Consumer<ContentPackagesListPudoHistoryViewModel>(builder: (context, viewModel, _) {
+        List<PackageSummary> filteredPackages = _filteredPackagesList(viewModel);
+        return RefreshIndicator(
+          onRefresh: () async => viewModel.refreshDidTriggered(),
+          child: viewModel.errorDescription != null
+              ? ErrorScreenWidget(
+                  description: viewModel.errorDescription,
+                )
+              : ListViewHeader(
+                  hasScrollbar: true,
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  itemCount: filteredPackages.length,
+                  scrollController: viewModel.scrollController,
+                  contentBuilder: (BuildContext context, int index) {
+                    return PackageTile(
+                        onTap: (PackageSummary package) {
+                          viewModel.onPackageCard(filteredPackages[index]);
+                        },
+                        packageSummary: filteredPackages[index]);
+                  },
+                ),
+        );
+      }),
     );
   }
 
-  Future<dynamic> _fetchPackages({bool? appendMode = false}) {
-    _errorDescription = null;
-    return NetworkManager.instance.getMyPackages(limit: _fetchLimit, offset: _availablePackages.length, history: true, isPudo: true).then((response) {
-      if (response is List<PackageSummary>) {
-        _canFetchMore = (response.length == _fetchLimit);
-        if (!_scrollController.hasListeners) {
-          _scrollController.addListener(_scrollListener);
-        }
-      } else if (appendMode == false) {
-        if (response is ErrorDescription) {
-          _errorDescription = HtmlUnescape().convert(response.value.first.toString());
-        } else {
-          _errorDescription = "Ops!, qualcosa è andato storto";
-        }
-      }
-      return response;
-    }).catchError((onError) => SAAlertDialog.displayAlertWithClose(context, "Error", onError));
-  }
-
-  _onPackageCard(PackageSummary package) {
-    NetworkManager.instance.getPackageDetails(packageId: package.packageId).then(
-      (response) {
-        if (response is PudoPackage) {
-          Navigator.of(context).pushNamed(Routes.packagePickup, arguments: response);
-        } else {
-          SAAlertDialog.displayAlertWithClose(context, "Error", "Ops!, Qualcosa e' andato storto");
-        }
-      },
-    ).catchError((onError) => SAAlertDialog.displayAlertWithClose(context, "Error", onError));
-  }
-
-  void _scrollListener() {
-    if (_scrollController.position.atEdge) {
-      if (_scrollController.position.pixels != 0 && !NetworkManager.instance.networkActivity.value && _canFetchMore) {
-        _fetchPackages(appendMode: true).then(
-          (response) {
-            if (response is List<PackageSummary>) {
-              setState(() {
-                _availablePackages.addAll(response);
-              });
-            }
-          },
-        );
-      }
-    }
-  }
-
-  bool _handlePackageSearch(String search, PackageSummary package) {
-    if (search.isEmpty) {
-      return true;
-    }
-    List<String> splittedSearch = search.toLowerCase().split(" ");
-    String plainName = (package.packageName ?? "").toLowerCase();
-    //Search by name
-    for (String splitSearch in splittedSearch) {
-      if (plainName.contains(splitSearch)) {
-        return true;
-      }
-    }
-    //Search by id
-    for (String splitSearch in splittedSearch) {
-      if ("ac${package.userId ?? 0}".contains(splitSearch)) {
-        return true;
-      }
-    }
-    return false;
-  }
+  List<PackageSummary> _filteredPackagesList(ContentPackagesListPudoHistoryViewModel viewModel) =>
+      viewModel.availablePackages.where((element) => viewModel.handlePackageSearch(widget.searchValue, element)).toList();
 }

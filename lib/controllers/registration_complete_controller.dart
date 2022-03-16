@@ -34,6 +34,7 @@ import 'package:qui_green/view_models/registration_complete_controller_viewmodel
 import 'package:qui_green/widgets/main_button.dart';
 import 'package:qui_green/widgets/pudo_card.dart';
 import 'package:qui_green/widgets/sascaffold.dart';
+import 'package:qui_green/commons/utilities/localization.dart';
 
 class RegistrationCompleteController extends StatefulWidget {
   const RegistrationCompleteController({Key? key, this.pudoDataModel, required this.useCupertinoScaffold, required this.canGoBack}) : super(key: key);
@@ -46,13 +47,13 @@ class RegistrationCompleteController extends StatefulWidget {
 }
 
 class _RegistrationCompleteControllerState extends State<RegistrationCompleteController> with ConnectionAware {
-  void _showErrorDialog(BuildContext context, dynamic val) => SAAlertDialog.displayAlertWithClose(context, "Error", val);
+  void _showErrorDialog(BuildContext context, dynamic val) => SAAlertDialog.displayAlertWithClose(context, 'genericErrorTitle'.localized(context, 'general'), val);
 
   Widget _buildPageWithCupertinoScaffold(RegistrationCompleteControllerViewModel viewModel, bool isKeyboardVisible) => CupertinoPageScaffold(
         resizeToAvoidBottomInset: false,
         navigationBar: CupertinoNavigationBarFix.build(context,
             middle: Text(
-              'Fatto!',
+              'navBarTitle'.localized(context),
               style: Theme.of(context).textTheme.navBarTitle,
             ),
             leading: widget.canGoBack
@@ -99,7 +100,7 @@ class _RegistrationCompleteControllerState extends State<RegistrationCompleteCon
                   if (!widget.useCupertinoScaffold)
                     Center(
                       child: Text(
-                        'Fatto!',
+                        'navBarTitle'.localized(context),
                         style: Theme.of(context).textTheme.headline6,
                       ),
                     ),
@@ -113,7 +114,7 @@ class _RegistrationCompleteControllerState extends State<RegistrationCompleteCon
                   Padding(
                     padding: const EdgeInsets.only(left: Dimension.padding, right: Dimension.padding),
                     child: Text(
-                      'Adesso potrai usare questo indirizzo per farti inviare i tuoi pacchi in totale comodità!',
+                      'mainLabel'.localized(context),
                       textAlign: TextAlign.center,
                       style: Theme.of(context).textTheme.subtitle1?.copyWith(fontWeight: FontWeight.w400),
                     ),
@@ -144,7 +145,7 @@ class _RegistrationCompleteControllerState extends State<RegistrationCompleteCon
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Text(
-                              'Permetti ai pudo di contattarmi al mio numero telefonico in caso di comunicazioni inerenti i miei pacchi.',
+                              'allowContact'.localized(context),
                               style: Theme.of(context).textTheme.caption?.copyWith(fontStyle: FontStyle.italic, height: 1.5, letterSpacing: 0),
                             ),
                           ),
@@ -159,7 +160,7 @@ class _RegistrationCompleteControllerState extends State<RegistrationCompleteCon
                         horizontal: Dimension.padding,
                       ),
                       onPressed: () => viewModel.onInstructionsClick(context, widget.pudoDataModel),
-                      text: 'Vedi le istruzioni',
+                      text: 'showInstructions'.localized(context),
                     ),
                   const SizedBox(height: Dimension.padding),
                   AnimatedCrossFade(
@@ -167,7 +168,7 @@ class _RegistrationCompleteControllerState extends State<RegistrationCompleteCon
                     secondChild: const SizedBox(),
                     firstChild: MainButton(
                       onPressed: () => viewModel.onGoHomeClick(context),
-                      text: 'Vai alla home',
+                      text: 'goToHome'.localized(context),
                     ),
                     duration: const Duration(milliseconds: 150),
                   ),

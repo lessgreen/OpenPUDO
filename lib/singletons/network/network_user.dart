@@ -226,7 +226,7 @@ mixin NetworkManagerUser on NetworkGeneral {
     }
   }
 
-  Future<dynamic> setMyProfile(UserProfile profile) async {
+  Future<dynamic> updateUser({required String firstName, required String lastName}) async {
     try {
       if (!isOnline) {
         throw ("Network is offline");
@@ -235,7 +235,7 @@ mixin NetworkManagerUser on NetworkGeneral {
         _headers['Authorization'] = 'Bearer $_accessToken';
       }
       var url = _baseURL + '/api/v2/user/me';
-      var body = jsonEncode({"firstName": profile.firstName, "lastName": profile.lastName});
+      var body = jsonEncode({"firstName": firstName, "lastName": lastName});
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
@@ -254,7 +254,7 @@ mixin NetworkManagerUser on NetworkGeneral {
       var needHandleTokenRefresh = _handleTokenRefresh(
         baseResponse,
         () {
-          setMyProfile(profile).catchError((onError) => throw onError);
+          updateUser(firstName: firstName, lastName: lastName).catchError((onError) => throw onError);
         },
       );
       if (needHandleTokenRefresh == false) {
@@ -265,7 +265,7 @@ mixin NetworkManagerUser on NetworkGeneral {
         }
       }
     } catch (e) {
-      safePrint('ERROR - setMyProfile: $e');
+      safePrint('ERROR - updateUser: $e');
       _refreshTokenRetryCounter = 0;
       _networkActivity.value = false;
       return e;
@@ -316,73 +316,8 @@ mixin NetworkManagerUser on NetworkGeneral {
     }
   }
 
-  Future<dynamic> deleteProfilePic({bool? isPudo = false}) async {
-    try {
-      if (!isOnline) {
-        throw ("Network is offline");
-      }
-      if (_accessToken != null) {
-        _headers['Authorization'] = 'Bearer $_accessToken';
-      }
-
-      var url = _baseURL + ((isPudo != null && isPudo == true) ? '/api/v1/pudos/me/profile-pic' : '/api/v1/users/me/profile-pic');
-      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
-        _networkActivity.value = true;
-      });
-      Response response = await delete(Uri.parse(url), headers: _headers).timeout(Duration(seconds: _timeout));
-      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
-        _networkActivity.value = false;
-      });
-      final codeUnits = response.body.codeUnits;
-      var decodedUTF8 = const Utf8Decoder().convert(codeUnits);
-      var json = jsonDecode(decodedUTF8);
-      var baseResponse = OPBaseResponse.fromJson(json);
-
-      var needHandleTokenRefresh = _handleTokenRefresh(baseResponse, () {
-        deleteProfilePic(isPudo: isPudo).catchError((onError) => throw onError);
-      });
-      if (needHandleTokenRefresh == false) {
-        if (baseResponse.returnCode == 0 && baseResponse.payload != null && baseResponse.payload is Map) {
-          if (isPudo == true) {
-            return PudoProfile.fromJson(baseResponse.payload);
-          } else {
-            return UserProfile.fromJson(baseResponse.payload);
-          }
-        } else {
-          throw ErrorDescription('Error ${baseResponse.returnCode}: ${baseResponse.message}');
-        }
-      }
-    } catch (e) {
-      safePrint('ERROR - deleteProfilePic: $e');
-      _refreshTokenRetryCounter = 0;
-      _networkActivity.value = false;
-      return e;
-    }
-  }
-
-  Future<Uint8List> profilePic(String id) async {
-    try {
-      if (!isOnline) {
-        throw ("Network is offline");
-      }
-      if (_accessToken != null) {
-        _headers['Authorization'] = 'Bearer $_accessToken';
-      }
-      var url = _baseURL + '/api/v2/file/$id';
-      Response response = await r.retry(
-        () => get(Uri.parse(url), headers: _headers).timeout(Duration(seconds: _timeout)),
-        retryIf: (e) => e is SocketException || e is TimeoutException,
-      );
-      if (response.statusCode == 200) {
-        return response.bodyBytes;
-      }
-      throw ErrorDescription('Error ${response.statusCode}: ${response.body}');
-    } catch (e) {
-      safePrint('ERROR - deleteProfilePic: $e');
-      _refreshTokenRetryCounter = 0;
-      var data = await rootBundle.load('assets/placeholderImage.jpg');
-      return data.buffer.asUint8List();
-    }
+  String getProfilePicID(String id) {
+    return _baseURL + '/api/v2/file/$id';
   }
 
   Future<dynamic> getPublicProfile(String userId) async {
@@ -666,6 +601,105 @@ mixin NetworkManagerUser on NetworkGeneral {
       }
     } catch (e) {
       safePrint('ERROR - getUserProfile : $e');
+      _refreshTokenRetryCounter = 0;
+      _networkActivity.value = false;
+      return e;
+    }
+  }
+
+  Future<dynamic> contactUs(String feedback) async {
+    try {
+      if (!isOnline) {
+        throw ("Network is offline");
+      }
+      if (_accessToken != null) {
+        _headers['Authorization'] = 'Bearer $_accessToken';
+      }
+
+      var url = _baseURL + '/api/v2/auth/support';
+      SupportRequest aRequest = SupportRequest(
+        message: feedback,
+      );
+      var body = jsonEncode(aRequest.toJson());
+
+      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+        _networkActivity.value = true;
+      });
+      Response response = await r.retry(
+        () => post(Uri.parse(url), body: body, headers: _headers).timeout(Duration(seconds: _timeout)),
+        retryIf: (e) => e is SocketException || e is TimeoutException,
+      );
+      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+        _networkActivity.value = false;
+      });
+
+      final codeUnits = response.body.codeUnits;
+      var decodedUTF8 = const Utf8Decoder().convert(codeUnits);
+      var json = jsonDecode(decodedUTF8);
+      var baseResponse = OPBaseResponse.fromJson(json);
+
+      var needHandleTokenRefresh = _handleTokenRefresh(
+        baseResponse,
+        () {
+          contactUs(feedback).catchError((onError) => throw onError);
+        },
+      );
+      if (needHandleTokenRefresh == false) {
+        if (baseResponse.returnCode == 0) {
+          return true;
+        } else {
+          throw ErrorDescription('Error ${baseResponse.returnCode}: ${baseResponse.message}');
+        }
+      }
+    } catch (e) {
+      safePrint('ERROR - contactUs: $e');
+      _refreshTokenRetryCounter = 0;
+      _networkActivity.value = false;
+      return e;
+    }
+  }
+
+  Future<dynamic> deleteUser() async {
+    try {
+      if (!isOnline) {
+        throw ("Network is offline");
+      }
+      if (_accessToken != null) {
+        _headers['Authorization'] = 'Bearer $_accessToken';
+      }
+
+      var url = _baseURL + '/api/v2/auth/account';
+
+      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+        _networkActivity.value = true;
+      });
+      Response response = await r.retry(
+        () => delete(Uri.parse(url), headers: _headers).timeout(Duration(seconds: _timeout)),
+        retryIf: (e) => e is SocketException || e is TimeoutException,
+      );
+      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+        _networkActivity.value = false;
+      });
+      final codeUnits = response.body.codeUnits;
+      var decodedUTF8 = const Utf8Decoder().convert(codeUnits);
+      var json = jsonDecode(decodedUTF8);
+      var baseResponse = OPBaseResponse.fromJson(json);
+
+      var needHandleTokenRefresh = _handleTokenRefresh(
+        baseResponse,
+        () {
+          deleteUser().catchError((onError) => throw onError);
+        },
+      );
+      if (needHandleTokenRefresh == false) {
+        if (baseResponse.returnCode == 0 && baseResponse.payload != null) {
+          return baseResponse.payload;
+        } else {
+          throw ErrorDescription('Error ${baseResponse.returnCode}: ${baseResponse.message}');
+        }
+      }
+    } catch (e) {
+      safePrint('ERROR - deleteUser: $e');
       _refreshTokenRetryCounter = 0;
       _networkActivity.value = false;
       return e;

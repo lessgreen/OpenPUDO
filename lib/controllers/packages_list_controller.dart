@@ -23,6 +23,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
 import 'package:qui_green/commons/ui/cupertino_navigation_bar_fix.dart';
+import 'package:qui_green/commons/utilities/localization.dart';
 import 'package:qui_green/singletons/current_user.dart';
 import 'package:qui_green/singletons/network/network_manager.dart';
 import 'package:qui_green/widgets/content_package_list_pudo_page.dart';
@@ -91,9 +92,9 @@ class _PackagesListControllerState extends State<PackagesListController> with Co
   String _buildCorrectTitle() {
     switch (state) {
       case PackagesListContentState.user:
-        return "I tuoi pacchi";
+        return 'yourShipment'.localized(context);
       case PackagesListContentState.pudo:
-        return widget.isOnReceivePack ? 'Scegli un pacco' : "Pacchi in giacenza";
+        return (widget.isOnReceivePack ? 'chooseShipment' : 'waitingShipment').localized(context);
       default:
         return "";
     }

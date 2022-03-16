@@ -19,6 +19,7 @@
 */
 
 import 'package:flutter/material.dart';
+import 'package:qui_green/commons/utilities/localization.dart';
 import 'package:qui_green/models/extra_info.dart';
 import 'package:qui_green/models/reward_option.dart';
 import 'package:qui_green/resources/res.dart';
@@ -352,7 +353,7 @@ class _ExtraInfoDecimalWidgetState extends State<ExtraInfoDecimalWidget> {
     }
     try {
       if (newValue == null) {
-        return "missing value";
+        return 'missingValue'.localized(context, 'general');
       }
       var doubleValue = double.parse(newValue.replaceAll("€", ""));
       var step = (widget.extraInfo.step ?? 1.0);
@@ -367,7 +368,7 @@ class _ExtraInfoDecimalWidgetState extends State<ExtraInfoDecimalWidget> {
         var tmpValue = double.parse(retValue.toStringAsFixed(scale));
         return tmpValue;
       } else {
-        return "value out of range. should be [€$min - €$max]";
+        return "${'outOfRange'.localized(context, 'general')} [€$min - €$max]";
       }
     } catch (e) {
       return null;

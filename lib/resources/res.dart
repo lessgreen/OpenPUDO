@@ -65,7 +65,6 @@ class ImageSrc {
   static const insertPhoneArt = "assets/insertPhoneArt.svg";
   static const aboutYouArt = "assets/aboutYouArt.svg";
   static const userPositionArt = "assets/userPositionArt.svg";
-  static const imagePlaceHolder = "assets/placeholderImage.jpg";
   static const imageSVGPlaceHolder = "assets/placeholder.svg";
   static const mapsArt = "assets/Map.svg";
   static const homeArt = "assets/Home.svg";
@@ -114,12 +113,12 @@ class AppColors {
 }
 
 class Shadows {
-  static final baseShadow = [
+  static const baseShadow = [
     BoxShadow(
-      color: Colors.black.withAlpha(50),
+      color: Colors.black26,
       blurRadius: 5.0,
       spreadRadius: 0.2,
-      offset: const Offset(
+      offset: Offset(
         0.0,
         0.0,
       ),

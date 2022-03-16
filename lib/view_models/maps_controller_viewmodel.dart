@@ -24,6 +24,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:location/location.dart';
+import 'package:qui_green/commons/utilities/localization.dart';
 import 'package:qui_green/models/geo_marker.dart';
 import 'package:qui_green/models/pudo_profile.dart';
 import 'package:qui_green/resources/routes_enum.dart';
@@ -40,6 +41,7 @@ class MapsControllerViewModel extends ChangeNotifier {
   PageController pageController = PageController(viewportFraction: 0.95, initialPage: 0);
   MapController? mapController;
   Function(String)? showErrorDialog;
+
   late Function(MapsControllerViewModel, LatLng) animateMapTo;
 
   List<GeoMarker> _addresses = [];
@@ -88,16 +90,18 @@ class MapsControllerViewModel extends ChangeNotifier {
             Navigator.of(context).pushNamed(Routes.pudoDetail, arguments: response);
           }
         } else {
-          showErrorDialog?.call("Qualcosa e' andato storto");
+          showErrorDialog?.call(
+            'unknownDescription'.localized(context, 'general'),
+          );
         }
       },
     ).catchError((onError) => showErrorDialog?.call(onError));
   }
 
-  onMapCreate(MapController mapController, LatLng? center, bool getPosition) async {
+  onMapCreate(BuildContext context, MapController mapController, LatLng? center, bool getPosition) async {
     this.mapController = mapController;
     if (getPosition) {
-      LocationData? data = await tryGetUserLocation();
+      LocationData? data = await tryGetUserLocation(context);
       if (data != null) {
         center = LatLng(data.latitude!, data.longitude!);
       }
@@ -109,7 +113,7 @@ class MapsControllerViewModel extends ChangeNotifier {
     });
   }
 
-  Future<LocationData?> tryGetUserLocation() async {
+  Future<LocationData?> tryGetUserLocation(BuildContext context) async {
     Location location = Location();
 
     bool _serviceEnabled;
@@ -137,7 +141,9 @@ class MapsControllerViewModel extends ChangeNotifier {
       });
       return Future.value(value);
     }).timeout(const Duration(seconds: 2), onTimeout: () {
-      return Future.error("Errore nella localizzazione.\nSi prega di riprovare");
+      return Future.error(
+        'locationError'.localized(context, 'general'),
+      );
     });
   }
 

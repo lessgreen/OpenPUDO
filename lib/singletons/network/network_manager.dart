@@ -26,6 +26,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:qui_green/commons/alert_dialog.dart';
+import 'package:qui_green/commons/utilities/localization.dart';
 import 'package:qui_green/resources/app_config.dart';
 import 'package:qui_green/singletons/network/network_shared.dart';
 
@@ -90,8 +91,8 @@ class NetworkManager with NetworkGeneral, NetworkManagerUser, NetworkManagerNoti
     if (_inst.context != null) {
       SAAlertDialog.displayAlertWithClose(
         _inst.context!,
-        "Attenzione",
-        "QuiGreen ha bisogno di una connessione internet funzionante!",
+        'localized'.localized(_inst.context!),
+        'workingInternetConnection'.localized(_inst.context!),
       );
     }
   }

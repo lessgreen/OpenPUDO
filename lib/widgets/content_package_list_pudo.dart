@@ -20,6 +20,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:qui_green/commons/alert_dialog.dart';
+import 'package:qui_green/commons/utilities/localization.dart';
 import 'package:qui_green/models/package_summary.dart';
 import 'package:qui_green/models/pudo_package.dart';
 import 'package:qui_green/resources/routes_enum.dart';
@@ -102,7 +103,9 @@ class _ContentPackagesListPudoState extends State<ContentPackagesListPudo> {
     _errorDescription = null;
     return NetworkManager.instance.getMyPackages(isPudo: true).then((response) {
       return response;
-    }).catchError((onError) => SAAlertDialog.displayAlertWithClose(context, "Error", onError));
+    }).catchError(
+      (onError) => SAAlertDialog.displayAlertWithClose(context, 'genericErrorTitle'.localized(context, 'general'), onError),
+    );
   }
 
   _onPackageCard(PackageSummary package) {
@@ -114,10 +117,16 @@ class _ContentPackagesListPudoState extends State<ContentPackagesListPudo> {
           if (response is PudoPackage) {
             Navigator.of(context).pushNamed(Routes.packagePickup, arguments: response);
           } else {
-            SAAlertDialog.displayAlertWithClose(context, "Error", "Ops!, Qualcosa e' andato storto");
+            SAAlertDialog.displayAlertWithClose(
+              context,
+              'genericErrorTitle'.localized(context, 'general'),
+              'unknownDescription'.localized(context, 'general'),
+            );
           }
         },
-      ).catchError((onError) => SAAlertDialog.displayAlertWithClose(context, "Error", onError));
+      ).catchError(
+        (onError) => SAAlertDialog.displayAlertWithClose(context, 'genericErrorTitle'.localized(context, 'general'), onError),
+      );
     }
   }
 
@@ -137,6 +146,18 @@ class _ContentPackagesListPudoState extends State<ContentPackagesListPudo> {
     for (String splitSearch in splittedSearch) {
       if ("ac${package.userId ?? 0}".contains(splitSearch)) {
         return true;
+      }
+    }
+    //Search by userName
+    if (package.firstName != null && package.lastName != null) {
+      String fullName = "${package.firstName} ${package.lastName}";
+      List<String> splittedName = fullName.toLowerCase().split(" ");
+      for (String splitSearch in splittedSearch) {
+        for (String splitName in splittedName) {
+          if (splitName.contains(splitSearch)) {
+            return true;
+          }
+        }
       }
     }
     return false;

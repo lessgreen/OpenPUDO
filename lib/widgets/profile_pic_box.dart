@@ -31,7 +31,14 @@ class ProfilePicBox extends StatelessWidget {
   final String? mainIconSvgAsset;
   final String title;
 
-  const ProfilePicBox({Key? key, this.onTap, this.image, this.mainIcon = Icons.account_circle_rounded, this.mainIconSvgAsset, this.title = 'Aggiungi una \ntua foto'}) : super(key: key);
+  const ProfilePicBox({
+    Key? key,
+    this.onTap,
+    this.image,
+    this.mainIcon = Icons.account_circle_rounded,
+    this.mainIconSvgAsset,
+    required this.title,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) => Row(
@@ -43,7 +50,13 @@ class ProfilePicBox extends StatelessWidget {
             child: Container(
               width: MediaQuery.of(context).size.width / 3,
               height: MediaQuery.of(context).size.width / 3,
-              decoration: BoxDecoration(color: Colors.grey.shade100, border: Border.all(color: Colors.grey.shade300), borderRadius: const BorderRadius.all(Radius.circular(Dimension.borderRadius))),
+              decoration: BoxDecoration(
+                color: Colors.grey.shade100,
+                border: Border.all(color: Colors.grey.shade300),
+                borderRadius: const BorderRadius.all(
+                  Radius.circular(Dimension.borderRadius),
+                ),
+              ),
               child: image != null
                   ? ClipRRect(
                       borderRadius: const BorderRadius.all(Radius.circular(Dimension.borderRadius)),

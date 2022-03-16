@@ -33,6 +33,7 @@ import 'package:qui_green/singletons/network/network_manager.dart';
 import 'package:qui_green/widgets/main_button.dart';
 import 'package:qui_green/widgets/sascaffold.dart';
 import 'package:qui_green/widgets/text_field_button.dart';
+import 'package:qui_green/commons/utilities/localization.dart';
 
 class ConfirmPhoneController extends StatefulWidget {
   const ConfirmPhoneController({Key? key, required this.phoneNumber}) : super(key: key);
@@ -55,7 +56,7 @@ class _ConfirmPhoneControllerState extends State<ConfirmPhoneController> with Co
 
   void retryOtp() {
     NetworkManager.instance.sendPhoneAuth(phoneNumber: widget.phoneNumber).catchError((onError) {
-      SAAlertDialog.displayAlertWithClose(context, "Error", onError);
+      SAAlertDialog.displayAlertWithClose(context, 'genericErrorTitle'.localized(context, 'general'), onError);
     });
   }
 
@@ -69,14 +70,14 @@ class _ConfirmPhoneControllerState extends State<ConfirmPhoneController> with Co
           Provider.of<CurrentUser>(context, listen: false).refresh();
           break;
         case "guest":
-          Navigator.of(context).pushReplacementNamed(Routes.aboutYou,arguments: widget.phoneNumber);
+          Navigator.of(context).pushReplacementNamed(Routes.aboutYou, arguments: widget.phoneNumber);
           break;
         default:
           NetworkErrorHelper.helper(context, value);
           break;
       }
     }).catchError((onError) {
-      SAAlertDialog.displayAlertWithClose(context, "Error", onError);
+      SAAlertDialog.displayAlertWithClose(context, 'genericErrorTitle'.localized(context, 'general'), onError);
     });
   }
 
@@ -100,7 +101,7 @@ class _ConfirmPhoneControllerState extends State<ConfirmPhoneController> with Co
                 children: [
                   Center(
                     child: Text(
-                      'Inserisci il codice di conferma',
+                      'mainLabel'.localized(context),
                       style: Theme.of(context).textTheme.headline6,
                     ),
                   ),
@@ -108,7 +109,7 @@ class _ConfirmPhoneControllerState extends State<ConfirmPhoneController> with Co
                     padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
                     child: Center(
                       child: Text(
-                        'Inserisci il codice di conferma che \n ti abbiamo appena inviato',
+                        'secondaryLabel'.localized(context),
                         textAlign: TextAlign.center,
                         style: Theme.of(context).textTheme.subtitle1,
                       ),
@@ -126,7 +127,7 @@ class _ConfirmPhoneControllerState extends State<ConfirmPhoneController> with Co
                             _confirmValueFocus.unfocus();
                           });
                         },
-                        text: isKeyboardVisible ? 'DONE' : "",
+                        text: isKeyboardVisible ? 'doneButton'.localized(context) : "",
                       ),
                       keyboardType: TextInputType.phone,
                       textInputAction: TextInputAction.done,
@@ -146,20 +147,24 @@ class _ConfirmPhoneControllerState extends State<ConfirmPhoneController> with Co
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          "non hai ricevuto il codice?",
+                          'hintText'.localized(context),
                           style: Theme.of(context).textTheme.caption?.copyWith(fontStyle: FontStyle.italic),
                         ),
                         InkWell(
-                            onTap: retryOtp,
-                            splashColor: Colors.transparent,
-                            child: Text("inviane un'altro", style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.w500, color: AppColors.primaryColorDark)))
+                          onTap: retryOtp,
+                          splashColor: Colors.transparent,
+                          child: Text(
+                            'hintButton'.localized(context),
+                            style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.w500, color: AppColors.primaryColorDark),
+                          ),
+                        )
                       ],
                     ),
                   ),
                   const Spacer(),
                   MainButton(
                     onPressed: sendOtp,
-                    text: 'Invia',
+                    text: 'submitButton'.localized(context),
                     enabled: validateOtp,
                   ),
                 ],

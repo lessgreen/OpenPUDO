@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
 import 'package:qui_green/commons/utilities/date_time_extension.dart';
+import 'package:qui_green/commons/utilities/localization.dart';
 import 'package:qui_green/models/package_summary.dart';
 import 'package:qui_green/widgets/table_view_cell.dart';
 
@@ -18,7 +19,7 @@ class PackageTile extends StatelessWidget {
       fullWidth: true,
       showTrailingChevron: true,
       title: SizedBox(
-          height: 40,
+          height: 50,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -28,10 +29,13 @@ class PackageTile extends StatelessWidget {
                 style: Theme.of(context).textTheme.bodyTextBold,
               ),
               RichText(
-                textAlign: TextAlign.center,
+                textAlign: TextAlign.start,
                 text: TextSpan(style: Theme.of(context).textTheme.bodyTextLight!.copyWith(color: CupertinoColors.secondaryLabel), children: [
-                  const TextSpan(text: "Destinatario: "),
-                  TextSpan(text: "AC${packageSummary.userId}", style: Theme.of(context).textTheme.bodyTextBold),
+                  TextSpan(text: 'recipient'.localized(context)),
+                  TextSpan(text: "AC${packageSummary.userId}\n", style: Theme.of(context).textTheme.bodyTextBold),
+                  if (packageSummary.firstName != null && packageSummary.lastName != null) TextSpan(text: 'recipient'.localized(context), style: Theme.of(context).textTheme.transparentText),
+                  if (packageSummary.firstName != null && packageSummary.lastName != null)
+                    TextSpan(text: "${packageSummary.firstName} ${packageSummary.lastName}", style: Theme.of(context).textTheme.captionSmall),
                 ]),
               ),
             ],

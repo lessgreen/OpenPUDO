@@ -21,6 +21,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
+import 'package:qui_green/commons/utilities/localization.dart';
 import 'package:qui_green/resources/res.dart';
 
 class ErrorScreenWidget extends StatelessWidget {
@@ -43,7 +44,7 @@ class ErrorScreenWidget extends StatelessWidget {
                   flex: 2,
                   child: Center(
                     child: Text(
-                      description ?? 'Ops!, qualcosa è andato starto...',
+                      description ?? 'unknownDescription'.localized(context, 'general'),
                       style: Theme.of(context).textTheme.bodyTextLight,
                       textAlign: TextAlign.center,
                     ),

@@ -22,6 +22,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
 import 'package:qui_green/commons/ui/cupertino_navigation_bar_fix.dart';
+import 'package:qui_green/commons/utilities/localization.dart';
 import 'package:qui_green/resources/res.dart';
 
 class NotifySentController extends StatefulWidget {
@@ -62,7 +63,7 @@ class _NotifySentControllerState extends State<NotifySentController> {
                 height: Dimension.paddingL,
               ),
               Text(
-                'Fatto!',
+                'secondaryLabel'.localized(context),
                 style: Theme.of(context).textTheme.headlineSmall,
                 textAlign: TextAlign.center,
               ),

@@ -21,10 +21,8 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:http/http.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:path/path.dart';
@@ -37,14 +35,15 @@ import 'package:qui_green/models/delivery_package_request.dart';
 import 'package:qui_green/models/device_info_model.dart';
 import 'package:qui_green/models/geo_marker.dart';
 import 'package:qui_green/models/login_request.dart';
+import 'package:qui_green/models/openpudo_notification.dart';
 import 'package:qui_green/models/package_summary.dart';
-import 'package:qui_green/models/pudo_notification.dart';
 import 'package:qui_green/models/pudo_package.dart';
 import 'package:qui_green/models/pudo_profile.dart';
 import 'package:qui_green/models/pudo_summary.dart';
 import 'package:qui_green/models/registration_pudo_model.dart';
 import 'package:qui_green/models/registration_request.dart';
 import 'package:qui_green/models/reward_option.dart';
+import 'package:qui_green/models/support_request.dart';
 import 'package:qui_green/models/update_pudo_request.dart';
 import 'package:qui_green/models/user_preferences.dart';
 import 'package:qui_green/models/user_profile.dart';
