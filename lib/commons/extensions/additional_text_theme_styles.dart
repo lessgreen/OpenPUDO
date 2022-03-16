@@ -14,7 +14,7 @@
  GNU Affero General Public License version 3 for more details.
 
  You should have received a copy of the GNU Affero General Public License
- version 3 published by the Copyright Owner along with OpenPUDO.  
+ version 3 published by the Copyright Owner along with OpenPUDO.
  If not, see <https://github.com/lessgreen/OpenPUDO>.
 */
 
@@ -74,4 +74,6 @@ extension AdditionalTextTheme on TextTheme {
   TextStyle? get pudoRewardPolicy => subtitle1?.copyWith(height: 2, fontStyle: FontStyle.italic, fontWeight: FontWeight.w300);
 
   TextStyle? get captionSwitch => caption?.copyWith(fontStyle: FontStyle.italic, height: 1.5, letterSpacing: 0);
+
+  TextStyle? get transparentText => bodyText1?.copyWith(fontWeight: FontWeight.w300, color: Colors.transparent);
 }

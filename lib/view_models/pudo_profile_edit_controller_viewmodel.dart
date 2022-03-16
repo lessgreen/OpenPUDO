@@ -26,6 +26,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:qui_green/commons/alert_dialog.dart';
 import 'package:qui_green/commons/extensions/formfields_validators.dart';
+import 'package:qui_green/commons/utilities/localization.dart';
 import 'package:qui_green/commons/utilities/print_helper.dart';
 import 'package:qui_green/models/extra_info.dart';
 import 'package:qui_green/models/geo_marker.dart';
@@ -35,10 +36,9 @@ import 'package:qui_green/models/update_pudo_request.dart';
 import 'package:qui_green/resources/routes_enum.dart';
 import 'package:qui_green/singletons/current_user.dart';
 import 'package:qui_green/singletons/network/network_manager.dart';
-import 'package:qui_green/commons/utilities/localization.dart';
 
 class PudoProfileEditControllerViewModel extends ChangeNotifier {
-  PudoProfileEditControllerViewModel(BuildContext context, List<RewardOption>? dataSource) {
+  PudoProfileEditControllerViewModel(BuildContext context, PudoProfile pudoProfile, this.isOnHome, List<RewardOption>? dataSource) {
     if (dataSource != null) {
       _dataSource = dataSource;
     } else {
@@ -50,7 +50,13 @@ class PudoProfileEditControllerViewModel extends ChangeNotifier {
         }
       }).catchError((error) => SAAlertDialog.displayAlertWithClose(context, 'genericErrorTitle'.localized(context, 'general'), error));
     }
+    if (isOnHome) {
+      _editEnabled = true;
+      initFields(pudoProfile);
+    }
   }
+
+  bool isOnHome;
 
   void initFields(PudoProfile profile) {
     hasBeenDetailsChanged = false;
@@ -75,10 +81,6 @@ class PudoProfileEditControllerViewModel extends ChangeNotifier {
       notifyListeners();
     } else {
       savePudoChanges(context);
-      /*if (isValid) {
-        _editEnabled = false;
-        notifyListeners();
-      }*/
     }
   }
 
@@ -424,8 +426,12 @@ class PudoProfileEditControllerViewModel extends ChangeNotifier {
     if (changesMade) {
       Provider.of<CurrentUser>(context, listen: false).triggerUserReload();
     }
-    _editEnabled = false;
-    notifyListeners();
+    if (isOnHome) {
+      Navigator.of(context).pop();
+    } else {
+      _editEnabled = false;
+      notifyListeners();
+    }
   }
 }
 

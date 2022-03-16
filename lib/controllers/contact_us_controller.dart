@@ -38,7 +38,7 @@ class ContactUsController extends StatefulWidget {
 }
 
 class _ContactUsControllerState extends State<ContactUsController> {
-  FocusNode _formField = FocusNode();
+  final FocusNode _formField = FocusNode();
   String _feedback = "";
 
   @override
@@ -71,52 +71,50 @@ class _ContactUsControllerState extends State<ContactUsController> {
             body: Padding(
               padding: const EdgeInsets.all(Dimension.paddingM),
               child: Form(
-                child: Column(
-                  children: [
-                    TextFormField(
-                      focusNode: _formField,
-                      onChanged: (newValue) {
-                        setState(() {
-                          _feedback = newValue;
-                        });
-                      },
-                      maxLines: 10,
-                      decoration: InputDecoration(
-                        hintText: 'contactUsPlaceHolder'.localized(context),
-                        hintStyle: Theme.of(context).textTheme.bodyText2Italic,
-                        border: const OutlineInputBorder(
-                          borderSide: BorderSide(
-                            width: 0.5,
-                            color: AppColors.labelDark,
-                          ),
+                child: Column(children: [
+                  TextFormField(
+                    focusNode: _formField,
+                    onChanged: (newValue) {
+                      setState(() {
+                        _feedback = newValue;
+                      });
+                    },
+                    maxLines: 10,
+                    decoration: InputDecoration(
+                      hintText: 'contactUsPlaceHolder'.localized(context),
+                      hintStyle: Theme.of(context).textTheme.bodyText2Italic,
+                      border: const OutlineInputBorder(
+                        borderSide: BorderSide(
+                          width: 0.5,
+                          color: AppColors.labelDark,
                         ),
                       ),
                     ),
-                    const SizedBox(
-                      height: Dimension.paddingM,
-                    ),
-                    MainButton(
-                      onPressed: () {
-                        NetworkManager.instance.contactUs(_feedback).then(
-                          (value) {
-                            SAAlertDialog.displayAlertWithClose(
-                              context,
-                              'feedbackTitle'.localized(context),
-                              'thanksFeedback'.localized(context),
-                              completion: () {
-                                Navigator.of(context).pop();
-                              },
-                            );
-                          },
-                        ).catchError(
-                          (onError) => SAAlertDialog.displayAlertWithClose(context, 'genericErrorTitle'.localized(context, 'general'), onError),
-                        );
-                      },
-                      text: 'submitButton'.localized(context),
-                      enabled: _feedback.isEmpty == false,
-                    ),
-                  ],
-                ),
+                  ),
+                  const SizedBox(
+                    height: Dimension.paddingM,
+                  ),
+                  MainButton(
+                    onPressed: () {
+                      NetworkManager.instance.contactUs(_feedback).then(
+                        (value) {
+                          SAAlertDialog.displayAlertWithClose(
+                            context,
+                            'feedbackTitle'.localized(context),
+                            'thanksFeedback'.localized(context),
+                            completion: () {
+                              Navigator.of(context).pop();
+                            },
+                          );
+                        },
+                      ).catchError(
+                        (onError) => SAAlertDialog.displayAlertWithClose(context, 'genericErrorTitle'.localized(context, 'general'), onError),
+                      );
+                    },
+                    text: 'submitButton'.localized(context),
+                    enabled: _feedback.isEmpty == false,
+                  ),
+                ]),
               ),
             ),
           ),
@@ -125,6 +123,6 @@ class _ContactUsControllerState extends State<ContactUsController> {
     );
   }
 
-  //MARK: Actions
+//MARK: Actions
 
 }

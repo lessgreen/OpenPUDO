@@ -50,227 +50,209 @@ class _PersonalDataBusinessControllerState extends State<PersonalDataBusinessCon
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
       create: (context) => PersonalDataBusinessControllerViewModel(widget.phoneNumber),
-      child: Consumer<PersonalDataBusinessControllerViewModel>(
-        builder: (context, viewModel, _) {
-          return KeyboardVisibilityBuilder(
-            builder: (context, child, isKeyboardVisible) {
-              return Scaffold(
-                resizeToAvoidBottomInset: true,
-                appBar: AppBar(
-                  backgroundColor: Colors.transparent,
-                  systemOverlayStyle: SystemUiOverlayStyle.dark,
-                  leading: widget.canGoBack
-                      ? CupertinoNavigationBarBackButton(
-                          color: AppColors.primaryColorDark,
-                          onPressed: () => Navigator.of(context).pop(),
-                        )
-                      : null,
-                ),
-                body: Column(
-                  children: [
-                    Expanded(
-                      child: ShaderMask(
-                        shaderCallback: (Rect rect) {
-                          return LinearGradient(
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                            colors: [Theme.of(context).backgroundColor, Colors.transparent, Colors.transparent, Theme.of(context).backgroundColor],
-                            stops: const [0.0, 0.02, 0.9, 1.0],
-                          ).createShader(rect);
-                        },
-                        blendMode: BlendMode.dstOut,
-                        child: ListView(
-                          children: [
-                            const SizedBox(
-                              height: Dimension.paddingM,
-                            ),
-                            Center(
-                              child: SizedBox(
-                                width: MediaQuery.of(context).size.width / 3 * 2,
-                                child: Text(
-                                  'mainLabel'.localized(context),
-                                  textAlign: TextAlign.center,
-                                  style: Theme.of(context).textTheme.headline6,
-                                ),
-                              ),
-                            ),
-                            const SizedBox(
-                              height: Dimension.padding,
-                            ),
-                            Container(
-                                padding: const EdgeInsets.only(left: Dimension.padding, right: Dimension.padding),
-                                child: Text(
-                                  'secondaryLabel'.localized(context),
-                                  textAlign: TextAlign.center,
-                                  style: const TextStyle(fontSize: 18),
-                                )),
-                            const SizedBox(
-                              height: Dimension.padding,
-                            ),
-                            ProfilePicBox(
-                              onTap: viewModel.pickFile,
-                              image: viewModel.image,
-                              mainIcon: Icons.apartment,
-                              title: 'addPhoto'.localized(context),
-                            ),
-                            const SizedBox(height: Dimension.padding),
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(Dimension.paddingM, 16, Dimension.paddingM, 0),
-                              child: CupertinoTextField(
-                                placeholder: 'placeHolderName'.localized(context),
-                                decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Theme.of(context).primaryColor))),
-                                autofocus: false,
-                                textInputAction: TextInputAction.done,
-                                onChanged: (newValue) => viewModel.name = newValue,
-                                onTap: () {
-                                  setState(() {});
-                                },
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(Dimension.paddingM, 16, Dimension.paddingM, 0),
-                              child: CupertinoTextField(
-                                placeholder: 'placeHolderAddress'.localized(context),
-                                controller: viewModel.addressController,
-                                decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Theme.of(context).primaryColor))),
-                                autofocus: false,
-                                textInputAction: TextInputAction.done,
-                                onChanged: (newValue) => viewModel.onSearchChanged(newValue),
-                                onTap: () {
-                                  setState(() {});
-                                },
-                              ),
-                            ),
-                            AnimatedCrossFade(
-                              firstChild: SizedBox(width: MediaQuery.of(context).size.width),
-                              secondChild: Container(
-                                decoration: BoxDecoration(boxShadow: Shadows.baseShadow),
-                                margin: const EdgeInsets.symmetric(vertical: Dimension.paddingS, horizontal: Dimension.padding),
-                                child: AddressOverlaySearch(
-                                  borderRadius: BorderRadius.zero,
-                                  onTap: (GeoMarker marker) {
-                                    viewModel.address = viewModel.convertGeoMarker(marker);
-                                    viewModel.addressController.text = marker.address!.label ?? "";
-                                    viewModel.isOpenListAddress = false;
-                                  },
-                                  addresses: viewModel.addresses,
-                                ),
-                              ),
-                              crossFadeState: viewModel.isOpenListAddress ? CrossFadeState.showSecond : CrossFadeState.showFirst,
-                              duration: const Duration(milliseconds: 150),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(Dimension.paddingM, 16, Dimension.paddingM, 0),
-                              child: CupertinoTextField(
-                                placeholder: 'placeHolderPhone'.localized(context),
-                                controller: viewModel.phoneNumberController,
-                                keyboardType: TextInputType.number,
-                                textInputAction: TextInputAction.done,
-                                decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Theme.of(context).primaryColor))),
-                                autofocus: false,
-                                onChanged: (newValue) => viewModel.phoneNumber = newValue,
-                                onTap: () {
-                                  setState(() {});
-                                },
-                              ),
-                            ),
-                            const SizedBox(height: 10),
-                            Center(
-                              child: Padding(
-                                padding: const EdgeInsets.only(left: Dimension.paddingM, right: Dimension.paddingM),
-                                child: Text(
-                                  'hintPhone'.localized(context),
-                                  style: const TextStyle(fontSize: 12),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(height: 10),
-                            Padding(
-                              padding: const EdgeInsets.only(left: Dimension.padding, right: Dimension.padding),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Checkbox(
-                                    activeColor: AppColors.primaryColorDark,
-                                    value: termsAndConditionsChecked,
-                                    onChanged: (value) {
-                                      setState(() {
-                                        termsAndConditionsChecked = value ?? false;
-                                      });
-                                    },
-                                  ),
-                                  Expanded(
-                                    child: RichText(
-                                      textAlign: TextAlign.left,
-                                      text: TextSpan(
-                                        style: Theme.of(context).textTheme.caption,
-                                        children: [
-                                          TextSpan(
-                                            text: 'acceptTermsAndCondition'.localized(context),
-                                          ),
-                                          TextSpan(
-                                            text: 'termsAndConditionHyperlink'.localized(context),
-                                            style: const TextStyle(color: AppColors.primaryColorDark, fontWeight: FontWeight.w500),
-                                            recognizer: TapGestureRecognizer()
-                                              ..onTap = () {
-                                                launch('https://tools.quigreen.it/terms.html');
-                                              },
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
+      child: Consumer<PersonalDataBusinessControllerViewModel>(builder: (context, viewModel, _) {
+        return KeyboardVisibilityBuilder(builder: (context, child, isKeyboardVisible) {
+          return Scaffold(
+            resizeToAvoidBottomInset: true,
+            appBar: AppBar(
+              backgroundColor: Colors.transparent,
+              systemOverlayStyle: SystemUiOverlayStyle.dark,
+              leading: widget.canGoBack
+                  ? CupertinoNavigationBarBackButton(
+                      color: AppColors.primaryColorDark,
+                      onPressed: () => Navigator.of(context).pop(),
+                    )
+                  : null,
+            ),
+            body: Column(children: [
+              Expanded(
+                child: ShaderMask(
+                  shaderCallback: (Rect rect) {
+                    return LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [Theme.of(context).backgroundColor, Colors.transparent, Colors.transparent, Theme.of(context).backgroundColor],
+                      stops: const [0.0, 0.02, 0.9, 1.0],
+                    ).createShader(rect);
+                  },
+                  blendMode: BlendMode.dstOut,
+                  child: ListView(children: [
+                    const SizedBox(
+                      height: Dimension.paddingM,
+                    ),
+                    Center(
+                      child: SizedBox(
+                        width: MediaQuery.of(context).size.width / 3 * 2,
+                        child: Text(
+                          'mainLabel'.localized(context),
+                          textAlign: TextAlign.center,
+                          style: Theme.of(context).textTheme.headline6,
                         ),
                       ),
                     ),
+                    const SizedBox(
+                      height: Dimension.padding,
+                    ),
+                    Container(
+                        padding: const EdgeInsets.only(left: Dimension.padding, right: Dimension.padding),
+                        child: Text(
+                          'secondaryLabel'.localized(context),
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(fontSize: 18),
+                        )),
+                    const SizedBox(
+                      height: Dimension.padding,
+                    ),
+                    ProfilePicBox(
+                      onTap: viewModel.pickFile,
+                      image: viewModel.image,
+                      mainIcon: Icons.apartment,
+                      title: 'addPhoto'.localized(context),
+                    ),
+                    const SizedBox(height: Dimension.padding),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(Dimension.paddingM, 16, Dimension.paddingM, 0),
+                      child: CupertinoTextField(
+                        placeholder: 'placeHolderName'.localized(context),
+                        decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Theme.of(context).primaryColor))),
+                        autofocus: false,
+                        textInputAction: TextInputAction.done,
+                        onChanged: (newValue) => viewModel.name = newValue,
+                        onTap: () {
+                          setState(() {});
+                        },
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(Dimension.paddingM, 16, Dimension.paddingM, 0),
+                      child: CupertinoTextField(
+                        placeholder: 'placeHolderAddress'.localized(context),
+                        controller: viewModel.addressController,
+                        decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Theme.of(context).primaryColor))),
+                        autofocus: false,
+                        textInputAction: TextInputAction.done,
+                        onChanged: (newValue) => viewModel.onSearchChanged(newValue),
+                        onTap: () {
+                          setState(() {});
+                        },
+                      ),
+                    ),
                     AnimatedCrossFade(
-                      crossFadeState: isKeyboardVisible ? CrossFadeState.showSecond : CrossFadeState.showFirst,
-                      secondChild: SizedBox(
-                          height: 48,
-                          child: Container(
-                            color: Theme.of(context).cardColor,
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  MaterialButton(
-                                    onPressed: () {
-                                      FocusManager.instance.primaryFocus?.unfocus();
-                                    },
-                                    child: Text(
-                                      'doneButton'.localized(context),
-                                      style: const TextStyle(color: AppColors.primaryColorDark),
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ),
-                          )),
-                      firstChild: const SizedBox(),
+                      firstChild: SizedBox(width: MediaQuery.of(context).size.width),
+                      secondChild: Container(
+                        decoration: const BoxDecoration(boxShadow: Shadows.baseShadow),
+                        margin: const EdgeInsets.symmetric(vertical: Dimension.paddingS, horizontal: Dimension.padding),
+                        child: AddressOverlaySearch(
+                          borderRadius: BorderRadius.zero,
+                          onTap: (GeoMarker marker) {
+                            viewModel.address = viewModel.convertGeoMarker(marker);
+                            viewModel.addressController.text = marker.address!.label ?? "";
+                            viewModel.isOpenListAddress = false;
+                          },
+                          addresses: viewModel.addresses,
+                        ),
+                      ),
+                      crossFadeState: viewModel.isOpenListAddress ? CrossFadeState.showSecond : CrossFadeState.showFirst,
                       duration: const Duration(milliseconds: 150),
                     ),
-                  ],
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(Dimension.paddingM, 16, Dimension.paddingM, 0),
+                      child: CupertinoTextField(
+                        placeholder: 'placeHolderPhone'.localized(context),
+                        controller: viewModel.phoneNumberController,
+                        keyboardType: TextInputType.number,
+                        textInputAction: TextInputAction.done,
+                        decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Theme.of(context).primaryColor))),
+                        autofocus: false,
+                        onChanged: (newValue) => viewModel.phoneNumber = newValue,
+                        onTap: () {
+                          setState(() {});
+                        },
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Center(
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: Dimension.paddingM, right: Dimension.paddingM),
+                        child: Text(
+                          'hintPhone'.localized(context),
+                          style: const TextStyle(fontSize: 12),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Padding(
+                      padding: const EdgeInsets.only(left: Dimension.padding, right: Dimension.padding),
+                      child: Row(mainAxisAlignment: MainAxisAlignment.start, children: [
+                        Checkbox(
+                          activeColor: AppColors.primaryColorDark,
+                          value: termsAndConditionsChecked,
+                          onChanged: (value) {
+                            setState(() {
+                              termsAndConditionsChecked = value ?? false;
+                            });
+                          },
+                        ),
+                        Expanded(
+                          child: RichText(
+                            textAlign: TextAlign.left,
+                            text: TextSpan(style: Theme.of(context).textTheme.caption, children: [
+                              TextSpan(
+                                text: 'acceptTermsAndCondition'.localized(context),
+                              ),
+                              TextSpan(
+                                  text: 'termsAndConditionHyperlink'.localized(context),
+                                  style: const TextStyle(color: AppColors.primaryColorDark, fontWeight: FontWeight.w500),
+                                  recognizer: TapGestureRecognizer()
+                                    ..onTap = () {
+                                      launch('https://tools.quigreen.it/terms.html');
+                                    }),
+                            ]),
+                          ),
+                        ),
+                      ]),
+                    ),
+                  ]),
                 ),
-                bottomSheet: AnimatedCrossFade(
-                  crossFadeState: isKeyboardVisible ? CrossFadeState.showSecond : CrossFadeState.showFirst,
-                  secondChild: const SizedBox(),
-                  firstChild: MainButton(
-                    enabled: viewModel.isValid && termsAndConditionsChecked,
-                    onPressed: () => Navigator.of(context).pushReplacementNamed(Routes.rewardPolicy, arguments: viewModel.buildRequest()),
-                    text: 'nextButton'.localized(context),
-                  ),
-                  duration: const Duration(milliseconds: 150),
-                ),
-              );
-            },
+              ),
+              AnimatedCrossFade(
+                crossFadeState: isKeyboardVisible ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+                secondChild: SizedBox(
+                    height: 48,
+                    child: Container(
+                      color: Theme.of(context).cardColor,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+                          MaterialButton(
+                            onPressed: () {
+                              FocusManager.instance.primaryFocus?.unfocus();
+                            },
+                            child: Text(
+                              'doneButton'.localized(context),
+                              style: const TextStyle(color: AppColors.primaryColorDark),
+                            ),
+                          )
+                        ]),
+                      ),
+                    )),
+                firstChild: const SizedBox(),
+                duration: const Duration(milliseconds: 150),
+              ),
+            ]),
+            bottomSheet: AnimatedCrossFade(
+              crossFadeState: isKeyboardVisible ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+              secondChild: const SizedBox(),
+              firstChild: MainButton(
+                enabled: viewModel.isValid && termsAndConditionsChecked,
+                onPressed: () => Navigator.of(context).pushReplacementNamed(Routes.rewardPolicy, arguments: viewModel.buildRequest()),
+                text: 'nextButton'.localized(context),
+              ),
+              duration: const Duration(milliseconds: 150),
+            ),
           );
-        },
-      ),
+        });
+      }),
     );
   }
 }
