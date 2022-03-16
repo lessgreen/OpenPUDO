@@ -26,10 +26,9 @@ import 'package:qui_green/commons/utilities/localization.dart';
 import 'package:qui_green/resources/res.dart';
 
 class NotifySentController extends StatefulWidget {
-  const NotifySentController({Key? key, required this.username,required this.title,required  this.mainText,required  this.canGoBack}) : super(key: key);
+  const NotifySentController({Key? key, required this.username, required this.type, required this.canGoBack}) : super(key: key);
   final String username;
-  final String title;
-  final String mainText;
+  final NotifySentControllerTypes type;
   final bool canGoBack;
 
   @override
@@ -49,22 +48,24 @@ class _NotifySentControllerState extends State<NotifySentController> {
           navigationBar: CupertinoNavigationBarFix.build(
             context,
             middle: Text(
-              widget.title,
+              mainText,
               style: Theme.of(context).textTheme.navBarTitle,
             ),
-            leading: widget.canGoBack?CupertinoNavigationBarBackButton(
-              color: Colors.white,
-              onPressed: () => Navigator.of(context).pop(),
-            ):null,
+            leading: widget.canGoBack
+                ? CupertinoNavigationBarBackButton(
+                    color: Colors.white,
+                    onPressed: () => Navigator.of(context).pop(),
+                  )
+                : null,
           ),
           child: ListView(
             children: [
               const SizedBox(
-                height: Dimension.paddingL,
+                height: Dimension.paddingXL,
               ),
               Text(
                 'secondaryLabel'.localized(context),
-                style: Theme.of(context).textTheme.headlineSmall,
+                style: Theme.of(context).textTheme.headline6,
                 textAlign: TextAlign.center,
               ),
               const SizedBox(
@@ -78,20 +79,31 @@ class _NotifySentControllerState extends State<NotifySentController> {
               const SizedBox(
                 height: Dimension.paddingL,
               ),
-              RichText(
-                  textAlign: TextAlign.center,
-                  text: TextSpan(
-                    text: '',
-                    style: Theme.of(context).textTheme.headlineSmall!.copyWith(height: 1.2),
-                    children: [
-                      TextSpan(
-                        text: widget.mainText,
-                      ),
-                      TextSpan(text: widget.username, style: const TextStyle(fontWeight: FontWeight.w500)),
-                    ],
-                  )),
+              Center(
+                child: SizedBox(
+                  width: MediaQuery.of(context).size.width / 3 * 2,
+                  child: RichText(
+                      textAlign: TextAlign.center,
+                      text: TextSpan(
+                        text: '',
+                        style: Theme.of(context).textTheme.subtitle1Secondary,
+                        children: [
+                          TextSpan(
+                            text: description,
+                          ),
+                          TextSpan(text: widget.username, style: Theme.of(context).textTheme.subtitle1Bold),
+                        ],
+                      )),
+                ),
+              ),
             ],
           )),
     );
   }
+
+  get mainText => 'mainLabel${widget.type.name}'.localized(context);
+  get description => 'description${widget.type.name}'.localized(context);
 }
+
+// ignore: constant_identifier_names
+enum NotifySentControllerTypes { PackageReceived, PackageDelivered }

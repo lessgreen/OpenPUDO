@@ -26,6 +26,7 @@ import 'package:flutter/material.dart';
 import 'package:qui_green/commons/alert_dialog.dart';
 import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
 import 'package:qui_green/commons/ui/cupertino_navigation_bar_fix.dart';
+import 'package:qui_green/commons/utilities/localization.dart';
 import 'package:qui_green/commons/utilities/network_error_helper.dart';
 import 'package:qui_green/models/pudo_package.dart';
 import 'package:qui_green/models/user_summary.dart';
@@ -36,7 +37,6 @@ import 'package:qui_green/widgets/main_button.dart';
 import 'package:qui_green/widgets/profile_pic_box.dart';
 import 'package:qui_green/widgets/sascaffold.dart';
 import 'package:qui_green/widgets/table_view_cell.dart';
-import 'package:qui_green/commons/utilities/localization.dart';
 
 class PackageReceivedController extends StatefulWidget {
   const PackageReceivedController({Key? key}) : super(key: key);
@@ -170,7 +170,8 @@ class _PackageReceivedControllerState extends State<PackageReceivedController> {
               .packagePhotoUpload(_image!, value.packageId)
               .catchError((onError) => SAAlertDialog.displayAlertWithClose(context, 'genericErrorTitle'.localized(context, 'general'), onError));
         }
-        Navigator.of(context).pushReplacementNamed(Routes.notifySent, arguments: "${_selectedUser!.firstName} ${_selectedUser!.lastName}");
+        Navigator.of(context).pushReplacementNamed(Routes.notifySent,
+            arguments: _selectedUser!.firstName != null && _selectedUser!.lastName != null ? "${_selectedUser!.firstName} ${_selectedUser!.lastName}" : "AC${_selectedUser!.userId ?? 0}");
       } else {
         NetworkErrorHelper.helper(context, value);
       }

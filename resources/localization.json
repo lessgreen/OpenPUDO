@@ -131,9 +131,11 @@
             "notificationSubtitleUser": "Riceverai una notifica quando il tuo\npacco sarà giunto a destinazione\npresso il tuo PUDO."
         },
         "NotifySentControllerState": {
-            "mainLabel": "Notifica inviata",
-            "secondaryLabel": "Fatto!",
-            "description": "Abbiamo inviato una notifica\nall'utente "
+            "mainLabelPackageReceived": "Notifica inviata",
+            "descriptionPackageReceived": "Abbiamo inviato una notifica\nall'utente ",
+            "mainLabelPackageDelivered": "Pacco consegnato",
+            "descriptionPackageDelivered": "Il pacco è stato correttamente consegnato all'utente ",
+            "secondaryLabel": "Fatto!"
         },
         "PackageDeliveredControllerState": {
             "navTitle": "Ho consegnato un pacco",

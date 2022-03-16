@@ -34,4 +34,7 @@ extension AdditionalTextTheme on TextTheme {
   TextStyle? get dialogButtonRefuse => headline6?.copyWith(fontWeight: FontWeight.w500);
   TextStyle? get dialogButtonAccept => headline6?.copyWith(color: AppColors.primaryColorDark, fontWeight: FontWeight.w500);
   TextStyle? get transparentText => bodyText1?.copyWith(fontWeight: FontWeight.w300, color: Colors.transparent);
+
+  TextStyle? get subtitle1Secondary => subtitle1?.copyWith(color: CupertinoColors.secondaryLabel);
+  TextStyle? get subtitle1Bold => subtitle1?.copyWith(fontWeight: FontWeight.w500);
 }
