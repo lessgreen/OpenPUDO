@@ -306,106 +306,108 @@ class _MapControllerState extends State<MapController> with ConnectionAware, Tic
         ),
       );
 
-  Widget _buildMap(MapsControllerViewModel viewModel) => SAScaffold(
-        isLoading: NetworkManager.instance.networkActivity,
-        body: FlutterMap(
-          mapController: viewModel.mapController,
-          options: MapOptions(
-            center: widget.initialPosition,
-            onMapCreated: (controller) {
-              viewModel.onMapCreate(context, controller, widget.initialPosition, widget.getUserPosition);
-              viewModel.loadPudos(requireZoomLevelRefresh: true);
-            },
-            interactiveFlags: InteractiveFlag.pinchZoom | InteractiveFlag.drag,
-            onPositionChanged: (mapPosition, boolValue) {
-              //viewModel.sortPudos(mapPosition);
-              var mapVisibleMaxDistance = Geolocator.distanceBetween(
-                mapPosition.bounds!.northEast!.latitude,
-                mapPosition.bounds!.northEast!.longitude,
-                mapPosition.bounds!.southWest!.latitude,
-                mapPosition.bounds!.southWest!.longitude,
-              );
-              var visibleChangeDelta = mapVisibleMaxDistance - (mapVisibleMaxDistance * 50 / 100);
-              var distance = Geolocator.distanceBetween(
-                viewModel.lastTriggeredLatitude,
-                viewModel.lastTriggeredLongitude,
-                mapPosition.center!.latitude,
-                mapPosition.center!.longitude,
-              );
+  Widget _buildMap(MapsControllerViewModel viewModel) {
+    return SAScaffold(
+      isLoading: NetworkManager.instance.networkActivity,
+      body: FlutterMap(
+        mapController: viewModel.mapController,
+        options: MapOptions(
+          center: widget.initialPosition,
+          onMapCreated: (controller) {
+            viewModel.onMapCreate(context, controller, widget.initialPosition, widget.getUserPosition);
+            viewModel.loadPudos(requireZoomLevelRefresh: true);
+          },
+          interactiveFlags: InteractiveFlag.pinchZoom | InteractiveFlag.drag,
+          onPositionChanged: (mapPosition, boolValue) {
+            //viewModel.sortPudos(mapPosition);
+            var mapVisibleMaxDistance = Geolocator.distanceBetween(
+              mapPosition.bounds!.northEast!.latitude,
+              mapPosition.bounds!.northEast!.longitude,
+              mapPosition.bounds!.southWest!.latitude,
+              mapPosition.bounds!.southWest!.longitude,
+            );
+            var visibleChangeDelta = mapVisibleMaxDistance - (mapVisibleMaxDistance * 50 / 100);
+            var distance = Geolocator.distanceBetween(
+              viewModel.lastTriggeredLatitude,
+              viewModel.lastTriggeredLongitude,
+              mapPosition.center!.latitude,
+              mapPosition.center!.longitude,
+            );
 
-              if (mapPosition.center != null && mapPosition.zoom != null) {
-                viewModel.updateCurrentMapPosition(mapPosition);
-              }
-              if (distance > visibleChangeDelta || viewModel.lastTriggeredZoom != viewModel.currentZoomLevel) {
-                viewModel.updateLastMapPosition(mapPosition);
-                viewModel.loadPudos();
-              }
-            },
-            maxZoom: 16,
-            minZoom: 8,
-            zoom: viewModel.currentZoomLevel.toDouble(),
-            plugins: [
-              MarkerClusterPlugin(),
-            ],
-          ),
-          layers: [
-            TileLayerOptions(
-              urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-              retinaMode: true,
-              subdomains: ['a', 'b', 'c'],
-            ),
-            MarkerClusterLayerOptions(
-              showPolygon: false,
-              size: const Size(40, 40),
-              fitBoundsOptions: const FitBoundsOptions(
-                padding: EdgeInsets.all(50),
-              ),
-              disableClusteringAtZoom: 15,
-              maxClusterRadius: 60,
-              onClusterTap: (cluster) {
-                List<GeoMarker> markers = [];
-                for (var marker in cluster.markers) {
-                  int index = viewModel.pudos.indexWhere((element) => LatLng(element.lat!, element.lon!) == marker.point);
-                  if (index > -1) {
-                    markers.add(viewModel.pudos[index]);
-                  }
-                }
-                viewModel.orderPlacementFromListOfMarker(markers);
-                int index = viewModel.pudos.indexWhere((element) => LatLng(element.lat!, element.lon!) == cluster.markers.first.point);
-                if (index > -1) {
-                  viewModel.showingCardPudo = viewModel.pudos[index].pudo!.pudoId;
-                  viewModel.isReloadingPudos = true;
-                  if (viewModel.pageController.positions.isNotEmpty) {
-                    viewModel.pageController
-                        .animateToPage(
-                          index,
-                          duration: const Duration(milliseconds: 150),
-                          curve: Curves.easeIn,
-                        )
-                        .then((value) => viewModel.isReloadingPudos = false);
-                  }
-                }
-              },
-              markers: viewModel.pudos.markers(
-                (marker) {
-                  viewModel.animateMapTo(viewModel, LatLng(marker.lat!, marker.lon!));
-                  viewModel.selectPudo(context, marker, widget.enablePudoCards, widget.isOnboarding);
-                },
-                selectedMarker: widget.enablePudoCards ? viewModel.showingCardPudo : null,
-                tintColor: AppColors.primaryColorDark,
-              ),
-              builder: (context, markers) {
-                return FloatingActionButton(
-                  heroTag: Key(markers.length.toString() + markers.first.point.toSexagesimal()),
-                  child: Text(
-                    markers.length.toString(),
-                    style: Theme.of(context).textTheme.captionWhite,
-                  ),
-                  onPressed: null,
-                );
-              },
-            ),
+            if (mapPosition.center != null && mapPosition.zoom != null) {
+              viewModel.updateCurrentMapPosition(mapPosition);
+            }
+            if (distance > visibleChangeDelta || viewModel.lastTriggeredZoom != viewModel.currentZoomLevel) {
+              viewModel.updateLastMapPosition(mapPosition);
+              viewModel.loadPudos();
+            }
+          },
+          maxZoom: 16,
+          minZoom: 8,
+          zoom: viewModel.currentZoomLevel.toDouble(),
+          plugins: [
+            MarkerClusterPlugin(),
           ],
         ),
-      );
+        layers: [
+          TileLayerOptions(
+            urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+            retinaMode: true,
+            subdomains: ['a', 'b', 'c'],
+          ),
+          MarkerClusterLayerOptions(
+            showPolygon: false,
+            size: const Size(40, 40),
+            fitBoundsOptions: const FitBoundsOptions(
+              padding: EdgeInsets.all(50),
+            ),
+            disableClusteringAtZoom: 15,
+            maxClusterRadius: 60,
+            onClusterTap: (cluster) {
+              List<GeoMarker> markers = [];
+              for (var marker in cluster.markers) {
+                int index = viewModel.pudos.indexWhere((element) => LatLng(element.lat!, element.lon!) == marker.point);
+                if (index > -1) {
+                  markers.add(viewModel.pudos[index]);
+                }
+              }
+              viewModel.orderPlacementFromListOfMarker(markers);
+              int index = viewModel.pudos.indexWhere((element) => LatLng(element.lat!, element.lon!) == cluster.markers.first.point);
+              if (index > -1) {
+                viewModel.showingCardPudo = viewModel.pudos[index].pudo!.pudoId;
+                viewModel.isReloadingPudos = true;
+                if (viewModel.pageController.positions.isNotEmpty) {
+                  viewModel.pageController
+                      .animateToPage(
+                        index,
+                        duration: const Duration(milliseconds: 150),
+                        curve: Curves.easeIn,
+                      )
+                      .then((value) => viewModel.isReloadingPudos = false);
+                }
+              }
+            },
+            markers: viewModel.pudos.markers(
+              (marker) {
+                viewModel.animateMapTo(viewModel, LatLng(marker.lat!, marker.lon!));
+                viewModel.selectPudo(context, marker, widget.enablePudoCards, widget.isOnboarding);
+              },
+              selectedMarker: widget.enablePudoCards ? viewModel.showingCardPudo : null,
+              tintColor: AppColors.primaryColorDark,
+            ),
+            builder: (context, markers) {
+              return FloatingActionButton(
+                heroTag: Key(markers.length.toString() + markers.first.point.toSexagesimal()),
+                child: Text(
+                  markers.length.toString(),
+                  style: Theme.of(context).textTheme.captionWhite,
+                ),
+                onPressed: null,
+              );
+            },
+          ),
+        ],
+      ),
+    );
+  }
 }

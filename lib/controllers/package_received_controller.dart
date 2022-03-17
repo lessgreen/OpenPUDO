@@ -57,98 +57,95 @@ class _PackageReceivedControllerState extends State<PackageReceivedController> {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      child: CupertinoPageScaffold(
-          navigationBar: CupertinoNavigationBarFix.build(
-            context,
-            middle: Text(
-              'navTitle'.localized(context),
-              style: Theme.of(context).textTheme.navBarTitle,
-            ),
-            leading: CupertinoNavigationBarBackButton(
-              color: Colors.white,
-              onPressed: () => Navigator.of(context).pop(),
+    return SAScaffold(
+      isLoading: NetworkManager.instance.networkActivity,
+      cupertinoBar: CupertinoNavigationBarFix.build(
+        context,
+        middle: Text(
+          'navTitle'.localized(context),
+          style: Theme.of(context).textTheme.navBarTitle,
+        ),
+        leading: CupertinoNavigationBarBackButton(
+          color: Colors.white,
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+      ),
+      body: ListView(
+        children: [
+          const SizedBox(
+            height: Dimension.paddingM,
+          ),
+          ProfilePicBox(
+            onTap: _pickImage,
+            image: _image,
+            title: 'mainLabel'.localized(context),
+            mainIconSvgAsset: ImageSrc.shipmentLeadingCell,
+          ),
+          const SizedBox(
+            height: Dimension.paddingM,
+          ),
+          TableViewCell(
+            onTap: () {
+              Navigator.of(context).pushNamed(Routes.searchRecipient).then((value) {
+                if (value != null && value is UserSummary) {
+                  setState(() {
+                    _selectedUser = value;
+                  });
+                }
+              });
+            },
+            fullWidth: true,
+            showTopDivider: true,
+            showTrailingChevron: true,
+            title: _selectedUser == null ? 'secondaryLabel'.localized(context) : "${_selectedUser!.firstName} ${_selectedUser!.lastName} AC${_selectedUser!.userId.toString()}",
+            leading: const Icon(
+              CupertinoIcons.person,
+              color: AppColors.primaryColorDark,
+              size: 26,
             ),
           ),
-          child: SAScaffold(
-            isLoading: NetworkManager.instance.networkActivity,
-            body: ListView(
-              children: [
-                const SizedBox(
-                  height: Dimension.paddingM,
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Padding(
+                padding: EdgeInsets.only(left: Dimension.padding + Dimension.paddingXS, top: Dimension.padding),
+                child: Icon(
+                  CupertinoIcons.info_circle_fill,
+                  color: AppColors.primaryColorDark,
                 ),
-                ProfilePicBox(
-                  onTap: _pickImage,
-                  image: _image,
-                  title: 'mainLabel'.localized(context),
-                  mainIconSvgAsset: ImageSrc.shipmentLeadingCell,
-                ),
-                const SizedBox(
-                  height: Dimension.paddingM,
-                ),
-                TableViewCell(
-                  onTap: () {
-                    Navigator.of(context).pushNamed(Routes.searchRecipient).then((value) {
-                      if (value != null && value is UserSummary) {
-                        setState(() {
-                          _selectedUser = value;
-                        });
-                      }
-                    });
-                  },
-                  fullWidth: true,
-                  showTopDivider: true,
-                  showTrailingChevron: true,
-                  title: _selectedUser == null ? 'secondaryLabel'.localized(context) : "${_selectedUser!.firstName} ${_selectedUser!.lastName} AC${_selectedUser!.userId.toString()}",
-                  leading: const Icon(
-                    CupertinoIcons.person,
-                    color: AppColors.primaryColorDark,
-                    size: 26,
+              ),
+              Expanded(
+                child: CupertinoTextField(
+                  placeholder: 'placeHolderNotes'.localized(context),
+                  padding: const EdgeInsets.all(Dimension.padding),
+                  prefixMode: OverlayVisibilityMode.always,
+                  placeholderStyle: const TextStyle(color: AppColors.colorGrey),
+                  controller: _notesController,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(Dimension.borderRadiusSearch),
                   ),
+                  autofocus: false,
+                  textInputAction: TextInputAction.done,
+                  minLines: 2,
+                  maxLines: 8,
                 ),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Padding(
-                      padding: EdgeInsets.only(left: Dimension.padding + Dimension.paddingXS, top: Dimension.padding),
-                      child: Icon(
-                        CupertinoIcons.info_circle_fill,
-                        color: AppColors.primaryColorDark,
-                      ),
-                    ),
-                    Expanded(
-                      child: CupertinoTextField(
-                        placeholder: 'placeHolderNotes'.localized(context),
-                        padding: const EdgeInsets.all(Dimension.padding),
-                        prefixMode: OverlayVisibilityMode.always,
-                        placeholderStyle: const TextStyle(color: AppColors.colorGrey),
-                        controller: _notesController,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(Dimension.borderRadiusSearch),
-                        ),
-                        autofocus: false,
-                        textInputAction: TextInputAction.done,
-                        minLines: 2,
-                        maxLines: 8,
-                      ),
-                    ),
-                  ],
-                ),
-                const Divider(
-                  height: 1,
-                ),
-                const SizedBox(
-                  height: Dimension.paddingL,
-                ),
-                MainButton(
-                  enabled: _selectedUser != null,
-                  text: 'nextButton'.localized(context),
-                  onPressed: _sendRequest,
-                )
-              ],
-            ),
-          )),
+              ),
+            ],
+          ),
+          const Divider(
+            height: 1,
+          ),
+          const SizedBox(
+            height: Dimension.paddingL,
+          ),
+          MainButton(
+            enabled: _selectedUser != null,
+            text: 'nextButton'.localized(context),
+            onPressed: _sendRequest,
+          )
+        ],
+      ),
     );
   }
 

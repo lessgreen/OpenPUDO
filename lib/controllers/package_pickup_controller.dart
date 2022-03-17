@@ -54,50 +54,46 @@ class _PackagePickupControllerState extends State<PackagePickupController> {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      child: CupertinoPageScaffold(
-        navigationBar: CupertinoNavigationBarFix.build(
-          context,
-          middle: Text(
-            (widget.isForPudo ? 'shipmentDetails' : 'shipmentPickup').localized(context),
-            style: Theme.of(context).textTheme.navBarTitle,
-          ),
-          leading: CupertinoNavigationBarBackButton(
-            color: Colors.white,
-            onPressed: () => Navigator.of(context).pop(),
-          ),
-          trailing: !widget.isForPudo && (widget.packageModel.packageStatus != PackageStatus.collected)
-              ? InkWell(
-                  onTap: _sharePackage,
-                  child: Padding(
-                    padding: const EdgeInsets.only(right: Dimension.paddingS),
-                    child: SvgPicture.asset(
-                      ImageSrc.shareArt,
-                      width: 26,
-                      height: 26,
-                      color: Colors.white,
-                    ),
+    return SAScaffold(
+      isLoading: NetworkManager.instance.networkActivity,
+      cupertinoBar: CupertinoNavigationBarFix.build(
+        context,
+        middle: Text(
+          (widget.isForPudo ? 'shipmentDetails' : 'shipmentPickup').localized(context),
+          style: Theme.of(context).textTheme.navBarTitle,
+        ),
+        leading: CupertinoNavigationBarBackButton(
+          color: Colors.white,
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        trailing: !widget.isForPudo && (widget.packageModel.packageStatus != PackageStatus.collected)
+            ? InkWell(
+                onTap: _sharePackage,
+                child: Padding(
+                  padding: const EdgeInsets.only(right: Dimension.paddingS),
+                  child: SvgPicture.asset(
+                    ImageSrc.shareArt,
+                    width: 26,
+                    height: 26,
+                    color: Colors.white,
                   ),
-                )
-              : null,
-        ),
-        child: SAScaffold(
-          isLoading: NetworkManager.instance.networkActivity,
-          body: ListView(
-            children: [
-              if (!widget.isForPudo) _buildQr(),
-              if (!widget.isForPudo)
-                const SizedBox(
-                  height: Dimension.paddingS,
                 ),
-              _buildPhoto(),
-              _buildEvents(),
-              const SizedBox(
-                height: Dimension.padding,
-              ),
-            ],
+              )
+            : null,
+      ),
+      body: ListView(
+        children: [
+          if (!widget.isForPudo) _buildQr(),
+          if (!widget.isForPudo)
+            const SizedBox(
+              height: Dimension.paddingS,
+            ),
+          _buildPhoto(),
+          _buildEvents(),
+          const SizedBox(
+            height: Dimension.padding,
           ),
-        ),
+        ],
       ),
     );
   }

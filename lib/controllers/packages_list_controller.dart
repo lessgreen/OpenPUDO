@@ -56,9 +56,10 @@ class _PackagesListControllerState extends State<PackagesListController> with Co
   @override
   Widget build(BuildContext context) {
     return Consumer<CurrentUser>(
-      builder: (context, currentUser, _) => Material(
-        child: CupertinoPageScaffold(
-          navigationBar: CupertinoNavigationBarFix.build(
+      builder: (context, currentUser, _) {
+        return SAScaffold(
+          isLoading: NetworkManager.instance.networkActivity,
+          cupertinoBar: CupertinoNavigationBarFix.build(
             context,
             middle: Text(
               _buildCorrectTitle(),
@@ -69,9 +70,9 @@ class _PackagesListControllerState extends State<PackagesListController> with Co
               onPressed: () => Navigator.of(context).pop(),
             ),
           ),
-          child: SAScaffold(isLoading: NetworkManager.instance.networkActivity, body: _buildCorrectPage()),
-        ),
-      ),
+          body: _buildCorrectPage(),
+        );
+      },
     );
   }
 
