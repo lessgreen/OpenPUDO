@@ -90,14 +90,23 @@ class SAScaffold extends StatelessWidget {
           )
         : Stack(
             children: [
-              Scaffold(
-                backgroundColor: backgroundColor ?? Theme.of(context).scaffoldBackgroundColor,
-                bottomSheet: bottomSheet,
-                resizeToAvoidBottomInset: resizeToAvoidBottomInset ?? true,
-                appBar: appBar,
-                body: body,
-                floatingActionButton: floatingActionButton,
-              ),
+              cupertinoBar != null
+                  ? CupertinoPageScaffold(
+                      resizeToAvoidBottomInset: resizeToAvoidBottomInset ?? true,
+                      navigationBar: cupertinoBar,
+                      backgroundColor: backgroundColor,
+                      child: body,
+                    )
+                  : Scaffold(
+                      extendBodyBehindAppBar: extendBodyBehindAppBar,
+                      backgroundColor: backgroundColor,
+                      bottomSheet: bottomSheet,
+                      resizeToAvoidBottomInset: resizeToAvoidBottomInset ?? true,
+                      appBar: appBar,
+                      body: body,
+                      floatingActionButton: floatingActionButton,
+                      floatingActionButtonLocation: floatingActionButtonLocation,
+                    ),
             ],
           );
   }
