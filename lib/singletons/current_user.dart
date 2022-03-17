@@ -55,6 +55,7 @@ class CurrentUser with ChangeNotifier {
                 if (profile != null) {
                   user = profile;
                   pushPage(Routes.home);
+                  refreshFcmToken();
                 }
               }).catchError((onError) {
                 user = null;
@@ -67,6 +68,7 @@ class CurrentUser with ChangeNotifier {
                 if (profile != null) {
                   pudoProfile = profile;
                   pushPage(Routes.pudoHome);
+                  refreshFcmToken();
                 }
               }).catchError((onError) {
                 pudoProfile = null;
@@ -101,19 +103,11 @@ class CurrentUser with ChangeNotifier {
   }
 
   set pudoProfile(PudoProfile? newProfile) {
-    ///Request device token only if pudo is logged in and just opened app
-    if (newProfile != null && _pudo == null) {
-      refreshFcmToken();
-    }
     _pudo = newProfile;
     notifyListeners();
   }
 
   set user(UserProfile? newProfile) {
-    ///Request device token only if user is logged in and just opened app
-    if (newProfile != null && _user == null) {
-      refreshFcmToken();
-    }
     _user = newProfile;
     notifyListeners();
   }
