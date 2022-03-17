@@ -66,7 +66,7 @@ class _PackagePickupControllerState extends State<PackagePickupController> {
             color: Colors.white,
             onPressed: () => Navigator.of(context).pop(),
           ),
-          trailing: !widget.isForPudo
+          trailing: !widget.isForPudo && (widget.packageModel.packageStatus != PackageStatus.collected)
               ? InkWell(
                   onTap: _sharePackage,
                   child: Padding(
