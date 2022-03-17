@@ -24,7 +24,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:focus_detector/focus_detector.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
@@ -32,6 +31,7 @@ import 'package:qui_green/commons/alert_dialog.dart';
 import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
 import 'package:qui_green/commons/ui/cupertino_navigation_bar_fix.dart';
 import 'package:qui_green/commons/ui/custom_network_image.dart';
+import 'package:qui_green/commons/utilities/image_picker_helper.dart';
 import 'package:qui_green/commons/utilities/localization.dart';
 import 'package:qui_green/models/user_profile.dart';
 import 'package:qui_green/resources/res.dart';
@@ -360,15 +360,14 @@ class _ProfileControllerState extends State<ProfileController> with ConnectionAw
   }
 
   void _pickImage() async {
-    final ImagePicker _picker = ImagePicker();
-    final XFile? result = await _picker.pickImage(source: ImageSource.gallery);
-    if (result != null) {
-      File file = File(result.path);
-      setState(() {
-        _image = file;
-      });
-      _changesMade = true;
-    }
+    showImageChoice(context, (value) {
+      if (value != null) {
+        setState(() {
+          _image = value;
+        });
+        _changesMade = true;
+      }
+    });
   }
 
   void _setEditEnabled(bool newVal, UserProfile profile) async {

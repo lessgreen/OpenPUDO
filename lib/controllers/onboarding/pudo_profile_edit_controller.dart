@@ -173,7 +173,7 @@ class _PudoProfileEditControllerState extends State<PudoProfileEditController> w
               padding: const EdgeInsets.only(bottom: Dimension.padding),
               alignment: Alignment.center,
               child: Column(children: [
-                PudoEditableImage(picId: currentUser.pudoProfile?.pudoPicId, selectedImage: viewModel.image, editEnabled: viewModel.editEnabled, onTap: viewModel.pickFile),
+                PudoEditableImage(picId: currentUser.pudoProfile?.pudoPicId, selectedImage: viewModel.image, editEnabled: viewModel.editEnabled, onTap: () => viewModel.pickFile(context)),
                 _buildPudoDetail(currentUser, viewModel),
                 const SizedBox(height: Dimension.padding),
                 _buildEditable(

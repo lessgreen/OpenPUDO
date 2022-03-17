@@ -104,7 +104,7 @@ class _PersonalDataBusinessControllerState extends State<PersonalDataBusinessCon
                       height: Dimension.padding,
                     ),
                     ProfilePicBox(
-                      onTap: viewModel.pickFile,
+                      onTap: () => viewModel.pickFile(context),
                       image: viewModel.image,
                       mainIcon: Icons.apartment,
                       title: 'addPhoto'.localized(context),
