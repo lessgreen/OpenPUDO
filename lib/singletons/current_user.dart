@@ -55,6 +55,7 @@ class CurrentUser with ChangeNotifier {
                 if (profile != null) {
                   user = profile;
                   pushPage(Routes.home);
+                  refreshFcmToken();
                 }
               }).catchError((onError) {
                 user = null;
@@ -67,6 +68,7 @@ class CurrentUser with ChangeNotifier {
                 if (profile != null) {
                   pudoProfile = profile;
                   pushPage(Routes.pudoHome);
+                  refreshFcmToken();
                 }
               }).catchError((onError) {
                 pudoProfile = null;
@@ -107,7 +109,6 @@ class CurrentUser with ChangeNotifier {
 
   set user(UserProfile? newProfile) {
     _user = newProfile;
-    refreshFcmToken();
     notifyListeners();
   }
 
