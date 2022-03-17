@@ -76,10 +76,10 @@ class _PudoHomeControllerState extends State<PudoHomeController> with Connection
           )
         ];
       });
-      WidgetsBinding.instance!.addPostFrameCallback((_) {
-        _handleInitialMessage(_controllers.first.tabView.navigatorKey!.currentContext!);
-        _handleMessages(_controllers.first.tabView.navigatorKey!.currentContext!);
-      });
+      initFirebaseMessaging().then((value) => WidgetsBinding.instance!.addPostFrameCallback((_) {
+            _handleInitialMessage(_controllers.first.tabView.navigatorKey!.currentContext!);
+            _handleMessages(_controllers.first.tabView.navigatorKey!.currentContext!);
+          }));
     });
   }
 
@@ -95,10 +95,16 @@ class _PudoHomeControllerState extends State<PudoHomeController> with Connection
   void _handleInitialMessage(BuildContext subContext) async {
     RemoteMessage? message = await FirebaseMessaging.instance.getInitialMessage();
     if (message != null) {
-      if (message.data.containsKey("packageId")) {
-        handlePackageRouting(subContext, int.parse(message.data["packageId"]));
-      } else if (message.data.containsKey("userId")) {
-        handleUserRouting(subContext, int.parse(message.data["userId"]));
+      if (message.data.containsKey("notificationType")) {
+        if (message.data["notificationType"] == "package") {
+          if (message.data.containsKey("packageId")) {
+            handlePackageRouting(subContext, int.parse(message.data["packageId"]));
+          }
+        } else if (message.data["notifitcationType"] == "favourite") {
+          if (message.data.containsKey("userId")) {
+            handleUserRouting(subContext, int.parse(message.data["userId"]));
+          }
+        }
       }
     }
   }

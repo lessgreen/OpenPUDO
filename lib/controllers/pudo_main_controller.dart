@@ -50,60 +50,62 @@ class _PudoMainControllerState extends State<PudoMainController> with Connection
             style: Theme.of(context).textTheme.navBarTitle,
           ),
         ),
-        child: SafeArea(
-            child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(
-              height: Dimension.paddingM,
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: Dimension.padding),
-              child: Text(
-                'listHeaderTitle'.localized(context),
-                style: Theme.of(context).textTheme.headerTitle,
+        child: Scaffold(
+          body: SafeArea(
+              child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(
+                height: Dimension.paddingM,
               ),
-            ),
-            TableViewCell(
-              onTap: () => Navigator.of(context).pushNamed(Routes.packageReceived),
-              fullWidth: true,
-              showTopDivider: true,
-              showTrailingChevron: true,
-              title: 'receiveShipment'.localized(context),
-              leading: SvgPicture.asset(
-                ImageSrc.boxFillIcon,
-                color: AppColors.cardColor,
-                width: 36,
-                height: 36,
+              Padding(
+                padding: const EdgeInsets.only(left: Dimension.padding),
+                child: Text(
+                  'listHeaderTitle'.localized(context),
+                  style: Theme.of(context).textTheme.headerTitle,
+                ),
               ),
-            ),
-            TableViewCell(
-              onTap: () => Navigator.of(context).pushNamed(Routes.packageDelivered),
-              fullWidth: true,
-              showTrailingChevron: true,
-              title: 'deliverShipment'.localized(context),
-              leading: SvgPicture.asset(
-                ImageSrc.packageDeliveredLeadingIcon,
-                color: AppColors.cardColor,
-                fit: BoxFit.fitHeight,
-                width: 36,
-                height: 36,
+              TableViewCell(
+                onTap: () => Navigator.of(context).pushNamed(Routes.packageReceived),
+                fullWidth: true,
+                showTopDivider: true,
+                showTrailingChevron: true,
+                title: 'receiveShipment'.localized(context),
+                leading: SvgPicture.asset(
+                  ImageSrc.boxFillIcon,
+                  color: AppColors.cardColor,
+                  width: 36,
+                  height: 36,
+                ),
               ),
-            ),
-            TableViewCell(
-              onTap: () => Navigator.of(context).pushNamed(Routes.packagesListWithHistory),
-              fullWidth: true,
-              showTrailingChevron: true,
-              title: 'waitingShipment'.localized(context),
-              leading: SvgPicture.asset(
-                ImageSrc.waitingPackage,
-                color: AppColors.cardColor,
-                width: 36,
-                height: 36,
+              TableViewCell(
+                onTap: () => Navigator.of(context).pushNamed(Routes.packageDelivered),
+                fullWidth: true,
+                showTrailingChevron: true,
+                title: 'deliverShipment'.localized(context),
+                leading: SvgPicture.asset(
+                  ImageSrc.packageDeliveredLeadingIcon,
+                  color: AppColors.cardColor,
+                  fit: BoxFit.fitHeight,
+                  width: 36,
+                  height: 36,
+                ),
               ),
-            )
-          ],
-        )),
+              TableViewCell(
+                onTap: () => Navigator.of(context).pushNamed(Routes.packagesListWithHistory),
+                fullWidth: true,
+                showTrailingChevron: true,
+                title: 'waitingShipment'.localized(context),
+                leading: SvgPicture.asset(
+                  ImageSrc.waitingPackage,
+                  color: AppColors.cardColor,
+                  width: 36,
+                  height: 36,
+                ),
+              )
+            ],
+          )),
+        ),
       ),
     );
   }
