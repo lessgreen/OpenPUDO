@@ -39,6 +39,7 @@ import 'package:qui_green/singletons/network/network_manager.dart';
 import 'package:qui_green/view_models/maps_controller_viewmodel.dart';
 import 'package:qui_green/widgets/adress_field_pudo_search.dart';
 import 'package:qui_green/widgets/pudo_card.dart';
+import 'package:qui_green/widgets/sascaffold.dart';
 import 'package:qui_green/widgets/text_field_button.dart';
 
 class MapController extends StatefulWidget {
@@ -146,33 +147,34 @@ class _MapControllerState extends State<MapController> with ConnectionAware, Tic
     );
   }
 
-  Widget _buildPageWithCupertinoScaffold(MapsControllerViewModel viewModel) => CupertinoPageScaffold(
-      navigationBar: CupertinoNavigationBarFix.build(
-        context,
-        leading: widget.canGoBack
-            ? CupertinoNavigationBarBackButton(
-                color: Colors.white,
-                onPressed: () => Navigator.of(context).pop(),
-              )
-            : const SizedBox(),
-        middle: Text(
-          widget.title.localized(context),
-          style: Theme.of(context).textTheme.navBarTitle,
+  Widget _buildPageWithCupertinoScaffold(MapsControllerViewModel viewModel) => SAScaffold(
+        cupertinoBar: CupertinoNavigationBarFix.build(
+          context,
+          leading: widget.canGoBack
+              ? CupertinoNavigationBarBackButton(
+                  color: Colors.white,
+                  onPressed: () => Navigator.of(context).pop(),
+                )
+              : const SizedBox(),
+          middle: Text(
+            widget.title.localized(context),
+            style: Theme.of(context).textTheme.navBarTitle,
+          ),
+          trailing: widget.canOpenProfilePage
+              ? GestureDetector(
+                  onTap: () => Navigator.of(context).pushNamed(Routes.profile),
+                  child: Container(margin: const EdgeInsets.only(right: Dimension.paddingS), width: 40, child: SvgPicture.asset(ImageSrc.profileArt, color: Colors.white)),
+                )
+              : null,
         ),
-        trailing: widget.canOpenProfilePage
-            ? InkWell(
-                onTap: () => Navigator.of(context).pushNamed(Routes.profile),
-                child: Container(margin: const EdgeInsets.only(right: Dimension.paddingS), width: 40, child: SvgPicture.asset(ImageSrc.profileArt, color: Colors.white)),
-              )
-            : null,
-      ),
-      child: SafeArea(
-        child: Stack(
-          children: [_buildMap(viewModel), _buildBody(viewModel)],
+        body: SafeArea(
+          child: Stack(
+            children: [_buildMap(viewModel), _buildBody(viewModel)],
+          ),
         ),
-      ));
+      );
 
-  Widget _buildPageWithCustomSpecificScaffold(MapsControllerViewModel viewModel) => Scaffold(
+  Widget _buildPageWithCustomSpecificScaffold(MapsControllerViewModel viewModel) => SAScaffold(
         appBar: AppBar(
           backgroundColor: Colors.white.withOpacity(0.8),
           systemOverlayStyle: SystemUiOverlayStyle.dark,

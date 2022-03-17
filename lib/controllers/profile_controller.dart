@@ -85,7 +85,7 @@ class _ProfileControllerState extends State<ProfileController> with ConnectionAw
                 'navTitle'.localized(context),
                 style: Theme.of(context).textTheme.navBarTitle,
               ),
-              trailing: InkWell(
+              trailing: GestureDetector(
                 onTap: () {
                   _setEditEnabled(!_editEnabled, currentUser.user!);
                 },

@@ -151,9 +151,8 @@ class _ConfirmPhoneControllerState extends State<ConfirmPhoneController> with Co
                           'hintText'.localized(context),
                           style: Theme.of(context).textTheme.captionItalic,
                         ),
-                        InkWell(
+                        GestureDetector(
                           onTap: retryOtp,
-                          splashColor: Colors.transparent,
                           child: Text(
                             'hintButton'.localized(context),
                             style: Theme.of(context).textTheme.bodyTextBoldAccent,

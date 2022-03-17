@@ -61,7 +61,7 @@ class _AddressOverlayState extends State<AddressOverlay> {
               children: widget.viewModel.addresses.map((e) {
                 return Material(
                   color: Colors.transparent,
-                  child: InkWell(
+                  child: GestureDetector(
                     onTap: () => widget.onSelect(e),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,

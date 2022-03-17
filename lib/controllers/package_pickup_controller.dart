@@ -67,7 +67,7 @@ class _PackagePickupControllerState extends State<PackagePickupController> {
           onPressed: () => Navigator.of(context).pop(),
         ),
         trailing: !widget.isForPudo && (widget.packageModel.packageStatus != PackageStatus.collected)
-            ? InkWell(
+            ? GestureDetector(
                 onTap: _sharePackage,
                 child: Padding(
                   padding: const EdgeInsets.only(right: Dimension.paddingS),

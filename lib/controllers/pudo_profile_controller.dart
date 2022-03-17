@@ -75,7 +75,7 @@ class _PudoProfileControllerState extends State<PudoProfileController> with Conn
                 'navTitle'.localized(context),
                 style: Theme.of(context).textTheme.navBarTitle,
               ),
-              trailing: InkWell(
+              trailing: GestureDetector(
                 onTap: () => Navigator.pushNamed(context, Routes.profileEdit),
                 child: const Padding(
                   padding: EdgeInsets.only(right: Dimension.padding),
