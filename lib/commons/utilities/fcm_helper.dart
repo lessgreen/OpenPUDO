@@ -4,6 +4,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:provider/provider.dart';
 import 'package:qui_green/app.dart';
 import 'package:qui_green/commons/alert_dialog.dart';
+import 'package:qui_green/commons/extensions/trace_reflection.dart';
 import 'package:qui_green/commons/utilities/print_helper.dart';
 import 'package:qui_green/models/package_summary.dart';
 import 'package:qui_green/models/pudo_package.dart';
@@ -58,6 +59,16 @@ Future<void> firebaseMessagingHandler(Function contextGetter, RemoteMessage? mes
 
 Future<void> firebaseMessagingOpenedAppHandler(Function contextGetter, RemoteMessage? message) async {
   if (message != null) {
+    ///Refresh home
+    CurrentUser currentUser = Provider.of<CurrentUser>(contextGetter(), listen: false);
+    String pageName = TraceReflection.stackFrame(2)?.first ?? 'general';
+    if (currentUser.user != null) {
+      if (pageName == "HomeControllerState") {
+        currentUser.triggerReload();
+      }
+    }
+
+    /// Show material banner
     ScaffoldMessenger.of(contextGetter()).showMaterialBanner(MaterialBanner(
       backgroundColor: const Color.fromRGBO(254, 227, 183, 1),
       content: GestureDetector(

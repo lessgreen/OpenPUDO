@@ -101,14 +101,20 @@ class CurrentUser with ChangeNotifier {
   }
 
   set pudoProfile(PudoProfile? newProfile) {
+    ///Request device token only if pudo is logged in and just opened app
+    if (newProfile != null && _pudo == null) {
+      refreshFcmToken();
+    }
     _pudo = newProfile;
-    refreshFcmToken();
     notifyListeners();
   }
 
   set user(UserProfile? newProfile) {
+    ///Request device token only if user is logged in and just opened app
+    if (newProfile != null && _user == null) {
+      refreshFcmToken();
+    }
     _user = newProfile;
-    refreshFcmToken();
     notifyListeners();
   }
 
