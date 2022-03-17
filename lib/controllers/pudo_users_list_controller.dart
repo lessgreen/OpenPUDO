@@ -61,9 +61,10 @@ class _PudoUsersListControllerState extends State<PudoUsersListController> {
     return Consumer<CurrentUser>(
       builder: (context, currentUser, _) => FutureBuilder<void>(
         future: _getUsers(),
-        builder: (context, snapshot) => Material(
-          child: CupertinoPageScaffold(
-            navigationBar: CupertinoNavigationBarFix.build(
+        builder: (context, snapshot) {
+          return SAScaffold(
+            isLoading: NetworkManager.instance.networkActivity,
+            cupertinoBar: CupertinoNavigationBarFix.build(
               context,
               middle: Text(
                 (widget.isOnReceivePack ? 'chooseRecipient' : "yourUsers").localized(context),
@@ -74,54 +75,51 @@ class _PudoUsersListControllerState extends State<PudoUsersListController> {
                 onPressed: () => Navigator.of(context).pop(),
               ),
             ),
-            child: SAScaffold(
-              isLoading: NetworkManager.instance.networkActivity,
-              body: Column(
-                children: [
-                  CupertinoTextField(
-                    placeholder: 'searchByName'.localized(context),
-                    padding: const EdgeInsets.all(Dimension.padding),
-                    prefix: Padding(
-                      padding: const EdgeInsets.only(left: Dimension.padding),
-                      child: Icon(
-                        CupertinoIcons.search,
-                        color: _searchedValue.isEmpty ? AppColors.colorGrey : AppColors.primaryColorDark,
-                      ),
+            body: Column(
+              children: [
+                CupertinoTextField(
+                  placeholder: 'searchByName'.localized(context),
+                  padding: const EdgeInsets.all(Dimension.padding),
+                  prefix: Padding(
+                    padding: const EdgeInsets.only(left: Dimension.padding),
+                    child: Icon(
+                      CupertinoIcons.search,
+                      color: _searchedValue.isEmpty ? AppColors.colorGrey : AppColors.primaryColorDark,
                     ),
-                    placeholderStyle: const TextStyle(color: AppColors.colorGrey),
-                    decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(Dimension.borderRadiusSearch)),
-                    autofocus: false,
-                    textInputAction: TextInputAction.done,
-                    onChanged: (newValue) {
-                      setState(() {
-                        _searchedValue = newValue;
-                      });
+                  ),
+                  placeholderStyle: const TextStyle(color: AppColors.colorGrey),
+                  decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(Dimension.borderRadiusSearch)),
+                  autofocus: false,
+                  textInputAction: TextInputAction.done,
+                  onChanged: (newValue) {
+                    setState(() {
+                      _searchedValue = newValue;
+                    });
+                  },
+                ),
+                const Padding(
+                  padding: EdgeInsets.only(bottom: 8.0),
+                  child: Divider(
+                    height: 1,
+                  ),
+                ),
+                Expanded(
+                  child: RefreshIndicator(
+                    onRefresh: () async {
+                      _usersList = null;
+                      currentUser.triggerReload();
                     },
+                    child: _usersList == null
+                        ? const SizedBox()
+                        : _usersList!.isEmpty
+                            ? const SizedBox()
+                            : _buildUsers(),
                   ),
-                  const Padding(
-                    padding: EdgeInsets.only(bottom: 8.0),
-                    child: Divider(
-                      height: 1,
-                    ),
-                  ),
-                  Expanded(
-                    child: RefreshIndicator(
-                      onRefresh: () async {
-                        _usersList = null;
-                        currentUser.triggerReload();
-                      },
-                      child: _usersList == null
-                          ? const SizedBox()
-                          : _usersList!.isEmpty
-                              ? const SizedBox()
-                              : _buildUsers(),
-                    ),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
-          ),
-        ),
+          );
+        },
       ),
     );
   }

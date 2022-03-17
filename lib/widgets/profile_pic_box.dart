@@ -44,8 +44,7 @@ class ProfilePicBox extends StatelessWidget {
   Widget build(BuildContext context) => Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          InkWell(
-            borderRadius: const BorderRadius.all(Radius.circular(Dimension.borderRadius)),
+          GestureDetector(
             onTap: onTap,
             child: Container(
               width: MediaQuery.of(context).size.width / 3,

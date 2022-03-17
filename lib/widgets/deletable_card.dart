@@ -172,7 +172,7 @@ class DeletableCardState extends State<DeletableCard> with TickerProviderStateMi
               )),
           Positioned(
             right: Dimension.padding,
-            child: InkWell(
+            child: GestureDetector(
               onTap: widget.onDelete,
               child: AnimatedContainer(
                 decoration: BoxDecoration(color: Colors.red.shade400, borderRadius: BorderRadius.circular(Dimension.borderRadiusS), boxShadow: Shadows.baseShadow),

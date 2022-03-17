@@ -56,22 +56,16 @@ class _HomeUserPackagesState extends State<HomeUserPackages> with ConnectionAwar
         return FutureBuilder(
           future: Future.wait(_buildFutures()),
           builder: (context, AsyncSnapshot<List<dynamic>> snapshot) {
-            return Material(
-              child: CupertinoPageScaffold(
-                navigationBar: CupertinoNavigationBarFix.build(
-                  context,
-                  middle: Text(
-                    'defaultTitle'.localized(context, 'general'),
-                    style: Theme.of(context).textTheme.navBarTitle,
-                  ),
-                ),
-                child: SafeArea(
-                  child: SAScaffold(
-                    isLoading: NetworkManager.instance.networkActivity,
-                    body: _buildInitialPage(snapshot.data?[0] ?? false),
-                  ),
+            return SAScaffold(
+              isLoading: NetworkManager.instance.networkActivity,
+              cupertinoBar: CupertinoNavigationBarFix.build(
+                context,
+                middle: Text(
+                  'defaultTitle'.localized(context, 'general'),
+                  style: Theme.of(context).textTheme.navBarTitle,
                 ),
               ),
+              body: _buildInitialPage(snapshot.data?[0] ?? false),
             );
           },
         );

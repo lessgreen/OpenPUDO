@@ -37,9 +37,12 @@ import 'package:qui_green/widgets/pudo_card.dart';
 import 'package:qui_green/widgets/sascaffold.dart';
 
 class RegistrationCompleteController extends StatefulWidget {
-  const RegistrationCompleteController({Key? key, this.pudoDataModel, required this.useCupertinoScaffold, required this.canGoBack}) : super(key: key);
+  const RegistrationCompleteController({
+    Key? key,
+    this.pudoDataModel,
+    required this.canGoBack,
+  }) : super(key: key);
   final PudoProfile? pudoDataModel;
-  final bool useCupertinoScaffold;
   final bool canGoBack;
 
   @override
@@ -49,135 +52,123 @@ class RegistrationCompleteController extends StatefulWidget {
 class _RegistrationCompleteControllerState extends State<RegistrationCompleteController> with ConnectionAware {
   void _showErrorDialog(BuildContext context, dynamic val) => SAAlertDialog.displayAlertWithClose(context, 'genericErrorTitle'.localized(context, 'general'), val);
 
-  Widget _buildPageWithCupertinoScaffold(RegistrationCompleteControllerViewModel viewModel, bool isKeyboardVisible) => CupertinoPageScaffold(
-        resizeToAvoidBottomInset: false,
-        navigationBar: CupertinoNavigationBarFix.build(context,
-            middle: Text(
-              'navBarTitle'.localized(context),
-              style: Theme.of(context).textTheme.navBarTitle,
-            ),
-            leading: widget.canGoBack
-                ? CupertinoNavigationBarBackButton(
-                    color: Colors.white,
-                    onPressed: () => Navigator.of(context).pop(),
-                  )
-                : const SizedBox()),
-        child: _buildBody(viewModel, isKeyboardVisible),
-      );
-
-  Widget _buildPageWithBaseScaffold(RegistrationCompleteControllerViewModel viewModel, bool isKeyboardVisible) => Scaffold(
-        resizeToAvoidBottomInset: false,
-        extendBodyBehindAppBar: false,
-        appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          systemOverlayStyle: SystemUiOverlayStyle.dark,
-          leading: widget.canGoBack
-              ? CupertinoNavigationBarBackButton(
-                  color: AppColors.primaryColorDark,
-                  onPressed: () => Navigator.of(context).pop(),
-                )
-              : const SizedBox(),
+  Widget _buildPageWithCupertinoScaffold(RegistrationCompleteControllerViewModel viewModel, bool isKeyboardVisible) {
+    return SAScaffold(
+      resizeToAvoidBottomInset: false,
+      cupertinoBar: CupertinoNavigationBarFix.build(
+        context,
+        middle: Text(
+          'navBarTitle'.localized(context),
+          style: Theme.of(context).textTheme.navBarTitle,
         ),
-        body: _buildBody(viewModel, isKeyboardVisible),
-      );
+        leading: widget.canGoBack
+            ? CupertinoNavigationBarBackButton(
+                color: Colors.white,
+                onPressed: () => Navigator.of(context).pop(),
+              )
+            : const SizedBox(),
+      ),
+      body: _buildBody(viewModel, isKeyboardVisible),
+    );
+  }
 
-  Widget _buildBody(RegistrationCompleteControllerViewModel viewModel, bool isKeyboardVisible) => SAScaffold(
-        isLoading: NetworkManager.instance.networkActivity,
-        body: SafeArea(
-          child: Stack(
+  Widget _buildBody(RegistrationCompleteControllerViewModel viewModel, bool isKeyboardVisible) {
+    return SafeArea(
+      child: Stack(
+        children: [
+          Positioned(
+            top: 100,
+            left: -40,
+            right: -40,
+            child: Opacity(
+              opacity: 0.2,
+              child: SvgPicture.asset(ImageSrc.doneUserOnboarding),
+            ),
+          ),
+          Column(
             children: [
-              Positioned(
-                top: 100,
-                left: -40,
-                right: -40,
-                child: Opacity(
-                  opacity: 0.2,
-                  child: SvgPicture.asset(ImageSrc.doneUserOnboarding),
+              const SizedBox(
+                height: Dimension.padding,
+              ),
+              Center(
+                child: Text(
+                  'navBarTitle'.localized(context),
+                  style: Theme.of(context).textTheme.headline6,
                 ),
               ),
-              Column(
-                children: [
-                  if (!widget.useCupertinoScaffold)
-                    Center(
-                      child: Text(
-                        'navBarTitle'.localized(context),
-                        style: Theme.of(context).textTheme.headline6,
+              const SizedBox(
+                height: Dimension.padding,
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: Dimension.padding, right: Dimension.padding),
+                child: Text(
+                  'mainLabel'.localized(context),
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.subtitle1Regular,
+                ),
+              ),
+              (widget.pudoDataModel != null)
+                  ? Padding(
+                      padding: const EdgeInsets.only(top: Dimension.paddingL, left: Dimension.padding, right: Dimension.padding),
+                      child: PudoCard(
+                        dataSource: widget.pudoDataModel!,
+                        onTap: () {},
                       ),
+                    )
+                  : const SizedBox(),
+              const SizedBox(height: Dimension.paddingL),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: Dimension.padding),
+                child: Row(
+                  children: [
+                    CupertinoSwitch(
+                      trackColor: Colors.grey.shade200,
+                      activeColor: AppColors.primaryColorDark,
+                      value: viewModel.showNumber,
+                      onChanged: (bool newValue) {
+                        viewModel.updateShowNumberPreference(newValue);
+                      },
                     ),
-                  if (widget.useCupertinoScaffold)
-                    const SizedBox(
-                      height: Dimension.padding,
-                    ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: Dimension.padding, right: Dimension.padding),
-                    child: Text(
-                      'mainLabel'.localized(context),
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.subtitle1Regular,
-                    ),
-                  ),
-                  (widget.pudoDataModel != null)
-                      ? Padding(
-                          padding: const EdgeInsets.only(top: Dimension.paddingL, left: Dimension.padding, right: Dimension.padding),
-                          child: PudoCard(
-                            dataSource: widget.pudoDataModel!,
-                            onTap: () {},
-                          ),
-                        )
-                      : const SizedBox(),
-                  const SizedBox(height: Dimension.paddingL),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: Dimension.padding),
-                    child: Row(
-                      children: [
-                        CupertinoSwitch(
-                          trackColor: Colors.grey.shade200,
-                          activeColor: AppColors.primaryColorDark,
-                          value: viewModel.showNumber,
-                          onChanged: (bool newValue) {
-                            viewModel.updateShowNumberPreference(newValue);
-                          },
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          'allowContact'.localized(context),
+                          style: Theme.of(context).textTheme.captionSwitch,
                         ),
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(
-                              'allowContact'.localized(context),
-                              style: Theme.of(context).textTheme.captionSwitch,
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                  const Spacer(),
-                  if (widget.pudoDataModel != null)
-                    MainButton(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: Dimension.padding,
                       ),
-                      onPressed: () => viewModel.onInstructionsClick(context, widget.pudoDataModel),
-                      text: 'showInstructions'.localized(context),
-                    ),
-                  const SizedBox(height: Dimension.padding),
-                  AnimatedCrossFade(
-                    crossFadeState: isKeyboardVisible ? CrossFadeState.showSecond : CrossFadeState.showFirst,
-                    secondChild: const SizedBox(),
-                    firstChild: MainButton(
-                      onPressed: () => viewModel.onGoHomeClick(context),
-                      text: 'goToHome'.localized(context),
-                    ),
-                    duration: const Duration(milliseconds: 150),
+                    )
+                  ],
+                ),
+              ),
+              const Spacer(),
+              if (widget.pudoDataModel != null)
+                MainButton(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: Dimension.padding,
                   ),
-                ],
+                  onPressed: () => viewModel.onInstructionsClick(context, widget.pudoDataModel),
+                  text: 'showInstructions'.localized(context),
+                ),
+              const SizedBox(height: Dimension.padding),
+              AnimatedCrossFade(
+                crossFadeState: isKeyboardVisible ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+                secondChild: const SizedBox(),
+                firstChild: MainButton(
+                  onPressed: () => viewModel.onGoHomeClick(context),
+                  text: 'goToHome'.localized(context),
+                ),
+                duration: const Duration(milliseconds: 150),
               ),
             ],
           ),
-        ),
-      );
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -189,12 +180,9 @@ class _RegistrationCompleteControllerState extends State<RegistrationCompleteCon
           return KeyboardVisibilityBuilder(
             builder: (context, child, isKeyboardVisible) {
               if (widget.canGoBack) {
-                return widget.useCupertinoScaffold ? _buildPageWithCupertinoScaffold(viewModel!, isKeyboardVisible) : _buildPageWithBaseScaffold(viewModel!, isKeyboardVisible);
+                return _buildPageWithCupertinoScaffold(viewModel!, isKeyboardVisible);
               }
-              return WillPopScope(
-                onWillPop: () async => false,
-                child: widget.useCupertinoScaffold ? _buildPageWithCupertinoScaffold(viewModel!, isKeyboardVisible) : _buildPageWithBaseScaffold(viewModel!, isKeyboardVisible),
-              );
+              return WillPopScope(onWillPop: () async => false, child: _buildPageWithCupertinoScaffold(viewModel!, isKeyboardVisible));
             },
           );
         },

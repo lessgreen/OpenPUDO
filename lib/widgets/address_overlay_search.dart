@@ -68,7 +68,7 @@ class _AddressOverlaySearchState extends State<AddressOverlaySearch> {
           (e) {
             return Material(
               color: Colors.transparent,
-              child: InkWell(
+              child: GestureDetector(
                 onTap: () => widget.onTap(e),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,

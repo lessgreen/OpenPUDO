@@ -53,70 +53,66 @@ class _ContactUsControllerState extends State<ContactUsController> {
       onVisibilityGained: () {
         _formField.requestFocus();
       },
-      child: Material(
-        child: CupertinoPageScaffold(
-          navigationBar: CupertinoNavigationBarFix.build(
-            context,
-            middle: Text(
-              'navTitle'.localized(context),
-              style: Theme.of(context).textTheme.navBarTitle,
-            ),
-            leading: CupertinoNavigationBarBackButton(
-              color: Colors.white,
-              onPressed: () => Navigator.of(context).pop(),
-            ),
+      child: SAScaffold(
+        isLoading: NetworkManager.instance.networkActivity,
+        cupertinoBar: CupertinoNavigationBarFix.build(
+          context,
+          middle: Text(
+            'navTitle'.localized(context),
+            style: Theme.of(context).textTheme.navBarTitle,
           ),
-          child: SAScaffold(
-            isLoading: NetworkManager.instance.networkActivity,
-            body: Padding(
-              padding: const EdgeInsets.all(Dimension.paddingM),
-              child: Form(
-                child: Column(children: [
-                  TextFormField(
-                    focusNode: _formField,
-                    onChanged: (newValue) {
-                      setState(() {
-                        _feedback = newValue;
-                      });
-                    },
-                    maxLines: 10,
-                    decoration: InputDecoration(
-                      hintText: 'contactUsPlaceHolder'.localized(context),
-                      hintStyle: Theme.of(context).textTheme.bodyText2Italic,
-                      border: const OutlineInputBorder(
-                        borderSide: BorderSide(
-                          width: 0.5,
-                          color: AppColors.labelDark,
-                        ),
-                      ),
+          leading: CupertinoNavigationBarBackButton(
+            color: Colors.white,
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+        ),
+        body: Padding(
+          padding: const EdgeInsets.all(Dimension.paddingM),
+          child: Form(
+            child: Column(children: [
+              TextFormField(
+                focusNode: _formField,
+                onChanged: (newValue) {
+                  setState(() {
+                    _feedback = newValue;
+                  });
+                },
+                maxLines: 10,
+                decoration: InputDecoration(
+                  hintText: 'contactUsPlaceHolder'.localized(context),
+                  hintStyle: Theme.of(context).textTheme.bodyText2Italic,
+                  border: const OutlineInputBorder(
+                    borderSide: BorderSide(
+                      width: 0.5,
+                      color: AppColors.labelDark,
                     ),
                   ),
-                  const SizedBox(
-                    height: Dimension.paddingM,
-                  ),
-                  MainButton(
-                    onPressed: () {
-                      NetworkManager.instance.contactUs(_feedback).then(
-                        (value) {
-                          SAAlertDialog.displayAlertWithClose(
-                            context,
-                            'feedbackTitle'.localized(context),
-                            'thanksFeedback'.localized(context),
-                            completion: () {
-                              Navigator.of(context).pop();
-                            },
-                          );
+                ),
+              ),
+              const SizedBox(
+                height: Dimension.paddingM,
+              ),
+              MainButton(
+                onPressed: () {
+                  NetworkManager.instance.contactUs(_feedback).then(
+                    (value) {
+                      SAAlertDialog.displayAlertWithClose(
+                        context,
+                        'feedbackTitle'.localized(context),
+                        'thanksFeedback'.localized(context),
+                        completion: () {
+                          Navigator.of(context).pop();
                         },
-                      ).catchError(
-                        (onError) => SAAlertDialog.displayAlertWithClose(context, 'genericErrorTitle'.localized(context, 'general'), onError),
                       );
                     },
-                    text: 'submitButton'.localized(context),
-                    enabled: _feedback.isEmpty == false,
-                  ),
-                ]),
+                  ).catchError(
+                    (onError) => SAAlertDialog.displayAlertWithClose(context, 'genericErrorTitle'.localized(context, 'general'), onError),
+                  );
+                },
+                text: 'submitButton'.localized(context),
+                enabled: _feedback.isEmpty == false,
               ),
-            ),
+            ]),
           ),
         ),
       ),
