@@ -25,14 +25,14 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:qui_green/commons/alert_dialog.dart';
 import 'package:qui_green/commons/utilities/keyboard_visibility.dart';
-import 'package:qui_green/singletons/network/network_manager.dart';
-import 'package:qui_green/widgets/main_button.dart';
-import 'package:qui_green/view_models/personal_data_controller_viewmodel.dart';
-import 'package:qui_green/widgets/profile_pic_box.dart';
+import 'package:qui_green/commons/utilities/localization.dart';
 import 'package:qui_green/models/pudo_profile.dart';
 import 'package:qui_green/resources/res.dart';
+import 'package:qui_green/singletons/network/network_manager.dart';
+import 'package:qui_green/view_models/personal_data_controller_viewmodel.dart';
+import 'package:qui_green/widgets/main_button.dart';
+import 'package:qui_green/widgets/profile_pic_box.dart';
 import 'package:qui_green/widgets/sascaffold.dart';
-import 'package:qui_green/commons/utilities/localization.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class PersonalDataController extends StatefulWidget {
@@ -92,7 +92,7 @@ class _PersonalDataControllerState extends State<PersonalDataController> with Co
                       height: Dimension.paddingM,
                     ),
                     ProfilePicBox(
-                      onTap: () => viewModel!.pickFile(),
+                      onTap: () => viewModel!.pickFile(context),
                       image: viewModel!.image,
                       title: 'addPhoto'.localized(context),
                     ),

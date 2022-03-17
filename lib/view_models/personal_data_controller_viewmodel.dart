@@ -21,11 +21,10 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:location/location.dart';
 import 'package:provider/provider.dart';
+import 'package:qui_green/commons/utilities/image_picker_helper.dart';
 import 'package:qui_green/commons/utilities/localization.dart';
-import 'package:qui_green/commons/utilities/print_helper.dart';
 import 'package:qui_green/models/pudo_profile.dart';
 import 'package:qui_green/models/user_profile.dart';
 import 'package:qui_green/resources/routes_enum.dart';
@@ -132,16 +131,11 @@ class PersonalDataControllerViewModel extends ChangeNotifier {
     return _locationData;
   }
 
-  pickFile() async {
-    final ImagePicker _picker = ImagePicker();
-    final XFile? result = await _picker.pickImage(source: ImageSource.gallery);
-    if (result != null) {
-      try {
-        File file = File(result.path);
-        image = file;
-      } catch (e) {
-        safePrint(e.toString());
+  pickFile(BuildContext context) async {
+    showImageChoice(context, (value) {
+      if (value != null) {
+        image = value;
       }
-    }
+    });
   }
 }
