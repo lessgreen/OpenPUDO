@@ -83,7 +83,7 @@ class _PackageDeliveredControllerState extends State<PackageDeliveredController>
                   ),
                   TextSpan(
                     text: "${'defaultTitle'.localized(context, 'general')}\n",
-                    style: const TextStyle(color: AppColors.primaryColorDark, fontWeight: FontWeight.w500),
+                    style: Theme.of(context).textTheme.bodyTextItalicBoldAccent,
                   ),
                   TextSpan(
                     text: 'secondaryLabel'.localized(context),

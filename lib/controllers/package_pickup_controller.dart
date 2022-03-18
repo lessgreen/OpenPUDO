@@ -134,7 +134,7 @@ class _PackagePickupControllerState extends State<PackagePickupController> {
                         ),
                         TextSpan(
                           text: 'defaultTitle'.localized(context, 'general'),
-                          style: const TextStyle(color: AppColors.primaryColorDark),
+                          style: Theme.of(context).textTheme.bodyTextAccent,
                         ),
                       ],
                     ),

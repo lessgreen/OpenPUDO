@@ -119,7 +119,7 @@ class _PackageReceivedControllerState extends State<PackageReceivedController> {
                   placeholder: 'placeHolderNotes'.localized(context),
                   padding: const EdgeInsets.all(Dimension.padding),
                   prefixMode: OverlayVisibilityMode.always,
-                  placeholderStyle: const TextStyle(color: AppColors.colorGrey),
+                  placeholderStyle: Theme.of(context).textTheme.bodyTextSecondary,
                   controller: _notesController,
                   decoration: BoxDecoration(
                     color: Colors.white,

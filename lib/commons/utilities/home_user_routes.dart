@@ -71,6 +71,7 @@ dynamic homeUserRouteWithSetting(RouteSettings settings) {
     case Routes.registrationComplete:
       return PageRouteHelper.buildPage(
         RegistrationCompleteController(
+          useCupertinoScaffold: true,
           pudoDataModel: settings.arguments as PudoProfile,
           canGoBack: true,
         ),

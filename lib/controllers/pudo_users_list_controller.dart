@@ -25,6 +25,7 @@ import 'package:qui_green/commons/alert_dialog.dart';
 import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
 import 'package:qui_green/commons/ui/cupertino_navigation_bar_fix.dart';
 import 'package:qui_green/commons/ui/custom_network_image.dart';
+import 'package:qui_green/commons/utilities/localization.dart';
 import 'package:qui_green/commons/utilities/network_error_helper.dart';
 import 'package:qui_green/models/user_profile.dart';
 import 'package:qui_green/models/user_summary.dart';
@@ -34,7 +35,6 @@ import 'package:qui_green/singletons/current_user.dart';
 import 'package:qui_green/singletons/network/network_manager.dart';
 import 'package:qui_green/widgets/sascaffold.dart';
 import 'package:qui_green/widgets/table_view_cell.dart';
-import 'package:qui_green/commons/utilities/localization.dart';
 
 class PudoUsersListController extends StatefulWidget {
   const PudoUsersListController({Key? key, this.isOnReceivePack = false}) : super(key: key);
@@ -87,7 +87,7 @@ class _PudoUsersListControllerState extends State<PudoUsersListController> {
                       color: _searchedValue.isEmpty ? AppColors.colorGrey : AppColors.primaryColorDark,
                     ),
                   ),
-                  placeholderStyle: const TextStyle(color: AppColors.colorGrey),
+                  placeholderStyle: Theme.of(context).textTheme.bodyTextSecondary,
                   decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(Dimension.borderRadiusSearch)),
                   autofocus: false,
                   textInputAction: TextInputAction.done,

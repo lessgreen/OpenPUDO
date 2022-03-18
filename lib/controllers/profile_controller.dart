@@ -193,7 +193,7 @@ class _ProfileControllerState extends State<ProfileController> with ConnectionAw
                                     MaterialButton(
                                       child: Text(
                                         'viewData'.localized(context),
-                                        style: const TextStyle(color: AppColors.primaryColorDark),
+                                        style: Theme.of(context).textTheme.bodyTextAccent,
                                       ),
                                       onPressed: () {
                                         launch(value).then((value) {
@@ -398,7 +398,7 @@ class _ProfileControllerState extends State<ProfileController> with ConnectionAw
         MaterialButton(
           child: Text(
             'deleteAccountButton'.localized(context),
-            style: const TextStyle(color: AppColors.primaryColorDark),
+            style: Theme.of(context).textTheme.bodyTextAccent,
           ),
           onPressed: () => acceptCallback?.call(),
         ),

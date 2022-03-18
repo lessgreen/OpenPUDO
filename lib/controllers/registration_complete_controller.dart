@@ -20,7 +20,6 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:qui_green/commons/alert_dialog.dart';
@@ -37,13 +36,10 @@ import 'package:qui_green/widgets/pudo_card.dart';
 import 'package:qui_green/widgets/sascaffold.dart';
 
 class RegistrationCompleteController extends StatefulWidget {
-  const RegistrationCompleteController({
-    Key? key,
-    this.pudoDataModel,
-    required this.canGoBack,
-  }) : super(key: key);
+  const RegistrationCompleteController({Key? key, this.pudoDataModel, required this.canGoBack, required this.useCupertinoScaffold}) : super(key: key);
   final PudoProfile? pudoDataModel;
   final bool canGoBack;
+  final bool useCupertinoScaffold;
 
   @override
   _RegistrationCompleteControllerState createState() => _RegistrationCompleteControllerState();
@@ -55,18 +51,34 @@ class _RegistrationCompleteControllerState extends State<RegistrationCompleteCon
   Widget _buildPageWithCupertinoScaffold(RegistrationCompleteControllerViewModel viewModel, bool isKeyboardVisible) {
     return SAScaffold(
       resizeToAvoidBottomInset: false,
-      cupertinoBar: CupertinoNavigationBarFix.build(
-        context,
-        middle: Text(
-          'navBarTitle'.localized(context),
-          style: Theme.of(context).textTheme.navBarTitle,
-        ),
+      cupertinoBar: widget.useCupertinoScaffold
+          ? CupertinoNavigationBarFix.build(
+              context,
+              middle: Text(
+                'navBarTitle'.localized(context),
+                style: Theme.of(context).textTheme.navBarTitle,
+              ),
+              leading: widget.canGoBack
+                  ? CupertinoNavigationBarBackButton(
+                      color: Colors.white,
+                      onPressed: () => Navigator.of(context).pop(),
+                    )
+                  : const SizedBox(),
+            )
+          : null,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
         leading: widget.canGoBack
             ? CupertinoNavigationBarBackButton(
-                color: Colors.white,
+                color: AppColors.primaryColorDark,
                 onPressed: () => Navigator.of(context).pop(),
               )
             : const SizedBox(),
+        centerTitle: true,
+        title: Text(
+          'navBarTitle'.localized(context),
+          style: Theme.of(context).textTheme.navBarTitleDark,
+        ),
       ),
       body: _buildBody(viewModel, isKeyboardVisible),
     );
@@ -90,15 +102,6 @@ class _RegistrationCompleteControllerState extends State<RegistrationCompleteCon
               const SizedBox(
                 height: Dimension.padding,
               ),
-              Center(
-                child: Text(
-                  'navBarTitle'.localized(context),
-                  style: Theme.of(context).textTheme.headline6,
-                ),
-              ),
-              const SizedBox(
-                height: Dimension.padding,
-              ),
               const SizedBox(
                 height: 10,
               ),
@@ -113,36 +116,49 @@ class _RegistrationCompleteControllerState extends State<RegistrationCompleteCon
               (widget.pudoDataModel != null)
                   ? Padding(
                       padding: const EdgeInsets.only(top: Dimension.paddingL, left: Dimension.padding, right: Dimension.padding),
-                      child: PudoCard(
-                        dataSource: widget.pudoDataModel!,
-                        onTap: () {},
-                      ),
+                      child: FutureBuilder(
+                          future: NetworkManager.instance.getPudoDetails(pudoId: widget.pudoDataModel!.pudoId.toString()),
+                          builder: (context, value) {
+                            if (value.hasData && value.data is PudoProfile && !value.hasError) {
+                              viewModel.pudoModel = value.data as PudoProfile;
+                            }
+                            return AnimatedCrossFade(
+                                firstChild: PudoCard(
+                                  dataSource: widget.pudoDataModel!,
+                                  onTap: () {},
+                                  showCustomizedAddress: true,
+                                ),
+                                secondChild: PudoCard(
+                                  dataSource: value.data as PudoProfile,
+                                  onTap: () {},
+                                  showCustomizedAddress: true,
+                                ),
+                                crossFadeState: value.hasData && value.data is PudoProfile && !value.hasError ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+                                duration: const Duration(milliseconds: 150));
+                          }),
                     )
                   : const SizedBox(),
               const SizedBox(height: Dimension.paddingL),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: Dimension.padding),
-                child: Row(
-                  children: [
-                    CupertinoSwitch(
+                child: Row(children: [
+                  CupertinoSwitch(
                       trackColor: Colors.grey.shade200,
                       activeColor: AppColors.primaryColorDark,
                       value: viewModel.showNumber,
                       onChanged: (bool newValue) {
                         viewModel.updateShowNumberPreference(newValue);
-                      },
-                    ),
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(
-                          'allowContact'.localized(context),
-                          style: Theme.of(context).textTheme.captionSwitch,
-                        ),
+                      }),
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        'allowContact'.localized(context),
+                        style: Theme.of(context).textTheme.captionSwitch,
                       ),
-                    )
-                  ],
-                ),
+                    ),
+                  )
+                ]),
               ),
               const Spacer(),
               if (widget.pudoDataModel != null)

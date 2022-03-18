@@ -27,9 +27,15 @@ extension AdditionalTextTheme on TextTheme {
 
   TextStyle? get navBarTitleDark => headline6?.copyWith(color: CupertinoColors.label, fontWeight: FontWeight.w400);
 
+  TextStyle? get headline6Bold => headline6?.copyWith(fontWeight: FontWeight.w500);
+
   TextStyle? get bodyTextLight => bodyText1?.copyWith(fontWeight: FontWeight.w300);
 
+  TextStyle? get bodyTextAccent => bodyText1?.copyWith(color: AppColors.accentColor);
+
   TextStyle? get bodyTextLightSecondary => bodyTextLight?.copyWith(color: CupertinoColors.secondaryLabel);
+
+  TextStyle? get bodyTextSecondary => bodyText1?.copyWith(color: CupertinoColors.secondaryLabel);
 
   TextStyle? get bodyTextBold => bodyText1?.copyWith(fontWeight: FontWeight.w500);
 
@@ -57,6 +63,8 @@ extension AdditionalTextTheme on TextTheme {
 
   TextStyle? get bodyText2Italic => bodyText2?.copyWith(fontWeight: FontWeight.w500);
 
+  TextStyle? get bodyText2Light => bodyText2?.copyWith(fontWeight: FontWeight.w300);
+
   TextStyle? get bodyText2White => bodyText2?.copyWith(color: Colors.white);
 
   TextStyle? get captionItalic => caption?.copyWith(fontStyle: FontStyle.italic);
@@ -66,6 +74,8 @@ extension AdditionalTextTheme on TextTheme {
   TextStyle? get captionLightItalic => caption?.copyWith(fontStyle: FontStyle.italic, fontWeight: FontWeight.w300);
 
   TextStyle? get rewardOptionBody => subtitle1?.copyWith(fontSize: 15, fontWeight: FontWeight.w300, letterSpacing: 0);
+
+  TextStyle? get rewardOptionHint => subtitle1?.copyWith(fontSize: 15, fontWeight: FontWeight.w300, letterSpacing: 0, color: Colors.grey, fontStyle: FontStyle.italic);
 
   TextStyle? get subtitle1Bold => subtitle1?.copyWith(fontWeight: FontWeight.w500);
 

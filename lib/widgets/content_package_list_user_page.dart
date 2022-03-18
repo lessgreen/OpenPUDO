@@ -21,6 +21,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
 import 'package:qui_green/commons/utilities/localization.dart';
 import 'package:qui_green/models/package_summary.dart';
 import 'package:qui_green/resources/res.dart';
@@ -62,7 +63,7 @@ class _ContentPackagesListUserPageState extends State<ContentPackagesListUserPag
                             color: viewModel.searchedValue.isEmpty ? AppColors.colorGrey : AppColors.primaryColorDark,
                           ),
                         ),
-                        placeholderStyle: const TextStyle(color: AppColors.colorGrey),
+                        placeholderStyle: Theme.of(context).textTheme.bodyTextSecondary,
                         decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(Dimension.borderRadiusSearch)),
                         autofocus: false,
                         textInputAction: TextInputAction.done,

@@ -104,14 +104,14 @@ class _PudoProfileControllerState extends State<PudoProfileController> with Conn
                     Center(
                       child: Text(
                         currentUser.pudoProfile?.businessName ?? " ",
-                        style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 20),
+                        style: Theme.of(context).textTheme.headline6Bold,
                       ),
                     ),
                     const SizedBox(height: 6),
                     Center(
                       child: Text(
                         '${'userSince'.localized(context)} ${currentUser.pudoProfile?.createTms != null ? DateFormat('dd/MM/yyyy').format(DateTime.parse(currentUser.pudoProfile!.createTms!)) : " "}',
-                        style: const TextStyle(fontWeight: FontWeight.w300, fontSize: 14, color: AppColors.primaryTextColor),
+                        style: Theme.of(context).textTheme.bodyText2Light,
                       ),
                     ),
                     const SizedBox(
@@ -165,7 +165,7 @@ class _PudoProfileControllerState extends State<PudoProfileController> with Conn
                                     MaterialButton(
                                       child: Text(
                                         'viewData'.localized(context),
-                                        style: const TextStyle(color: AppColors.primaryColorDark),
+                                        style: Theme.of(context).textTheme.bodyTextAccent,
                                       ),
                                       onPressed: () {
                                         launch(value).then((value) {
@@ -220,7 +220,7 @@ class _PudoProfileControllerState extends State<PudoProfileController> with Conn
         MaterialButton(
           child: Text(
             'deleteAccountButton'.localized(context),
-            style: const TextStyle(color: AppColors.primaryColorDark),
+            style: Theme.of(context).textTheme.bodyTextAccent,
           ),
           onPressed: () => acceptCallback?.call(),
         ),

@@ -96,7 +96,7 @@ class PudoCard extends StatelessWidget {
                         Text(
                           dataSource.computedAddress ?? "--",
                           maxLines: 2,
-                          style: const TextStyle(fontSize: 12),
+                          style: Theme.of(context).textTheme.bodyText1,
                         ),
                       ],
                     )
@@ -112,7 +112,7 @@ class PudoCard extends StatelessWidget {
                         Text(
                           dataSource.customizedAddress ?? "--",
                           maxLines: 2,
-                          style: const TextStyle(fontSize: 12),
+                          style: Theme.of(context).textTheme.bodyText1,
                         ),
                       ],
                     ),
