@@ -300,6 +300,9 @@
         },
         "NotificationsListControllerState": {
             "navBarTitle": "Notifiche"
+        },
+        "ContentNotificationsPageState": {
+            "noNotifications": "Non ci sono notifiche"
         }
     }
 }

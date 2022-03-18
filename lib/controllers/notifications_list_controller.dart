@@ -45,21 +45,20 @@ class _NotificationsListControllerState extends State<NotificationsListControlle
   @override
   Widget build(BuildContext context) {
     return Consumer<CurrentUser>(
-      builder: (context, currentUser, _) => Material(
-        child: CupertinoPageScaffold(
-          navigationBar: CupertinoNavigationBarFix.build(
-            context,
-            middle: Text(
-              'navBarTitle'.localized(context),
-              style: Theme.of(context).textTheme.navBarTitle,
-            ),
-            leading: CupertinoNavigationBarBackButton(
-              color: Colors.white,
-              onPressed: () => Navigator.of(context).pop(),
-            ),
+      builder: (context, currentUser, _) => SAScaffold(
+        isLoading: NetworkManager.instance.networkActivity,
+        cupertinoBar: CupertinoNavigationBarFix.build(
+          context,
+          middle: Text(
+            'navBarTitle'.localized(context),
+            style: Theme.of(context).textTheme.navBarTitle,
           ),
-          child: SAScaffold(isLoading: NetworkManager.instance.networkActivity, body: const ContentNotificationsPage()),
+          leading: CupertinoNavigationBarBackButton(
+            color: Colors.white,
+            onPressed: () => Navigator.of(context).pop(),
+          ),
         ),
+        body: SafeArea(child: const ContentNotificationsPage()),
       ),
     );
   }

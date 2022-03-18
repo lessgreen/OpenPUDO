@@ -119,21 +119,25 @@ class _RegistrationCompleteControllerState extends State<RegistrationCompleteCon
                       child: FutureBuilder(
                           future: NetworkManager.instance.getPudoDetails(pudoId: widget.pudoDataModel!.pudoId.toString()),
                           builder: (context, value) {
-                            if (value.hasData && value.data is PudoProfile && !value.hasError) {
-                              viewModel.pudoModel = value.data as PudoProfile;
+                            bool state = false;
+                            if (value.hasData) {
+                              if (value.data is PudoProfile) {
+                                viewModel.pudoModel = value.data as PudoProfile;
+                                state = true;
+                              }
                             }
-                            return AnimatedCrossFade(
-                                firstChild: PudoCard(
-                                  dataSource: widget.pudoDataModel!,
-                                  onTap: () {},
-                                  showCustomizedAddress: true,
-                                ),
-                                secondChild: PudoCard(
-                                  dataSource: value.data as PudoProfile,
-                                  onTap: () {},
-                                  showCustomizedAddress: true,
-                                ),
-                                crossFadeState: value.hasData && value.data is PudoProfile && !value.hasError ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+                            return AnimatedSwitcher(
+                                child: state
+                                    ? PudoCard(
+                                        dataSource: value.data as PudoProfile,
+                                        onTap: () {},
+                                        showCustomizedAddress: true,
+                                      )
+                                    : PudoCard(
+                                        dataSource: widget.pudoDataModel!,
+                                        onTap: () {},
+                                        showCustomizedAddress: false,
+                                      ),
                                 duration: const Duration(milliseconds: 150));
                           }),
                     )

@@ -20,6 +20,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:qui_green/commons/utilities/localization.dart';
 import 'package:qui_green/models/openpudo_notification.dart';
 import 'package:qui_green/view_models/content_notifications_page_viewmodel.dart';
 import 'package:qui_green/widgets/deleteble_listview.dart';
@@ -47,20 +48,22 @@ class _ContentNotificationsPageState extends State<ContentNotificationsPage> {
               ? ErrorScreenWidget(
                   description: viewModel.errorDescription,
                 )
-              : DeletableListView<OpenPudoNotification>(
-                  controller: viewModel.scrollController,
-                  rowHeight: 76,
-                  idGetter: (value) => value.notificationId,
-                  items: viewModel.availableNotifications,
-                  itemPadding: EdgeInsets.zero,
-                  horizontalPadding: 0,
-                  borderRadius: BorderRadius.zero,
-                  itemBuilder: (value) => NotificationTile(onTap: (val) => viewModel.onNotificationTile(val), notification: value),
-                  showAlertOnDelete: false,
-                  onDelete: (value) => viewModel.onNotificationDelete(value),
-                  alertDeleteText: "",
-                  hasScrollBar: true,
-                ),
+              : viewModel.availableNotifications.isEmpty
+                  ? Center(child: Text("noNotifications".localized(context)))
+                  : DeletableListView<OpenPudoNotification>(
+                      controller: viewModel.scrollController,
+                      rowHeight: 76,
+                      idGetter: (value) => value.notificationId,
+                      items: viewModel.availableNotifications,
+                      itemPadding: EdgeInsets.zero,
+                      horizontalPadding: 0,
+                      borderRadius: BorderRadius.zero,
+                      itemBuilder: (value) => NotificationTile(onTap: (val) => viewModel.onNotificationTile(val), notification: value),
+                      showAlertOnDelete: false,
+                      onDelete: (value) => viewModel.onNotificationDelete(value),
+                      alertDeleteText: "",
+                      hasScrollBar: true,
+                    ),
         );
       }),
     );
