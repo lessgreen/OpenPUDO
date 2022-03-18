@@ -29,6 +29,7 @@ import 'package:qui_green/singletons/network/network_manager.dart';
 import 'package:qui_green/widgets/content_package_page.dart';
 import 'package:qui_green/widgets/no_packages_widget.dart';
 import 'package:qui_green/widgets/no_pudos_widget.dart';
+import 'package:qui_green/widgets/notification_badge.dart';
 import 'package:qui_green/widgets/sascaffold.dart';
 
 class HomeUserPackages extends StatefulWidget {
@@ -58,13 +59,12 @@ class _HomeUserPackagesState extends State<HomeUserPackages> with ConnectionAwar
           builder: (context, AsyncSnapshot<List<dynamic>> snapshot) {
             return Material(
               child: CupertinoPageScaffold(
-                navigationBar: CupertinoNavigationBarFix.build(
-                  context,
-                  middle: Text(
-                    'defaultTitle'.localized(context, 'general'),
-                    style: Theme.of(context).textTheme.navBarTitle,
-                  ),
-                ),
+                navigationBar: CupertinoNavigationBarFix.build(context,
+                    middle: Text(
+                      'defaultTitle'.localized(context, 'general'),
+                      style: Theme.of(context).textTheme.navBarTitle,
+                    ),
+                    trailing: const NotificationBadge()),
                 child: SafeArea(
                   child: SAScaffold(
                     isLoading: NetworkManager.instance.networkActivity,

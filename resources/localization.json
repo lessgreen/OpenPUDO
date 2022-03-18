@@ -295,6 +295,13 @@
             "submitButton": "Invia",
             "thanksFeedback": "Grazie per la segnalazione! Ti contatteremo al più presto.",
             "feedbackTitle": "Grazie"
+        },
+        "NotificationsListControllerState": {
+            "navBarTitle": "Notifiche",
+            "userSince": "Utente dal ",
+            "phoneCallAction": "Chiama al telefono",
+            "sendSMS": "Invia un messaggio",
+            "sendWhatsApp": "Invia un WhatsApp"
         }
     }
 }

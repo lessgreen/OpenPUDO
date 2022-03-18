@@ -35,6 +35,14 @@ class CurrentUser with ChangeNotifier {
   PudoProfile? _pudo;
   SharedPreferences? sharedPreferences;
   Function(String) pushPage;
+  int _unreadNotifications = 0;
+
+  set unreadNotifications(int newVal) {
+    _unreadNotifications = newVal;
+    notifyListeners();
+  }
+
+  int get unreadNotifications => _unreadNotifications;
 
   CurrentUser(this.sharedPreferences, {required this.pushPage}) {
     _refreshToken();
@@ -55,6 +63,7 @@ class CurrentUser with ChangeNotifier {
                 if (profile != null) {
                   user = profile;
                   pushPage(Routes.home);
+                  getUnreadNotifications();
                 }
               }).catchError((onError) {
                 user = null;
@@ -67,6 +76,7 @@ class CurrentUser with ChangeNotifier {
                 if (profile != null) {
                   pudoProfile = profile;
                   pushPage(Routes.pudoHome);
+                  getUnreadNotifications();
                 }
               }).catchError((onError) {
                 pudoProfile = null;
@@ -184,5 +194,13 @@ class CurrentUser with ChangeNotifier {
         },
       );
     });
+  }
+
+  void getUnreadNotifications() {
+    NetworkManager.instance.getNotificationsCount().then((value) {
+      if (value is int) {
+        unreadNotifications = value;
+      }
+    }).catchError((onError) => safePrint(onError));
   }
 }

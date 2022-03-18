@@ -11,8 +11,12 @@ OpenPudoNotification _$OpenPudoNotificationFromJson(
     OpenPudoNotification(
       notificationId: json['notificationId'] as int,
       userId: json['userId'] as int?,
-      createTms: json['createTms'] as String?,
-      readTms: json['readTms'] as String?,
+      createTms: json['createTms'] == null
+          ? null
+          : DateTime.parse(json['createTms'] as String),
+      readTms: json['readTms'] == null
+          ? null
+          : DateTime.parse(json['readTms'] as String),
       title: json['title'] as String?,
       message: json['message'] as String?,
       optData: json['optData'] == null
@@ -26,8 +30,8 @@ Map<String, dynamic> _$OpenPudoNotificationToJson(
     <String, dynamic>{
       'notificationId': instance.notificationId,
       'userId': instance.userId,
-      'createTms': instance.createTms,
-      'readTms': instance.readTms,
+      'createTms': instance.createTms?.toIso8601String(),
+      'readTms': instance.readTms?.toIso8601String(),
       'title': instance.title,
       'message': instance.message,
       'optData': instance.optData,

@@ -48,6 +48,7 @@ dependencies:
   focus_detector: ^2.0.1
   transparent_image: ^2.0.0
   vibration: ^1.7.4-nullsafety.0
+  badges: ^2.0.2
 
 dev_dependencies:
   build_runner: ^2.0.3

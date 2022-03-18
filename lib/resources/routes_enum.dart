@@ -54,4 +54,5 @@ class Routes {
   static const profileEdit = "/profileEdit";
   static const packageDeliveryDone = "/packageDeliveryDone";
   static const contactUs = "/contactUs";
+  static const notificationsList = "/notificationsList";
 }

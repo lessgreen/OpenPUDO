@@ -15,18 +15,30 @@ class DeletableListView<T> extends StatefulWidget {
   final String alertDeleteText;
   final bool hasScrollBar;
   final TextStyle? titleStyle;
+  final bool showAlertOnDelete;
+  final double rowHeight;
+  final double horizontalPadding;
+  final BorderRadius borderRadius;
+  final EdgeInsets? itemPadding;
+  final ScrollController? controller;
 
-  const DeletableListView({
-    Key? key,
-    required this.itemBuilder,
-    required this.items,
-    required this.idGetter,
-    required this.onDelete,
-    required this.alertDeleteText,
-    this.title,
-    this.titleStyle,
-    this.hasScrollBar = false,
-  }) : super(key: key);
+  const DeletableListView(
+      {Key? key,
+      this.controller,
+      required this.itemBuilder,
+      required this.items,
+      required this.idGetter,
+      required this.onDelete,
+      required this.alertDeleteText,
+      this.title,
+      this.titleStyle,
+      this.hasScrollBar = false,
+      this.showAlertOnDelete = true,
+      this.rowHeight = 100,
+      this.horizontalPadding = Dimension.padding,
+      required this.borderRadius,
+      this.itemPadding})
+      : super(key: key);
 
   @override
   State<DeletableListView> createState() => _DeletableListViewState<T>();
@@ -54,6 +66,7 @@ class _DeletableListViewState<T> extends State<DeletableListView<T>> {
       tilesState = List.generate(widget.items.length, (index) => GlobalKey<DeletableCardState>());
     }
     var _listView = ListView(
+      controller: widget.controller,
       physics: const AlwaysScrollableScrollPhysics(),
       children: [
         if (widget.title != null)
@@ -70,28 +83,37 @@ class _DeletableListViewState<T> extends State<DeletableListView<T>> {
             itemCount: widget.items.length,
             itemBuilder: (BuildContext context, int index) {
               return DeletableCard(
+                itemPadding: widget.itemPadding ?? const EdgeInsets.symmetric(vertical: Dimension.paddingS),
+                borderRadius: widget.borderRadius,
+                horizontalPadding: widget.horizontalPadding,
+                rowHeight: widget.rowHeight,
                 key: tilesState[index],
                 maxWidth: MediaQuery.of(context).size.width / 3,
                 id: widget.idGetter(widget.items[index]),
                 onDelete: () {
-                  SAAlertDialog.displayAlertWithButtons(context, 'warningTitle'.localized(context, 'general'), widget.alertDeleteText, [
-                    MaterialButton(
-                      onPressed: null,
-                      child: Text(
-                        'cancelButtonTitle'.localized(context, 'general'),
-                        style: Theme.of(context).textTheme.dialogButtonRefuse,
-                      ),
-                    ),
-                    MaterialButton(
-                        onPressed: () {
-                          handlingOpenChange();
-                          widget.onDelete(widget.items[index]);
-                        },
+                  if (widget.showAlertOnDelete) {
+                    SAAlertDialog.displayAlertWithButtons(context, 'warningTitle'.localized(context, 'general'), widget.alertDeleteText, [
+                      MaterialButton(
+                        onPressed: null,
                         child: Text(
-                          'Ok',
-                          style: Theme.of(context).textTheme.dialogButtonAccept,
-                        )),
-                  ]);
+                          'cancelButtonTitle'.localized(context, 'general'),
+                          style: Theme.of(context).textTheme.dialogButtonRefuse,
+                        ),
+                      ),
+                      MaterialButton(
+                          onPressed: () {
+                            handlingOpenChange();
+                            widget.onDelete(widget.items[index]);
+                          },
+                          child: Text(
+                            'Ok',
+                            style: Theme.of(context).textTheme.dialogButtonAccept,
+                          )),
+                    ]);
+                  } else {
+                    handlingOpenChange();
+                    widget.onDelete(widget.items[index]);
+                  }
                 },
                 onOpenStateChange: () => handlingOpenChange(),
                 openedId: openedTile,

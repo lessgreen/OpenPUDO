@@ -29,6 +29,7 @@ import 'package:qui_green/commons/utilities/localization.dart';
 import 'package:qui_green/resources/res.dart';
 import 'package:qui_green/resources/routes_enum.dart';
 import 'package:qui_green/singletons/network/network_manager.dart';
+import 'package:qui_green/widgets/notification_badge.dart';
 import 'package:qui_green/widgets/table_view_cell.dart';
 
 class PudoMainController extends StatefulWidget {
@@ -49,6 +50,7 @@ class _PudoMainControllerState extends State<PudoMainController> with Connection
             'defaultTitle'.localized(context, 'general'),
             style: Theme.of(context).textTheme.navBarTitle,
           ),
+          trailing: const NotificationBadge(),
         ),
         child: SafeArea(
             child: Column(

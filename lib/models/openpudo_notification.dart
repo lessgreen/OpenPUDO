@@ -26,8 +26,8 @@ part 'openpudo_notification.g.dart';
 class OpenPudoNotification {
   final int notificationId;
   int? userId;
-  String? createTms;
-  String? readTms;
+  DateTime? createTms;
+  DateTime? readTms;
   String? title;
   String? message;
   NotificationOptData? optData;
@@ -41,12 +41,32 @@ class OpenPudoNotification {
     this.message,
     this.optData,
   });
+
   factory OpenPudoNotification.fromJson(Map<String, dynamic> json) => _$OpenPudoNotificationFromJson(json);
+
   Map<String, dynamic> toJson() => _$OpenPudoNotificationToJson(this);
 
   bool get isRead {
     return readTms != null;
   }
+
+  OpenPudoNotification copyWith({
+    int? notificationId,
+    int? userId,
+    DateTime? createTms,
+    DateTime? readTms,
+    String? title,
+    String? message,
+    NotificationOptData? optData,
+  }) =>
+      OpenPudoNotification(
+          notificationId: notificationId ?? this.notificationId,
+          userId: userId ?? this.userId,
+          createTms: createTms ?? this.createTms,
+          readTms: readTms ?? this.readTms,
+          title: title ?? this.title,
+          message: message ?? this.message,
+          optData: optData ?? this.optData);
 }
 
 enum NotificationType {
@@ -71,6 +91,8 @@ class NotificationOptData {
     this.pudoId,
     this.packageId,
   });
+
   factory NotificationOptData.fromJson(Map<String, dynamic> json) => _$NotificationOptDataFromJson(json);
+
   Map<String, dynamic> toJson() => _$NotificationOptDataToJson(this);
 }
