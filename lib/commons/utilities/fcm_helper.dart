@@ -6,6 +6,7 @@ import 'package:qui_green/app.dart';
 import 'package:qui_green/commons/alert_dialog.dart';
 import 'package:qui_green/commons/extensions/trace_reflection.dart';
 import 'package:qui_green/commons/utilities/print_helper.dart';
+import 'package:qui_green/models/base_response.dart';
 import 'package:qui_green/models/package_summary.dart';
 import 'package:qui_green/models/pudo_package.dart';
 import 'package:qui_green/models/user_profile.dart';
@@ -46,11 +47,11 @@ Future<void> firebaseMessagingHandler(Function contextGetter, RemoteMessage? mes
     if (message.data.containsKey("notificationType")) {
       if (message.data["notificationType"] == "package") {
         if (message.data.containsKey("packageId")) {
-          handlePackageRouting(contextGetter(), int.parse(message.data["packageId"]));
+          handlePackageRouting(contextGetter(), message.data['notificationId'], int.parse(message.data["packageId"]));
         }
       } else if (message.data["notifitcationType"] == "favourite") {
         if (message.data.containsKey("userId")) {
-          handleUserRouting(contextGetter(), int.parse(message.data["userId"]));
+          handleUserRouting(contextGetter(), message.data['notificationId'], int.parse(message.data["userId"]));
         }
       }
     }
@@ -67,6 +68,7 @@ Future<void> firebaseMessagingOpenedAppHandler(Function contextGetter, RemoteMes
         currentUser.triggerReload();
       }
     }
+    currentUser.unreadNotifications++;
 
     /// Show material banner
     ScaffoldMessenger.of(contextGetter()).showMaterialBanner(MaterialBanner(
@@ -77,11 +79,11 @@ Future<void> firebaseMessagingOpenedAppHandler(Function contextGetter, RemoteMes
             if (message.data.containsKey("notificationType")) {
               if (message.data["notificationType"] == "package") {
                 if (message.data.containsKey("packageId")) {
-                  handlePackageRouting(contextGetter(), int.parse(message.data["packageId"]));
+                  handlePackageRouting(contextGetter(), message.data['notificationId'], int.parse(message.data["packageId"]));
                 }
               } else if (message.data["notifitcationType"] == "favourite") {
                 if (message.data.containsKey("userId")) {
-                  handleUserRouting(contextGetter(), int.parse(message.data["userId"]));
+                  handleUserRouting(contextGetter(), message.data['notificationId'], int.parse(message.data["userId"]));
                 }
               }
             }
@@ -97,7 +99,12 @@ Future<void> firebaseMessagingOpenedAppHandler(Function contextGetter, RemoteMes
   }
 }
 
-void handlePackageRouting(BuildContext context, int packageId) {
+void handlePackageRouting(BuildContext context, String notificationId, int packageId) {
+  NetworkManager.instance.markNotificationAsRead(notificationId: int.parse(notificationId)).then((value) {
+    if (value is OPBaseResponse) {
+      Provider.of<CurrentUser>(context, listen: false).getUnreadNotifications();
+    }
+  });
   NetworkManager.instance.getPackageDetails(packageId: packageId).then(
     (response) async {
       if (response is PudoPackage) {
@@ -123,7 +130,12 @@ void handlePackageRouting(BuildContext context, int packageId) {
   ).catchError((onError) => SAAlertDialog.displayAlertWithClose(context, "Error", onError));
 }
 
-void handleUserRouting(BuildContext context, int userId) {
+void handleUserRouting(BuildContext context, String notificationId, int userId) {
+  NetworkManager.instance.markNotificationAsRead(notificationId: int.parse(notificationId)).then((value) {
+    if (value is OPBaseResponse) {
+      Provider.of<CurrentUser>(context, listen: false).getUnreadNotifications();
+    }
+  });
   NetworkManager.instance.getUserProfile(userId: userId).then(
     (response) async {
       if (response is UserProfile) {

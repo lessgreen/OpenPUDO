@@ -18,6 +18,8 @@
  If not, see <https://github.com/lessgreen/OpenPUDO>.
 */
 
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -122,6 +124,7 @@ class _ConfirmPhoneControllerState extends State<ConfirmPhoneController> with Co
                       decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Theme.of(context).primaryColor))),
                       autofocus: false,
                       focusNode: _confirmValueFocus,
+                      autofillHints: Platform.isIOS ? const [AutofillHints.oneTimeCode] : null,
                       suffix: TextFieldButton(
                         onPressed: () {
                           setState(() {

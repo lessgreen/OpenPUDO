@@ -34,6 +34,11 @@ class SAScaffold extends StatelessWidget {
   final ValueNotifier? isLoading;
   final bool extendBodyBehindAppBar;
 
+  ///Note: This force the body of the cupertino scaffold to be wrapped in a material scaffold,
+  ///      this enables us to use the capabilities of the material banner (which we use for showing
+  ///      the user the notification while the app is in the foreground
+  final bool useInternalScaffold;
+
   const SAScaffold(
       {Key? key,
       this.backgroundColor,
@@ -45,7 +50,8 @@ class SAScaffold extends StatelessWidget {
       this.floatingActionButton,
       this.floatingActionButtonLocation,
       this.isLoading,
-      this.extendBodyBehindAppBar = false})
+      this.extendBodyBehindAppBar = false,
+      this.useInternalScaffold = false})
       : super(key: key);
 
   @override
@@ -63,7 +69,7 @@ class SAScaffold extends StatelessWidget {
                           resizeToAvoidBottomInset: resizeToAvoidBottomInset ?? true,
                           navigationBar: cupertinoBar,
                           backgroundColor: backgroundColor,
-                          child: body,
+                          child: useInternalScaffold ? Scaffold(body: body) : body,
                         )
                       : Scaffold(
                           extendBodyBehindAppBar: extendBodyBehindAppBar,

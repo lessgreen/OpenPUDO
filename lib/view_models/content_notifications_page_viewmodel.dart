@@ -94,6 +94,7 @@ class ContentNotificationsPageViewModel with ChangeNotifier {
           int index = _availableNotifications.indexWhere((element) => element.notificationId == notification.notificationId);
           if (index > -1) {
             _availableNotifications[index] = notification.copyWith(readTms: DateTime.now());
+            Provider.of<CurrentUser>(context, listen: false).unreadNotifications--;
             notifyListeners();
           }
         }
