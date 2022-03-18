@@ -88,10 +88,10 @@ public class ExternalFileService {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {
             long startTime = System.nanoTime();
-            if (original.getWidth() > 1200) {
+            if (original.getWidth() >= 1200) {
                 Thumbnails.of(original).width(1200).outputFormat("jpg").outputQuality(0.6).toOutputStream(baos);
             } else {
-                Thumbnails.of(original).outputFormat("jpg").outputQuality(0.6).toOutputStream(baos);
+                Thumbnails.of(original).width(original.getWidth()).outputFormat("jpg").outputQuality(0.6).toOutputStream(baos);
             }
             long endTime = System.nanoTime();
             log.info("[{}] Image compressed to {}% of original size in {}", context.getExecutionId(),
