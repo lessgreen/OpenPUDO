@@ -80,6 +80,7 @@ class ContentNotificationsPageViewModel with ChangeNotifier {
     NetworkManager.instance.deleteNotification(notificationId: notification.notificationId).then((value) {
       if (value is OPBaseResponse) {
         _availableNotifications.removeWhere((element) => element.notificationId == notification.notificationId);
+        Provider.of<CurrentUser>(context, listen: false).unreadNotifications--;
         notifyListeners();
       } else {
         ///Show error
