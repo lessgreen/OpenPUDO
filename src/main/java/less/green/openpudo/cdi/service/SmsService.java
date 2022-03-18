@@ -39,7 +39,6 @@ public class SmsService {
             if (res.getStatus() != 200) {
                 throw new RuntimeException("Sms service returned: " + res.getStatus() + " " + res.getStatusText() + " - " + res.getBody().toString());
             }
-            log.info(res.getBody().toString());
         } catch (UnirestException ex) {
             throw new RuntimeException("Sms service unavailable", ex);
         }
