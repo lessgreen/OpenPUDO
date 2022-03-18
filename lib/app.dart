@@ -26,6 +26,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:qui_green/commons/ui/base_theme.dart';
+import 'package:qui_green/commons/utilities/fcm_helper.dart';
 import 'package:qui_green/commons/utilities/localization.dart';
 import 'package:qui_green/commons/utilities/routes.dart';
 import 'package:qui_green/resources/app_config.dart';
@@ -51,6 +52,7 @@ void mainCommon({required String host, required bool isProd}) async {
     overlays: [SystemUiOverlay.bottom],
   );
   await Firebase.initializeApp();
+  initFirebaseMessaging();
   SystemChrome.setSystemUIOverlayStyle(
     SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,

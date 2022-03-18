@@ -25,9 +25,11 @@ import 'package:provider/provider.dart';
 import 'package:qui_green/commons/alert_dialog.dart';
 import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
 import 'package:qui_green/commons/ui/cupertino_navigation_bar_fix.dart';
+import 'package:qui_green/commons/utilities/localization.dart';
 import 'package:qui_green/commons/utilities/network_error_helper.dart';
 import 'package:qui_green/models/pudo_profile.dart';
 import 'package:qui_green/models/pudo_summary.dart';
+import 'package:qui_green/resources/res.dart';
 import 'package:qui_green/resources/routes_enum.dart';
 import 'package:qui_green/singletons/current_user.dart';
 import 'package:qui_green/singletons/network/network_manager.dart';
@@ -35,7 +37,6 @@ import 'package:qui_green/widgets/deleteble_listview.dart';
 import 'package:qui_green/widgets/no_pudos_widget.dart';
 import 'package:qui_green/widgets/pudo_card.dart';
 import 'package:qui_green/widgets/sascaffold.dart';
-import 'package:qui_green/commons/utilities/localization.dart';
 
 class PudoListController extends StatefulWidget {
   final bool isRootController;
@@ -96,6 +97,7 @@ class _PudoListControllerState extends State<PudoListController> {
 
   Widget _buildPudos() {
     return DeletableListView<PudoSummary>(
+      borderRadius: BorderRadius.circular(Dimension.borderRadiusS),
       hasScrollBar: true,
       items: dataSource ?? [],
       itemBuilder: (PudoSummary pudo) {

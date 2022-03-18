@@ -76,10 +76,11 @@ class _PudoHomeControllerState extends State<PudoHomeController> with Connection
           )
         ];
       });
-      initFirebaseMessaging().then((value) => WidgetsBinding.instance!.addPostFrameCallback((_) {
-            _handleInitialMessage(_controllers.first.tabView.navigatorKey!.currentContext!);
-            _handleMessages(_controllers.first.tabView.navigatorKey!.currentContext!);
-          }));
+
+      WidgetsBinding.instance!.addPostFrameCallback((_) {
+        _handleInitialMessage(_controllers.first.tabView.navigatorKey!.currentContext!);
+        _handleMessages(_controllers.first.tabView.navigatorKey!.currentContext!);
+      });
     });
   }
 
@@ -98,11 +99,11 @@ class _PudoHomeControllerState extends State<PudoHomeController> with Connection
       if (message.data.containsKey("notificationType")) {
         if (message.data["notificationType"] == "package") {
           if (message.data.containsKey("packageId")) {
-            handlePackageRouting(subContext, int.parse(message.data["packageId"]));
+            handlePackageRouting(subContext, message.data['notificationId'], int.parse(message.data["packageId"]));
           }
         } else if (message.data["notifitcationType"] == "favourite") {
           if (message.data.containsKey("userId")) {
-            handleUserRouting(subContext, int.parse(message.data["userId"]));
+            handleUserRouting(subContext, message.data['notificationId'], int.parse(message.data["userId"]));
           }
         }
       }

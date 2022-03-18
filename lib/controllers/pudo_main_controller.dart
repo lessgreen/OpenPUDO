@@ -29,6 +29,8 @@ import 'package:qui_green/commons/utilities/localization.dart';
 import 'package:qui_green/resources/res.dart';
 import 'package:qui_green/resources/routes_enum.dart';
 import 'package:qui_green/singletons/network/network_manager.dart';
+import 'package:qui_green/widgets/notification_badge.dart';
+import 'package:qui_green/widgets/sascaffold.dart';
 import 'package:qui_green/widgets/table_view_cell.dart';
 
 class PudoMainController extends StatefulWidget {
@@ -42,69 +44,67 @@ class _PudoMainControllerState extends State<PudoMainController> with Connection
   @override
   Widget build(BuildContext context) {
     return Material(
-      child: CupertinoPageScaffold(
-        navigationBar: CupertinoNavigationBarFix.build(
+      child: SAScaffold(
+        useInternalScaffold: true,
+        cupertinoBar: CupertinoNavigationBarFix.build(
           context,
           middle: Text(
             'defaultTitle'.localized(context, 'general'),
             style: Theme.of(context).textTheme.navBarTitle,
           ),
+          trailing: const NotificationBadge(),
         ),
-        child: Scaffold(
-          body: SafeArea(
-              child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(
-                height: Dimension.paddingM,
+        body: SafeArea(
+          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            const SizedBox(
+              height: Dimension.paddingM,
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: Dimension.padding),
+              child: Text(
+                'listHeaderTitle'.localized(context),
+                style: Theme.of(context).textTheme.headerTitle,
               ),
-              Padding(
-                padding: const EdgeInsets.only(left: Dimension.padding),
-                child: Text(
-                  'listHeaderTitle'.localized(context),
-                  style: Theme.of(context).textTheme.headerTitle,
-                ),
+            ),
+            TableViewCell(
+              onTap: () => Navigator.of(context).pushNamed(Routes.packageReceived),
+              fullWidth: true,
+              showTopDivider: true,
+              showTrailingChevron: true,
+              title: 'receiveShipment'.localized(context),
+              leading: SvgPicture.asset(
+                ImageSrc.boxFillIcon,
+                color: AppColors.cardColor,
+                width: 36,
+                height: 36,
               ),
-              TableViewCell(
-                onTap: () => Navigator.of(context).pushNamed(Routes.packageReceived),
-                fullWidth: true,
-                showTopDivider: true,
-                showTrailingChevron: true,
-                title: 'receiveShipment'.localized(context),
-                leading: SvgPicture.asset(
-                  ImageSrc.boxFillIcon,
-                  color: AppColors.cardColor,
-                  width: 36,
-                  height: 36,
-                ),
+            ),
+            TableViewCell(
+              onTap: () => Navigator.of(context).pushNamed(Routes.packageDelivered),
+              fullWidth: true,
+              showTrailingChevron: true,
+              title: 'deliverShipment'.localized(context),
+              leading: SvgPicture.asset(
+                ImageSrc.packageDeliveredLeadingIcon,
+                color: AppColors.cardColor,
+                fit: BoxFit.fitHeight,
+                width: 36,
+                height: 36,
               ),
-              TableViewCell(
-                onTap: () => Navigator.of(context).pushNamed(Routes.packageDelivered),
-                fullWidth: true,
-                showTrailingChevron: true,
-                title: 'deliverShipment'.localized(context),
-                leading: SvgPicture.asset(
-                  ImageSrc.packageDeliveredLeadingIcon,
-                  color: AppColors.cardColor,
-                  fit: BoxFit.fitHeight,
-                  width: 36,
-                  height: 36,
-                ),
+            ),
+            TableViewCell(
+              onTap: () => Navigator.of(context).pushNamed(Routes.packagesListWithHistory),
+              fullWidth: true,
+              showTrailingChevron: true,
+              title: 'waitingShipment'.localized(context),
+              leading: SvgPicture.asset(
+                ImageSrc.waitingPackage,
+                color: AppColors.cardColor,
+                width: 36,
+                height: 36,
               ),
-              TableViewCell(
-                onTap: () => Navigator.of(context).pushNamed(Routes.packagesListWithHistory),
-                fullWidth: true,
-                showTrailingChevron: true,
-                title: 'waitingShipment'.localized(context),
-                leading: SvgPicture.asset(
-                  ImageSrc.waitingPackage,
-                  color: AppColors.cardColor,
-                  width: 36,
-                  height: 36,
-                ),
-              )
-            ],
-          )),
+            )
+          ]),
         ),
       ),
     );

@@ -33,6 +33,7 @@ class TableViewCell extends StatelessWidget {
   final bool showTopDivider;
   final bool fullWidth;
   final double leadingWidth;
+  final EdgeInsets dividerPadding;
 
   const TableViewCell(
       {Key? key,
@@ -44,7 +45,8 @@ class TableViewCell extends StatelessWidget {
       this.onTap,
       this.showTopDivider = false,
       this.fullWidth = false,
-      this.leadingWidth = 30})
+      this.leadingWidth = 30,
+      this.dividerPadding = const EdgeInsets.only(top: 8)})
       : super(key: key);
 
   @override
@@ -101,9 +103,9 @@ class TableViewCell extends StatelessWidget {
               ],
             ),
           ),
-          const Padding(
-            padding: EdgeInsets.only(top: 8.0),
-            child: Divider(
+          Padding(
+            padding: dividerPadding,
+            child: const Divider(
               height: 1,
             ),
           ),

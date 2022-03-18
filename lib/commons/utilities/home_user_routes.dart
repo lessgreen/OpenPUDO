@@ -29,6 +29,7 @@ import 'package:qui_green/commons/utilities/page_route_helper.dart';
 import 'package:qui_green/controllers/contact_us_controller.dart';
 import 'package:qui_green/controllers/error_controller.dart';
 import 'package:qui_green/controllers/instruction_controller.dart';
+import 'package:qui_green/controllers/notifications_list_controller.dart';
 import 'package:qui_green/controllers/onboarding/insert_address_controller.dart';
 import 'package:qui_green/controllers/onboarding/map_controller.dart';
 import 'package:qui_green/controllers/package_pickup_controller.dart';
@@ -48,6 +49,8 @@ dynamic homeUserRouteWithSetting(RouteSettings settings) {
     AnalyticsHelper.logPageChange((settings.name ?? 'mainUser').replaceAll("/", ""));
   }
   switch (settings.name) {
+    case Routes.notificationsList:
+      return PageRouteHelper.buildPage(const NotificationsListController());
     case Routes.packagesList:
       return PageRouteHelper.buildPage(const PackagesListController(
         isForPudo: false,

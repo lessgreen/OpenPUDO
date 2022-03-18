@@ -94,6 +94,7 @@ class ImageSrc {
   static const notFound = "assets/notFound.svg";
   static const boxFillIcon = "assets/boxFillIcon.svg";
   static const waitingPackage = "assets/waitingPackage.svg";
+  static const bell = "assets/bell.svg";
 }
 
 class IconSrc {}

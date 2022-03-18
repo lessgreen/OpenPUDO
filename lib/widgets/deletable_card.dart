@@ -14,7 +14,7 @@
  GNU Affero General Public License version 3 for more details.
 
  You should have received a copy of the GNU Affero General Public License
- version 3 published by the Copyright Owner along with OpenPUDO.  
+ version 3 published by the Copyright Owner along with OpenPUDO.
  If not, see <https://github.com/lessgreen/OpenPUDO>.
 */
 
@@ -29,6 +29,10 @@ class DeletableCard extends StatefulWidget {
   final Function() onOpenStateChange;
   final int? openedId;
   final Widget card;
+  final double rowHeight;
+  final double horizontalPadding;
+  final EdgeInsets itemPadding;
+  final BorderRadius borderRadius;
 
   const DeletableCard({
     Key? key,
@@ -38,6 +42,10 @@ class DeletableCard extends StatefulWidget {
     required this.openedId,
     this.maxWidth = 100,
     required this.card,
+    required this.itemPadding,
+    required this.rowHeight,
+    required this.horizontalPadding,
+    required this.borderRadius,
   }) : super(key: key);
 
   @override
@@ -92,7 +100,7 @@ class DeletableCardState extends State<DeletableCard> with TickerProviderStateMi
     controller.forward();
   }
 
-  double get getSafeOffset => deleteSize - Dimension.padding < 0 ? 0 : deleteSize - Dimension.padding;
+  double get getSafeOffset => deleteSize - widget.horizontalPadding < 0 ? 0 : deleteSize - widget.horizontalPadding;
 
   void triggerCorrectActionForOpen(double size) {
     if (size == 100) {
@@ -162,22 +170,21 @@ class DeletableCardState extends State<DeletableCard> with TickerProviderStateMi
         }
       },
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: Dimension.paddingS),
+        padding: widget.itemPadding,
         child: Stack(children: [
           Transform.translate(
               offset: Offset(0 - getSafeOffset, 0),
               child: SizedBox(
-                height: 100,
                 child: widget.card,
               )),
           Positioned(
-            right: Dimension.padding,
+            right: widget.horizontalPadding,
             child: GestureDetector(
               onTap: widget.onDelete,
               child: AnimatedContainer(
-                decoration: BoxDecoration(color: Colors.red.shade400, borderRadius: BorderRadius.circular(Dimension.borderRadiusS), boxShadow: Shadows.baseShadow),
+                height: widget.rowHeight,
+                decoration: BoxDecoration(color: Colors.red.shade400, borderRadius: widget.borderRadius, boxShadow: Shadows.baseShadow),
                 duration: const Duration(milliseconds: 10),
-                height: 100,
                 width: deleteSize,
                 child: const Icon(
                   Icons.delete_outline,

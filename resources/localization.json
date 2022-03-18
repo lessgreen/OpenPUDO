@@ -297,6 +297,12 @@
             "submitButton": "Invia",
             "thanksFeedback": "Grazie per la segnalazione! Ti contatteremo al più presto.",
             "feedbackTitle": "Grazie"
+        },
+        "NotificationsListControllerState": {
+            "navBarTitle": "Notifiche"
+        },
+        "ContentNotificationsPageState": {
+            "noNotifications": "Non ci sono notifiche"
         }
     }
 }
