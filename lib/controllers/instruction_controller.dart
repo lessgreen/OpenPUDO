@@ -89,7 +89,7 @@ class _InstructionControllerState extends State<InstructionController> with Conn
                 alignment: Alignment.centerLeft,
                 child: Text(
                   widget.pudoDataModel?.customizedAddress ?? "n/a",
-                  style: const TextStyle(fontSize: 16),
+                  style: Theme.of(context).textTheme.subtitle1,
                 ),
               ),
               const SizedBox(height: 30)
@@ -230,7 +230,7 @@ class _InstructionControllerState extends State<InstructionController> with Conn
                       TextSpan(text: 'shipmentReceivedSubtitle'.localized(context)),
                       TextSpan(
                         text: 'defaultTitle'.localized(context, 'general'),
-                        style: const TextStyle(color: AppColors.primaryColorDark, fontWeight: FontWeight.w500),
+                        style: Theme.of(context).textTheme.bodyTextItalicBoldAccent,
                       ),
                     ],
                   ),
@@ -271,7 +271,7 @@ class _InstructionControllerState extends State<InstructionController> with Conn
                     TextSpan(text: 'chooseAnUserSubtitle'.localized(context)),
                     TextSpan(
                       text: 'defaultTitle'.localized(context, 'general'),
-                      style: const TextStyle(color: AppColors.primaryColorDark),
+                      style: Theme.of(context).textTheme.bodyTextAccent,
                     ),
                   ]),
                 ),
@@ -300,7 +300,7 @@ class _InstructionControllerState extends State<InstructionController> with Conn
                   text: TextSpan(style: Theme.of(context).textTheme.subtitle1, children: [
                     TextSpan(
                       text: 'shotAPhotoSubtitle1'.localized(context),
-                      style: const TextStyle(color: AppColors.primaryColorDark, fontWeight: FontWeight.w500),
+                      style: Theme.of(context).textTheme.bodyTextItalicBoldAccent,
                     ),
                     TextSpan(
                       text: 'shotAPhotoSubtitle2'.localized(context),

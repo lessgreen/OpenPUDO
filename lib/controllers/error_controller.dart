@@ -20,6 +20,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
 import 'package:qui_green/commons/utilities/localization.dart';
 import 'package:qui_green/resources/res.dart';
 
@@ -58,7 +59,7 @@ class ErrorController extends StatelessWidget {
               },
               child: Text(
                 'goBack'.localized(context),
-                style: const TextStyle(color: AppColors.primaryColorDark),
+                style: Theme.of(context).textTheme.bodyTextAccent,
               ),
             ),
           ],

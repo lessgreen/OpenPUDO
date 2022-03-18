@@ -21,6 +21,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
 import 'package:qui_green/commons/utilities/keyboard_visibility.dart';
 import 'package:qui_green/commons/utilities/localization.dart';
 import 'package:qui_green/models/registration_pudo_model.dart';
@@ -83,12 +84,7 @@ class _RewardPolicyControllerState extends State<RewardPolicyController> {
                         child: Text(
                           'hintReward'.localized(context),
                           textAlign: TextAlign.center,
-                          style: const TextStyle(
-                            fontSize: 15,
-                            fontStyle: FontStyle.italic,
-                            fontWeight: FontWeight.w300,
-                            color: Colors.grey,
-                          ),
+                          style: Theme.of(context).textTheme.rewardOptionHint,
                         )),
                     const SizedBox(
                       height: Dimension.paddingM,
@@ -137,7 +133,7 @@ class _RewardPolicyControllerState extends State<RewardPolicyController> {
                                     },
                                     child: Text(
                                       'doneButton'.localized(context),
-                                      style: const TextStyle(color: AppColors.primaryColorDark),
+                                      style: Theme.of(context).textTheme.bodyTextAccent,
                                     ),
                                   )
                                 ],

@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
 import 'package:qui_green/commons/utilities/localization.dart';
 import 'package:qui_green/models/address_model.dart';
 import 'package:qui_green/resources/res.dart';
@@ -37,7 +38,7 @@ class _AdressFieldPudoSearchState extends State<AdressFieldPudoSearch> {
               color: AppColors.colorGrey,
             ),
           ),
-          placeholderStyle: const TextStyle(color: AppColors.colorGrey),
+          placeholderStyle: Theme.of(context).textTheme.bodyTextSecondary,
           controller: widget.viewModel.addressController,
           decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(Dimension.borderRadiusSearch)),
           autofocus: false,
