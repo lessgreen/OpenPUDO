@@ -22,10 +22,10 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:qui_green/commons/alert_dialog.dart';
 import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
 import 'package:qui_green/commons/ui/cupertino_navigation_bar_fix.dart';
+import 'package:qui_green/commons/utilities/image_picker_helper.dart';
 import 'package:qui_green/commons/utilities/localization.dart';
 import 'package:qui_green/commons/utilities/network_error_helper.dart';
 import 'package:qui_green/models/pudo_package.dart';
@@ -57,110 +57,106 @@ class _PackageReceivedControllerState extends State<PackageReceivedController> {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      child: CupertinoPageScaffold(
-          navigationBar: CupertinoNavigationBarFix.build(
-            context,
-            middle: Text(
-              'navTitle'.localized(context),
-              style: Theme.of(context).textTheme.navBarTitle,
-            ),
-            leading: CupertinoNavigationBarBackButton(
-              color: Colors.white,
-              onPressed: () => Navigator.of(context).pop(),
+    return SAScaffold(
+      isLoading: NetworkManager.instance.networkActivity,
+      cupertinoBar: CupertinoNavigationBarFix.build(
+        context,
+        middle: Text(
+          'navTitle'.localized(context),
+          style: Theme.of(context).textTheme.navBarTitle,
+        ),
+        leading: CupertinoNavigationBarBackButton(
+          color: Colors.white,
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+      ),
+      body: ListView(
+        children: [
+          const SizedBox(
+            height: Dimension.paddingM,
+          ),
+          ProfilePicBox(
+            onTap: _pickImage,
+            image: _image,
+            title: 'mainLabel'.localized(context),
+            mainIconSvgAsset: ImageSrc.shipmentLeadingCell,
+          ),
+          const SizedBox(
+            height: Dimension.paddingM,
+          ),
+          TableViewCell(
+            onTap: () {
+              Navigator.of(context).pushNamed(Routes.searchRecipient).then((value) {
+                if (value != null && value is UserSummary) {
+                  setState(() {
+                    _selectedUser = value;
+                  });
+                }
+              });
+            },
+            fullWidth: true,
+            showTopDivider: true,
+            showTrailingChevron: true,
+            title: _selectedUser == null ? 'secondaryLabel'.localized(context) : "${_selectedUser!.firstName} ${_selectedUser!.lastName} AC${_selectedUser!.userId.toString()}",
+            leading: const Icon(
+              CupertinoIcons.person,
+              color: AppColors.primaryColorDark,
+              size: 26,
             ),
           ),
-          child: SAScaffold(
-            isLoading: NetworkManager.instance.networkActivity,
-            body: ListView(
-              children: [
-                const SizedBox(
-                  height: Dimension.paddingM,
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Padding(
+                padding: EdgeInsets.only(left: Dimension.padding + Dimension.paddingXS, top: Dimension.padding),
+                child: Icon(
+                  CupertinoIcons.info_circle_fill,
+                  color: AppColors.primaryColorDark,
                 ),
-                ProfilePicBox(
-                  onTap: _pickImage,
-                  image: _image,
-                  title: 'mainLabel'.localized(context),
-                  mainIconSvgAsset: ImageSrc.shipmentLeadingCell,
-                ),
-                const SizedBox(
-                  height: Dimension.paddingM,
-                ),
-                TableViewCell(
-                  onTap: () {
-                    Navigator.of(context).pushNamed(Routes.searchRecipient).then((value) {
-                      if (value != null && value is UserSummary) {
-                        setState(() {
-                          _selectedUser = value;
-                        });
-                      }
-                    });
-                  },
-                  fullWidth: true,
-                  showTopDivider: true,
-                  showTrailingChevron: true,
-                  title: _selectedUser == null ? 'secondaryLabel'.localized(context) : "${_selectedUser!.firstName} ${_selectedUser!.lastName} AC${_selectedUser!.userId.toString()}",
-                  leading: const Icon(
-                    CupertinoIcons.person,
-                    color: AppColors.primaryColorDark,
-                    size: 26,
+              ),
+              Expanded(
+                child: CupertinoTextField(
+                  placeholder: 'placeHolderNotes'.localized(context),
+                  padding: const EdgeInsets.all(Dimension.padding),
+                  prefixMode: OverlayVisibilityMode.always,
+                  placeholderStyle: Theme.of(context).textTheme.bodyTextSecondary,
+                  controller: _notesController,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(Dimension.borderRadiusSearch),
                   ),
+                  autofocus: false,
+                  textInputAction: TextInputAction.done,
+                  minLines: 2,
+                  maxLines: 8,
                 ),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Padding(
-                      padding: EdgeInsets.only(left: Dimension.padding + Dimension.paddingXS, top: Dimension.padding),
-                      child: Icon(
-                        CupertinoIcons.info_circle_fill,
-                        color: AppColors.primaryColorDark,
-                      ),
-                    ),
-                    Expanded(
-                      child: CupertinoTextField(
-                        placeholder: 'placeHolderNotes'.localized(context),
-                        padding: const EdgeInsets.all(Dimension.padding),
-                        prefixMode: OverlayVisibilityMode.always,
-                        placeholderStyle: const TextStyle(color: AppColors.colorGrey),
-                        controller: _notesController,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(Dimension.borderRadiusSearch),
-                        ),
-                        autofocus: false,
-                        textInputAction: TextInputAction.done,
-                        minLines: 2,
-                        maxLines: 8,
-                      ),
-                    ),
-                  ],
-                ),
-                const Divider(
-                  height: 1,
-                ),
-                const SizedBox(
-                  height: Dimension.paddingL,
-                ),
-                MainButton(
-                  enabled: _selectedUser != null,
-                  text: 'nextButton'.localized(context),
-                  onPressed: _sendRequest,
-                )
-              ],
-            ),
-          )),
+              ),
+            ],
+          ),
+          const Divider(
+            height: 1,
+          ),
+          const SizedBox(
+            height: Dimension.paddingL,
+          ),
+          MainButton(
+            enabled: _selectedUser != null,
+            text: 'nextButton'.localized(context),
+            onPressed: _sendRequest,
+          )
+        ],
+      ),
     );
   }
 
   void _pickImage() async {
-    final ImagePicker _picker = ImagePicker();
-    final XFile? result = await _picker.pickImage(source: ImageSource.gallery);
-    if (result != null) {
-      File file = File(result.path);
-      setState(() {
-        _image = file;
-      });
-    }
+    showImageChoice(context, (value) {
+      if (value != null) {
+        setState(() {
+          _image = value;
+        });
+      }
+    });
   }
 
   void _sendRequest() {

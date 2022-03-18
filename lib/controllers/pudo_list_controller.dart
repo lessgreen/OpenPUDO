@@ -63,9 +63,10 @@ class _PudoListControllerState extends State<PudoListController> {
     return Consumer<CurrentUser>(
       builder: (context, currentUser, _) => FutureBuilder<void>(
         future: _getPudos(),
-        builder: (context, snapshot) => Material(
-          child: CupertinoPageScaffold(
-            navigationBar: CupertinoNavigationBarFix.build(
+        builder: (context, snapshot) {
+          return SAScaffold(
+            isLoading: NetworkManager.instance.networkActivity,
+            cupertinoBar: CupertinoNavigationBarFix.build(
               context,
               middle: Text(
                 'navTitle'.localized(context),
@@ -78,23 +79,16 @@ class _PudoListControllerState extends State<PudoListController> {
                       onPressed: () => Navigator.of(context).pop(),
                     ),
             ),
-            //ClipPath is used to avoid the scrolling cards to go outside the screen
-            //and being visible when popping the page
-            child: ClipPath(
-              child: SAScaffold(
-                isLoading: NetworkManager.instance.networkActivity,
-                body: RefreshIndicator(
-                  onRefresh: () async => currentUser.triggerReload(),
-                  child: dataSource == null
-                      ? const SizedBox()
-                      : dataSource!.isEmpty
-                          ? const NoPudosWidget()
-                          : _buildPudos(),
-                ),
-              ),
+            body: RefreshIndicator(
+              onRefresh: () async => currentUser.triggerReload(),
+              child: dataSource == null
+                  ? const SizedBox()
+                  : dataSource!.isEmpty
+                      ? const NoPudosWidget()
+                      : _buildPudos(),
             ),
-          ),
-        ),
+          );
+        },
       ),
     );
   }

@@ -124,7 +124,11 @@ dynamic routeWithSetting(RouteSettings settings) {
       );
     case Routes.registrationComplete:
       return PageRouteHelper.buildPage(
-        RegistrationCompleteController(pudoDataModel: settings.arguments as PudoProfile?, useCupertinoScaffold: false, canGoBack: false),
+        RegistrationCompleteController(
+          pudoDataModel: settings.arguments as PudoProfile?,
+          canGoBack: false,
+          useCupertinoScaffold: false,
+        ),
       );
     case Routes.instruction:
       return PageRouteHelper.buildPage(

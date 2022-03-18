@@ -160,7 +160,7 @@ class _PudoDetailControllerState extends State<PudoDetailController> with Connec
                 ),
                 TextSpan(
                   text: (widget.dataModel.customerCount ?? 0).toString(),
-                  style: const TextStyle(fontWeight: FontWeight.w500),
+                  style: Theme.of(context).textTheme.bodyTextBold,
                 ),
                 TextSpan(text: 'numerOfUsers'.localized(context)),
               ],
@@ -412,7 +412,7 @@ class _PudoDetailControllerState extends State<PudoDetailController> with Connec
         MaterialButton(
           child: Text(
             'termsAcceptButton'.localized(context),
-            style: const TextStyle(color: AppColors.primaryColorDark),
+            style: Theme.of(context).textTheme.bodyTextAccent,
           ),
           onPressed: () => acceptCallback?.call(),
         ),

@@ -22,10 +22,9 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:location/location.dart';
 import 'package:qui_green/commons/extensions/formfields_validators.dart';
-import 'package:qui_green/commons/utilities/print_helper.dart';
+import 'package:qui_green/commons/utilities/image_picker_helper.dart';
 import 'package:qui_green/models/geo_marker.dart';
 import 'package:qui_green/models/pudo_profile.dart';
 import 'package:qui_green/models/registration_pudo_model.dart';
@@ -127,18 +126,12 @@ class PersonalDataBusinessControllerViewModel extends ChangeNotifier {
     return _locationData;
   }
 
-  pickFile() async {
-    final ImagePicker _picker = ImagePicker();
-    final XFile? result = await _picker.pickImage(source: ImageSource.gallery);
-    if (result != null) {
-      try {
-        File file = File(result.path);
-        image = file;
-      } catch (e) {
-        showErrorDialog?.call(e.toString());
-        safePrint(e.toString());
+  pickFile(BuildContext context) async {
+    showImageChoice(context, (value) {
+      if (value != null) {
+        image = value;
       }
-    }
+    });
   }
 
   List<GeoMarker> _addresses = [];

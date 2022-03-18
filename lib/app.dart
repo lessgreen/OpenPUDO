@@ -19,7 +19,6 @@
 */
 
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -28,7 +27,6 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:qui_green/commons/ui/base_theme.dart';
 import 'package:qui_green/commons/utilities/localization.dart';
-import 'package:qui_green/commons/utilities/print_helper.dart';
 import 'package:qui_green/commons/utilities/routes.dart';
 import 'package:qui_green/resources/app_config.dart';
 import 'package:qui_green/resources/routes_enum.dart';
@@ -52,6 +50,7 @@ void mainCommon({required String host, required bool isProd}) async {
     SystemUiMode.edgeToEdge,
     overlays: [SystemUiOverlay.bottom],
   );
+  await Firebase.initializeApp();
   SystemChrome.setSystemUIOverlayStyle(
     SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
@@ -61,32 +60,6 @@ void mainCommon({required String host, required bool isProd}) async {
     ),
   );
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-  //Firebase stuff
-  await Firebase.initializeApp();
-  flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-  NotificationAppLaunchDetails? lunchDetails = await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
-  if (lunchDetails != null) {
-    safePrint(lunchDetails.payload ?? "");
-  }
-  channel = const AndroidNotificationChannel(
-    'high_importance_channel', // id
-    'High Importance Notifications', // title
-    description: 'This channel is used for important notifications.', // description
-    importance: Importance.high,
-  );
-
-  /// Create an Android Notification Channel.
-  /// We use this channel in the `AndroidManifest.xml` file to override the
-  /// default FCM channel to enable heads up notifications.
-  await flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()?.createNotificationChannel(channel);
-
-  /// Update the iOS foreground notification presentation options to allow
-  /// heads up notifications.
-  await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
-    alert: true,
-    badge: true,
-    sound: true,
-  );
   runApp(
     App(
       config: appConfig,

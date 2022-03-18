@@ -54,112 +54,109 @@ class _PackageDeliveredControllerState extends State<PackageDeliveredController>
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      child: CupertinoPageScaffold(
-          navigationBar: CupertinoNavigationBarFix.build(
-            context,
-            middle: Text(
-              'navTitle'.localized(context),
-              style: Theme.of(context).textTheme.navBarTitle,
-            ),
-            leading: CupertinoNavigationBarBackButton(
-              color: Colors.white,
-              onPressed: () => Navigator.of(context).pop(),
+    return SAScaffold(
+      isLoading: NetworkManager.instance.networkActivity,
+      cupertinoBar: CupertinoNavigationBarFix.build(
+        context,
+        middle: Text(
+          'navTitle'.localized(context),
+          style: Theme.of(context).textTheme.navBarTitle,
+        ),
+        leading: CupertinoNavigationBarBackButton(
+          color: Colors.white,
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+      ),
+      body: ListView(
+        children: [
+          const SizedBox(
+            height: Dimension.padding,
+          ),
+          RichText(
+              textAlign: TextAlign.center,
+              text: TextSpan(
+                text: '',
+                style: Theme.of(context).textTheme.navBarTitleDark,
+                children: [
+                  TextSpan(
+                    text: 'mainLabel'.localized(context),
+                  ),
+                  TextSpan(
+                    text: "${'defaultTitle'.localized(context, 'general')}\n",
+                    style: Theme.of(context).textTheme.bodyTextItalicBoldAccent,
+                  ),
+                  TextSpan(
+                    text: 'secondaryLabel'.localized(context),
+                  ),
+                ],
+              )),
+          const SizedBox(
+            height: Dimension.padding,
+          ),
+          Center(
+            child: Container(
+              constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width / 10 * 8, maxHeight: MediaQuery.of(context).size.width / 10 * 8),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(Dimension.borderRadius),
+                border: Border.all(color: AppColors.colorGrey, width: 2),
+                color: AppColors.colorGrey,
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(Dimension.borderRadius),
+                child: QRBarScannerCamera(
+                  onError: (context, _) => _buildEmptyQrBox(),
+                  notStartedBuilder: (context) => _buildEmptyQrBox(),
+                  offscreenBuilder: (context) => _buildEmptyQrBox(),
+                  qrCodeCallback: _handleQRCode,
+                  formats: const [BarcodeFormats.QR_CODE],
+                ),
+              ),
             ),
           ),
-          child: SAScaffold(
-            isLoading: NetworkManager.instance.networkActivity,
-            body: ListView(
-              children: [
-                const SizedBox(
-                  height: Dimension.padding,
-                ),
-                RichText(
-                    textAlign: TextAlign.center,
-                    text: TextSpan(
-                      text: '',
-                      style: Theme.of(context).textTheme.navBarTitleDark,
-                      children: [
-                        TextSpan(
-                          text: 'mainLabel'.localized(context),
-                        ),
-                        TextSpan(
-                          text: "${'defaultTitle'.localized(context, 'general')}\n",
-                          style: const TextStyle(color: AppColors.primaryColorDark, fontWeight: FontWeight.w500),
-                        ),
-                        TextSpan(
-                          text: 'secondaryLabel'.localized(context),
-                        ),
-                      ],
-                    )),
-                const SizedBox(
-                  height: Dimension.padding,
-                ),
-                Center(
-                  child: Container(
-                    constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width / 10 * 8, maxHeight: MediaQuery.of(context).size.width / 10 * 8),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(Dimension.borderRadius),
-                      border: Border.all(color: AppColors.colorGrey, width: 2),
-                      color: AppColors.colorGrey,
-                    ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(Dimension.borderRadius),
-                      child: QRBarScannerCamera(
-                        onError: (context, _) => _buildEmptyQrBox(),
-                        notStartedBuilder: (context) => _buildEmptyQrBox(),
-                        offscreenBuilder: (context) => _buildEmptyQrBox(),
-                        qrCodeCallback: _handleQRCode,
-                        formats: const [BarcodeFormats.QR_CODE],
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  height: Dimension.paddingM,
-                ),
-                Text(
-                  'orLabel'.localized(context),
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.bodyTextItalicSecondary,
-                ),
-                const SizedBox(
-                  height: Dimension.paddingXS,
-                ),
-                TableViewCell(
-                  onTap: () {
-                    Navigator.of(context).pushNamed(Routes.packagesList).then((value) {
-                      if (value != null && value is PackageSummary) {
-                        setState(() {
-                          selectedPackage = value;
-                        });
-                        NetworkManager.instance.changePackageStatus(packageId: value.packageId, newStatus: PackageStatus.collected).then((valueUpdated) {
-                          if (valueUpdated is PudoPackage) {
-                            Navigator.of(context).pushReplacementNamed(Routes.packageDeliveryDone,
-                                arguments: value.firstName != null && value.lastName != null ? "${value.firstName} ${value.lastName}" : "AC${value.userId ?? 0}");
-                          } else {
-                            SAAlertDialog.displayAlertWithClose(context, "Error", valueUpdated, barrierDismissable: false);
-                          }
-                        }).catchError((onError) {
-                          SAAlertDialog.displayAlertWithClose(context, "Error", onError, barrierDismissable: false);
-                        });
-                      }
-                    });
-                  },
-                  fullWidth: true,
-                  showTopDivider: true,
-                  showTrailingChevron: true,
-                  title: selectedPackage == null ? 'waitingShipmentLabel'.localized(context) : selectedPackage!.packageName ?? "",
-                  leading: SvgPicture.asset(
-                    ImageSrc.boxFillIcon,
-                    color: AppColors.primaryColorDark,
-                    height: 36,
-                    width: 36,
-                  ),
-                ),
-              ],
+          const SizedBox(
+            height: Dimension.paddingM,
+          ),
+          Text(
+            'orLabel'.localized(context),
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.bodyTextItalicSecondary,
+          ),
+          const SizedBox(
+            height: Dimension.paddingXS,
+          ),
+          TableViewCell(
+            onTap: () {
+              Navigator.of(context).pushNamed(Routes.packagesList).then((value) {
+                if (value != null && value is PackageSummary) {
+                  setState(() {
+                    selectedPackage = value;
+                  });
+                  NetworkManager.instance.changePackageStatus(packageId: value.packageId, newStatus: PackageStatus.collected).then((valueUpdated) {
+                    if (valueUpdated is PudoPackage) {
+                      Navigator.of(context).pushReplacementNamed(Routes.packageDeliveryDone,
+                          arguments: value.firstName != null && value.lastName != null ? "${value.firstName} ${value.lastName}" : "AC${value.userId ?? 0}");
+                    } else {
+                      SAAlertDialog.displayAlertWithClose(context, "Error", valueUpdated, barrierDismissable: false);
+                    }
+                  }).catchError((onError) {
+                    SAAlertDialog.displayAlertWithClose(context, "Error", onError, barrierDismissable: false);
+                  });
+                }
+              });
+            },
+            fullWidth: true,
+            showTopDivider: true,
+            showTrailingChevron: true,
+            title: selectedPackage == null ? 'waitingShipmentLabel'.localized(context) : selectedPackage!.packageName ?? "",
+            leading: SvgPicture.asset(
+              ImageSrc.boxFillIcon,
+              color: AppColors.primaryColorDark,
+              height: 36,
+              width: 36,
             ),
-          )),
+          ),
+        ],
+      ),
     );
   }
 

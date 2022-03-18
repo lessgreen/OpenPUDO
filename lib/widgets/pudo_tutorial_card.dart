@@ -72,7 +72,7 @@ class PudoTutorialCard extends StatelessWidget {
                 child: Text(
                   description,
                   textAlign: TextAlign.center,
-                  style: const TextStyle(fontSize: 18),
+                  style: Theme.of(context).textTheme.subtitle1,
                 )),
           ),
           const SizedBox(

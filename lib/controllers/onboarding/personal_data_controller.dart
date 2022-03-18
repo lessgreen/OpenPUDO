@@ -24,15 +24,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:qui_green/commons/alert_dialog.dart';
+import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
 import 'package:qui_green/commons/utilities/keyboard_visibility.dart';
-import 'package:qui_green/singletons/network/network_manager.dart';
-import 'package:qui_green/widgets/main_button.dart';
-import 'package:qui_green/view_models/personal_data_controller_viewmodel.dart';
-import 'package:qui_green/widgets/profile_pic_box.dart';
+import 'package:qui_green/commons/utilities/localization.dart';
 import 'package:qui_green/models/pudo_profile.dart';
 import 'package:qui_green/resources/res.dart';
+import 'package:qui_green/singletons/network/network_manager.dart';
+import 'package:qui_green/view_models/personal_data_controller_viewmodel.dart';
+import 'package:qui_green/widgets/main_button.dart';
+import 'package:qui_green/widgets/profile_pic_box.dart';
 import 'package:qui_green/widgets/sascaffold.dart';
-import 'package:qui_green/commons/utilities/localization.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class PersonalDataController extends StatefulWidget {
@@ -86,13 +87,13 @@ class _PersonalDataControllerState extends State<PersonalDataController> with Co
                         child: Text(
                           'secondaryLabel'.localized(context),
                           textAlign: TextAlign.center,
-                          style: const TextStyle(fontSize: 18),
+                          style: Theme.of(context).textTheme.subtitle1,
                         )),
                     const SizedBox(
                       height: Dimension.paddingM,
                     ),
                     ProfilePicBox(
-                      onTap: () => viewModel!.pickFile(),
+                      onTap: () => viewModel!.pickFile(context),
                       image: viewModel!.image,
                       title: 'addPhoto'.localized(context),
                     ),
@@ -100,7 +101,7 @@ class _PersonalDataControllerState extends State<PersonalDataController> with Co
                     Center(
                       child: Text(
                         'or'.localized(context),
-                        style: const TextStyle(fontStyle: FontStyle.italic),
+                        style: Theme.of(context).textTheme.bodyTextItalic,
                       ),
                     ),
                     Padding(
@@ -140,7 +141,7 @@ class _PersonalDataControllerState extends State<PersonalDataController> with Co
                       padding: const EdgeInsets.only(left: Dimension.padding, right: Dimension.padding),
                       child: Text(
                         'hintNameAndSurname'.localized(context),
-                        style: const TextStyle(fontSize: 12),
+                        style: Theme.of(context).textTheme.bodyText1,
                       ),
                     ),
                     Padding(
@@ -168,7 +169,7 @@ class _PersonalDataControllerState extends State<PersonalDataController> with Co
                                   ),
                                   TextSpan(
                                     text: 'termsAndConditionHyperlink'.localized(context),
-                                    style: const TextStyle(color: AppColors.primaryColorDark, fontWeight: FontWeight.w500),
+                                    style: Theme.of(context).textTheme.bodyTextItalicBoldAccent,
                                     recognizer: TapGestureRecognizer()
                                       ..onTap = () {
                                         launch('https://tools.quigreen.it/terms.html');

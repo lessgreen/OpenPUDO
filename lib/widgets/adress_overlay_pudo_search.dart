@@ -77,7 +77,7 @@ class _AdressOverlayPudoSearchState extends State<AdressOverlayPudoSearch> {
           (e) {
             return Material(
               color: Colors.transparent,
-              child: InkWell(
+              child: GestureDetector(
                 onTap: () => onAddressTap(e),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,

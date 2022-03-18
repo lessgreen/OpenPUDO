@@ -20,7 +20,9 @@
             "searchHistory": "Cerca tra lo storico dei dati",
             "yourShipment": "I tuoi pacchi",
             "missingValue": "Valore mancante",
-            "outOfRange": "Valori fuori limite " 
+            "outOfRange": "Valori fuori limite ",
+            "shootPhoto": "Scatta una foto",
+            "pickFromGallery": "Scegli dalla galleria"
         },
         "MapControllerState": {
             "defaultTitle": "QuiGreen",

@@ -22,10 +22,10 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:qui_green/commons/alert_dialog.dart';
 import 'package:qui_green/commons/extensions/formfields_validators.dart';
+import 'package:qui_green/commons/utilities/image_picker_helper.dart';
 import 'package:qui_green/commons/utilities/localization.dart';
 import 'package:qui_green/models/extra_info.dart';
 import 'package:qui_green/models/geo_marker.dart';
@@ -303,13 +303,12 @@ class PudoProfileEditControllerViewModel extends ChangeNotifier {
   // ************ Navigation *****
   //onSendClick(BuildContext context, PudoProfile? pudoModel) {}
 
-  pickFile() async {
-    final ImagePicker _picker = ImagePicker();
-    final XFile? result = await _picker.pickImage(source: ImageSource.gallery);
-    if (result != null) {
-      File file = File(result.path);
-      image = file;
-    }
+  pickFile(BuildContext context) async {
+    showImageChoice(context, (value) {
+      if (value != null) {
+        image = value;
+      }
+    });
   }
 
   List<GeoMarker> _addresses = [];

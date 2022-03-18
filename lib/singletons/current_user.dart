@@ -14,7 +14,7 @@
  GNU Affero General Public License version 3 for more details.
 
  You should have received a copy of the GNU Affero General Public License
- version 3 published by the Copyright Owner along with OpenPUDO.  
+ version 3 published by the Copyright Owner along with OpenPUDO.
  If not, see <https://github.com/lessgreen/OpenPUDO>.
 */
 
@@ -64,6 +64,7 @@ class CurrentUser with ChangeNotifier {
                   user = profile;
                   pushPage(Routes.home);
                   getUnreadNotifications();
+                  refreshFcmToken();
                 }
               }).catchError((onError) {
                 user = null;
@@ -77,6 +78,7 @@ class CurrentUser with ChangeNotifier {
                   pudoProfile = profile;
                   pushPage(Routes.pudoHome);
                   getUnreadNotifications();
+                  refreshFcmToken();
                 }
               }).catchError((onError) {
                 pudoProfile = null;
@@ -117,7 +119,6 @@ class CurrentUser with ChangeNotifier {
 
   set user(UserProfile? newProfile) {
     _user = newProfile;
-    refreshFcmToken();
     notifyListeners();
   }
 

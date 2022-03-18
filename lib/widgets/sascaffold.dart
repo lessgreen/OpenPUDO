@@ -18,11 +18,13 @@
  If not, see <https://github.com/lessgreen/OpenPUDO>.
 */
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class SAScaffold extends StatelessWidget {
   final PreferredSizeWidget? appBar;
+  final CupertinoNavigationBar? cupertinoBar;
   final Widget body;
   final Widget? floatingActionButton;
   final FloatingActionButtonLocation? floatingActionButtonLocation;
@@ -36,6 +38,7 @@ class SAScaffold extends StatelessWidget {
       {Key? key,
       this.backgroundColor,
       this.resizeToAvoidBottomInset,
+      this.cupertinoBar,
       this.appBar,
       required this.body,
       this.bottomSheet,
@@ -52,18 +55,26 @@ class SAScaffold extends StatelessWidget {
         ? ValueListenableBuilder(
             valueListenable: isLoading!,
             builder: (context, newValue, _) {
+              bool useCupertino = (cupertinoBar != null);
               return Stack(
                 children: [
-                  Scaffold(
-                    extendBodyBehindAppBar: extendBodyBehindAppBar,
-                    backgroundColor: backgroundColor,
-                    bottomSheet: bottomSheet,
-                    resizeToAvoidBottomInset: resizeToAvoidBottomInset ?? true,
-                    appBar: appBar,
-                    body: body,
-                    floatingActionButton: floatingActionButton,
-                    floatingActionButtonLocation: floatingActionButtonLocation,
-                  ),
+                  useCupertino
+                      ? CupertinoPageScaffold(
+                          resizeToAvoidBottomInset: resizeToAvoidBottomInset ?? true,
+                          navigationBar: cupertinoBar,
+                          backgroundColor: backgroundColor,
+                          child: body,
+                        )
+                      : Scaffold(
+                          extendBodyBehindAppBar: extendBodyBehindAppBar,
+                          backgroundColor: backgroundColor,
+                          bottomSheet: bottomSheet,
+                          resizeToAvoidBottomInset: resizeToAvoidBottomInset ?? true,
+                          appBar: appBar,
+                          body: body,
+                          floatingActionButton: floatingActionButton,
+                          floatingActionButtonLocation: floatingActionButtonLocation,
+                        ),
                   newValue == true
                       ? Container(
                           color: backgroundLoadingColor,
@@ -79,14 +90,23 @@ class SAScaffold extends StatelessWidget {
           )
         : Stack(
             children: [
-              Scaffold(
-                backgroundColor: backgroundColor ?? Theme.of(context).backgroundColor,
-                bottomSheet: bottomSheet,
-                resizeToAvoidBottomInset: resizeToAvoidBottomInset ?? true,
-                appBar: appBar,
-                body: body,
-                floatingActionButton: floatingActionButton,
-              ),
+              cupertinoBar != null
+                  ? CupertinoPageScaffold(
+                      resizeToAvoidBottomInset: resizeToAvoidBottomInset ?? true,
+                      navigationBar: cupertinoBar,
+                      backgroundColor: backgroundColor,
+                      child: body,
+                    )
+                  : Scaffold(
+                      extendBodyBehindAppBar: extendBodyBehindAppBar,
+                      backgroundColor: backgroundColor,
+                      bottomSheet: bottomSheet,
+                      resizeToAvoidBottomInset: resizeToAvoidBottomInset ?? true,
+                      appBar: appBar,
+                      body: body,
+                      floatingActionButton: floatingActionButton,
+                      floatingActionButtonLocation: floatingActionButtonLocation,
+                    ),
             ],
           );
   }

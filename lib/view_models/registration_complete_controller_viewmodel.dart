@@ -21,17 +21,19 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:qui_green/commons/alert_dialog.dart';
+import 'package:qui_green/commons/utilities/localization.dart';
 import 'package:qui_green/models/pudo_profile.dart';
 import 'package:qui_green/models/user_preferences.dart';
 import 'package:qui_green/resources/routes_enum.dart';
 import 'package:qui_green/singletons/current_user.dart';
 import 'package:qui_green/singletons/network/network_manager.dart';
-import 'package:qui_green/commons/utilities/localization.dart';
 
 class RegistrationCompleteControllerViewModel extends ChangeNotifier {
   Function(dynamic)? showErrorDialog;
   bool _showNumber = true;
+
   bool get showNumber => _showNumber;
+  PudoProfile? pudoModel;
 
   updateShowNumberPreference(bool newValue) {
     _showNumber = newValue;
@@ -62,16 +64,20 @@ class RegistrationCompleteControllerViewModel extends ChangeNotifier {
   }
 
   onInstructionsClick(BuildContext context, PudoProfile? pudoModel) {
-    NetworkManager.instance.getPudoDetails(pudoId: pudoModel!.pudoId.toString()).then(
-      (response) {
-        if (response is PudoProfile) {
-          Navigator.of(context).pushReplacementNamed(Routes.instruction, arguments: response);
-        } else {
-          showErrorDialog?.call(
-            'unknownDescription'.localized(context, 'general'),
-          );
-        }
-      },
-    ).catchError((onError) => showErrorDialog?.call(onError));
+    if (pudoModel == null) {
+      NetworkManager.instance.getPudoDetails(pudoId: pudoModel!.pudoId.toString()).then(
+        (response) {
+          if (response is PudoProfile) {
+            Navigator.of(context).pushReplacementNamed(Routes.instruction, arguments: response);
+          } else {
+            showErrorDialog?.call(
+              'unknownDescription'.localized(context, 'general'),
+            );
+          }
+        },
+      ).catchError((onError) => showErrorDialog?.call(onError));
+    } else {
+      Navigator.of(context).pushReplacementNamed(Routes.instruction, arguments: pudoModel);
+    }
   }
 }

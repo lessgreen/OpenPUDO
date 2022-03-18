@@ -23,6 +23,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
 import 'package:qui_green/commons/utilities/keyboard_visibility.dart';
 import 'package:qui_green/commons/utilities/localization.dart';
 import 'package:qui_green/models/geo_marker.dart';
@@ -98,13 +99,13 @@ class _PersonalDataBusinessControllerState extends State<PersonalDataBusinessCon
                         child: Text(
                           'secondaryLabel'.localized(context),
                           textAlign: TextAlign.center,
-                          style: const TextStyle(fontSize: 18),
+                          style: Theme.of(context).textTheme.subtitle1,
                         )),
                     const SizedBox(
                       height: Dimension.padding,
                     ),
                     ProfilePicBox(
-                      onTap: viewModel.pickFile,
+                      onTap: () => viewModel.pickFile(context),
                       image: viewModel.image,
                       mainIcon: Icons.apartment,
                       title: 'addPhoto'.localized(context),
@@ -176,7 +177,7 @@ class _PersonalDataBusinessControllerState extends State<PersonalDataBusinessCon
                         padding: const EdgeInsets.only(left: Dimension.paddingM, right: Dimension.paddingM),
                         child: Text(
                           'hintPhone'.localized(context),
-                          style: const TextStyle(fontSize: 12),
+                          style: Theme.of(context).textTheme.bodyText1,
                         ),
                       ),
                     ),
@@ -202,7 +203,7 @@ class _PersonalDataBusinessControllerState extends State<PersonalDataBusinessCon
                               ),
                               TextSpan(
                                   text: 'termsAndConditionHyperlink'.localized(context),
-                                  style: const TextStyle(color: AppColors.primaryColorDark, fontWeight: FontWeight.w500),
+                                  style: Theme.of(context).textTheme.bodyTextItalicBoldAccent,
                                   recognizer: TapGestureRecognizer()
                                     ..onTap = () {
                                       launch('https://tools.quigreen.it/terms.html');
@@ -230,7 +231,7 @@ class _PersonalDataBusinessControllerState extends State<PersonalDataBusinessCon
                             },
                             child: Text(
                               'doneButton'.localized(context),
-                              style: const TextStyle(color: AppColors.primaryColorDark),
+                              style: Theme.of(context).textTheme.bodyTextAccent,
                             ),
                           )
                         ]),

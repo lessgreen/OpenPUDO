@@ -77,14 +77,14 @@ class _UserDetailControllerState extends State<UserDetailController> with Connec
             Center(
               child: Text(
                 "${widget.userModel.firstName} ${widget.userModel.lastName}",
-                style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 20),
+                style: Theme.of(context).textTheme.headline6Bold,
               ),
             ),
             const SizedBox(height: 6),
             Center(
               child: Text(
                 '${'userSince'.localized(context)} ${widget.userModel.createTms != null ? DateFormat('dd/MM/yyyy').format(DateTime.parse(widget.userModel.createTms!)) : " "}',
-                style: const TextStyle(fontWeight: FontWeight.w300, fontSize: 14, color: AppColors.primaryTextColor),
+                style: Theme.of(context).textTheme.bodyText2Light,
               ),
             ),
             const SizedBox(
