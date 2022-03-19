@@ -33,13 +33,13 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
-	<string>Camera usage description</string>
+	<string>QuiGreen richiese l&apos;uso della fotocamera per inquadrare il QRCode e scattare foto.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>Always and WhenInUse description</string>
+	<string>QuiGreen ha bisogno di conoscere la tua posizione per mostrarti PUDO nelle vicinanze.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>When In Use description</string>
+	<string>QuiGreen ha bisogno di conoscere la tua posizione per mostrarti PUDO nelle vicinanze.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Photo Library usage description</string>
+	<string>QuiGreen richiese l&apos;uso della libreria per aggiungere foto.</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
