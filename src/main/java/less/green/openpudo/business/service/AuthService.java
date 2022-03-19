@@ -92,8 +92,7 @@ public class AuthService {
         // searching for user
         TbUser user = userDao.getUserByPhoneNumber(phoneNumber);
         // if backdoor access for test user, simply pretend sending
-        // TODO: remove regex backdoor after testing
-        if ("dev".equals(ProfileManager.getActiveProfile()) || phoneNumber.matches("\\+393280000\\d{2}") || (user != null && user.getTestAccountFlag())) {
+        if ("dev".equals(ProfileManager.getActiveProfile()) || (user != null && user.getTestAccountFlag())) {
             return;
         }
         // searching for existing otp request
@@ -140,13 +139,12 @@ public class AuthService {
         // searching for user
         TbUser user = userDao.getUserByPhoneNumber(phoneNumber);
         // if backdoor access for test user, accept any otp
-        // TODO: remove regex backdoor after testing
-        if ("dev".equals(ProfileManager.getActiveProfile()) || phoneNumber.matches("\\+393280000\\d{2}") || (user != null && user.getTestAccountFlag())) {
+        if ("dev".equals(ProfileManager.getActiveProfile()) || (user != null && user.getTestAccountFlag())) {
             if (user == null) {
                 // if user is a guest, we generate a short-lived token with phone number in private claims
                 return jwtService.generateGuestTokenData(new JwtPrivateClaims(phoneNumber));
             } else {
-                // is user is registered, we generate full access token
+                // fs user is registered, we generate full access token
                 user.setLastLoginTms(new Date());
                 return jwtService.generateUserTokenData(user.getUserId(), mapAccountTypeToAccessProfile(user.getAccountType()));
             }

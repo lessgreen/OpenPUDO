@@ -1,5 +1,4 @@
--- test data exported with
--- pg_dump --username=postgres --dbname=postgres --schema=openpudo --data-only --inserts --column-inserts -t openpudo.tb_user -t openpudo.tb_user_profile -t openpudo.tb_user_preferences -t openpudo.tb_pudo -t openpudo.tb_address -t openpudo.tb_reward_policy -t openpudo.tb_rating -t openpudo.tb_user_pudo_relation
+-- test data
 
 INSERT INTO openpudo.tb_user (user_id, create_tms, last_login_tms, account_type, test_account_flag, phone_number) VALUES (1, '2022-01-17 12:30:00.000', '2022-01-17 12:30:00.000', 'customer', true, '+39328000001');
 INSERT INTO openpudo.tb_user (user_id, create_tms, last_login_tms, account_type, test_account_flag, phone_number) VALUES (2, '2022-01-17 12:30:00.000', '2022-01-17 12:30:00.000', 'pudo', true, '+39328000002');
