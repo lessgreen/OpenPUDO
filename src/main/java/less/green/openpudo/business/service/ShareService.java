@@ -109,7 +109,7 @@ public class ShareService {
         return Response.ok(baos.toByteArray()).build();
     }
 
-    public void redirect(String channel, HttpServerRequest request) {
+    public void saveRedirectLog(String channel, HttpServerRequest request) {
         try {
             TbRedirectLog tbRedirectLog = new TbRedirectLog();
             tbRedirectLog.setCreateTms(new Date());

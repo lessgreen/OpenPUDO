@@ -72,7 +72,10 @@ public class ShareResource {
     @PublicAPI
     @Operation(summary = "Get QRCode of the provided share link, simulating a static resource served by an http server")
     public Response redirect(@PathParam(value = "channel") String channel, @HeaderParam("User-Agent") String userAgent) throws URISyntaxException {
-        shareService.redirect(channel, httpServerRequest);
+        // avoid persisting incomplete links fetched by messaging apps or social networks
+        if (!isEmpty(channel) && channel.length() == 4) {
+            shareService.saveRedirectLog(channel, httpServerRequest);
+        }
         if (!isEmpty(userAgent) && (userAgent.toLowerCase().contains("iphone") || userAgent.toLowerCase().contains("ipad"))) {
             return Response.temporaryRedirect(new URI("https://www.quigreen.it/app-ios/")).build();
         } else if (!isEmpty(userAgent) && userAgent.toLowerCase().contains("android")) {
