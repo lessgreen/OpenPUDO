@@ -43,6 +43,8 @@ public class AuthService {
 
     @ConfigProperty(name = "app.base.url")
     String appBaseUrl;
+    @ConfigProperty(name = "auth.backdoor", defaultValue = "false")
+    Boolean authBackdoor;
 
     @Inject
     ExecutionContext context;
@@ -92,7 +94,7 @@ public class AuthService {
         // searching for user
         TbUser user = userDao.getUserByPhoneNumber(phoneNumber);
         // if backdoor access for test user, simply pretend sending
-        if ("dev".equals(ProfileManager.getActiveProfile()) || (user != null && user.getTestAccountFlag())) {
+        if ("dev".equals(ProfileManager.getActiveProfile()) || (authBackdoor && phoneNumber.matches("\\+393280000\\d{2}")) || (user != null && user.getTestAccountFlag())) {
             return;
         }
         // searching for existing otp request
@@ -139,7 +141,7 @@ public class AuthService {
         // searching for user
         TbUser user = userDao.getUserByPhoneNumber(phoneNumber);
         // if backdoor access for test user, accept any otp
-        if ("dev".equals(ProfileManager.getActiveProfile()) || (user != null && user.getTestAccountFlag())) {
+        if ("dev".equals(ProfileManager.getActiveProfile()) || (authBackdoor && phoneNumber.matches("\\+393280000\\d{2}")) || (user != null && user.getTestAccountFlag())) {
             if (user == null) {
                 // if user is a guest, we generate a short-lived token with phone number in private claims
                 return jwtService.generateGuestTokenData(new JwtPrivateClaims(phoneNumber));
@@ -195,7 +197,7 @@ public class AuthService {
         user.setCreateTms(now);
         user.setLastLoginTms(now);
         user.setAccountType(AccountType.CUSTOMER);
-        user.setTestAccountFlag(false);
+        user.setTestAccountFlag(authBackdoor && context.getPrivateClaims().getPhoneNumber().matches("\\+393280000\\d{2}"));
         // we trust the phone number contained in the signed private claims
         user.setPhoneNumber(context.getPrivateClaims().getPhoneNumber());
         userDao.persist(user);
@@ -234,7 +236,7 @@ public class AuthService {
         user.setCreateTms(now);
         user.setLastLoginTms(now);
         user.setAccountType(AccountType.PUDO);
-        user.setTestAccountFlag(false);
+        user.setTestAccountFlag(authBackdoor && context.getPrivateClaims().getPhoneNumber().matches("\\+393280000\\d{2}"));
         // we trust the phone number contained in the signed private claims
         user.setPhoneNumber(context.getPrivateClaims().getPhoneNumber());
         userDao.persist(user);
