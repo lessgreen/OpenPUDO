@@ -103,6 +103,9 @@ class _InsertPhoneControllerState extends State<InsertPhoneController> with Conn
                           onPressed: () {
                             setState(() {
                               _phoneNumber.unfocus();
+                              if (_phoneNumberValue.isValidPhoneNumber()) {
+                                sendRequest();
+                              }
                             });
                           },
                           text: isKeyboardVisible ? 'doneButton'.localized(context) : "",

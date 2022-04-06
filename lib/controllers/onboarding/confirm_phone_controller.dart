@@ -129,6 +129,9 @@ class _ConfirmPhoneControllerState extends State<ConfirmPhoneController> with Co
                         onPressed: () {
                           setState(() {
                             _confirmValueFocus.unfocus();
+                            if (validateOtp) {
+                              sendOtp();
+                            }
                           });
                         },
                         text: isKeyboardVisible ? 'doneButton'.localized(context) : "",

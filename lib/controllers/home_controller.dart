@@ -26,6 +26,7 @@ import 'package:move_to_background/move_to_background.dart';
 import 'package:qui_green/commons/ui/tab_controller_container.dart';
 import 'package:qui_green/commons/utilities/fcm_helper.dart';
 import 'package:qui_green/commons/utilities/home_user_routes.dart';
+import 'package:qui_green/commons/utilities/localization.dart';
 import 'package:qui_green/controllers/home_user_packages.dart';
 import 'package:qui_green/controllers/onboarding/map_controller.dart';
 import 'package:qui_green/controllers/profile_controller.dart';
@@ -62,7 +63,7 @@ class _HomeControllerState extends State<HomeController> with ConnectionAware {
             bottomView: BottomNavigationBarItem(
               icon: SvgPicture.asset(ImageSrc.homeArt, color: Colors.grey.shade400),
               activeIcon: SvgPicture.asset(ImageSrc.homeArt, color: AppColors.primaryColorDark),
-              label: 'Home',
+              label: 'homeLabel'.localized(context),
             ),
           ),
           TabControllerContainer(
@@ -74,7 +75,7 @@ class _HomeControllerState extends State<HomeController> with ConnectionAware {
             bottomView: BottomNavigationBarItem(
               icon: SvgPicture.asset(ImageSrc.mapsArt, color: Colors.grey.shade400),
               activeIcon: SvgPicture.asset(ImageSrc.mapsArt, color: AppColors.primaryColorDark),
-              label: 'Map',
+              label: 'mapLabel'.localized(context),
             ),
           ),
           TabControllerContainer(
@@ -88,7 +89,7 @@ class _HomeControllerState extends State<HomeController> with ConnectionAware {
             bottomView: BottomNavigationBarItem(
               icon: SvgPicture.asset(ImageSrc.packReceivedLeadingIcon, color: Colors.grey.shade400),
               activeIcon: SvgPicture.asset(ImageSrc.packReceivedLeadingIcon, color: AppColors.primaryColorDark),
-              label: 'Pudos',
+              label: 'pudoLabel'.localized(context),
             ),
           ),
           TabControllerContainer(
@@ -100,7 +101,7 @@ class _HomeControllerState extends State<HomeController> with ConnectionAware {
             bottomView: BottomNavigationBarItem(
               icon: SvgPicture.asset(ImageSrc.profileArt, color: Colors.grey.shade400),
               activeIcon: SvgPicture.asset(ImageSrc.profileArt, color: AppColors.primaryColorDark),
-              label: 'Profile',
+              label: 'profileLabel'.localized(context),
             ),
           )
         ];
