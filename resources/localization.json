@@ -3,62 +3,62 @@
         "general": {
             "genericErrorTitle": "Errore",
             "genericErrorDescription": "Qualcosa è andato storto.",
-            "timeoutDescription": "Errore tempo scaduto in attesa di risposta.",
-            "unknownDescription": "Si è verificato un errore inatteso. Per favore riprova.",
+            "timeoutDescription": "Tempo scaduto in attesa di risposta.",
+            "unknownDescription": "Si è verificato un errore imprevisto. Per favore riprova.",
             "workingInternetConnection": "È necessaria una connessione internet funzionante.",
             "cancelButtonTitle": "Annulla",
             "closeButtonTitle": "Chiudi",
             "defaultTitle": "QuiGreen",
             "warningTitle": "Attenzione",
-            "chooseAction": "Scegli un'azione",
-            "nameCouldNotBeEmpty": "Il nome non puo essere vuoto",
-            "phoneNumberWrong": "Il numero telefonico non è corretto",
-            "phoneCouldNotBeEmpty": "Il numero telefonico non puo essere vuoto",
-            "locationError": "Si è verificato un'errore nell'accesso al GPS. Per favore riprovare",
+            "chooseAction": "Scegli un'azione.",
+            "nameCouldNotBeEmpty": "Il nome deve essere compilato.",
+            "phoneNumberWrong": "Il numero di cellulare non è corretto.",
+            "phoneCouldNotBeEmpty": "Il numero di cellulare deve essere inserito.",
+            "locationError": "Si è verificato un'errore di localizzazione. Per favore riprova.",
             "search": "Ricerca",
             "searchByName": "Cerca per nome",
-            "searchHistory": "Cerca tra lo storico dei dati",
+            "searchHistory": "Cerca nello storico dati",
             "yourShipment": "I tuoi pacchi",
             "missingValue": "Valore mancante",
-            "outOfRange": "Valori fuori limite ",
             "shootPhoto": "Scatta una foto",
-            "pickFromGallery": "Scegli dalla galleria"
+            "pickFromGallery": "Scegli dalla galleria",
+            "outOfRange": "Valori fuori limite " 
         },
         "MapControllerState": {
             "defaultTitle": "QuiGreen",
-            "poiNearbyTitle": "Ecco i punti di ritiro vicino a te",
+            "poiNearbyTitle": "Ecco i tuoi Punti QuiGreen.",
             "skipButton": "Salta"
         },
         "ConfirmPhoneControllerState": {
-            "mainLabel": "Inserisci il codice di conferma",
-            "secondaryLabel": "Inserisci il codice di conferma che \n ti abbiamo appena inviato",
+            "mainLabel": "Inserisci il codice di conferma.",
+            "secondaryLabel": "Inserisci il codice di conferma che \n ti abbiamo inviato.",
             "doneButton": "Fatto",
-            "hintText": "non hai ricevuto il codice?",
-            "hintButton": "non hai ricevuto il codice?",
+            "hintText": "Non hai ricevuto il codice?",
+            "hintButton": "Invia di nuovo.",
             "submitButton": "Invia"
         },
         "LoginControllerState": {
-            "mainLabel":  "Non sei ancora un utente ?",
-            "secondaryLabel": "Che cosa aspetti...",
-            "bottomButton": "Accedi con il tuo numero di telefono"
+            "mainLabel":  "Non sei ancora registrato?",
+            "secondaryLabel": "Che cosa aspetti!",
+            "bottomButton": "Iscriviti con il tuo numero di cellulare."
         },
         "InsertAddressControllerState": {
             "mainLabel":  "Inserisci il tuo indirizzo",
             "submitButton": "Invia"
         },
         "InsertPhoneControllerState": {
-            "mainLabel":  "Inserisci il tuo numero telefonico",
-            "secondaryLabel": "Ti invieremo un sms di conferma\nper assicurarci che sei tu.",
+            "mainLabel":  "Inserisci il tuo numero di cellulare",
+            "secondaryLabel": "Ti invieremo un sms di conferma\n per assicurarci che sei tu",
             "doneButton": "Fatto",
             "submitButton": "Invia"
         },
         "PersonalDataBusinessControllerState": {
             "mainLabel":  "Qualche informazione\nsulla tua attività",
-            "secondaryLabel": "Per farti trovare dagli utenti\ndovresti dirci qualcosa in più\nsulla tua attività.",
+            "secondaryLabel": "Per farti trovare dagli Utenti\naggiungi qualcosa in più\nsulla tua attività.",
             "placeHolderName": "Nome attività",
             "placeHolderAddress": "Inserisci il tuo indirizzo",
             "placeHolderPhone": "Telefono",
-            "hintPhone": "Questo è il numero di telefono mostrato al pubblico. Se preferisci, puoi modificarlo con un altro.",
+            "hintPhone": "Questo numero di telefono è visibile agli Utenti. Se vuoi modificarlo con un altro numero.",
             "doneButton": "Fatto",
             "nextButton": "Avanti",
             "addPhoto": "Aggiungi una foto",
@@ -66,12 +66,12 @@
             "termsAndConditionHyperlink": "termini e le condizioni d'utilizzo."
         },
         "PersonalDataControllerState": {
-            "mainLabel":  "Ancora qualche informazione",
-            "secondaryLabel": "Per poterti identificare quando il tuo pacco arriverà, abbiamo bisogno di qualche altro dato.",
+            "mainLabel":  "Ancora qualche informazione ",
+            "secondaryLabel": "Per identificarti al ritiro abbiamo bisogno di qualche dato.",
             "or": "oppure",
             "placeHolderName": "Nome",
             "placeHolderSurname": "Cognome",
-            "hintNameAndSurname": "Se usi il nome e cognome come sistema di identificazione, dovrai esibire un documento valido per il ritiro.",
+            "hintNameAndSurname": "Se usi il tuo nome e cognome al ritiro, per il riconoscimento dovrai mostrare un documento valido.",
             "submitButton": "Invia",
             "addPhoto": "Aggiungi una foto",
             "acceptTermsAndCondition": "Dichiaro di aver preso visione ed accettare i ",
@@ -81,88 +81,88 @@
             "navTitle": "Modifica Profilo",
             "saveButton": "Salva",
             "editButton": "Modifica",
-            "showInstructions": "Vedi istruzioni di consegna",
+            "showInstructions": "Vedi le opzioni di consegna",
             "goToHome": "Vai alla home",
-            "rewardDescriptionTitle": "Per utilizzare QuiGreen in questo locale è richiesto:"
+            "rewardDescriptionTitle": "Come puoi utilizzare QuiGreen in questo Punto:"
         },
         "RewardPolicyControllerState": {
-            "rewardWanted": "Desideri qualcosa in cambio?",
-            "hintReward": "Puoi decidere di fornire il servizio QuiGreen in maniera completamente gratuita oppure puoi essere pagato in uno dei seguenti modi:",
+            "rewardWanted": "Cosa desideri ricevere per il servizio?",
+            "hintReward": "Puoi decidere di fornire il servizio QuiGreen gratuitamente oppure di essere pagato in uno dei seguenti modi:",
             "doneButton": "Fatto",
             "nextButton": "Avanti"
         },
         "AboutYouControllerState": {
-            "mainLabel":  "Raccontaci qualcosa su di te",
-            "secondaryLabel": "Sei qui per ricevere un pacco\no per fornire un servizio di ritiro?",
+            "mainLabel":  "Come vuoi usare QuiGreen?",
+            "secondaryLabel": "Vuoi ricevere un pacco \no vuoi fornire il servizio di ritiro?",
             "standardUserButton": "Voglio ricevere un pacco",
-            "pudoUserButton": "Voglio fornire un servizio"
+            "pudoUserButton": "Voglio fornire il servizio"
         },
         "ErrorController": {
             "errorDescription": "Oops!, sembra che ci sia un problema!",
             "goBack": "Torna indietro"
         },
         "HomeControllerState": {
-          "homeLabel": "Principale",
+          "homeLabel": "Home",
           "mapLabel": "Mappa",
-          "pudoLabel": "Punti",
+          "pudoLabel": "QuiGreen",
           "profileLabel": "Profilo"
         },
         "InstructionControllerState": {
             "receiverLabel": "Destinatario:",
-            "reviewAddressHint": "Se vuoi rivedere in seguito l’indirizzo\nda utilizzare per la consegna ti\nbasterà selezionare il PUDO tra i tuoi\nPUDO dalla Home.",
+            "reviewAddressHint": "Se vuoi vedere l’indirizzo\nda utilizzare per la consegna ti\n seleziona il Punto QuiGreen nella Home.",
             "instructionsLabel": "Istruzioni",
             "goToHome": "Vai alla home",
             "mainLabel": "É semplicissimo!",
-            "secondaryLabel": "Quando i tuoi clienti invieranno un\npacco verso la tua attività, riceverai\nun destinatario simile a quello\nriportato sotto.",
-            "handleReceiptTitle": "Gestisci la ricezione del pacco",
+            "secondaryLabel": "Quando gli utenti invieranno un\npacco presso di te, riceverai\nun messaggio come quello\n sotto riportato.",
+            "handleReceiptTitle": "Gestisci il pacco",
             "handleReceiptSubtitle": "Ti basterà scegliere la voce:",
             "shipmentReceivedTitle": "Ho ricevuto un pacco",
             "shipmentReceivedSubtitle": "dal menù principale dell'app\n",
-            "chooseUserTitle": "Scegli il tuo utente",
-            "chooseUserSubtitle": "Scegli il destinatario del pacco",
-            "chooseAnUserTitle": "Scegli un destinatario",
-            "chooseAnUserSubtitle": "tra quelli che hanno scelto la tua attività per la consegna ",
-            "notifyDeliveryTitle": "Notificagli l'arrivo",
+            "chooseUserTitle": "Scegli l’Utente",
+            "chooseUserSubtitle": "Scegli l’Utente destinatario del pacco",
+            "chooseAnUserTitle": "Scegli l’Utente destinatario",
+            "chooseAnUserSubtitle": "nell’elenco Utenti che hanno scelto il tuo Punto per il ritiro",
+            "notifyDeliveryTitle": "Notifica che il pacco è arrivato",
             "notifyDeliverySubtitle": "Scatta una foto al pacco",
             "shotAPhotoTitle": "Scatta una foto\nal pacco",
             "shotAPhotoSubtitle1": "et voilà!",
             "shotAPhotoSubtitle2": ",il gioco è fatto!",
             "mainLabelUser": "É semplicissimo!",
-            "secondayLabelUser": "Per poter ricevere il tuo pacco senza\npensieri, utilizzando il tuo PUDO\ncome destinatario ti basterà usare il\nseguente indirizzo di spedizione:",
+            "secondayLabelUser": "Per ricevere il tuo pacco al Punto QuiGreen \n usa il\nseguente indirizzo di consegna:",
             "notificationTitleUser": "Notifiche in tempo reale",
-            "notificationSubtitleUser": "Riceverai una notifica quando il tuo\npacco sarà giunto a destinazione\npresso il tuo PUDO."
+            "notificationSubtitleUser": "Riceverai una notifica quando il\npacco sarà consegnato \npresso il tuo Punto QuiGreen."
         },
         "NotifySentControllerState": {
             "mainLabelPackageReceived": "Notifica inviata",
-            "descriptionPackageReceived": "Abbiamo inviato una notifica\nall'utente ",
+            "descriptionPackageReceived": "Abbiamo inviato una notifica\nall’Utente",
             "mainLabelPackageDelivered": "Pacco consegnato",
-            "descriptionPackageDelivered": "Il pacco è stato correttamente consegnato all'utente ",
+            "descriptionPackageDelivered": "Il pacco è stato correttamente consegnato all’Utente",
             "secondaryLabel": "Fatto!"
         },
         "PackageDeliveredControllerState": {
             "navTitle": "Ho consegnato un pacco",
-            "mainLabel": "Chiedi al tuo cliente ",
+            "mainLabel": "Chiedi all’Utente ",
             "secondaryLabel": "di mostrarti il QRCode di ritiro",
             "orLabel": "oppure, seleziona il pacco\n tra quelli in giacenza",
             "waitingShipmentLabel": "Pacchi in giacenza"
         },
         "PackagePickupControllerState": {
-            "shipmentDetails": "Dettagli pacco",
+            "shipmentDetails": "Info pacco",
             "shipmentPickup": "Ritiro del pacco",
-            "showQRCode": "Mostra questo QRCode\nal punto di ritiro ",
+            "showQRCode": "Mostra questo QRCode\nal Punto QuiGreen ",
             "alreadyPicked": "Questo pacco risulta già ritirato.",
             "confirmPickup": "Conferma la ricezione",
             "troublesWithPickup": "Problemi con la ricezione?",
             "contactUs": "Contattaci",
             "photoTitle": "FOTO DEL PACCO",
             "detailTitle": "DETTAGLI PACCO",
-            "userAppend": " - utente "
+            "userAppend": " - Utente "
         },
         "PackageReceivedControllerState": {
             "navTitle": "Ho ricevuto un pacco",
             "mainLabel": "Scatta una foto\nal pacco",
-            "secondaryLabel": "Scegli un destinatario",
-            "placeHolderNotes": "Aggiungi una descrizione opzionale utile per la notifica di consegna al tuo utente",
+            "secondaryLabel": "Scegli un Utente",
+            "placeHolderNotes": "Aggiungi una descrizione opzionale utile la consegna al tuo Utente",
             "nextButton": "Avanti"
         },
         "PackagesListControllerState": {
@@ -182,22 +182,22 @@
             "deleteAccount": "Elimina account",
             "deleteAccountButton": "Procedi",
             "deleteAccountCancel": "Annulla",
-            "deleteAccountDescription": "La procedura eliminerà in maniera permanente il tuo account dai nostri server. Al termine della procedura ti verrà fornito un link web per scaricare la tua attività svolta su QuiGreen sino a questo momento. Lo stesso link ti verrà inviato via SMS al numero fornito in fase di registrazione.",
-            "deleteAccountSuccess": "La procedura di cancellazione è stata completata. Puoi visualizzare l'estratto dei tuoi dati cliccando Visualizza",
+            "deleteAccountDescription": "La procedura eliminerà in maniera permanente il tuo account. Al termine della procedura ti verrà fornito un link web per scaricare l’attività svolta su QuiGreen sino a questo momento. Lo stesso link ti verrà inviato via SMS al numero fornito in fase di registrazione.",
+            "deleteAccountSuccess": "La procedura di cancellazione è stata completata. Puoi visualizzare l'estratto delle tua attività cliccando Visualizza",
             "viewData": "Visualizza",
             "close": "Esci",
             "deleteAccountSuccessTitle": "Completato"
         },
         "PudoDetailControllerState": {
-            "numerOfUsers": " persone hanno già scelto quest’attività come punto di ritiro.",
+            "numerOfUsers": " persone hanno già scelto questo Punto QuiGreen per il ritiro",
             "chooseButton": "Scegli",
-            "pudoDetails": "Dettagli Pudo",
-            "rewardDescription": "Per utilizzare QuiGreen in questo locale è richiesto:",
+            "pudoDetails": "Info Punto QuiGreen",
+            "rewardDescription": "Per utilizzare il Punto QuiGreen è richiesto:",
             "phoneCallAction": "Chiama al telefono",
             "sendSMS": "Invia un messaggio",
             "sendWhatsApp": "Invia un WhatsApp",
             "termsConditionsTitle": "Termini e Condizioni",
-            "termsConditionsDescription": "Procedendo nella scelta di questo PUDO, dichiari di averne compreso termini e condizioni d'uso mostrate nella schermata di dettaglio precedente.",
+            "termsConditionsDescription": "Procedendo nella scelta di questo Punto QuiGreen, dichiari di averne compreso termini e condizioni d'uso mostrate nella schermata di dettaglio precedente.",
             "termsAcceptButton": "Accetta",
             "termsDenyButton": "Annulla"
         },
@@ -206,12 +206,12 @@
             "profileTitle": "Profilo"
         },
         "PudoListControllerState": {
-            "navTitle": "I tuoi pudo",
-            "deletePudoWarning": "Sei sicuro di voler rimuovere questo pudo?\nSe continui non riceverai ulteriori notifiche per i pacchi non ancora consegnati",
+            "navTitle": "I tuoi Punti QuiGreen",
+            "deletePudoWarning": "Sei sicuro di voler rimuovere questo Punto QuiGreen?\nAttenzione! Rimuovendolo non riceverai più notifiche per i pacchi non ancora consegnati",
             "copyAddressToClipboard": "Copia indirizzo"
         },
         "PudoMainControllerState": {
-            "listHeaderTitle": "Azioni disponibili",
+            "listHeaderTitle": "Opzioni disponibili",
             "receiveShipment": "Ricevi un pacco",
             "deliverShipment": "Consegna un pacco",
             "waitingShipment": "Pacchi in giacenza"
@@ -225,48 +225,48 @@
             "deleteAccount": "Elimina account",
             "deleteAccountButton": "Procedi",
             "deleteAccountCancel": "Annulla",
-            "deleteAccountDescription": "La procedura eliminerà in maniera permanente il tuo account dai nostri server. Al termine della procedura ti verrà fornito un link web per scaricare la tua attività svolta su QuiGreen sino a questo momento. Lo stesso link ti verrà inviato via SMS al numero fornito in fase di registrazione.",
-            "deleteAccountSuccess": "La procedura di cancellazione è stata completata. Puoi visualizzare l'estratto dei tuoi dati cliccando Visualizza",
+            "deleteAccountDescription": "La procedura eliminerà in maniera permanente il tuo account. Al termine della procedura ti verrà fornito un link web per scaricare l’attività svolta su QuiGreen sino a questo momento. Lo stesso link ti verrà inviato via SMS al numero fornito in fase di registrazione.",
+            "deleteAccountSuccess": "La procedura di cancellazione è stata completata. Puoi visualizzare l'estratto della tua attività cliccando Visualizza",
             "viewData": "Visualizza",
             "close": "Esci",
             "deleteAccountSuccessTitle": "Completato"
         },
         "PudoUsersListControllerState": {
-            "chooseRecipient": "Scegli un destinatario",
-            "yourUsers": "I tuoi utenti",
+            "chooseRecipient": "Scegli il destinatario",
+            "yourUsers": "I tuoi Utenti",
             "searchByName": "Cerca per nome"
         },
         "RegistrationCompleteControllerState": {
-            "navBarTitle": "Fatto!",
-            "mainLabel": "Adesso potrai usare questo indirizzo per farti inviare i tuoi pacchi in totale comodità!",
-            "allowContact": "Permetti ai pudo di contattarmi al mio numero telefonico in caso di comunicazioni inerenti i miei pacchi.",
-            "showInstructions": "Vedi le istruzioni",
+            "navBarTitle": "Fatto! Punto QuiGreen aggiunto!",
+            "mainLabel": "Ora potrai usare questo indirizzo per farti inviare i tuoi pacchi in totale comodità!",
+            "allowContact": "Consento ai Punti QuiGreen di contattarmi telefonicamente per le comunicazioni relative ai miei pacchi.",
+            "showInstructions": "Istruzioni",
             "goToHome": "Vai alla home"
         },
         "ThanksControllerState": {
             "mainLabel": "Grazie per averci scelto!",
-            "secondaryLabel": "Divendando un PUDO QuiGreen potrai fornire un servizio a tutti gli utenti che vorranno ricevere un pacco, ricevendolo tu per loro.",
+            "secondaryLabel": "Come Punto QuiGreen puoi fornire il servizio a tutti gli Utenti che vorranno ricevere un pacco, ricevendolo tu per loro.",
             "nextButton": "Avanti",
             "backButton": "Indietro"
         },
         "UserDetailControllerState": {
-            "navBarTitle": "I tuoi utenti",
+            "navBarTitle": "I tuoi Utenti", 
             "userSince": "Utente dal ",
             "phoneCallAction": "Chiama al telefono",
             "sendSMS": "Invia un messaggio",
             "sendWhatsApp": "Invia un WhatsApp"
         },
         "UserPositionControllerState": {
-            "navBarTitle": "Vediamo dove ti trovi",
-            "mainLabel": "Per poterti fornire informazioni rilevanti\nabbiamo bisogno di accedere alla tua posizione.",
-            "allowGPSButton": "Ok, grazie!",
+            "navBarTitle": "Dove ti trovi?",
+            "mainLabel": "Cerca i Punti QuiGreen più vicini a te.",
+            "allowGPSButton": "Usa la mia posizione",
             "chooseAddressButton": "Inserisci indirizzo"
         },
         "NoPackagesWidget": {
-            "noShipment": "Non ci sono ancora consegne\nin attesa per te!"
+            "noShipment": "Non ci sono ancora consegne\n in attesa per te!"
         },
         "NoPudosWidget": {
-          "description": "Non hai ancora aggiunto un pudo\nper le tue consegne!"  
+          "description": "Aggiungi i tuoi Punti QuiGreen\n per le tue consegne!"  
         },
         "PackageCard": {
             "deliveredOn": "Pacco consegnato il ",
@@ -282,13 +282,13 @@
             "changePhoto": "Cambia la foto"
         },
         "UserProfileRecapWidget": {
-            "recapPudoTitle": "I tuoi utenti hanno usato il servizio di QuiGreen ",
-            "recapUserTitle": "Hai usato il servizio di QuiGreen ",
-            "reacapShareTitle": "Ho usato il servizio di QuiGreen ",
+            "recapPudoTitle": "I tuoi Utenti hanno usato QuiGreen ",
+            "recapUserTitle": "Hai usato il servizio QuiGreen ",
+            "reacapShareTitle": "Ho usato il servizio QuiGreen ",
             "nTimes": " volte,",
-            "contribute": " contribuendo a ridurre di ",
-            "co2Emission": " le emissioni di CO2 ",
-            "shareButton": "condividi",
+            "contribute": " contribuendo a RIDURRE di ",
+            "co2Emission": " le EMISSIONI di CO2 ",
+            "shareButton": "CONDIVIDI",
             "learnMore": "Scopri di più su https://www.quigreen.it"
         },
         "ContactUsControllerState": {
