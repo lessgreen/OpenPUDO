@@ -92,10 +92,9 @@ class _ProfileControllerState extends State<ProfileController> with ConnectionAw
                 child: Padding(
                   padding: const EdgeInsets.only(right: Dimension.padding),
                   child: _buildEditable(
-                    const Icon(
-                      CupertinoIcons.pencil_circle,
-                      color: Colors.white,
-                      size: 26,
+                    Text(
+                      'editButton'.localized(context),
+                      style: Theme.of(context).textTheme.bodyText2White,
                     ),
                     Text(
                       'endButton'.localized(context),
@@ -177,6 +176,7 @@ class _ProfileControllerState extends State<ProfileController> with ConnectionAw
                       },
                     ),
                     TableViewCell(
+                      dividerPadding: EdgeInsets.only(left: 5000),
                       title: "deleteAccount".localized(context),
                       textAlign: TextAlign.center,
                       textStyle: Theme.of(context).textTheme.bodyTextBoldRed,
