@@ -25,6 +25,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:focus_detector/focus_detector.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
@@ -147,7 +148,13 @@ class _MapControllerState extends State<MapController> with ConnectionAware, Tic
     );
   }
 
-  Widget _buildPageWithCupertinoScaffold(MapsControllerViewModel viewModel) => SAScaffold(
+  Widget _buildPageWithCupertinoScaffold(MapsControllerViewModel viewModel) {
+    return FocusDetector(
+      onVisibilityGained: () {
+        viewModel.tryGetUserLocation(context);
+      },
+      child: SAScaffold(
+        useInternalScaffold: true,
         cupertinoBar: CupertinoNavigationBarFix.build(
           context,
           leading: widget.canGoBack
@@ -165,16 +172,35 @@ class _MapControllerState extends State<MapController> with ConnectionAware, Tic
                   onTap: () => Navigator.of(context).pushNamed(Routes.profile),
                   child: Container(margin: const EdgeInsets.only(right: Dimension.paddingS), width: 40, child: SvgPicture.asset(ImageSrc.profileArt, color: Colors.white)),
                 )
-              : null,
+              : Padding(
+                  padding: const EdgeInsets.only(right: 8.0),
+                  child: GestureDetector(
+                    onTap: () => viewModel.tryGetUserLocation(context),
+                    child: SvgPicture.asset(
+                      'assets/position_disabled.svg',
+                      color: Colors.white,
+                      width: 32,
+                      height: 32,
+                      fit: BoxFit.contain,
+                    ),
+                  ),
+                ),
         ),
         body: SafeArea(
           child: Stack(
             children: [_buildMap(viewModel), _buildBody(viewModel)],
           ),
         ),
-      );
+      ),
+    );
+  }
 
-  Widget _buildPageWithCustomSpecificScaffold(MapsControllerViewModel viewModel) => SAScaffold(
+  Widget _buildPageWithCustomSpecificScaffold(MapsControllerViewModel viewModel) {
+    return FocusDetector(
+      onVisibilityGained: () {
+        viewModel.tryGetUserLocation(context);
+      },
+      child: SAScaffold(
         appBar: AppBar(
           backgroundColor: Colors.white.withOpacity(0.8),
           systemOverlayStyle: SystemUiOverlayStyle.dark,
@@ -210,9 +236,8 @@ class _MapControllerState extends State<MapController> with ConnectionAware, Tic
                               if (!widget.canGoBack) const SizedBox(),
                               TextFieldButton(
                                 text: "skipButton".localized(context),
-                                onPressed: () => Navigator.of(context).pushNamedAndRemoveUntil(
+                                onPressed: () => Navigator.of(context).pushNamed(
                                   Routes.personalData,
-                                  ModalRoute.withName('/'),
                                 ),
                               ),
                             ],
@@ -231,7 +256,9 @@ class _MapControllerState extends State<MapController> with ConnectionAware, Tic
             ),
           ],
         ),
-      );
+      ),
+    );
+  }
 
   Widget _buildBody(MapsControllerViewModel viewModel) => Stack(
         children: [
@@ -399,7 +426,19 @@ class _MapControllerState extends State<MapController> with ConnectionAware, Tic
                     },
                     selectedMarker: widget.enablePudoCards ? viewModel.showingCardPudo : null,
                     tintColor: AppColors.primaryColorDark,
-                  ),
+                  )..add(
+                      Marker(
+                          width: 50.0,
+                          height: 50.0,
+                          point: viewModel.userPosition ?? LatLng(0.0, 0.0),
+                          builder: (ctx) {
+                            return viewModel.userPosition == null
+                                ? const SizedBox()
+                                : const SpinKitRipple(
+                                    color: Colors.blue,
+                                  );
+                          }),
+                    ),
                   builder: (context, markers) {
                     return FloatingActionButton(
                       heroTag: Key(markers.length.toString() + markers.first.point.toSexagesimal()),
