@@ -77,132 +77,132 @@ class _PudoProfileControllerState extends State<PudoProfileController> with Conn
               ),
               trailing: GestureDetector(
                 onTap: () => Navigator.pushNamed(context, Routes.profileEdit),
-                child: const Padding(
-                  padding: EdgeInsets.only(right: Dimension.padding),
-                  child: Icon(
-                    CupertinoIcons.pencil_circle,
-                    color: Colors.white,
-                    size: 26,
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 8.0),
+                  child: Text(
+                    'editButton'.localized(context, 'ProfileControllerState'),
+                    style: Theme.of(context).textTheme.bodyText2White,
                   ),
                 ),
               ),
             ),
-            body: Stack(
-              alignment: Alignment.center,
+            body: ListView(
               children: [
-                ListView(
-                  children: [
-                    AspectRatio(
-                      aspectRatio: 18 / 9,
-                      child: CustomNetworkImage(
-                        url: currentUser.pudoProfile?.pudoPicId,
-                      ),
+                AspectRatio(
+                  aspectRatio: 18 / 9,
+                  child: CustomNetworkImage(
+                    url: currentUser.pudoProfile?.pudoPicId,
+                  ),
+                ),
+                const SizedBox(
+                  height: Dimension.paddingM,
+                ),
+                Center(
+                  child: Text(
+                    currentUser.pudoProfile?.businessName ?? " ",
+                    style: Theme.of(context).textTheme.headline6Bold,
+                  ),
+                ),
+                const SizedBox(height: 6),
+                Center(
+                  child: Text(
+                    '${'userSince'.localized(context)} ${currentUser.pudoProfile?.createTms != null ? DateFormat('dd/MM/yyyy').format(DateTime.parse(currentUser.pudoProfile!.createTms!)) : " "}',
+                    style: Theme.of(context).textTheme.bodyText2Light,
+                  ),
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                UserProfileRecapWidget(
+                  totalUsage: currentUser.pudoProfile?.packageCount ?? 0,
+                  kgCO2Saved: currentUser.pudoProfile?.savedCO2 ?? '0.0Kg',
+                  isForPudo: true,
+                ),
+                TableViewCell(
+                    showTopDivider: true,
+                    fullWidth: true,
+                    leading: const Icon(
+                      CupertinoIcons.person_fill,
+                      color: AppColors.primaryColorDark,
+                      size: 26,
                     ),
-                    const SizedBox(
-                      height: Dimension.paddingM,
-                    ),
-                    Center(
-                      child: Text(
-                        currentUser.pudoProfile?.businessName ?? " ",
-                        style: Theme.of(context).textTheme.headline6Bold,
-                      ),
-                    ),
-                    const SizedBox(height: 6),
-                    Center(
-                      child: Text(
-                        '${'userSince'.localized(context)} ${currentUser.pudoProfile?.createTms != null ? DateFormat('dd/MM/yyyy').format(DateTime.parse(currentUser.pudoProfile!.createTms!)) : " "}',
-                        style: Theme.of(context).textTheme.bodyText2Light,
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    UserProfileRecapWidget(
-                      totalUsage: currentUser.pudoProfile?.packageCount ?? 0,
-                      kgCO2Saved: currentUser.pudoProfile?.savedCO2 ?? '0.0Kg',
-                      isForPudo: true,
-                    ),
-                    TableViewCell(
-                        showTopDivider: true,
-                        fullWidth: true,
-                        leading: const Icon(
-                          CupertinoIcons.person_fill,
-                          color: AppColors.primaryColorDark,
-                          size: 26,
-                        ),
-                        title: 'yourUsers'.localized(context),
-                        onTap: () {
-                          Navigator.of(context).pushNamed(Routes.pudoUsersList);
-                        }),
-                    TableViewCell(
-                      leading: SvgPicture.asset(
-                        ImageSrc.logoutIcon,
-                        color: AppColors.cardColor,
-                        width: 36,
-                        height: 36,
-                      ),
-                      title: 'logoutButton'.localized(context),
-                      onTap: () {
-                        Navigator.pop(context);
-                        NetworkManager.instance.setAccessToken(null);
-                        currentUser.refresh();
+                    title: 'yourUsers'.localized(context),
+                    onTap: () {
+                      Navigator.of(context).pushNamed(Routes.pudoUsersList);
+                    }),
+                TableViewCell(
+                  fullWidth: true,
+                  leading: SvgPicture.asset(
+                    ImageSrc.logoutIcon,
+                    color: AppColors.cardColor,
+                    width: 36,
+                    height: 36,
+                  ),
+                  title: 'logoutButton'.localized(context),
+                  onTap: () {
+                    Navigator.pop(context);
+                    NetworkManager.instance.setAccessToken(null);
+                    currentUser.refresh();
+                  },
+                ),
+                TableViewCell(
+                  fullWidth: true,
+                  title: "deleteAccount".localized(context),
+                  textAlign: TextAlign.center,
+                  textStyle: Theme.of(context).textTheme.bodyTextBoldRed,
+                  showTrailingChevron: false,
+                  onTap: () => _showConfirmationDelete(
+                      acceptCallback: () {
+                        NetworkManager.instance.deleteUser().then((value) {
+                          if (value is String) {
+                            SAAlertDialog.displayAlertWithButtons(
+                              context,
+                              'deleteAccountSuccessTitle'.localized(context),
+                              'deleteAccountSuccess'.localized(context),
+                              [
+                                MaterialButton(
+                                  child: Text(
+                                    'viewData'.localized(context),
+                                    style: Theme.of(context).textTheme.bodyTextAccent,
+                                  ),
+                                  onPressed: () {
+                                    launch(value).then((value) {
+                                      Navigator.pop(context);
+                                      NetworkManager.instance.setAccessToken(null);
+                                      currentUser.refresh();
+                                    });
+                                  },
+                                ),
+                                MaterialButton(
+                                  child: Text(
+                                    'close'.localized(context),
+                                  ),
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                    NetworkManager.instance.setAccessToken(null);
+                                    currentUser.refresh();
+                                  },
+                                )
+                              ],
+                            );
+                          }
+                        }).catchError((onError) => SAAlertDialog.displayAlertWithClose(context, 'genericErrorTitle'.localized(context, 'general'), onError));
                       },
-                    ),
-                    TableViewCell(
-                      title: "deleteAccount".localized(context),
-                      textAlign: TextAlign.center,
-                      textStyle: Theme.of(context).textTheme.bodyTextBoldRed,
-                      showTrailingChevron: false,
-                      onTap: () => _showConfirmationDelete(
-                          acceptCallback: () {
-                            NetworkManager.instance.deleteUser().then((value) {
-                              if (value is String) {
-                                SAAlertDialog.displayAlertWithButtons(
-                                  context,
-                                  'deleteAccountSuccessTitle'.localized(context),
-                                  'deleteAccountSuccess'.localized(context),
-                                  [
-                                    MaterialButton(
-                                      child: Text(
-                                        'viewData'.localized(context),
-                                        style: Theme.of(context).textTheme.bodyTextAccent,
-                                      ),
-                                      onPressed: () {
-                                        launch(value).then((value) {
-                                          Navigator.pop(context);
-                                          NetworkManager.instance.setAccessToken(null);
-                                          currentUser.refresh();
-                                        });
-                                      },
-                                    ),
-                                    MaterialButton(
-                                      child: Text(
-                                        'close'.localized(context),
-                                      ),
-                                      onPressed: () {
-                                        Navigator.pop(context);
-                                        NetworkManager.instance.setAccessToken(null);
-                                        currentUser.refresh();
-                                      },
-                                    )
-                                  ],
-                                );
-                              }
-                            }).catchError((onError) => SAAlertDialog.displayAlertWithClose(context, 'genericErrorTitle'.localized(context, 'general'), onError));
-                          },
-                          denyCallback: null),
-                    )
-                  ],
+                      denyCallback: null),
                 ),
                 _info == null
                     ? const SizedBox()
-                    : Positioned(
-                        child: Text(
-                          'v${_info!.version}#${_info!.buildNumber}',
-                          style: Theme.of(context).textTheme.captionSmall,
+                    : TableViewCell(
+                        title: Center(
+                          child: Text(
+                            'v${_info!.version}#${_info!.buildNumber}',
+                            style: Theme.of(context).textTheme.captionSmall,
+                          ),
                         ),
-                        bottom: 90,
-                      ),
+                        showTopDivider: false,
+                        showTrailingChevron: false,
+                        dividerPadding: const EdgeInsets.only(right: 5000),
+                      )
               ],
             ),
           ),
