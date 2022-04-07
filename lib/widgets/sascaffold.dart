@@ -57,11 +57,11 @@ class SAScaffold extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Color backgroundLoadingColor = Theme.of(context).cardColor.withAlpha(120);
+    bool useCupertino = (cupertinoBar != null);
     return isLoading != null
         ? ValueListenableBuilder(
             valueListenable: isLoading!,
             builder: (context, newValue, _) {
-              bool useCupertino = (cupertinoBar != null);
               return Stack(
                 children: [
                   useCupertino
@@ -69,7 +69,13 @@ class SAScaffold extends StatelessWidget {
                           resizeToAvoidBottomInset: resizeToAvoidBottomInset ?? true,
                           navigationBar: cupertinoBar,
                           backgroundColor: backgroundColor,
-                          child: useInternalScaffold ? Scaffold(body: body) : body,
+                          child: useInternalScaffold
+                              ? Scaffold(
+                                  body: body,
+                                  floatingActionButton: floatingActionButton,
+                                  floatingActionButtonLocation: floatingActionButtonLocation,
+                                )
+                              : body,
                         )
                       : Scaffold(
                           extendBodyBehindAppBar: extendBodyBehindAppBar,
@@ -96,12 +102,18 @@ class SAScaffold extends StatelessWidget {
           )
         : Stack(
             children: [
-              cupertinoBar != null
+              useCupertino
                   ? CupertinoPageScaffold(
                       resizeToAvoidBottomInset: resizeToAvoidBottomInset ?? true,
                       navigationBar: cupertinoBar,
                       backgroundColor: backgroundColor,
-                      child: body,
+                      child: useInternalScaffold
+                          ? Scaffold(
+                              body: body,
+                              floatingActionButton: floatingActionButton,
+                              floatingActionButtonLocation: floatingActionButtonLocation,
+                            )
+                          : body,
                     )
                   : Scaffold(
                       extendBodyBehindAppBar: extendBodyBehindAppBar,
