@@ -104,10 +104,10 @@ class SAAlertDialog extends StatelessWidget {
                         child: value.child,
                         onPressed: () {
                           isAlreadyShown = false;
-                          value.onPressed?.call();
                           if (Navigator.of(subContext).canPop() == true) {
                             Navigator.of(subContext).pop();
                           }
+                          value.onPressed?.call();
                         },
                       ),
                     );
