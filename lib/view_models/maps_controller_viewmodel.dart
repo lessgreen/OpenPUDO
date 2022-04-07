@@ -37,6 +37,9 @@ class MapsControllerViewModel extends ChangeNotifier {
   var currentLatitude = 45.4642;
   var currentLongitude = 9.1900;
   var currentZoomLevel = 8;
+  Location userLocationManager = Location();
+  LatLng? userPosition;
+
   MapPosition? currentMapPosition;
   PageController pageController = PageController(viewportFraction: 0.95, initialPage: 0);
   MapController? mapController;
@@ -114,28 +117,28 @@ class MapsControllerViewModel extends ChangeNotifier {
   }
 
   Future<LocationData?> tryGetUserLocation(BuildContext context) async {
-    Location location = Location();
-
     bool _serviceEnabled;
     PermissionStatus _permissionGranted;
 
-    _serviceEnabled = await location.serviceEnabled();
+    _serviceEnabled = await userLocationManager.serviceEnabled();
     if (!_serviceEnabled) {
-      _serviceEnabled = await location.requestService();
+      _serviceEnabled = await userLocationManager.requestService();
       if (!_serviceEnabled) {
         return null;
       }
     }
 
-    _permissionGranted = await location.hasPermission();
+    _permissionGranted = await userLocationManager.hasPermission();
     if (_permissionGranted == PermissionStatus.denied) {
-      _permissionGranted = await location.requestPermission();
+      _permissionGranted = await userLocationManager.requestPermission();
       if (_permissionGranted != PermissionStatus.granted) {
         return null;
       }
     }
-    return location.getLocation().then((value) {
+    return userLocationManager.getLocation().then((value) {
       position = LatLng(value.latitude ?? 45.464664, value.longitude ?? 9.188540);
+      userPosition = position;
+
       WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
         animateMapTo(this, position);
       });
