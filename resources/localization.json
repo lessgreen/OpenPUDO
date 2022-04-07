@@ -172,6 +172,7 @@
         },
         "ProfileControllerState": {
             "navTitle": "Il tuo profilo",
+            "editButton": "Modifica",
             "endButton": "Fine",
             "userSince": "Utente dal ",
             "yourShipment": "Le tue spedizioni",

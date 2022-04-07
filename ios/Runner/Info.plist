@@ -22,6 +22,8 @@
 	<string>????</string>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>https</string>
@@ -33,13 +35,13 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
-	<string>QuiGreen richiese l&apos;uso della fotocamera per inquadrare il QRCode e scattare foto.</string>
+	<string>QuiGreen richiese l'uso della fotocamera per inquadrare il QRCode e scattare foto.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>QuiGreen ha bisogno di conoscere la tua posizione per mostrarti PUDO nelle vicinanze.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>QuiGreen ha bisogno di conoscere la tua posizione per mostrarti PUDO nelle vicinanze.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>QuiGreen richiese l&apos;uso della libreria per aggiungere foto.</string>
+	<string>QuiGreen richiese l'uso della libreria per aggiungere foto.</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
@@ -55,8 +57,6 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-	<key>ITSAppUsesNonExemptEncryption</key>
-	<false/>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
 </dict>
