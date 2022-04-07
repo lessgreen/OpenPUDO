@@ -23,17 +23,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
-import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
-import 'package:qui_green/commons/ui/cupertino_navigation_bar_fix.dart';
 import 'package:qui_green/commons/utilities/localization.dart';
 import 'package:qui_green/resources/res.dart';
 import 'package:qui_green/view_models/user_position_controller_viewmodel.dart';
 import 'package:qui_green/widgets/main_button.dart';
+import 'package:qui_green/widgets/sascaffold.dart';
 
 class UserPositionController extends StatefulWidget {
-  const UserPositionController({Key? key, required this.canGoBack, required this.useCupertinoScaffold}) : super(key: key);
+  const UserPositionController({Key? key, required this.canGoBack}) : super(key: key);
   final bool canGoBack;
-  final bool useCupertinoScaffold;
 
   @override
   _UserPositionControllerState createState() => _UserPositionControllerState();
@@ -47,11 +45,11 @@ class _UserPositionControllerState extends State<UserPositionController> {
       child: Consumer<UserPositionControllerViewModel?>(
         builder: (_, viewModel, __) {
           if (widget.canGoBack) {
-            return widget.useCupertinoScaffold ? _buildPageWithCupertinoScaffold(viewModel!) : _buildPageWithBaseScaffold(viewModel!);
+            return _buildPageWithBaseScaffold(viewModel!);
           }
           return WillPopScope(
             onWillPop: () async => false,
-            child: widget.useCupertinoScaffold ? _buildPageWithCupertinoScaffold(viewModel!) : _buildPageWithBaseScaffold(viewModel!),
+            child: _buildPageWithBaseScaffold(viewModel!),
           );
         },
       ),
@@ -60,32 +58,11 @@ class _UserPositionControllerState extends State<UserPositionController> {
 
   //MARK: Build widget accessories
 
-  Widget _buildPageWithCupertinoScaffold(UserPositionControllerViewModel viewModel) {
-    return CupertinoPageScaffold(
-      resizeToAvoidBottomInset: true,
-      navigationBar: CupertinoNavigationBarFix.build(
-        context,
-        leading: widget.canGoBack
-            ? CupertinoNavigationBarBackButton(
-                color: Colors.white,
-                onPressed: () => Navigator.of(context).pop(),
-              )
-            : null,
-        middle: Text(
-          'navBarTitle'.localized(context),
-          style: Theme.of(context).textTheme.navBarTitle,
-          maxLines: 1,
-        ),
-      ),
-      child: _buildBody(viewModel),
-    );
-  }
-
   Widget _buildPageWithBaseScaffold(UserPositionControllerViewModel viewModel) {
-    return Scaffold(
+    return SAScaffold(
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
-        backgroundColor: ThemeData.light().scaffoldBackgroundColor,
+        backgroundColor: Colors.transparent,
         systemOverlayStyle: SystemUiOverlayStyle.dark,
         leading: widget.canGoBack
             ? CupertinoNavigationBarBackButton(
@@ -102,17 +79,26 @@ class _UserPositionControllerState extends State<UserPositionController> {
     return SafeArea(
       child: Stack(
         children: [
-          SvgPicture.asset(ImageSrc.userPositionArt, semanticsLabel: 'Art Background'),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  SvgPicture.asset(
+                    ImageSrc.userPositionArt,
+                    semanticsLabel: 'Art Background',
+                    width: MediaQuery.of(context).size.width,
+                  ),
+                ],
+              ),
+            ],
+          ),
           Column(
             children: [
-              if (!widget.useCupertinoScaffold)
-                Center(
-                  child: Text(
-                    'navBarTitle'.localized(context),
-                    style: Theme.of(context).textTheme.headline6,
-                  ),
-                ),
-              if (widget.useCupertinoScaffold) const SizedBox(height: Dimension.padding),
+              Text(
+                'navBarTitle'.localized(context),
+                style: Theme.of(context).textTheme.headline6,
+              ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
                 child: Center(

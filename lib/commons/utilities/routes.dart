@@ -87,7 +87,6 @@ dynamic routeWithSetting(RouteSettings settings) {
       return PageRouteHelper.buildPage(
         const UserPositionController(
           canGoBack: true,
-          useCupertinoScaffold: false,
         ),
       );
     case Routes.insertAddress:

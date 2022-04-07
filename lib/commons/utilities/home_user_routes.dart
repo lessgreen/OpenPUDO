@@ -99,13 +99,13 @@ dynamic homeUserRouteWithSetting(RouteSettings settings) {
           useCupertinoScaffold: true,
         ),
       );
-    case Routes.userPosition:
-      return PageRouteHelper.buildPage(
-        const UserPositionController(
-          canGoBack: true,
-          useCupertinoScaffold: true,
-        ),
-      );
+    // case Routes.userPosition:
+    //   return PageRouteHelper.buildPage(
+    //     const UserPositionController(
+    //       canGoBack: true,
+    //       useCupertinoScaffold: true,
+    //     ),
+    //   );
     case Routes.pudoTutorial:
       return PageRouteHelper.buildPage(
         InstructionController(
