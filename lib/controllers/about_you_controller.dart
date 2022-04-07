@@ -26,6 +26,7 @@ import 'package:qui_green/commons/utilities/localization.dart';
 import 'package:qui_green/resources/res.dart';
 import 'package:qui_green/resources/routes_enum.dart';
 import 'package:qui_green/widgets/main_button.dart';
+import 'package:qui_green/widgets/sascaffold.dart';
 
 class AboutYouController extends StatefulWidget {
   const AboutYouController({Key? key, this.phoneNumber}) : super(key: key);
@@ -39,7 +40,7 @@ class _AboutYouControllerState extends State<AboutYouController> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async => false,
-      child: Scaffold(
+      child: SAScaffold(
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
           backgroundColor: Colors.transparent,
@@ -51,11 +52,9 @@ class _AboutYouControllerState extends State<AboutYouController> {
         ),
         body: Column(
           children: [
-            Center(
-              child: Text(
-                'mainLabel'.localized(context),
-                style: Theme.of(context).textTheme.headline6,
-              ),
+            Text(
+              'mainLabel'.localized(context),
+              style: Theme.of(context).textTheme.headline6,
             ),
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),

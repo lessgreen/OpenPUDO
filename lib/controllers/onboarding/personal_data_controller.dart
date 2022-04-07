@@ -61,17 +61,28 @@ class _PersonalDataControllerState extends State<PersonalDataController> with Co
         builder: (_, viewModel, __) {
           viewModel?.showErrorDialog = (String val) => _showErrorDialog(context, val);
           return KeyboardVisibilityBuilder(builder: (context, child, isKeyboardVisible) {
-            return WillPopScope(
-              onWillPop: () async => false,
-              child: SAScaffold(
-                isLoading: NetworkManager.instance.networkActivity,
-                resizeToAvoidBottomInset: true,
-                appBar: AppBar(
+            return SAScaffold(
+              isLoading: NetworkManager.instance.networkActivity,
+              resizeToAvoidBottomInset: true,
+              extendBodyBehindAppBar: true,
+              appBar: AppBar(
                   backgroundColor: Colors.transparent,
                   systemOverlayStyle: SystemUiOverlayStyle.dark,
-                  leading: const SizedBox(),
-                ),
-                body: ListView(
+                  leading: CupertinoNavigationBarBackButton(
+                    color: AppColors.primaryColorDark,
+                    onPressed: () => Navigator.of(context).pop(),
+                  )),
+              body: ShaderMask(
+                shaderCallback: (Rect rect) {
+                  return LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [Theme.of(context).backgroundColor, Colors.transparent, Colors.transparent, Theme.of(context).backgroundColor],
+                    stops: const [0.0, 0.12, 0.9, 1.0],
+                  ).createShader(rect);
+                },
+                blendMode: BlendMode.dstOut,
+                child: ListView(
                   children: [
                     Center(
                       child: Text(
@@ -182,20 +193,23 @@ class _PersonalDataControllerState extends State<PersonalDataController> with Co
                         ],
                       ),
                     ),
+                    const SizedBox(
+                      height: 120,
+                    )
                   ],
                 ),
-                bottomSheet: AnimatedCrossFade(
-                  crossFadeState: isKeyboardVisible ? CrossFadeState.showSecond : CrossFadeState.showFirst,
-                  secondChild: const SizedBox(
-                    width: double.infinity,
-                  ),
-                  firstChild: MainButton(
-                    enabled: viewModel.isValid && termsAndConditionsChecked,
-                    onPressed: () => viewModel.onSendClick(context, widget.pudoDataModel),
-                    text: 'submitButton'.localized(context),
-                  ),
-                  duration: const Duration(milliseconds: 150),
+              ),
+              bottomSheet: AnimatedCrossFade(
+                crossFadeState: isKeyboardVisible ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+                secondChild: const SizedBox(
+                  width: double.infinity,
                 ),
+                firstChild: MainButton(
+                  enabled: viewModel.isValid && termsAndConditionsChecked,
+                  onPressed: () => viewModel.onSendClick(context, widget.pudoDataModel),
+                  text: 'submitButton'.localized(context),
+                ),
+                duration: const Duration(milliseconds: 150),
               ),
             );
           });

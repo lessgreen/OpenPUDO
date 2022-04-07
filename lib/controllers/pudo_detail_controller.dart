@@ -396,9 +396,8 @@ class _PudoDetailControllerState extends State<PudoDetailController> with Connec
   }
 
   void _goToPersonalData() {
-    Navigator.of(context).pushNamedAndRemoveUntil(
+    Navigator.of(context).pushNamed(
       Routes.personalData,
-      ModalRoute.withName('/'),
       arguments: widget.dataModel,
     );
   }

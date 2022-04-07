@@ -56,6 +56,11 @@ class _PersonalDataBusinessControllerState extends State<PersonalDataBusinessCon
           return Scaffold(
             resizeToAvoidBottomInset: true,
             appBar: AppBar(
+              title: Text(
+                'mainLabel'.localized(context),
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.headline6,
+              ),
               backgroundColor: Colors.transparent,
               systemOverlayStyle: SystemUiOverlayStyle.dark,
               leading: widget.canGoBack
@@ -78,19 +83,6 @@ class _PersonalDataBusinessControllerState extends State<PersonalDataBusinessCon
                   },
                   blendMode: BlendMode.dstOut,
                   child: ListView(children: [
-                    const SizedBox(
-                      height: Dimension.paddingM,
-                    ),
-                    Center(
-                      child: SizedBox(
-                        width: MediaQuery.of(context).size.width / 3 * 2,
-                        child: Text(
-                          'mainLabel'.localized(context),
-                          textAlign: TextAlign.center,
-                          style: Theme.of(context).textTheme.headline6,
-                        ),
-                      ),
-                    ),
                     const SizedBox(
                       height: Dimension.padding,
                     ),
