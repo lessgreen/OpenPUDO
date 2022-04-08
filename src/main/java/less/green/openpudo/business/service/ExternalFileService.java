@@ -27,6 +27,7 @@ import java.math.RoundingMode;
 import java.util.Date;
 import java.util.UUID;
 
+import static less.green.openpudo.common.FormatUtils.prettyPrint;
 import static less.green.openpudo.common.FormatUtils.smartElapsed;
 import static less.green.openpudo.common.MultipartUtils.PART_NAME;
 
@@ -78,27 +79,24 @@ public class ExternalFileService {
 
     protected TbExternalFile saveExternalImage(byte[] bytes) {
         // read byte array as image
-        BufferedImage original;
+        BufferedImage original, processed;
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+        // resize, rotate and recompress image
+        long startTime = System.nanoTime();
         try {
             original = ImageIO.read(new ByteArrayInputStream(bytes));
+            Thumbnails.of(new ByteArrayInputStream(bytes)).width(Math.min(original.getWidth(), 1200)).useExifOrientation(true).outputFormat("jpg").outputQuality(0.6).toOutputStream(baos);
+            processed = ImageIO.read(new ByteArrayInputStream(baos.toByteArray()));
         } catch (IOException ex) {
             throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.invalid_field", PART_NAME));
         }
-        // resize and recompress image
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        try {
-            long startTime = System.nanoTime();
-            if (original.getWidth() >= 1200) {
-                Thumbnails.of(original).width(1200).outputFormat("jpg").outputQuality(0.6).toOutputStream(baos);
-            } else {
-                Thumbnails.of(original).width(original.getWidth()).outputFormat("jpg").outputQuality(0.6).toOutputStream(baos);
-            }
-            long endTime = System.nanoTime();
-            log.info("[{}] Image compressed to {}% of original size in {}", context.getExecutionId(),
-                    BigDecimal.valueOf(((long) baos.size()) * 100L).divide(BigDecimal.valueOf(bytes.length), 0, RoundingMode.HALF_UP), smartElapsed(endTime - startTime));
-        } catch (IOException ex) {
-            throw new RuntimeException("Error while resizing image", ex);
-        }
+        long endTime = System.nanoTime();
+        log.info("[{}] Image resized from {}x{} to {}x{}, reduced to {} bytes ({}% of original size) in {}", context.getExecutionId(),
+                original.getWidth(), original.getHeight(), processed.getWidth(), processed.getHeight(), prettyPrint(baos.size()),
+                BigDecimal.valueOf(((long) baos.size()) * 100L).divide(BigDecimal.valueOf(bytes.length), 0, RoundingMode.HALF_UP),
+                smartElapsed(endTime - startTime));
+
         // save it to storage area
         UUID newId = UUID.randomUUID();
         storageService.saveFileBinary(newId, baos.toByteArray());

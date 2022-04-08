@@ -2,6 +2,7 @@ package less.green.openpudo.common;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 public class FormatUtils {
@@ -39,6 +40,10 @@ public class FormatUtils {
         } else {
             return BigDecimal.valueOf(elapsedNano).divide(BigDecimal.valueOf(TimeUnit.HOURS.toNanos(1)), scale, RoundingMode.HALF_UP) + " hours";
         }
+    }
+
+    public static String prettyPrint(long num) {
+        return String.format(Locale.ITALY, "%,d", num);
     }
 
     public static String calcSavedCO2(long packageCount) {
