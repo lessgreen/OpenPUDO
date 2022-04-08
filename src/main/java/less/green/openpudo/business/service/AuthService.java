@@ -278,6 +278,9 @@ public class AuthService {
 
     public AccessTokenData renew() {
         TbUser user = userDao.get(context.getUserId());
+        if (user == null) {
+            throw new ApiException(ApiReturnCodes.EXPIRED_JWT_TOKEN, localizationService.getMessage(context.getLanguage(), "error.auth.expired_access_token"));
+        }
         user.setLastLoginTms(new Date());
         return jwtService.generateUserTokenData(user.getUserId(), mapAccountTypeToAccessProfile(user.getAccountType()));
     }
