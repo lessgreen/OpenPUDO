@@ -1,4 +1,4 @@
-** Localized static files **
+**Localized static files**
 
 This directory contains the localized static files, one per language.
 
