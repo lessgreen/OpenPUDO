@@ -1,4 +1,4 @@
-**Localized static files for Italian Language.
+**Localized static files for Italian Language.**
 
 This is specific to the LESS/QuiGreen setup.
 
