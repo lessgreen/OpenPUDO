@@ -55,11 +55,16 @@ Il Servizio QuiGreen potrà prevedere varie tipologie di "PUDO":
 La società LESS Srl ha il ruolo di semplice soggetto che mette in contatto, tramite il servizio QuiGreen, soggetti terzi (il Destinatario e il PUDO), ciascuno dei quali risponde in proprio dei servizi resi e dei comportamenti tenuti. 
 
 Il Servizio QuiGreen funge quale mera infrastruttura tecnica, pertanto, la società LESS Srl NON è NON sarà in alcun modo responsabile nei confronti dell'Utente, del PUDO o di chiunque altro per:
+
  1. mancata consegna/ritiro dei beni acquistati/venduti online;
+
  2. vizi, danneggiamento e/o smarrimento dei beni acquistati/venduti online;
- 3. utilizzo da parte dell'Utente e/o del PUDO del Servizio QuiGreen con modalità o per finalità non consentite dalla legge;
- 4. perdite di uso o dati, indipendentemente dalla relativa prevedibilità;
- 5. danni diretti, incidentali, indiretti, consequenziali o punitivi di qualunque tipo (anche qualora fosse stata messa al corrente della possibilità del verificarsi di tali danni), compresi quelli (i) risultanti da perdite di profitti, uso o dati, indipendentemente dalla relativa prevedibilità, (ii) basati su eventuali presunzioni di responsabilità, tra cui violazione del contratto, oppure (iii) derivanti da qualsiasi altro reclamo risultante da, o in connessione con, l'utilizzo dell'app QuiGreen. 
+ 
+ 4. utilizzo da parte dell'Utente e/o del PUDO del Servizio QuiGreen con modalità o per finalità non consentite dalla legge;
+
+ 5. perdite di uso o dati, indipendentemente dalla relativa prevedibilità;
+ 
+ 7. danni diretti, incidentali, indiretti, consequenziali o punitivi di qualunque tipo (anche qualora fosse stata messa al corrente della possibilità del verificarsi di tali danni), compresi quelli (i) risultanti da perdite di profitti, uso o dati, indipendentemente dalla relativa prevedibilità, (ii) basati su eventuali presunzioni di responsabilità, tra cui violazione del contratto, oppure (iii) derivanti da qualsiasi altro reclamo risultante da, o in connessione con, l'utilizzo dell'app QuiGreen. 
 
 
 **3. ACCETTAZIONE DEI TERMINI DEL SERVIZIO E MODIFICHE**
