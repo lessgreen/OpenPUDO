@@ -297,6 +297,7 @@ public class AuthService {
         if (user == null) {
             throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.resource_not_exists"));
         }
+        log.info("[{}] Deleting user: {}", context.getExecutionId(), context.getUserId());
         String phoneNumber = user.getPhoneNumber();
         String userData = getUserData(user);
         TbDeletedUserData deletedUserData = new TbDeletedUserData();

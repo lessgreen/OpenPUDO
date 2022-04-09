@@ -109,7 +109,6 @@ public class UserDao extends BaseEntityDao<TbUser, Long> {
             q.setParameter("pudoId", pudoId);
         }
         cnt = q.executeUpdate();
-        log.info(cnt);
         ret.add(new Pair<>("TbUserPudoRelation", cnt));
 
         if (pudoId == null) {
