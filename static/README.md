@@ -4,7 +4,8 @@ This directory contains the localized static files, one per language.
 
 The static files contains policies and GDPR stuff that is linked inside the App.
 
-CREDIT: The file github.css has been plainly stolen from https://github.com/otsaloma/markdown-css
+CREDIT: The file github.css has been plainly stolen from https://github.com/otsaloma/markdown-css which in turn took it from https://github.com/sindresorhus/github-markdown-css
+
 
 In order to generate the html files:
 ````
