@@ -305,5 +305,312 @@
         "ContentNotificationsPageState": {
             "noNotifications": "Non ci sono notifiche"
         }
+    },
+    "en": {
+        "general": {
+            "genericErrorTitle": "Error",
+            "genericErrorDescription": "Something went wrong.",
+            "timeoutDescription": "Timeout while waiting for a reply.",
+            "unknownDescription": "Unexpected error. Please retry.",
+            "workingInternetConnection": "You need a working internet connection.",
+            "cancelButtonTitle": "Cancel",
+            "closeButtonTitle": "Close",
+            "defaultTitle": "QuiGreen",
+            "warningTitle": "Warning",
+            "chooseAction": "Choose an action.",
+            "nameCouldNotBeEmpty": "The name is mandatory.",
+            "phoneNumberWrong": "Mobile phone number is not valid.",
+            "phoneCouldNotBeEmpty": "Mobile phone number is mandatory.",
+            "locationError": "There was an error locating you. Please retry.",
+            "search": "Search",
+            "searchByName": "Search by name",
+            "searchHistory": "Search in your history",
+            "yourShipment": "Your packages",
+            "missingValue": "Missing value",
+            "shootPhoto": "Take a picture",
+            "pickFromGallery": "Choose from teh gallery",
+            "outOfRange": "Values out of range " 
+        },
+        "MapControllerState": {
+            "defaultTitle": "QuiGreen",
+            "poiNearbyTitle": "These are your QuiGreen points.",
+            "skipButton": "Skip"
+        },
+        "ConfirmPhoneControllerState": {
+            "mainLabel": "Insert confirmation code.",
+            "secondaryLabel": "Insert the confirmation code \n that we sent you.",
+            "doneButton": "Done",
+            "hintText": "Didn't receive the code?",
+            "hintButton": "Send again.",
+            "submitButton": "Submit"
+        },
+        "LoginControllerState": {
+            "mainLabel":  "Not registered yet?",
+            "secondaryLabel": "What are you waiting for?",
+            "bottomButton": "Register with your mobile number!"
+        },
+        "InsertAddressControllerState": {
+            "mainLabel":  "Insert your address",
+            "submitButton": "Submit"
+        },
+        "InsertPhoneControllerState": {
+            "mainLabel":  "Insert your mobile phone number",
+            "secondaryLabel": "We will send you a confirmation SMS\n to check that it's really you",
+            "doneButton": "Done",
+            "submitButton": "Submit"
+        },
+        "PersonalDataBusinessControllerState": {
+            "mainLabel":  "Some question about your business",
+            "secondaryLabel": "To let people find you\nkindly enter some more information\nabout your business.",
+            "placeHolderName": "Business name",
+            "placeHolderAddress": "Enter your address",
+            "placeHolderPhone": "Phone number",
+            "hintPhone": "This phone number is visible to other users, if you want you can change it with a different one.",
+            "doneButton": "Done",
+            "nextButton": "Next",
+            "addPhoto": "Add a picture",
+            "acceptTermsAndCondition": "I declare that I did read and accept the ",
+            "termsAndConditionHyperlink": "terms of service."
+        },
+        "PersonalDataControllerState": {
+            "mainLabel":  "Some more question ",
+            "secondaryLabel": "To identify you when you pick up a package we need some information.",
+            "or": "or",
+            "placeHolderName": "Name",
+            "placeHolderSurname": "Surname",
+            "hintNameAndSurname": "If you use your name and surname to pick up packages you will need to show some proof of identity.",
+            "submitButton": "Submit",
+            "addPhoto": "Add a picture",
+            "acceptTermsAndCondition": "I declare that I did read and accept the ",
+            "termsAndConditionHyperlink": "terms of service."
+        },
+        "PudoProfileEditControllerState": {
+            "navTitle": "Edit Profile",
+            "saveButton": "Save",
+            "editButton": "Edit",
+            "showInstructions": "See the pick-up options",
+            "goToHome": "Go to home page",
+            "rewardDescriptionTitle": "How you can use QuiGreen on this point:"
+        },
+        "RewardPolicyControllerState": {
+            "rewardWanted": "What do you ask in change of your service?",
+            "hintReward": "You can decide to offer the service for free or be compensated in one of the following ways:",
+            "doneButton": "Done",
+            "nextButton": "Next"
+        },
+        "AboutYouControllerState": {
+            "mainLabel":  "How would you like to use QuiGreen?",
+            "secondaryLabel": "Do you want an address to receive your packages\nor you want to offer a service?",
+            "standardUserButton": "I want to receive packages",
+            "pudoUserButton": "I want to offer a service"
+        },
+        "ErrorController": {
+            "errorDescription": "Oops!, it seems like we have a problem!",
+            "goBack": "Go back"
+        },
+        "HomeControllerState": {
+          "homeLabel": "Home",
+          "mapLabel": "Map",
+          "pudoLabel": "QuiGreen",
+          "profileLabel": "Profile"
+        },
+        "InstructionControllerState": {
+            "receiverLabel": "Addressee:",
+            "reviewAddressHint": "If you want to see the address\nto be used when you place an order\n select the QuiGreen Point in the Home Page.",
+            "instructionsLabel": "Instructions",
+            "goToHome": "Go to home page",
+            "mainLabel": "It's very simple!",
+            "secondaryLabel": "When your users will send a package\nat your site, you will receive\na message like the one\n shown below.",
+            "handleReceiptTitle": "Handle the package",
+            "handleReceiptSubtitle": "Just select the option:",
+            "shipmentReceivedTitle": "I received a package",
+            "shipmentReceivedSubtitle": "from the main menu in the App\n",
+            "chooseUserTitle": "Choose the recipient",
+            "chooseUserSubtitle": "Choose the recipient for the package",
+            "chooseAnUserTitle": "Choose the recipient",
+            "chooseAnUserSubtitle": "in the list of users who selected your Point as address",
+            "notifyDeliveryTitle": "Notify that a package has arrived",
+            "notifyDeliverySubtitle": "Take a picture of the nox",
+            "shotAPhotoTitle": "Take a picture\nof the package",
+            "shotAPhotoSubtitle1": "and that's it!",
+            "shotAPhotoSubtitle2": ", all done!",
+            "mainLabelUser": "It's very simple!",
+            "secondayLabelUser": "To receive your package at the QuiGreen Point \n use the\nfollowing address when ordering",
+            "notificationTitleUser": "Real time notifications",
+            "notificationSubtitleUser": "You will receive a notification when the\npackage arrives at \nyour QuiGreen Point."
+        },
+        "NotifySentControllerState": {
+            "mainLabelPackageReceived": "Notification sent",
+            "descriptionPackageReceived": "A notificatiopn has been sent to\nthe user",
+            "mainLabelPackageDelivered": "Package handed over",
+            "descriptionPackageDelivered": "The package has been correctly handed over to the user",
+            "secondaryLabel": "Done!"
+        },
+        "PackageDeliveredControllerState": {
+            "navTitle": "I handed over the package",
+            "mainLabel": "Ask the user to show you ",
+            "secondaryLabel": "the QRCode for pickup",
+            "orLabel": "or, select the package\n among the waiting ones",
+            "waitingShipmentLabel": "Waiting packages"
+        },
+        "PackagePickupControllerState": {
+            "shipmentDetails": "Package Info",
+            "shipmentPickup": "Package pickup",
+            "showQRCode": "Show this QRCode\nat the QuiGreen Point ",
+            "alreadyPicked": "This package has been already picked up.",
+            "confirmPickup": "Confirm you picked it up",
+            "troublesWithPickup": "Problems with the pickup?",
+            "contactUs": "Contact us",
+            "photoTitle": "PICTURE OF THE PACKAGE",
+            "detailTitle": "PACKAGE DETAILS",
+            "userAppend": " - User "
+        },
+        "PackageReceivedControllerState": {
+            "navTitle": "I received a package",
+            "mainLabel": "Take a picture\nof the package",
+            "secondaryLabel": "Select an user",
+            "placeHolderNotes": "Add some useful note for the recipient",
+            "nextButton": "Next"
+        },
+        "PackagesListControllerState": {
+           "yourShipment": "Your packages",
+           "chooseShipment": "Choose a package",
+           "waitingShipment": "Waiting packages" 
+        },
+        "ProfileControllerState": {
+            "navTitle": "Your profile",
+            "editButton": "Edit",
+            "endButton": "Done",
+            "userSince": "User since ",
+            "yourShipment": "Your shippings",
+            "logoutTitle": "Log out",
+            "placeHolderName": "Name",
+            "placeHolderSurname": "Surname",
+            "deleteAccountTitle": "Warning",
+            "deleteAccount": "Delete account",
+            "deleteAccountButton": "Proceed",
+            "deleteAccountCancel": "Cancel",
+            "deleteAccountDescription": "This wil permanently delete your account. At the end of ythe procedure you will receive a link that allows to download all your activity on QuiGreen. We will send you by SMS the same link on the mobile number you used to register.",
+            "deleteAccountSuccess": "Account deletion completed. You can see the complete list of your activities by clicking View data",
+            "viewData": "Vied data",
+            "close": "Exit",
+            "deleteAccountSuccessTitle": "That's done"
+        },
+        "PudoDetailControllerState": {
+            "numerOfUsers": " people already choose this QuiGreen point for their deliveries",
+            "chooseButton": "Choose",
+            "pudoDetails": "Info about this QuiGreen",
+            "rewardDescription": "This what they ask to use this QuiGreen point:",
+            "phoneCallAction": "Call by phone",
+            "sendSMS": "Send a message",
+            "sendWhatsApp": "Contact on WhatsApp",
+            "termsConditionsTitle": "Terms and Conditions",
+            "termsConditionsDescription": "By choosing this QuiGreen Point, you state that you did read, understood and accepted the conditions in the previous screen.",
+            "termsAcceptButton": "Accept",
+            "termsDenyButton": "Cancel"
+        },
+        "PudoHomeControllerState": {
+            "homeTitle": "Main",
+            "profileTitle": "Profile"
+        },
+        "PudoListControllerState": {
+            "navTitle": "Your QuiGreen Points",
+            "deletePudoWarning": "Are you sure you want to remove this QuiGreen Point?\nWarning! If you remove it you will no more receive notifications about incoming shippings",
+            "copyAddressToClipboard": "Copy address"
+        },
+        "PudoMainControllerState": {
+            "listHeaderTitle": "Available options",
+            "receiveShipment": "Receive a package",
+            "deliverShipment": "Hand over a package",
+            "waitingShipment": "Waiting packages"
+        },
+        "PudoProfileControllerState": {
+            "navTitle": "Your profile",
+            "userSince": "User since ",
+            "yourUsers": "You users",
+            "logoutButton": "Log out",
+            "deleteAccountTitle": "Warning",
+            "deleteAccount": "Delete account",
+            "deleteAccountButton": "Proceed",
+            "deleteAccountCancel": "Cancel",
+            "deleteAccountDescription": "This wil permanently delete your account. At the end of ythe procedure you will receive a link that allows to download all your activity on QuiGreen. We will send you by SMS the same link on the mobile number you used to register.",
+            "deleteAccountSuccess": "Account deletion completed. You can see the complete list of your activities by clicking View data",
+            "viewData": "View data",
+            "close": "Exit",
+            "deleteAccountSuccessTitle": "That-s done"
+        },
+        "PudoUsersListControllerState": {
+            "chooseRecipient": "Choose addressee",
+            "yourUsers": "Your users",
+            "searchByName": "Look up by name"
+        },
+        "RegistrationCompleteControllerState": {
+            "navBarTitle": "Done! You added a QuiGreen point!",
+            "mainLabel": "Since now on you can use this address for online orders and pick the packages up when it-s comfortable for you!",
+            "allowContact": "Allow the QuiGreen point to contact you by phone to warn about waiting packages.",
+            "showInstructions": "Instructions",
+            "goToHome": "Go to home page"
+        },
+        "ThanksControllerState": {
+            "mainLabel": "Thank you for choosing us!",
+            "secondaryLabel": "Now as a QuiGreen Point you can provide a service for anyone willing to receive a package, collecting it for them.",
+            "nextButton": "Next",
+            "backButton": "Back"
+        },
+        "UserDetailControllerState": {
+            "navBarTitle": "Your users", 
+            "userSince": "User since ",
+            "phoneCallAction": "Call on phone",
+            "sendSMS": "Send a message",
+            "sendWhatsApp": "Contact on WhatsApp"
+        },
+        "UserPositionControllerState": {
+            "navBarTitle": "Where are you?",
+            "mainLabel": "Look the QuiGreen Points close to you.",
+            "allowGPSButton": "Use my position",
+            "chooseAddressButton": "Enter an address"
+        },
+        "NoPackagesWidget": {
+            "noShipment": "There are no packages\n waiting to be picked up!"
+        },
+        "NoPudosWidget": {
+          "description": "Add your QuiGreen Pointsn\nfor your shippings!"  
+        },
+        "PackageCard": {
+            "deliveredOn": "Package arrive on ",
+            "retiredOn": "Package picked up on "
+        },
+        "PackageTile": {
+            "recipient": "Recipioent: "
+        },
+        "PudoCard": {
+            "shipmentAddress": "Shipping address:"
+        },
+        "PudoEditableImage": {
+            "changePhoto": "Change te picture"
+        },
+        "UserProfileRecapWidget": {
+            "recapPudoTitle": "You users used QuiGreen ",
+            "recapUserTitle": "You used QuiGreen ",
+            "reacapShareTitle": "You used QuiGreen ",
+            "nTimes": " rimes,",
+            "contribute": " halping to REDUCE ",
+            "co2Emission": " the CO2 EMISSIONS ",
+            "shareButton": "SHARE",
+            "learnMore": "Learn more on https://www.quigreen.it"
+        },
+        "ContactUsControllerState": {
+            "navTitle": "Contact us",
+            "contactUsPlaceHolder": "Tell us your problem and we will try to help you.",
+            "submitButton": "Submit",
+            "thanksFeedback": "Thanks for reporting this! We will get in touch soon.",
+            "feedbackTitle": "Thanks"
+        },
+        "NotificationsListControllerState": {
+            "navBarTitle": "Notifications"
+        },
+        "ContentNotificationsPageState": {
+            "noNotifications": "No pending notifications"
+        }
     }
 }
