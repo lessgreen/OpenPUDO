@@ -217,6 +217,9 @@ public class AuthService {
         userPreferences.setShowPhoneNumber(true);
         userPreferencesDao.persist(userPreferences);
         userPreferencesDao.flush();
+        if (!user.getTestAccountFlag()) {
+            emailService.sendNotificationEmail("User registration", getUserData(user, false), false);
+        }
         log.info("[{}] Registered user: {} as: {}", context.getExecutionId(), user.getUserId(), user.getAccountType());
         return jwtService.generateUserTokenData(user.getUserId(), mapAccountTypeToAccessProfile(user.getAccountType()));
     }
@@ -272,6 +275,9 @@ public class AuthService {
         rewardPolicy.setDeleteTms(null);
         rewardPolicyDao.persist(rewardPolicy);
         pudoDao.flush();
+        if (!user.getTestAccountFlag()) {
+            emailService.sendNotificationEmail("PUDO registration", getUserData(user, false), false);
+        }
         log.info("[{}] Registered user: {} as: {} with id: {}", context.getExecutionId(), user.getUserId(), user.getAccountType(), pudo.getPudoId());
         return jwtService.generateUserTokenData(user.getUserId(), mapAccountTypeToAccessProfile(user.getAccountType()));
     }
@@ -288,7 +294,7 @@ public class AuthService {
     public void supportRequest(SupportRequest req) {
         TbUser user = userDao.get(context.getUserId());
         String subject = String.format("Support request from user: %s (phone: %s)", context.getUserId(), user.getPhoneNumber());
-        emailService.sendSupportEmail(subject, req.getMessage().trim());
+        emailService.sendSupportEmail(subject, req.getMessage().trim(), true);
         log.info("[{}] Sent support request for user: {}", context.getExecutionId(), context.getUserId());
     }
 
@@ -299,7 +305,7 @@ public class AuthService {
         }
         log.info("[{}] Deleting user: {}", context.getExecutionId(), context.getUserId());
         String phoneNumber = user.getPhoneNumber();
-        String userData = getUserData(user);
+        String userData = getUserData(user, true);
         TbDeletedUserData deletedUserData = new TbDeletedUserData();
         deletedUserData.setUserDataId(UUID.randomUUID());
         deletedUserData.setCreateTms(new Date());
@@ -317,20 +323,23 @@ public class AuthService {
                 log.fatal("[{}] {}", context.getExecutionId(), ExceptionUtils.getCanonicalFormWithStackTrace(ex));
                 throw new ApiException(ApiReturnCodes.SERVICE_UNAVAILABLE, localizationService.getMessage(context.getLanguage(), "error.service_unavailable"));
             }
+            emailService.sendNotificationEmail("Deleted user", userData, false);
             log.info("[{}] Deleted user: {}", context.getExecutionId(), context.getUserId());
         }
         return downloadUrl;
     }
 
-    private String getUserData(TbUser user) {
+    private String getUserData(TbUser user, boolean deletedDate) {
         StringBuilder sb = new StringBuilder();
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         sb.append("Phone number: ").append(user.getPhoneNumber()).append("\r\n");
         sb.append("Registered at: ").append(sdf.format(user.getCreateTms())).append("\r\n");
-        sb.append("Deleted at: ").append(sdf.format(new Date())).append("\r\n");
+        if (deletedDate) {
+            sb.append("Deleted at: ").append(sdf.format(new Date())).append("\r\n");
+        }
         List<TbPackage> packages = null;
         if (user.getAccountType() == AccountType.CUSTOMER) {
-            TbUserProfile userProfile = userProfileDao.get(context.getUserId());
+            TbUserProfile userProfile = userProfileDao.get(user.getUserId());
             if (userProfile.getFirstName() != null) {
                 sb.append("First name: ").append(userProfile.getFirstName()).append("\r\n");
             }
@@ -340,15 +349,17 @@ public class AuthService {
             packages = packageDao.getAllPackages(user.getAccountType(), context.getUserId());
         }
         if (user.getAccountType() == AccountType.PUDO) {
-            Long pudoId = pudoService.getCurrentPudoId();
-            TbPudo pudo = pudoDao.get(pudoId);
-            sb.append("PUDO name: ").append(pudo.getBusinessName()).append("\r\n");
-            if (pudo.getPublicPhoneNumber() != null) {
-                sb.append("PUDO phone number: ").append(pudo.getBusinessName()).append("\r\n");
+            Long pudoId = userPudoRelationDao.getPudoIdByOwnerUserId(user.getUserId());
+            if (pudoId != null) {
+                TbPudo pudo = pudoDao.get(pudoId);
+                sb.append("PUDO name: ").append(pudo.getBusinessName()).append("\r\n");
+                if (pudo.getPublicPhoneNumber() != null) {
+                    sb.append("PUDO phone number: ").append(pudo.getBusinessName()).append("\r\n");
+                }
+                TbAddress address = addressDao.get(pudoId);
+                sb.append("PUDO address: ").append(address.getLabel()).append("\r\n");
+                packages = packageDao.getAllPackages(user.getAccountType(), pudoId);
             }
-            TbAddress address = addressDao.get(pudoId);
-            sb.append("PUDO address: ").append(address.getLabel()).append("\r\n");
-            packages = packageDao.getAllPackages(user.getAccountType(), pudoId);
         }
         if (packages != null && !packages.isEmpty()) {
             sb.append("\r\n");
