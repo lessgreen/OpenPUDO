@@ -38,6 +38,7 @@ class Routes {
   static const home = '/home';
   static const homePudo = '/homePudo';
   static const profile = '/profile';
+  static const language = '/language';
   static const pudoList = '/pudoList';
   static const pudoHome = "/pudoHome";
   static const rewardPolicy = "/rewardPolicy";

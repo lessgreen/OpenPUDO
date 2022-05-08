@@ -95,6 +95,10 @@ class ImageSrc {
   static const boxFillIcon = "assets/boxFillIcon.svg";
   static const waitingPackage = "assets/waitingPackage.svg";
   static const bell = "assets/bell.svg";
+  static const it = "assets/it.svg";
+  static const en = "assets/en.svg";
+  static const checkMark = "assets/checkMark.svg";
+  static const globe = "assets/globe-thin.svg";
 }
 
 class IconSrc {}

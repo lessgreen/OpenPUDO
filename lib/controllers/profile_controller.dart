@@ -163,6 +163,18 @@ class _ProfileControllerState extends State<ProfileController> with ConnectionAw
                     ),
                     TableViewCell(
                       leading: SvgPicture.asset(
+                        ImageSrc.globe,
+                        color: AppColors.cardColor,
+                        width: 20,
+                        height: 20,
+                      ),
+                      title: 'languageTitle'.localized(context),
+                      onTap: () {
+                        Navigator.of(context).pushNamed(Routes.language);
+                      },
+                    ),
+                    TableViewCell(
+                      leading: SvgPicture.asset(
                         ImageSrc.logoutIcon,
                         color: AppColors.cardColor,
                         width: 36,
@@ -176,7 +188,7 @@ class _ProfileControllerState extends State<ProfileController> with ConnectionAw
                       },
                     ),
                     TableViewCell(
-                      dividerPadding: EdgeInsets.only(left: 5000),
+                      dividerPadding: const EdgeInsets.only(left: 5000),
                       title: "deleteAccount".localized(context),
                       textAlign: TextAlign.center,
                       textStyle: Theme.of(context).textTheme.bodyTextBoldRed,

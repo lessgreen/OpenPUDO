@@ -42,7 +42,6 @@ late AndroidNotificationChannel channel;
 void mainCommon({required String host, required bool isProd}) async {
   WidgetsFlutterBinding.ensureInitialized();
   SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-  sharedPreferences.setString('languagePref', 'it');
   PackageInfo info = await PackageInfo.fromPlatform();
 
   AppConfig appConfig = AppConfig(isProd: isProd, host: host, appInfo: info, sharedPreferencesInstance: sharedPreferences);
@@ -99,9 +98,6 @@ class App extends StatelessWidget {
             supportedLocales: const [
               Locale('en'),
               Locale('it'),
-              Locale('de'),
-              Locale('es'),
-              Locale('fr'),
             ],
             localizationsDelegates: [
               LocalizationManagerDelegate(config.sharedPreferencesInstance!),
@@ -109,6 +105,7 @@ class App extends StatelessWidget {
               GlobalCupertinoLocalizations.delegate,
               GlobalWidgetsLocalizations.delegate
             ],
+            locale: Locale(currentUser.language),
             theme: MyAppTheme.themeData(context),
             darkTheme: MyAppTheme.themeData(context),
             initialRoute: NetworkManager.instance.accessToken.isEmpty ? Routes.login : "/",

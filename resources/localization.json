@@ -177,6 +177,7 @@
             "userSince": "Utente dal ",
             "yourShipment": "Le tue spedizioni",
             "logoutTitle": "Esci",
+            "languageTitle": "Lingua",
             "placeHolderName": "Nome",
             "placeHolderSurname": "Cognome",
             "deleteAccountTitle": "Attenzione",
@@ -188,6 +189,11 @@
             "viewData": "Visualizza",
             "close": "Esci",
             "deleteAccountSuccessTitle": "Completato"
+        },
+        "LanguageControllerState": {
+            "navTitle": "Scegli la lingua",
+            "englishTitle": "Inglese (US)",
+            "italianTitle": "Italiano"
         },
         "PudoDetailControllerState": {
             "numerOfUsers": " persone hanno già scelto questo Punto QuiGreen per il ritiro",
@@ -230,7 +236,8 @@
             "deleteAccountSuccess": "La procedura di cancellazione è stata completata. Puoi visualizzare l'estratto della tua attività cliccando Visualizza",
             "viewData": "Visualizza",
             "close": "Esci",
-            "deleteAccountSuccessTitle": "Completato"
+            "deleteAccountSuccessTitle": "Completato",
+            "languageTitle": "Lingua"
         },
         "PudoUsersListControllerState": {
             "chooseRecipient": "Scegli il destinatario",
@@ -484,6 +491,7 @@
             "userSince": "User since ",
             "yourShipment": "Your shippings",
             "logoutTitle": "Log out",
+            "languageTitle": "Language",
             "placeHolderName": "Name",
             "placeHolderSurname": "Surname",
             "deleteAccountTitle": "Warning",
@@ -495,6 +503,11 @@
             "viewData": "Vied data",
             "close": "Exit",
             "deleteAccountSuccessTitle": "That's done"
+        },
+        "LanguageControllerState": {
+            "navTitle": "Choose your language",
+            "englishTitle": "English (US)",
+            "italianTitle": "Italian"
         },
         "PudoDetailControllerState": {
             "numerOfUsers": " people already choose this QuiGreen point for their deliveries",
@@ -537,7 +550,8 @@
             "deleteAccountSuccess": "Account deletion completed. You can see the complete list of your activities by clicking View data",
             "viewData": "View data",
             "close": "Exit",
-            "deleteAccountSuccessTitle": "That-s done"
+            "deleteAccountSuccessTitle": "That-s done",
+            "languageTitle": "Language"
         },
         "PudoUsersListControllerState": {
             "chooseRecipient": "Choose addressee",

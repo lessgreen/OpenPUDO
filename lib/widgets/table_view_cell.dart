@@ -25,6 +25,7 @@ import 'package:qui_green/resources/res.dart';
 
 class TableViewCell extends StatelessWidget {
   final Widget? leading;
+  final Widget? trailing;
   final dynamic title;
   final bool showTrailingChevron;
   final TextAlign textAlign;
@@ -38,6 +39,7 @@ class TableViewCell extends StatelessWidget {
   const TableViewCell(
       {Key? key,
       this.leading,
+      this.trailing,
       this.title,
       this.textAlign = TextAlign.left,
       this.textStyle,
@@ -99,7 +101,9 @@ class TableViewCell extends StatelessWidget {
                         height: 24,
                         color: AppColors.colorGrey,
                       )
-                    : const SizedBox(),
+                    : trailing != null
+                        ? trailing!
+                        : const SizedBox(),
               ],
             ),
           ),

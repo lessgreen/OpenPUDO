@@ -58,7 +58,7 @@ class _NotificationsListControllerState extends State<NotificationsListControlle
             onPressed: () => Navigator.of(context).pop(),
           ),
         ),
-        body: SafeArea(child: const ContentNotificationsPage()),
+        body: const SafeArea(child: ContentNotificationsPage()),
       ),
     );
   }

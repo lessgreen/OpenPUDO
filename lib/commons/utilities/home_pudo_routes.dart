@@ -26,6 +26,7 @@ import 'package:qui_green/app.dart';
 import 'package:qui_green/commons/utilities/analytics_helper.dart';
 import 'package:qui_green/commons/utilities/page_route_helper.dart';
 import 'package:qui_green/controllers/error_controller.dart';
+import 'package:qui_green/controllers/language_controller.dart';
 import 'package:qui_green/controllers/notifications_list_controller.dart';
 import 'package:qui_green/controllers/notify_sent_controller.dart';
 import 'package:qui_green/controllers/onboarding/pudo_profile_edit_controller.dart';
@@ -109,6 +110,11 @@ dynamic homePudoRouteWithSetting(RouteSettings settings) {
       return PageRouteHelper.buildPage(
         const PackageDeliveredController(),
       );
+    case Routes.language:
+      return PageRouteHelper.buildPage(
+        const LanguageController(),
+      );
+
     default:
       return PageRouteHelper.buildPage(
         const ErrorController(),

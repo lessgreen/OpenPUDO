@@ -18,6 +18,8 @@
  If not, see <https://github.com/lessgreen/OpenPUDO>.
 */
 
+import 'dart:io';
+
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app_badger/flutter_app_badger.dart';
@@ -112,6 +114,15 @@ class CurrentUser with ChangeNotifier {
     }
   }
 
+  set language(String newValue) {
+    sharedPreferences?.setString('languagePref', newValue);
+    notifyListeners();
+  }
+
+  String get language {
+    return sharedPreferences?.getString('languagePref') ?? Platform.localeName.substring(0, 2);
+  }
+
   set pudoProfile(PudoProfile? newProfile) {
     _pudo = newProfile;
     notifyListeners();
@@ -202,6 +213,10 @@ class CurrentUser with ChangeNotifier {
       if (value is int) {
         unreadNotifications = value;
       }
-    }).catchError((onError) => safePrint(onError));
+    }).catchError(
+      (onError) {
+        safePrint(onError);
+      },
+    );
   }
 }

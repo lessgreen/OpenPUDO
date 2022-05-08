@@ -131,6 +131,18 @@ class _PudoProfileControllerState extends State<PudoProfileController> with Conn
                       Navigator.of(context).pushNamed(Routes.pudoUsersList);
                     }),
                 TableViewCell(
+                  leading: SvgPicture.asset(
+                    ImageSrc.globe,
+                    color: AppColors.cardColor,
+                    width: 20,
+                    height: 20,
+                  ),
+                  title: 'languageTitle'.localized(context),
+                  onTap: () {
+                    Navigator.of(context).pushNamed(Routes.language);
+                  },
+                ),
+                TableViewCell(
                   fullWidth: true,
                   leading: SvgPicture.asset(
                     ImageSrc.logoutIcon,

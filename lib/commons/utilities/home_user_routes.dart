@@ -29,6 +29,7 @@ import 'package:qui_green/commons/utilities/page_route_helper.dart';
 import 'package:qui_green/controllers/contact_us_controller.dart';
 import 'package:qui_green/controllers/error_controller.dart';
 import 'package:qui_green/controllers/instruction_controller.dart';
+import 'package:qui_green/controllers/language_controller.dart';
 import 'package:qui_green/controllers/notifications_list_controller.dart';
 import 'package:qui_green/controllers/onboarding/insert_address_controller.dart';
 import 'package:qui_green/controllers/onboarding/map_controller.dart';
@@ -37,7 +38,6 @@ import 'package:qui_green/controllers/packages_list_controller.dart';
 import 'package:qui_green/controllers/pudo_detail_controller.dart';
 import 'package:qui_green/controllers/pudo_list_controller.dart';
 import 'package:qui_green/controllers/registration_complete_controller.dart';
-import 'package:qui_green/controllers/user_position_controller.dart';
 import 'package:qui_green/models/pudo_package.dart';
 import 'package:qui_green/models/pudo_profile.dart';
 import 'package:qui_green/resources/routes_enum.dart';
@@ -131,6 +131,11 @@ dynamic homeUserRouteWithSetting(RouteSettings settings) {
       return PageRouteHelper.buildPage(
         const ContactUsController(),
       );
+    case Routes.language:
+      return PageRouteHelper.buildPage(
+        const LanguageController(),
+      );
+
     default:
       return PageRouteHelper.buildPage(
         const ErrorController(),
