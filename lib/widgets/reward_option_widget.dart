@@ -44,75 +44,81 @@ class RewardOptionWidget extends StatelessWidget {
     RewardOption? dataSource = ((viewModel != null) && (index < viewModel!.dataSource.length)) ? viewModel!.dataSource[index] : null;
     return dataSource == null
         ? const SizedBox()
-        : Padding(
-            padding: hasTopPadding ? EdgeInsets.fromLTRB(edgeInsets.left, edgeInsets.bottom, edgeInsets.right, edgeInsets.bottom) : edgeInsets,
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    const SizedBox(
-                      width: Dimension.paddingS,
-                    ),
-                    Expanded(
-                      child: RichText(
-                        text: TextSpan(
-                          children: [
-                            WidgetSpan(
-                              alignment: PlaceholderAlignment.middle,
-                              child: Icon(
-                                dataSource.iconData,
-                                color: (viewModel!.isExclusiveSelected)
-                                    ? (dataSource.checked ?? false)
-                                        ? AppColors.cardColor
-                                        : AppColors.colorGrey
-                                    : AppColors.cardColor,
+        : GestureDetector(
+            onTap: () {
+              var oldValue = dataSource.checked ?? false;
+              viewModel!.onValueChange(index, !oldValue);
+            },
+            child: Padding(
+              padding: hasTopPadding ? EdgeInsets.fromLTRB(edgeInsets.left, edgeInsets.bottom, edgeInsets.right, edgeInsets.bottom) : edgeInsets,
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      const SizedBox(
+                        width: Dimension.paddingS,
+                      ),
+                      Expanded(
+                        child: RichText(
+                          text: TextSpan(
+                            children: [
+                              WidgetSpan(
+                                alignment: PlaceholderAlignment.middle,
+                                child: Icon(
+                                  dataSource.iconData,
+                                  color: (viewModel!.isExclusiveSelected)
+                                      ? (dataSource.checked ?? false)
+                                          ? AppColors.cardColor
+                                          : AppColors.colorGrey
+                                      : AppColors.cardColor,
+                                ),
                               ),
-                            ),
-                            const WidgetSpan(
-                              child: SizedBox(
-                                width: Dimension.paddingXS,
+                              const WidgetSpan(
+                                child: SizedBox(
+                                  width: Dimension.paddingXS,
+                                ),
                               ),
-                            ),
-                            TextSpan(
-                              text: dataSource.text,
-                              style: Theme.of(context).textTheme.rewardOptionBody,
-                            ),
-                          ],
+                              TextSpan(
+                                text: dataSource.text,
+                                style: Theme.of(context).textTheme.rewardOptionBody,
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                    Transform.scale(
-                      scale: 1.3,
-                      child: Checkbox(
-                        activeColor: AppColors.primaryColorDark,
-                        value: dataSource.checked ?? false,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(25),
+                      Transform.scale(
+                        scale: 1.3,
+                        child: Checkbox(
+                          activeColor: AppColors.primaryColorDark,
+                          value: dataSource.checked ?? false,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(25),
+                          ),
+                          onChanged: (bool? newValue) => viewModel!.onValueChange(index, newValue ?? false),
+                          side: const BorderSide(color: AppColors.labelLightDark, width: 1.0),
                         ),
-                        onChanged: (bool? newValue) => viewModel!.onValueChange(index, newValue ?? false),
-                        side: const BorderSide(color: AppColors.labelLightDark, width: 1.0),
                       ),
+                    ],
+                  ),
+                  AnimatedCrossFade(
+                    firstChild: Container(
+                      width: double.infinity,
                     ),
-                  ],
-                ),
-                AnimatedCrossFade(
-                  firstChild: Container(
-                    width: double.infinity,
+                    secondChild: ExtraInfoWidget(
+                      extraInfo: dataSource.extraInfo,
+                      viewModel: viewModel,
+                      index: index,
+                    ),
+                    crossFadeState: (dataSource.checked ?? false) && dataSource.extraInfo != null ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+                    duration: const Duration(milliseconds: 100),
                   ),
-                  secondChild: ExtraInfoWidget(
-                    extraInfo: dataSource.extraInfo,
-                    viewModel: viewModel,
-                    index: index,
+                  Padding(
+                    padding: EdgeInsets.only(top: edgeInsets.bottom),
+                    child: const Divider(color: Colors.grey, height: 1),
                   ),
-                  crossFadeState: (dataSource.checked ?? false) && dataSource.extraInfo != null ? CrossFadeState.showSecond : CrossFadeState.showFirst,
-                  duration: const Duration(milliseconds: 100),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(top: edgeInsets.bottom),
-                  child: const Divider(color: Colors.grey, height: 1),
-                ),
-              ],
+                ],
+              ),
             ),
           );
   }

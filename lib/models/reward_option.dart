@@ -44,7 +44,7 @@ class RewardOption {
   final IconInfoType icon;
   @JsonKey(includeIfNull: false)
   final bool? exclusive;
-  @JsonKey(defaultValue: false,includeIfNull: false)
+  @JsonKey(defaultValue: false, includeIfNull: false)
   bool? checked;
   @JsonKey(includeIfNull: false)
   final ExtraInfo? extraInfo;
@@ -77,5 +77,17 @@ class RewardOption {
       default:
         return Icons.emoji_emotions;
     }
+  }
+}
+
+extension RewardOptionUtils on List<RewardOption> {
+  int get optionSelected {
+    var retValue = 0;
+    for (var anOption in this) {
+      if (anOption.checked ?? false) {
+        retValue++;
+      }
+    }
+    return retValue;
   }
 }

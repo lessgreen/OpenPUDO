@@ -25,6 +25,7 @@ import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
 import 'package:qui_green/commons/utilities/keyboard_visibility.dart';
 import 'package:qui_green/commons/utilities/localization.dart';
 import 'package:qui_green/models/registration_pudo_model.dart';
+import 'package:qui_green/models/reward_option.dart';
 import 'package:qui_green/resources/res.dart';
 import 'package:qui_green/singletons/network/network_manager.dart';
 import 'package:qui_green/view_models/reward_policy_controller_viewmodel.dart';
@@ -141,8 +142,10 @@ class _RewardPolicyControllerState extends State<RewardPolicyController> {
                             ),
                           )),
                       firstChild: MainButton(
-                        enabled: viewModel!.mandatoryFulfilled,
-                        onPressed: () => viewModel.onSendClick(context, widget.pudoRegistrationModel),
+                        enabled: viewModel!.mandatoryFulfilled && viewModel.dataSource.optionSelected > 0,
+                        onPressed: () {
+                          viewModel.onSendClick(context, widget.pudoRegistrationModel);
+                        },
                         text: 'nextButton'.localized(context),
                       ),
                       duration: const Duration(milliseconds: 150),
