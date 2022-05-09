@@ -355,6 +355,8 @@ class _ExtraInfoDecimalWidgetState extends State<ExtraInfoDecimalWidget> {
   final TextEditingController _textController = TextEditingController();
 
   dynamic validate(String? newValue) {
+    newValue = newValue?.replaceAll(',', '.');
+
     if (_hasFocus == false) {
       return null;
     }
@@ -378,7 +380,7 @@ class _ExtraInfoDecimalWidgetState extends State<ExtraInfoDecimalWidget> {
         return "${'outOfRange'.localized(context, 'general')} [€$min - €$max]";
       }
     } catch (e) {
-      return null;
+      return widget.extraInfo.min;
     }
   }
 
