@@ -1,6 +1,5 @@
 package less.green.openpudo.rest.config.exception;
 
-
 import lombok.Getter;
 
 public class ApiException extends RuntimeException {

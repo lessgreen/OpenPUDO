@@ -1,7 +1,6 @@
 package less.green.openpudo.rest.dto.pudo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import less.green.openpudo.rest.dto.address.Address;
 import lombok.Data;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
@@ -25,16 +24,30 @@ public class Pudo {
     @Schema(required = true)
     private String businessName;
 
-    private String vat;
-
-    private String phoneNumber;
-
-    private String contactNotes;
+    private String publicPhoneNumber;
 
     @Schema(readOnly = true)
-    private UUID profilePicId;
+    private UUID pudoPicId;
 
     @Schema(readOnly = true)
     private Address address;
+
+    @Schema(readOnly = true)
+    private Rating rating;
+
+    @Schema(readOnly = true)
+    private String rewardMessage;
+
+    @Schema(readOnly = true)
+    private Long customerCount;
+
+    @Schema(readOnly = true)
+    private Long packageCount;
+
+    @Schema(readOnly = true)
+    private String savedCO2;
+
+    @Schema(readOnly = true)
+    private String customizedAddress;
 
 }

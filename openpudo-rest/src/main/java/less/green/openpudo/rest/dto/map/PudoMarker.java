@@ -1,24 +1,15 @@
 package less.green.openpudo.rest.dto.map;
 
-import lombok.AllArgsConstructor;
+import less.green.openpudo.rest.dto.pudo.PudoSummary;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-
-import java.math.BigDecimal;
+import lombok.ToString;
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
-public class PudoMarker {
+@ToString(callSuper = true)
+public class PudoMarker extends GPSMarker {
 
-    private Long pudoId;
-
-    private String businessName;
-
-    private String label;
-
-    private BigDecimal lat;
-
-    private BigDecimal lon;
+    @Schema(readOnly = true)
+    private PudoSummary pudo;
 
 }

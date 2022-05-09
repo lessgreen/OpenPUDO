@@ -10,7 +10,8 @@ import java.util.*;
 
 public class MultipartUtils {
 
-    public static final String MULTIPART_NAME = "attachment";
+    public static final String PART_NAME = "attachment";
+    public static final String CONTENT_TYPE = "Content-Type";
 
     public static final Set<String> ALLOWED_IMAGE_MIME_TYPES = new HashSet<>(Arrays.asList(
             "image/jpeg",
@@ -26,7 +27,7 @@ public class MultipartUtils {
             return null;
         }
         Map<String, List<InputPart>> map = req.getFormDataMap();
-        List<InputPart> parts = map.get(MULTIPART_NAME);
+        List<InputPart> parts = map.get(PART_NAME);
         if (parts == null || parts.isEmpty()) {
             return null;
         }

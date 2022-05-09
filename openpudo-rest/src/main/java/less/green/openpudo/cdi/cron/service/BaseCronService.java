@@ -1,7 +1,7 @@
 package less.green.openpudo.cdi.cron.service;
 
+import less.green.openpudo.business.service.CronLockService;
 import less.green.openpudo.common.ExceptionUtils;
-import less.green.openpudo.persistence.service.CronLockService;
 import lombok.extern.log4j.Log4j2;
 
 import javax.inject.Inject;
@@ -17,7 +17,7 @@ public abstract class BaseCronService {
         try {
             return cronLockService.acquireLock(lockName);
         } catch (Exception ex) {
-            log.error("[{}] {}", executionId, ExceptionUtils.getCompactStackTrace(ex));
+            log.fatal("[{}] {}", executionId, ExceptionUtils.getCanonicalFormWithStackTrace(ex));
             return false;
         }
     }
@@ -26,7 +26,7 @@ public abstract class BaseCronService {
         try {
             return cronLockService.refreshLock(lockName);
         } catch (Exception ex) {
-            log.error("[{}] {}", executionId, ExceptionUtils.getCompactStackTrace(ex));
+            log.fatal("[{}] {}", executionId, ExceptionUtils.getCanonicalFormWithStackTrace(ex));
             return false;
         }
     }
@@ -35,7 +35,7 @@ public abstract class BaseCronService {
         try {
             return cronLockService.releaseLock(lockName);
         } catch (Exception ex) {
-            log.error("[{}] {}", executionId, ExceptionUtils.getCompactStackTrace(ex));
+            log.fatal("[{}] {}", executionId, ExceptionUtils.getCanonicalFormWithStackTrace(ex));
             return false;
         }
     }

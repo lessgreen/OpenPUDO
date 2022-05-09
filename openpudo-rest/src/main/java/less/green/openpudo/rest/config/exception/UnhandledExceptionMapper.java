@@ -3,6 +3,7 @@ package less.green.openpudo.rest.config.exception;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import less.green.openpudo.cdi.ExecutionContext;
+import less.green.openpudo.cdi.service.EmailService;
 import less.green.openpudo.common.ApiReturnCodes;
 import less.green.openpudo.common.ExceptionUtils;
 import less.green.openpudo.rest.dto.BaseResponse;
@@ -31,6 +32,9 @@ public class UnhandledExceptionMapper implements ExceptionMapper<Exception> {
     @Inject
     ExecutionContext context;
 
+    @Inject
+    EmailService emailService;
+
     @Override
     public Response toResponse(Exception ex) {
         if (ex instanceof NotFoundException) {
@@ -39,11 +43,12 @@ public class UnhandledExceptionMapper implements ExceptionMapper<Exception> {
         }
         if (ex instanceof NotAllowedException || ex instanceof NotAcceptableException || ex instanceof NotSupportedException || ex instanceof JsonMappingException || ex instanceof JsonParseException) {
             String msg = ex.getMessage().split("\n")[0];
-            log.error(msg);
+            log.error("[{}] {}", context.getExecutionId(), ExceptionUtils.getCanonicalFormWithStackTrace(ex));
             BaseResponse res = new BaseResponse(context.getExecutionId(), ApiReturnCodes.BAD_REQUEST, msg);
             return Response.status(Response.Status.BAD_REQUEST).entity(res).build();
         }
-        log.error("[{}] {}", context.getExecutionId(), ExceptionUtils.getCompactStackTrace(ex));
+        log.fatal("[{}] {}", context.getExecutionId(), ExceptionUtils.getCanonicalFormWithStackTrace(ex));
+        emailService.sendNotificationEmail("Unhandled exception", ExceptionUtils.getCanonicalFormWithStackTrace(ex), false);
         BaseResponse res = new BaseResponse(context.getExecutionId(), ApiReturnCodes.INTERNAL_SERVER_ERROR, Response.Status.INTERNAL_SERVER_ERROR.getReasonPhrase());
         return Response.serverError().entity(res).build();
     }

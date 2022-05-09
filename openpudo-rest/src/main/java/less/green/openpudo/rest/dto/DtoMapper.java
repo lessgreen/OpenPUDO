@@ -1,80 +1,95 @@
 package less.green.openpudo.rest.dto;
 
-import less.green.openpudo.common.dto.tuple.Pair;
-import less.green.openpudo.persistence.model.*;
-import less.green.openpudo.rest.dto.address.Address;
-import less.green.openpudo.rest.dto.geojson.Feature;
-import less.green.openpudo.rest.dto.geojson.Point;
+import less.green.openpudo.business.model.*;
+import less.green.openpudo.common.dto.geojson.Feature;
+import less.green.openpudo.common.dto.geojson.Point;
 import less.green.openpudo.rest.dto.map.AddressMarker;
+import less.green.openpudo.rest.dto.map.AddressSearchResult;
+import less.green.openpudo.rest.dto.map.PudoMarker;
 import less.green.openpudo.rest.dto.notification.Notification;
 import less.green.openpudo.rest.dto.pack.Package;
+import less.green.openpudo.rest.dto.pack.PackageEvent;
+import less.green.openpudo.rest.dto.pack.PackageSummary;
+import less.green.openpudo.rest.dto.pudo.Address;
 import less.green.openpudo.rest.dto.pudo.Pudo;
+import less.green.openpudo.rest.dto.pudo.PudoSummary;
+import less.green.openpudo.rest.dto.pudo.Rating;
 import less.green.openpudo.rest.dto.user.User;
+import less.green.openpudo.rest.dto.user.UserPreferences;
+import less.green.openpudo.rest.dto.user.UserSummary;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 @Mapper(componentModel = "cdi")
 public interface DtoMapper {
 
-    @Mapping(source = "ent.value0", target = ".")
-    @Mapping(source = "ent.value1", target = "pudoOwner")
-    User mapUserEntityToDto(Pair<TbUser, Boolean> ent);
+    User mapUserDto(TbUserProfile userProfile, String phoneNumber, Long packageCount, String savedCO2, String customerSuffix);
 
-    List<User> mapUserEntityListToDtoList(List<Pair<TbUser, Boolean>> ents);
+    UserPreferences mapUserPreferencesDto(TbUserPreferences userPreferences);
 
-    Address mapAddressEntityToDto(TbAddress ent);
+    UserSummary mapUserSummaryDto(Long userId, String firstName, String lastName, UUID profilePicId, String customerSuffix);
 
-    @Mapping(source = "ent.value0", target = ".")
-    @Mapping(source = "ent.value1", target = "address")
-    Pudo mapPudoEntityToDto(Pair<TbPudo, TbAddress> ent);
+    @Mapping(source = "pudo.pudoId", target = "pudoId")
+    @Mapping(source = "pudo.createTms", target = "createTms")
+    @Mapping(source = "pudo.updateTms", target = "updateTms")
+    Pudo mapPudoDto(TbPudo pudo, TbAddress address, TbRating rating, String rewardMessage, Long customerCount, Long packageCount, String savedCO2, String customizedAddress);
 
-    List<Pudo> mapPudoEntityListToDtoList(List<Pair<TbPudo, TbAddress>> ents);
+    Address mapAddressDto(TbAddress address);
 
-    @Mapping(source = "ent.value0", target = ".")
-    @Mapping(source = "ent.value1", target = "events")
-    Package mapPackageEntityToDto(Pair<TbPackage, List<TbPackageEvent>> ent);
+    Rating mapRatingDto(TbRating rating);
 
-    List<Package> mapPackageEntityListToDto(List<Pair<TbPackage, List<TbPackageEvent>>> ents);
+    @Mapping(target = "pudoId", ignore = true)
+    @Mapping(target = "createTms", ignore = true)
+    @Mapping(target = "updateTms", ignore = true)
+    TbAddress mapAddressEntity(AddressSearchResult addressSearchResult);
 
-    Notification mapNotificationEntityToDto(TbNotification ent);
+    @Mapping(source = "pudoId", target = "pudoId")
+    PudoSummary mapPudoSummaryDto(Long pudoId, String businessName, UUID pudoPicId, String label, TbRating rating, String customizedAddress);
 
-    List<Notification> mapNotificationEntityToDto(List<TbNotification> ents);
+    Package mapPackageDto(TbPackage pack, List<PackageEvent> events, String packageName, String shareLink);
 
-    default AddressMarker mapFeatureToAddressMarker(Feature feat) {
+    PackageEvent mapPackageEventDto(TbPackageEvent packageEvent, String packageStatusMessage);
+
+    @Mapping(source = "localizedTitle", target = "title")
+    @Mapping(source = "localizedMessage", target = "message")
+    Notification mapNotificationDto(TbNotification notification, String localizedTitle, String localizedMessage, Map<String, String> optData);
+
+    @Mapping(source = "pack.packageId", target = "packageId")
+    @Mapping(source = "pack.createTms", target = "createTms")
+    @Mapping(source = "pudo.pudoId", target = "pudoId")
+    @Mapping(source = "userProfile.userId", target = "userId")
+    PackageSummary mapPackageSummaryDto(TbPackage pack, TbPackageEvent event, TbPudo pudo, TbAddress address, TbUserProfile userProfile, TbUserPudoRelation userPudoRelation, String packageName);
+
+    @Mapping(target = "signature", ignore = true)
+    PudoMarker mapPudoMarkerDto(PudoSummary pudo, BigDecimal lat, BigDecimal lon, BigDecimal distanceFromOrigin);
+
+    @Mapping(source = "address", target = "address")
+    @Mapping(source = "lat", target = "lat")
+    @Mapping(source = "lon", target = "lon")
+    AddressMarker mapAddressMarkerDto(AddressSearchResult address, String signature, BigDecimal lat, BigDecimal lon, BigDecimal distanceFromOrigin);
+
+    default AddressSearchResult mapFeatureToAddressSearchResult(Feature feat) {
         if (feat == null) {
             return null;
         }
-        AddressMarker ret = new AddressMarker();
+        AddressSearchResult ret = new AddressSearchResult();
         Map<String, Object> properties = feat.getProperties();
         ret.setLabel((String) properties.get("label"));
-        ret.setResultId((String) properties.get("gid"));
-        ret.setPrecision((String) properties.get("layer"));
+        ret.setStreet((String) properties.get("street"));
+        ret.setStreetNum((String) properties.get("housenumber"));
+        ret.setZipCode((String) properties.get("postalcode"));
+        ret.setCity((String) properties.get("locality"));
+        ret.setProvince((String) properties.get("region"));
+        ret.setCountry((String) properties.get("country"));
         Point geometry = feat.getGeometry();
         ret.setLat(geometry.getCoordinates().get(1));
         ret.setLon(geometry.getCoordinates().get(0));
         return ret;
     }
-
-    default void mapFeatureToExistingAddressEntity(Feature feat, TbAddress ent) {
-        if (feat == null) {
-            return;
-        }
-        Map<String, Object> properties = feat.getProperties();
-        ent.setLabel((String) properties.get("label"));
-        ent.setStreet((String) properties.get("street"));
-        ent.setStreetNum((String) properties.get("housenumber"));
-        ent.setZipCode((String) properties.get("postalcode"));
-        ent.setCity((String) properties.get("locality"));
-        ent.setProvince((String) properties.get("region"));
-        ent.setCountry((String) properties.get("country"));
-        Point geometry = feat.getGeometry();
-        ent.setLat(geometry.getCoordinates().get(1));
-        ent.setLon(geometry.getCoordinates().get(0));
-    }
-
-    List<AddressMarker> mapFeatureListToAddressMarkerList(List<Feature> feat);
 
 }

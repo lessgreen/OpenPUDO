@@ -1,8 +1,11 @@
 package less.green.openpudo.cdi.service;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import less.green.openpudo.common.Encoders;
 import lombok.extern.log4j.Log4j2;
 
 import javax.enterprise.context.ApplicationScoped;
+import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.Locale;
 import java.util.MissingResourceException;
@@ -14,7 +17,7 @@ import static less.green.openpudo.common.StringUtils.isEmpty;
 @Log4j2
 public class LocalizationService {
 
-    private static final Locale DEFAULT_LOCALE = Locale.ENGLISH;
+    public static final Locale DEFAULT_LOCALE = Locale.ENGLISH;
 
     public String getMessage(String language, String key, Object... params) {
         ResourceBundle bundle;
@@ -40,6 +43,10 @@ public class LocalizationService {
         }
         MessageFormat formatter = new MessageFormat(pattern, DEFAULT_LOCALE);
         return formatter.format(params);
+    }
+
+    public JsonNode getAppLocalization() throws IOException {
+        return Encoders.OBJECT_MAPPER.readTree(this.getClass().getResourceAsStream("/localization/app_localization.json"));
     }
 
 }

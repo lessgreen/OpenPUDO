@@ -21,18 +21,23 @@ public class User {
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Date updateTms;
 
-    @Schema(required = true)
     private String firstName;
 
-    @Schema(required = true)
     private String lastName;
-
-    private String ssn;
 
     @Schema(readOnly = true)
     private UUID profilePicId;
 
     @Schema(readOnly = true)
-    private Boolean pudoOwner;
+    private String phoneNumber;
+
+    @Schema(readOnly = true)
+    private Long packageCount;
+
+    @Schema(readOnly = true)
+    private String savedCO2;
+
+    @Schema(readOnly = true)
+    private String customerSuffix;
 
 }

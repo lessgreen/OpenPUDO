@@ -1,5 +1,6 @@
 package less.green.openpudo.common;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -10,6 +11,7 @@ import java.util.Base64;
 public class Encoders {
 
     public static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+    public static final ObjectMapper OBJECT_MAPPER_COMPACT = new ObjectMapper().setSerializationInclusion(JsonInclude.Include.NON_NULL);
     public static final ObjectMapper OBJECT_MAPPER_PRETTY = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
     public static final Base64.Encoder BASE64_ENCODER = Base64.getEncoder();
     public static final Base64.Decoder BASE64_DECODER = Base64.getDecoder();

@@ -39,7 +39,7 @@ public class FirebaseMessagingService {
         }
     }
 
-    public String sendNotification(String token, String title, String body, Map<String, String> data) {
+    public String sendNotification(String token, String title, String body, Map<String, String> data) throws FirebaseMessagingException {
         Notification notification = Notification.builder().setTitle(title).setBody(body).build();
         Message.Builder mb = Message.builder();
         mb.setToken(token);
@@ -48,12 +48,7 @@ public class FirebaseMessagingService {
             mb.putAllData(data);
         }
         Message message = mb.build();
-        try {
-            return FirebaseMessaging.getInstance().send(message);
-        } catch (FirebaseMessagingException ex) {
-            log.error("Firebase error: {}, {}", ex.getMessagingErrorCode(), ex.getMessage());
-            return null;
-        }
+        return FirebaseMessaging.getInstance().send(message);
     }
 
 }

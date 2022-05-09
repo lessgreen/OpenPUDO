@@ -1,28 +1,24 @@
 package less.green.openpudo.rest.resource;
 
+import less.green.openpudo.business.service.UserService;
 import less.green.openpudo.cdi.ExecutionContext;
 import less.green.openpudo.cdi.service.LocalizationService;
 import less.green.openpudo.common.ApiReturnCodes;
 import less.green.openpudo.common.ExceptionUtils;
-import less.green.openpudo.common.MultipartUtils;
 import less.green.openpudo.common.dto.tuple.Pair;
-import less.green.openpudo.persistence.model.TbAddress;
-import less.green.openpudo.persistence.model.TbPudo;
-import less.green.openpudo.persistence.model.TbUser;
-import less.green.openpudo.persistence.service.DeviceTokenService;
-import less.green.openpudo.persistence.service.PackageService;
-import less.green.openpudo.persistence.service.PudoService;
-import less.green.openpudo.persistence.service.UserService;
 import less.green.openpudo.rest.config.annotation.BinaryAPI;
 import less.green.openpudo.rest.config.exception.ApiException;
 import less.green.openpudo.rest.dto.BaseResponse;
-import less.green.openpudo.rest.dto.DtoMapper;
-import less.green.openpudo.rest.dto.pudo.PudoListResponse;
-import less.green.openpudo.rest.dto.user.DeviceToken;
-import less.green.openpudo.rest.dto.user.User;
-import less.green.openpudo.rest.dto.user.UserResponse;
+import less.green.openpudo.rest.dto.pack.PackageSummary;
+import less.green.openpudo.rest.dto.pack.PackageSummaryListResponse;
+import less.green.openpudo.rest.dto.pudo.PudoSummary;
+import less.green.openpudo.rest.dto.pudo.PudoSummaryListResponse;
+import less.green.openpudo.rest.dto.scalar.UUIDResponse;
+import less.green.openpudo.rest.dto.user.*;
 import lombok.extern.log4j.Log4j2;
 import org.eclipse.microprofile.openapi.annotations.Operation;
+import org.eclipse.microprofile.openapi.annotations.parameters.Parameter;
+import org.eclipse.microprofile.openapi.annotations.security.SecurityRequirement;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
 import javax.enterprise.context.RequestScoped;
@@ -31,12 +27,13 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 
-import static less.green.openpudo.common.MultipartUtils.ALLOWED_IMAGE_MIME_TYPES;
+import static less.green.openpudo.common.MultipartUtils.*;
 import static less.green.openpudo.common.StringUtils.isEmpty;
 
 @RequestScoped
-@Path("/users")
+@Path("/user")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 @Log4j2
@@ -49,173 +46,160 @@ public class UserResource {
     LocalizationService localizationService;
 
     @Inject
-    DeviceTokenService deviceTokenService;
-    @Inject
-    PackageService packageService;
-    @Inject
-    PudoService pudoService;
-    @Inject
     UserService userService;
-
-    @Inject
-    DtoMapper dtoMapper;
 
     @GET
     @Path("/{userId}")
-    @Operation(summary = "Get public profile for user with provided userId")
-    public UserResponse getUserById(@PathParam(value = "userId") Long userId) {
-        Pair<TbUser, Boolean> user = userService.getUserById(userId);
-        return new UserResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapUserEntityToDto(user));
+    @SecurityRequirement(name = "JWT")
+    @Operation(summary = "Get profile for specific user")
+    public UserResponse getUserProfile(@PathParam(value = "userId") Long userId) {
+        User ret = userService.getUserProfile(userId);
+        return new UserResponse(context.getExecutionId(), ApiReturnCodes.OK, ret);
     }
 
     @GET
     @Path("/me")
-    @Operation(summary = "Get public profile for current user")
-    public UserResponse getCurrentUser() {
-        return getUserById(context.getUserId());
+    @SecurityRequirement(name = "JWT")
+    @Operation(summary = "Get profile for current user")
+    public UserResponse getCurrentUserProfile() {
+        User ret = userService.getCurrentUserProfile();
+        return new UserResponse(context.getExecutionId(), ApiReturnCodes.OK, ret);
     }
 
     @PUT
     @Path("/me")
-    @Operation(summary = "Update public profile for current user")
-    public UserResponse updateCurrentUser(User req, @HeaderParam("Application-Language") String language) {
+    @SecurityRequirement(name = "JWT")
+    @Operation(summary = "Update profile for current user")
+    public UserResponse updateCurrentUserProfile(User req) {
         // sanitize input
         if (req == null) {
-            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage(language, "error.empty_request"));
-        } else if (isEmpty(req.getFirstName())) {
-            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage(language, "error.empty_mandatory_field", "firstName"));
-        } else if (isEmpty(req.getLastName())) {
-            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage(language, "error.empty_mandatory_field", "lastName"));
+            throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.empty_request"));
         }
 
-        Pair<TbUser, Boolean> user = userService.updateUser(context.getUserId(), req);
-        log.info("[{}] Updated user profile: {}", context.getExecutionId(), context.getUserId());
-        return new UserResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapUserEntityToDto(user));
-    }
-
-    @GET
-    @Path("/me/pudos")
-    @Operation(summary = "Get current user's favourite PUDOs")
-    public PudoListResponse getCurrentUserPudos(@HeaderParam("Application-Language") String language) {
-        // checking permission
-        boolean pudoOwner = pudoService.isPudoOwner(context.getUserId());
-        if (pudoOwner) {
-            throw new ApiException(ApiReturnCodes.FORBIDDEN, localizationService.getMessage(language, "error.user.pudo_owner"));
-        }
-        List<Pair<TbPudo, TbAddress>> pudos = pudoService.getPudoListByCustomer(context.getUserId());
-        return new PudoListResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapPudoEntityListToDtoList(pudos));
+        User ret = userService.updateCurrentUserProfile(req);
+        return new UserResponse(context.getExecutionId(), ApiReturnCodes.OK, ret);
     }
 
     @PUT
-    @Path("/me/pudos/{pudoId}")
-    @Operation(summary = "Add PUDO to current user's favourite PUDOs")
-    public PudoListResponse addPudoToFavourites(@PathParam(value = "pudoId") Long pudoId, @HeaderParam("Application-Language") String language) {
-        // preliminary checks
-        boolean pudoOwner = pudoService.isPudoOwner(context.getUserId());
-        if (pudoOwner) {
-            throw new ApiException(ApiReturnCodes.FORBIDDEN, localizationService.getMessage(language, "error.user.pudo_owner"));
-        }
-        Pair<TbPudo, TbAddress> pudo = pudoService.getPudoById(pudoId);
-        if (pudo == null) {
-            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage(language, "error.resource_not_exists"));
-        }
-        boolean pudoCustomer = pudoService.isPudoCustomer(context.getUserId(), pudoId);
-        if (pudoCustomer) {
-            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage(language, "error.pudo.pudo_already_favourite"));
-        }
-
-        List<Pair<TbPudo, TbAddress>> pudos = pudoService.addPudoToFavourites(context.getUserId(), pudoId);
-        log.info("[{}] Addes PUDO: {} to user: {} favourites", context.getExecutionId(), pudoId, context.getUserId());
-        return new PudoListResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapPudoEntityListToDtoList(pudos));
-    }
-
-    @DELETE
-    @Path("/me/pudos/{pudoId}")
-    @Operation(summary = "Remove PUDO from current user's favourite PUDOs")
-    public PudoListResponse removePudoFromFavourites(@PathParam(value = "pudoId") Long pudoId, @HeaderParam("Application-Language") String language) {
-        // preliminary checks
-        boolean pudoOwner = pudoService.isPudoOwner(context.getUserId());
-        if (pudoOwner) {
-            throw new ApiException(ApiReturnCodes.FORBIDDEN, localizationService.getMessage(language, "error.user.pudo_owner"));
-        }
-        boolean pudoCustomer = pudoService.isPudoCustomer(context.getUserId(), pudoId);
-        if (!pudoCustomer) {
-            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage(language, "error.pudo.pudo_not_favourite"));
-        }
-        long cnt = packageService.getActivePackageCount(pudoId, context.getUserId());
-        if (cnt > 0) {
-            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage(language, "error.pudo.package_in_transit"));
-        }
-
-        List<Pair<TbPudo, TbAddress>> pudos = pudoService.removePudoFromFavourites(context.getUserId(), pudoId);
-        log.info("[{}] Removed PUDO: {} from user: {} favourites", context.getExecutionId(), pudoId, context.getUserId());
-        return new PudoListResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapPudoEntityListToDtoList(pudos));
-    }
-
-    @PUT
-    @Path("/me/profile-pic")
+    @Path("/me/picture")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @BinaryAPI
-    @Operation(summary = "Update public profile picture for current user")
-    public UserResponse updateCurrentUserProfilePic(MultipartFormDataInput req, @HeaderParam("Application-Language") String language) {
+    @SecurityRequirement(name = "JWT")
+    @Operation(summary = "Update picture for current user")
+    public UUIDResponse updateCurrentUserProfilePicture(MultipartFormDataInput req) {
         // sanitize input
         if (req == null) {
-            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage(language, "error.empty_request"));
+            throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.empty_request"));
         }
 
         Pair<String, byte[]> uploadedFile;
         try {
-            uploadedFile = MultipartUtils.readUploadedFile(req);
+            uploadedFile = readUploadedFile(req);
         } catch (IOException ex) {
-            log.error(ex.getMessage());
-            throw new ApiException(ApiReturnCodes.SERVICE_UNAVAILABLE, localizationService.getMessage(language, "error.service_unavailable"));
+            log.fatal("[{}] {}", context.getExecutionId(), ExceptionUtils.getCanonicalFormWithStackTrace(ex));
+            throw new ApiException(ApiReturnCodes.SERVICE_UNAVAILABLE, localizationService.getMessage(context.getLanguage(), "error.service_unavailable"));
         }
 
         // more sanitizing
         if (uploadedFile == null) {
-            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage(language, "error.empty_mandatory_field", "multipart name"));
+            throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.empty_mandatory_field", PART_NAME));
         }
         if (!ALLOWED_IMAGE_MIME_TYPES.contains(uploadedFile.getValue0())) {
-            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage(language, "error.invalid_field", "mimeType"));
+            throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.invalid_field", CONTENT_TYPE));
         }
 
-        try {
-            Pair<TbUser, Boolean> user = userService.updateUserProfilePic(context.getUserId(), uploadedFile.getValue0(), uploadedFile.getValue1());
-            log.info("[{}] Updated user: {} profile picture: {}", context.getExecutionId(), context.getUserId(), user.getValue0().getProfilePicId());
-            return new UserResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapUserEntityToDto(user));
-        } catch (RuntimeException ex) {
-            log.error("[{}] {}", context.getExecutionId(), ExceptionUtils.getCompactStackTrace(ex));
-            throw new ApiException(ApiReturnCodes.SERVICE_UNAVAILABLE, localizationService.getMessage(language, "error.service_unavailable"));
-        }
+        UUID ret = userService.updateCurrentUserProfilePicture(uploadedFile.getValue1());
+        return new UUIDResponse(context.getExecutionId(), ApiReturnCodes.OK, ret);
     }
 
-    @DELETE
-    @Path("/me/profile-pic")
-    @Operation(summary = "Delete public profile picture for current user")
-    public UserResponse deleteCurrentUserProfilePic(@HeaderParam("Application-Language") String language) {
-        try {
-            Pair<TbUser, Boolean> user = userService.deleteUserProfilePic(context.getUserId());
-            log.info("[{}] Deleted user: {} profile picture", context.getExecutionId(), context.getUserId());
-            return new UserResponse(context.getExecutionId(), ApiReturnCodes.OK, dtoMapper.mapUserEntityToDto(user));
-        } catch (RuntimeException ex) {
-            log.error("[{}] {}", context.getExecutionId(), ExceptionUtils.getCompactStackTrace(ex));
-            throw new ApiException(ApiReturnCodes.SERVICE_UNAVAILABLE, localizationService.getMessage(language, "error.service_unavailable"));
+    @GET
+    @Path("/me/preferences")
+    @SecurityRequirement(name = "JWT")
+    @Operation(summary = "Get preferences for current user")
+    public UserPreferencesResponse getCurrentUserPreferences() {
+        UserPreferences ret = userService.getCurrentUserPreferences();
+        return new UserPreferencesResponse(context.getExecutionId(), ApiReturnCodes.OK, ret);
+    }
+
+    @PUT
+    @Path("/me/preferences")
+    @SecurityRequirement(name = "JWT")
+    @Operation(summary = "Update preferences for current user")
+    public UserPreferencesResponse updateCurrentUserPreferences(UserPreferences req) {
+        // sanitize input
+        if (req == null) {
+            throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.empty_request"));
+        } else if (req.getShowPhoneNumber() == null) {
+            throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.empty_mandatory_field", "showPhoneNumber"));
         }
+
+        UserPreferences ret = userService.updateCurrentUserPreferences(req);
+        return new UserPreferencesResponse(context.getExecutionId(), ApiReturnCodes.OK, ret);
     }
 
     @POST
     @Path("/me/device-tokens")
+    @SecurityRequirement(name = "JWT")
     @Operation(summary = "Store or refresh device token for current user")
-    public BaseResponse upsertDeviceToken(DeviceToken req, @HeaderParam("Application-Language") String language) {
+    public BaseResponse upsertDeviceToken(DeviceToken req) {
         // sanitize input
         if (req == null) {
-            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage(language, "error.empty_request"));
+            throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.empty_request"));
         } else if (isEmpty(req.getDeviceToken())) {
-            throw new ApiException(ApiReturnCodes.INVALID_REQUEST, localizationService.getMessage(language, "error.empty_mandatory_field", "deviceToken"));
+            throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.empty_mandatory_field", "deviceToken"));
         }
 
-        deviceTokenService.upsertDeviceToken(context.getUserId(), req, language);
+        userService.upsertDeviceToken(req);
         return new BaseResponse(context.getExecutionId(), ApiReturnCodes.OK);
+    }
+
+    @GET
+    @Path("/me/pudos")
+    @SecurityRequirement(name = "JWT")
+    @Operation(summary = "Get favourite PUDOs for current user")
+    public PudoSummaryListResponse getCurrentUserPudos() {
+        List<PudoSummary> ret = userService.getCurrentUserPudos();
+        return new PudoSummaryListResponse(context.getExecutionId(), ApiReturnCodes.OK, ret);
+    }
+
+    @POST
+    @Path("/me/pudos/{pudoId}")
+    @SecurityRequirement(name = "JWT")
+    @Operation(summary = "Add PUDO to current user's favourite PUDOs")
+    public PudoSummaryListResponse addPudoToFavourites(@PathParam(value = "pudoId") Long pudoId) {
+        List<PudoSummary> ret = userService.addPudoToFavourites(pudoId);
+        return new PudoSummaryListResponse(context.getExecutionId(), ApiReturnCodes.OK, ret);
+    }
+
+    @DELETE
+    @Path("/me/pudos/{pudoId}")
+    @SecurityRequirement(name = "JWT")
+    @Operation(summary = "Remove PUDO from current user's favourite PUDOs")
+    public PudoSummaryListResponse removePudoFromFavourites(@PathParam(value = "pudoId") Long pudoId) {
+        List<PudoSummary> ret = userService.removePudoFromFavourites(pudoId);
+        return new PudoSummaryListResponse(context.getExecutionId(), ApiReturnCodes.OK, ret);
+    }
+
+    @GET
+    @Path("/me/packages")
+    @SecurityRequirement(name = "JWT")
+    @Operation(summary = "Get package list for current user, with optional query parameters",
+            description = "If called without parameters, this API return the summary of all packages in \"open\" state for the current user.\n\n"
+                          + "Parameters can be used to perform an historical search, and pagination will be used only in this mode.")
+    public PackageSummaryListResponse getCurrentUserPackages(
+            @Parameter(description = "Historical search") @DefaultValue("false") @QueryParam("history") boolean history,
+            @Parameter(description = "Pagination limit, used only in historical search") @DefaultValue("20") @QueryParam("limit") int limit,
+            @Parameter(description = "Pagination offset, used only in historical search") @DefaultValue("0") @QueryParam("offset") int offset) {
+        // sanitize input
+        if (limit < 1) {
+            throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.invalid_field", "limit"));
+        }
+        if (offset < 0) {
+            throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.invalid_field", "offset"));
+        }
+
+        List<PackageSummary> ret = userService.getCurrentUserPackages(history, limit, offset);
+        return new PackageSummaryListResponse(context.getExecutionId(), ApiReturnCodes.OK, ret);
     }
 
 }

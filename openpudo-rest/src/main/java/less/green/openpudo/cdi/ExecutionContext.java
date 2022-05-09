@@ -1,5 +1,6 @@
 package less.green.openpudo.cdi;
 
+import less.green.openpudo.common.dto.jwt.JwtPrivateClaims;
 import lombok.Data;
 
 import javax.enterprise.context.RequestScoped;
@@ -13,5 +14,7 @@ public class ExecutionContext {
     private Long startTimestamp;
     private Long endTimestamp;
     private Long userId;
+    private JwtPrivateClaims privateClaims;
+    private String language;
 
 }
