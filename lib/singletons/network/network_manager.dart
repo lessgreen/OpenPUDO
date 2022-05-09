@@ -59,10 +59,11 @@ class NetworkManager with NetworkGeneral, NetworkManagerUser, NetworkManagerNoti
     _inst.networkActivity = ValueNotifier(false);
     _inst.config = config;
     _inst.baseURL = config.host;
+    var currentLanguage = config.sharedPreferencesInstance?.getString('languagePref') ?? 'en';
     _inst.headers = {
       'Content-type': 'application/json',
       'Accept': 'application/json',
-      'Application-Language': 'it',
+      'Application-Language': currentLanguage,
       'User-Agent': 'OpenPudo/${config.appInfo.version}#${config.appInfo.buildNumber}',
     };
     _inst.sharedPreferences = config.sharedPreferencesInstance!;
