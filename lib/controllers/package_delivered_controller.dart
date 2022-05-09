@@ -136,10 +136,10 @@ class _PackageDeliveredControllerState extends State<PackageDeliveredController>
                       Navigator.of(context).pushReplacementNamed(Routes.packageDeliveryDone,
                           arguments: value.firstName != null && value.lastName != null ? "${value.firstName} ${value.lastName}" : "AC${value.userId ?? 0}");
                     } else {
-                      SAAlertDialog.displayAlertWithClose(context, "Error", valueUpdated, barrierDismissable: false);
+                      SAAlertDialog.displayAlertWithClose(context, "genericErrorTitle".localized(context, 'general'), valueUpdated, barrierDismissable: false);
                     }
                   }).catchError((onError) {
-                    SAAlertDialog.displayAlertWithClose(context, "Error", onError, barrierDismissable: false);
+                    SAAlertDialog.displayAlertWithClose(context, "genericErrorTitle".localized(context, 'general'), onError, barrierDismissable: false);
                   });
                 }
               });

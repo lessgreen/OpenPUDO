@@ -158,7 +158,7 @@ class _PudoUsersListControllerState extends State<PudoUsersListController> {
         if (response is UserProfile) {
           Navigator.of(context).pushNamed(Routes.userDetail, arguments: response);
         } else {
-          SAAlertDialog.displayAlertWithClose(context, 'genericErrorTitle'.localized(context, 'general'), "Ops!, Qualcosa e' andato storto");
+          SAAlertDialog.displayAlertWithClose(context, 'genericErrorTitle'.localized(context, 'general'), "genericErrorDescription".localized(context, 'general'));
         }
       },
     ).catchError((onError) => SAAlertDialog.displayAlertWithClose(context, 'genericErrorTitle'.localized(context, 'general'), onError));

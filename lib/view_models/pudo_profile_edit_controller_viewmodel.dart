@@ -45,7 +45,11 @@ class PudoProfileEditControllerViewModel extends ChangeNotifier {
         if (value is List<RewardOption>) {
           this.dataSource = value;
         } else {
-          SAAlertDialog.displayAlertWithClose(context, 'genericErrorTitle'.localized(context, 'general'), "Qualcosa è andato storto");
+          SAAlertDialog.displayAlertWithClose(
+            context,
+            'genericErrorTitle'.localized(context, 'general'),
+            "genericErrorDescription".localized(context, 'general'),
+          );
         }
       }).catchError((error) => SAAlertDialog.displayAlertWithClose(context, 'genericErrorTitle'.localized(context, 'general'), error));
     }

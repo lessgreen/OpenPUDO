@@ -62,16 +62,10 @@ class PersonalDataControllerViewModel extends ChangeNotifier {
   }
 
   get isValid {
-    if (_image != null) {
+    if (_name.isNotEmpty && _surname.isNotEmpty) {
       return true;
     }
-    if (_name.isEmpty) {
-      return false;
-    }
-    if (_surname.isEmpty) {
-      return false;
-    }
-    return true;
+    return false;
   }
 
   // ************ Navigation *****

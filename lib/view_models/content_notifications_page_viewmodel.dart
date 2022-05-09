@@ -129,19 +129,19 @@ class ContentNotificationsPageViewModel with ChangeNotifier {
                       (value) => Provider.of<CurrentUser>(context, listen: false).triggerReload(),
                     );
               } else {
-                SAAlertDialog.displayAlertWithClose(context, "Error", value, barrierDismissable: false);
+                SAAlertDialog.displayAlertWithClose(context, "genericErrorTitle".localized(context, 'general'), value, barrierDismissable: false);
               }
             }).catchError((onError) {
-              SAAlertDialog.displayAlertWithClose(context, "Error", onError, barrierDismissable: false);
+              SAAlertDialog.displayAlertWithClose(context, "genericErrorTitle".localized(context, 'general'), onError, barrierDismissable: false);
             });
           } else {
             Navigator.of(context).pushNamed(Routes.packagePickup, arguments: response).then((value) => Provider.of<CurrentUser>(context, listen: false).triggerReload());
           }
         } else {
-          SAAlertDialog.displayAlertWithClose(context, "Error", "Ops!, Qualcosa e' andato storto");
+          SAAlertDialog.displayAlertWithClose(context, "genericErrorTitle".localized(context, 'general'), "genericErrorDescription".localized(context, 'general'));
         }
       },
-    ).catchError((onError) => SAAlertDialog.displayAlertWithClose(context, "Error", onError));
+    ).catchError((onError) => SAAlertDialog.displayAlertWithClose(context, "genericErrorTitle".localized(context, 'general'), onError));
   }
 
   void _handleUserRouting(BuildContext context, int userId) {
@@ -150,10 +150,10 @@ class ContentNotificationsPageViewModel with ChangeNotifier {
         if (response is UserProfile) {
           Navigator.of(context).pushNamed(Routes.userDetail, arguments: response);
         } else {
-          SAAlertDialog.displayAlertWithClose(context, "Error", "Ops!, Qualcosa e' andato storto");
+          SAAlertDialog.displayAlertWithClose(context, "genericErrorTitle".localized(context, 'general'), "genericErrorDescription".localized(context, 'general'));
         }
       },
-    ).catchError((onError) => SAAlertDialog.displayAlertWithClose(context, "Error", onError));
+    ).catchError((onError) => SAAlertDialog.displayAlertWithClose(context, "genericErrorTitle".localized(context, 'general'), onError));
   }
 
   void _scrollListener() {

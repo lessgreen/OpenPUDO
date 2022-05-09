@@ -23,6 +23,8 @@ import 'dart:io';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app_badger/flutter_app_badger.dart';
+import 'package:qui_green/commons/alert_dialog.dart';
+import 'package:qui_green/commons/utilities/localization.dart';
 import 'package:qui_green/commons/utilities/print_helper.dart';
 import 'package:qui_green/models/base_response.dart';
 import 'package:qui_green/models/pudo_profile.dart';
@@ -50,11 +52,11 @@ class CurrentUser with ChangeNotifier {
     _refreshToken();
   }
 
-  void refresh() {
-    _refreshToken();
+  void refresh([BuildContext? context]) {
+    _refreshToken(context);
   }
 
-  _refreshToken() {
+  _refreshToken([BuildContext? context]) {
     if (sharedPreferences?.getString('accessToken') != null) {
       var oldToken = sharedPreferences?.getString('accessToken');
       NetworkManager.instance.renewToken(accessToken: oldToken!).then((response) {
@@ -71,6 +73,9 @@ class CurrentUser with ChangeNotifier {
               }).catchError((onError) {
                 user = null;
                 pushPage(Routes.login);
+                if (context != null) {
+                  SAAlertDialog.displayAlertWithClose(context, "genericErrorTitle".localized(context, 'general'), "genericErrorDescription".localized(context, 'general'));
+                }
                 safePrint(onError);
               });
               break;
@@ -85,6 +90,9 @@ class CurrentUser with ChangeNotifier {
               }).catchError((onError) {
                 pudoProfile = null;
                 pushPage(Routes.login);
+                if (context != null) {
+                  SAAlertDialog.displayAlertWithClose(context, "genericErrorTitle".localized(context, 'general'), "genericErrorDescription".localized(context, 'general'));
+                }
                 safePrint(onError);
               });
               break;
@@ -99,17 +107,26 @@ class CurrentUser with ChangeNotifier {
           user = null;
           pudoProfile = null;
           pushPage(Routes.login);
+          if (context != null) {
+            SAAlertDialog.displayAlertWithClose(context, "genericErrorTitle".localized(context, 'general'), response);
+          }
         }
       }).catchError((onError) {
         user = null;
         WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
           pushPage(Routes.login);
+          if (context != null) {
+            SAAlertDialog.displayAlertWithClose(context, "genericErrorTitle".localized(context, 'general'), onError);
+          }
         });
       });
     } else {
       user = null;
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         pushPage(Routes.login);
+        if (context != null) {
+          SAAlertDialog.displayAlertWithClose(context, "genericErrorTitle".localized(context, 'general'), "genericErrorDescription".localized(context, 'general'));
+        }
       });
     }
   }

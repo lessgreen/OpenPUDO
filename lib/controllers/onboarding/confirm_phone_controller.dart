@@ -67,10 +67,10 @@ class _ConfirmPhoneControllerState extends State<ConfirmPhoneController> with Co
     NetworkManager.instance.login(login: widget.phoneNumber, password: _confirmValue).then((value) {
       switch (NetworkManager.instance.accessTokenAccess) {
         case "customer":
-          Provider.of<CurrentUser>(context, listen: false).refresh();
+          Provider.of<CurrentUser>(context, listen: false).refresh(context);
           break;
         case "pudo":
-          Provider.of<CurrentUser>(context, listen: false).refresh();
+          Provider.of<CurrentUser>(context, listen: false).refresh(context);
           break;
         case "guest":
           Navigator.of(context).pushReplacementNamed(Routes.aboutYou, arguments: widget.phoneNumber);
