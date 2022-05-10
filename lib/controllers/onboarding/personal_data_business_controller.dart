@@ -23,10 +23,12 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:qui_green/commons/alert_dialog.dart';
 import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
 import 'package:qui_green/commons/utilities/keyboard_visibility.dart';
 import 'package:qui_green/commons/utilities/localization.dart';
 import 'package:qui_green/models/geo_marker.dart';
+import 'package:qui_green/models/update_pudo_request.dart';
 import 'package:qui_green/resources/res.dart';
 import 'package:qui_green/resources/routes_enum.dart';
 import 'package:qui_green/view_models/personal_data_business_controller_viewmodel.dart';
@@ -46,6 +48,7 @@ class PersonalDataBusinessController extends StatefulWidget {
 
 class _PersonalDataBusinessControllerState extends State<PersonalDataBusinessController> {
   bool termsAndConditionsChecked = true;
+  bool _addressValidationFailed = false;
 
   @override
   Widget build(BuildContext context) {
@@ -121,7 +124,7 @@ class _PersonalDataBusinessControllerState extends State<PersonalDataBusinessCon
                       child: CupertinoTextField(
                         placeholder: 'placeHolderAddress'.localized(context),
                         controller: viewModel.addressController,
-                        decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Theme.of(context).primaryColor))),
+                        decoration: _buildAddressBoxDecoration(), //BoxDecoration(border: Border(bottom: BorderSide(color: Theme.of(context).primaryColor))),
                         autofocus: false,
                         textInputAction: TextInputAction.done,
                         onChanged: (newValue) => viewModel.onSearchChanged(newValue),
@@ -238,7 +241,16 @@ class _PersonalDataBusinessControllerState extends State<PersonalDataBusinessCon
               secondChild: const SizedBox(),
               firstChild: MainButton(
                 enabled: viewModel.isValid && termsAndConditionsChecked,
-                onPressed: () => Navigator.of(context).pushReplacementNamed(Routes.rewardPolicy, arguments: viewModel.buildRequest()),
+                onPressed: () {
+                  setState(() {
+                    _addressValidationFailed = (viewModel.address == null);
+                  });
+                  if (viewModel.address != null) {
+                    Navigator.of(context).pushReplacementNamed(Routes.rewardPolicy, arguments: viewModel.buildRequest());
+                  } else {
+                    SAAlertDialog.displayAlertWithClose(context, 'genericErrorTitle'.localized(context, 'general'), 'specifyValidAddress'.localized(context, 'PersonalDataBusinessControllerState'));
+                  }
+                },
                 text: 'nextButton'.localized(context),
               ),
               duration: const Duration(milliseconds: 150),
@@ -247,5 +259,12 @@ class _PersonalDataBusinessControllerState extends State<PersonalDataBusinessCon
         });
       }),
     );
+  }
+
+  BoxDecoration _buildAddressBoxDecoration() {
+    if (!_addressValidationFailed) {
+      return BoxDecoration(border: Border(bottom: BorderSide(color: Theme.of(context).primaryColor)));
+    }
+    return const BoxDecoration(border: Border(bottom: BorderSide(color: Colors.red)));
   }
 }

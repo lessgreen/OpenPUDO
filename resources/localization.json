@@ -63,7 +63,8 @@
             "nextButton": "Avanti",
             "addPhoto": "Aggiungi una foto",
             "acceptTermsAndCondition": "Dichiaro di aver preso visione ed accettare i ",
-            "termsAndConditionHyperlink": "termini e le condizioni d'utilizzo."
+            "termsAndConditionHyperlink": "termini e le condizioni d'utilizzo.",
+            "specifyValidAddress": "È necessario specificare un indirizzo valido per la tua attività."
         },
         "PersonalDataControllerState": {
             "mainLabel":  "Ancora qualche informazione ",
@@ -377,7 +378,8 @@
             "nextButton": "Next",
             "addPhoto": "Add a picture",
             "acceptTermsAndCondition": "I declare that I did read and accept the ",
-            "termsAndConditionHyperlink": "terms of service."
+            "termsAndConditionHyperlink": "terms of service.",
+            "specifyValidAddress": "You need to specify a valid address for your business"
         },
         "PersonalDataControllerState": {
             "mainLabel":  "Some more question ",

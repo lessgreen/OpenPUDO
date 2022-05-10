@@ -75,9 +75,9 @@ class PersonalDataBusinessControllerViewModel extends ChangeNotifier {
     if (_phoneNumber.isEmpty || !_phoneNumber.replaceAll("+39", "").isValidPhoneNumber()) {
       return false;
     }
-    if (_address == null) {
-      return false;
-    }
+    // if (_address == null) {
+    //   return false;
+    // }
     return true;
   }
 
