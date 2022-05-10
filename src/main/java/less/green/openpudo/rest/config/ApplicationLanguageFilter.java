@@ -27,7 +27,6 @@ public class ApplicationLanguageFilter implements ContainerRequestFilter {
         // get application language, if sent by client, and save it into context
         String language = requestContext.getHeaderString(LANGUAGE_HEADER);
         if (!isEmpty(language)) {
-            log.trace("[{}] {}: {}", context.getExecutionId(), LANGUAGE_HEADER, language);
             context.setLanguage(language.trim());
         } else if ("dev".equals(ProfileManager.getActiveProfile())) {
             context.setLanguage("it");

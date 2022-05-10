@@ -21,8 +21,10 @@ public class User {
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Date updateTms;
 
+    @Schema(required = true)
     private String firstName;
 
+    @Schema(required = true)
     private String lastName;
 
     @Schema(readOnly = true)

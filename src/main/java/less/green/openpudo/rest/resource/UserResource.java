@@ -74,6 +74,10 @@ public class UserResource {
         // sanitize input
         if (req == null) {
             throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.empty_request"));
+        } else if (isEmpty(req.getFirstName())) {
+            throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.empty_mandatory_field", "firstName"));
+        } else if (isEmpty(req.getLastName())) {
+            throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.empty_mandatory_field", "lastName"));
         }
 
         User ret = userService.updateCurrentUserProfile(req);
