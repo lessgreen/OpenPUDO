@@ -128,8 +128,10 @@ mixin NetworkManagerUser on NetworkGeneral {
         var accessTokenData = AccessTokenData.fromJson(baseResponse.payload);
         setAccessTokenData(accessTokenData);
         setAccessToken(accessTokenData.accessToken);
+        return baseResponse;
+      } else {
+        throw ErrorDescription('Error ${baseResponse.returnCode}: ${baseResponse.message}');
       }
-      return baseResponse;
     } catch (e) {
       safePrint('ERROR - registerUser: $e');
       _refreshTokenRetryCounter = 0;

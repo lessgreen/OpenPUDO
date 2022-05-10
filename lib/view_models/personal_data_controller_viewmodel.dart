@@ -23,6 +23,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:location/location.dart';
 import 'package:provider/provider.dart';
+import 'package:qui_green/commons/alert_dialog.dart';
 import 'package:qui_green/commons/utilities/image_picker_helper.dart';
 import 'package:qui_green/commons/utilities/localization.dart';
 import 'package:qui_green/models/pudo_profile.dart';
@@ -71,7 +72,9 @@ class PersonalDataControllerViewModel extends ChangeNotifier {
   // ************ Navigation *****
   onSendClick(BuildContext context, PudoProfile? pudoModel) {
     NetworkManager.instance.registerUser(name: name, surname: surname).then((value) {
-      if (value != null) {
+      if (value is ErrorDescription) {
+        SAAlertDialog.displayAlertWithClose(context, 'genericErrorTitle'.localized(context, 'general'), value);
+      } else {
         NetworkManager.instance.getMyProfile().then((user) {
           if (user is UserProfile) {
             Provider.of<CurrentUser>(context, listen: false).user = user;
@@ -90,8 +93,6 @@ class PersonalDataControllerViewModel extends ChangeNotifier {
             showErrorDialog?.call('unknownDescription'.localized(context, 'general'));
           }
         }).catchError((onError) => showErrorDialog?.call(onError));
-      } else {
-        showErrorDialog?.call('unknownDescription'.localized(context, 'general'));
       }
     }).catchError((onError) => showErrorDialog?.call(onError));
   }
