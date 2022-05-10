@@ -81,12 +81,12 @@
 
             .firstcolumn {
                 font-weight: 500;
+                white-space: nowrap;
             }
 
             .secondcolumn {
                 padding-left: 20px;
             }
-
     </style>
 </head>
 
@@ -119,7 +119,7 @@
             <table>
                 {#for event in package.events}
                 <tr>
-                    <td class="firstcolumn">{time:format(event.createTms,'dd/MM/yyyy')}</td>
+                    <td class="firstcolumn">{time:format(event.createTms,'dd/MM/yyyy HH:mm')}</td>
                     <td class="secondcolumn">{event.packageStatusMessage}</td>
                 </tr>
                 {#if event.notes}
