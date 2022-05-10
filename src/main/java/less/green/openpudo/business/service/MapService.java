@@ -205,7 +205,7 @@ public class MapService {
             return Collections.emptyList();
         }
         // tokenizing search string
-        List<String> tokens = Arrays.asList(text.trim().split("\\s"));
+        List<String> tokens = Arrays.asList(text.trim().split("\\s+"));
         List<Septet<Long, String, UUID, String, TbRating, BigDecimal, BigDecimal>> rs = pudoDao.searchPudo(tokens);
         List<PudoMarker> ret = new ArrayList<>(rs.size());
         for (var row : rs) {
