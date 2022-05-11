@@ -8,11 +8,11 @@ public class StringUtils {
     }
 
     public static boolean isEmpty(String str) {
-        return str == null || str.trim().equals("");
+        return str == null || str.isEmpty();
     }
 
     public static String sanitizeString(String str) {
-        return isEmpty(str) ? null : str.trim();
+        return isEmpty(str) ? null : str.isBlank() ? str : str.trim();
     }
 
     public static int levenshteinDistance(String x, String y) {
