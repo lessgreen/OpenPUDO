@@ -111,7 +111,6 @@ class PudoCard extends StatelessWidget {
                         const SizedBox(height: Dimension.paddingS),
                         Text(
                           dataSource.customizedAddress ?? "--",
-                          maxLines: 2,
                           style: Theme.of(context).textTheme.bodyText1,
                         ),
                       ],

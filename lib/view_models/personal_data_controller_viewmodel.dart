@@ -82,10 +82,11 @@ class PersonalDataControllerViewModel extends ChangeNotifier {
               NetworkManager.instance.photoUpload(image!).catchError((onError) => showErrorDialog?.call(onError));
             }
             if (pudoModel != null) {
-              NetworkManager.instance.addPudoFavorite(pudoModel.pudoId.toString()).catchError((onError) => showErrorDialog?.call(onError));
-            }
-            if (pudoModel != null) {
-              Navigator.of(context).pushReplacementNamed(Routes.registrationComplete, arguments: pudoModel);
+              NetworkManager.instance.addPudoFavorite(pudoModel.pudoId.toString()).then((value) {
+                NetworkManager.instance.getPudoDetails(pudoId: pudoModel.pudoId.toString()).then((value) {
+                  Navigator.of(context).pushReplacementNamed(Routes.registrationComplete, arguments: value as PudoProfile?);
+                }).catchError((onError) => showErrorDialog?.call(onError));
+              }).catchError((onError) => showErrorDialog?.call(onError));
             } else {
               Navigator.of(context).pushReplacementNamed(Routes.userPudoTutorial, arguments: PudoProfile.fakeProfile);
             }

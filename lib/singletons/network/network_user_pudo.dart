@@ -49,7 +49,7 @@ mixin NetworkManagerUserPudo on NetworkGeneral {
       }
       return baseResponse;
     } catch (e) {
-      safePrint('ERROR - registerUser: $e');
+      safePrint('ERROR - registerPudo: $e');
       _refreshTokenRetryCounter = 0;
       _networkActivity.value = false;
       return e;
