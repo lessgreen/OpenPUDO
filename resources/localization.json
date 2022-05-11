@@ -114,7 +114,7 @@
             "instructionsLabel": "Istruzioni",
             "goToHome": "Vai alla home",
             "mainLabel": "É semplicissimo!",
-            "secondaryLabel": "Quando gli utenti invieranno un\npacco presso di te, riceverai\nun messaggio come quello\n sotto riportato.",
+            "secondaryLabel": "Per inviare un pacco presso di te i tuoi utenti\ndovranno utilizzare un indirizzo\n come questo:",
             "handleReceiptTitle": "Gestisci il pacco",
             "handleReceiptSubtitle": "Ti basterà scegliere la voce:",
             "shipmentReceivedTitle": "Ho ricevuto un pacco",
@@ -336,7 +336,7 @@
             "yourShipment": "Your packages",
             "missingValue": "Missing value",
             "shootPhoto": "Take a picture",
-            "pickFromGallery": "Choose from teh gallery",
+            "pickFromGallery": "Choose from the gallery",
             "outOfRange": "Values out of range " 
         },
         "MapControllerState": {
@@ -429,7 +429,7 @@
             "instructionsLabel": "Instructions",
             "goToHome": "Go to home page",
             "mainLabel": "It's very simple!",
-            "secondaryLabel": "When your users will send a package\nat your site, you will receive\na message like the one\n shown below.",
+            "secondaryLabel": "When one of your users wants to\nreceive a package at your site he has to use\n an address like this one:",
             "handleReceiptTitle": "Handle the package",
             "handleReceiptSubtitle": "Just select the option:",
             "shipmentReceivedTitle": "I received a package",
