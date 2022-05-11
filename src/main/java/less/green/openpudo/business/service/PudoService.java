@@ -553,8 +553,8 @@ public class PudoService {
         if (!isEmpty(address.getStreetNum())) {
             sb.append(" ");
             sb.append(address.getStreetNum());
-            sb.append("\n");
         }
+        sb.append("\n");
         // third line: zip code (if any), city and province
         if (!isEmpty(address.getZipCode())) {
             sb.append(address.getZipCode());
