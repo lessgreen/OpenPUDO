@@ -31,7 +31,7 @@ mixin NetworkManagerNotification on NetworkGeneral {
       }
 
       var url = _baseURL + '/api/v2/notification/count';
-      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
 
@@ -39,7 +39,7 @@ mixin NetworkManagerNotification on NetworkGeneral {
         () => get(Uri.parse(url), headers: _headers).timeout(Duration(seconds: _timeout)),
         retryIf: (e) => e is SocketException || e is TimeoutException,
       );
-      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _networkActivity.value = false;
       });
       final codeUnits = response.body.codeUnits;
@@ -78,14 +78,14 @@ mixin NetworkManagerNotification on NetworkGeneral {
       }
 
       var url = _baseURL + '/api/v2/notification/$notificationId';
-      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
       Response response = await r.retry(
         () => delete(Uri.parse(url), headers: _headers).timeout(Duration(seconds: _timeout)),
         retryIf: (e) => e is SocketException || e is TimeoutException,
       );
-      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _networkActivity.value = false;
       });
       final codeUnits = response.body.codeUnits;
@@ -120,14 +120,14 @@ mixin NetworkManagerNotification on NetworkGeneral {
       }
 
       var url = _baseURL + '/api/v2/notification/$notificationId/mark-as-read';
-      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
       Response response = await r.retry(
         () => post(Uri.parse(url), headers: _headers).timeout(Duration(seconds: _timeout)),
         retryIf: (e) => e is SocketException || e is TimeoutException,
       );
-      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _networkActivity.value = false;
       });
       final codeUnits = response.body.codeUnits;
@@ -163,14 +163,14 @@ mixin NetworkManagerNotification on NetworkGeneral {
 
       var url = _baseURL + '/api/v1/notification/mark-as-read';
 
-      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
       Response response = await r.retry(
         () => post(Uri.parse(url), headers: _headers).timeout(Duration(seconds: _timeout)),
         retryIf: (e) => e is SocketException || e is TimeoutException,
       );
-      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _networkActivity.value = false;
       });
       final codeUnits = response.body.codeUnits;
@@ -208,14 +208,14 @@ mixin NetworkManagerNotification on NetworkGeneral {
 
       var url = _baseURL + '/api/v2/notification$queryString';
 
-      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
       Response response = await r.retry(
         () => get(Uri.parse(url), headers: _headers).timeout(Duration(seconds: _timeout)),
         retryIf: (e) => e is SocketException || e is TimeoutException,
       );
-      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _networkActivity.value = false;
       });
 

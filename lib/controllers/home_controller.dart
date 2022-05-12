@@ -49,7 +49,7 @@ class _HomeControllerState extends State<HomeController> with ConnectionAware {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       setState(() {
         _controllers = [
           TabControllerContainer(
@@ -61,7 +61,10 @@ class _HomeControllerState extends State<HomeController> with ConnectionAware {
               onGenerateRoute: (RouteSettings settings) => homeUserRouteWithSetting(settings),
             ),
             bottomView: BottomNavigationBarItem(
-              icon: SvgPicture.asset(ImageSrc.homeArt, color: Colors.grey.shade400),
+              icon: SvgPicture.asset(
+                ImageSrc.homeArt,
+                color: Colors.grey.shade400,
+              ),
               activeIcon: SvgPicture.asset(ImageSrc.homeArt, color: AppColors.primaryColorDark),
               label: 'homeLabel'.localized(context),
             ),
@@ -106,7 +109,7 @@ class _HomeControllerState extends State<HomeController> with ConnectionAware {
           )
         ];
       });
-      WidgetsBinding.instance!.addPostFrameCallback((_) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
         _handleInitialMessage(_controllers.first.tabView.navigatorKey!.currentContext!);
         _handleMessages(_controllers.first.tabView.navigatorKey!.currentContext!);
       });

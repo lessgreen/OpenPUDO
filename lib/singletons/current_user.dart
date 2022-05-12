@@ -113,7 +113,7 @@ class CurrentUser with ChangeNotifier {
         }
       }).catchError((onError) {
         user = null;
-        WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+        WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
           pushPage(Routes.login);
           if (context != null) {
             SAAlertDialog.displayAlertWithClose(context, "genericErrorTitle".localized(context, 'general'), onError);
@@ -122,7 +122,7 @@ class CurrentUser with ChangeNotifier {
       });
     } else {
       user = null;
-      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         pushPage(Routes.login);
         if (context != null) {
           SAAlertDialog.displayAlertWithClose(context, "genericErrorTitle".localized(context, 'general'), "genericErrorDescription".localized(context, 'general'));

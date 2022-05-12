@@ -121,14 +121,14 @@ mixin NetworkGeneral {
     }
     var url = _baseURL + '/api/v2/auth/renew';
     try {
-      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
       Response response = await r.retry(
         () => post(Uri.parse(url), headers: _headers).timeout(Duration(seconds: _timeout)),
         retryIf: (e) => e is SocketException || e is TimeoutException,
       );
-      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _networkActivity.value = false;
       });
       final codeUnits = response.body.codeUnits;
@@ -207,14 +207,14 @@ mixin NetworkGeneral {
     var url = _baseURL + '/api/v2/map/search/address$queryString';
 
     try {
-      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
       Response response = await r.retry(
         () => get(Uri.parse(url), headers: _headers).timeout(Duration(seconds: _timeout)),
         retryIf: (e) => e is SocketException || e is TimeoutException,
       );
-      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _networkActivity.value = false;
       });
       final codeUnits = response.body.codeUnits;
@@ -258,14 +258,14 @@ mixin NetworkGeneral {
     var url = _baseURL + '/api/v2/map/search/$queryString';
 
     try {
-      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
       Response response = await r.retry(
         () => get(Uri.parse(url), headers: _headers).timeout(Duration(seconds: _timeout)),
         retryIf: (e) => e is SocketException || e is TimeoutException,
       );
-      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _networkActivity.value = false;
       });
       final codeUnits = response.body.codeUnits;
@@ -321,12 +321,12 @@ mixin NetworkGeneral {
     });
 
     try {
-      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
       var response = await request.send();
       var respStr = await response.stream.bytesToString();
-      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _networkActivity.value = false;
       });
       var json = jsonDecode(respStr);
@@ -358,14 +358,14 @@ mixin NetworkGeneral {
     var url = _baseURL + '/api/v2/user/me/device-tokens';
     var body = jsonEncode(infoRequest.toJson());
     try {
-      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
       Response response = await r.retry(
         () => post(Uri.parse(url), body: body, headers: _headers).timeout(Duration(seconds: _timeout)),
         retryIf: (e) => e is SocketException || e is TimeoutException,
       );
-      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _networkActivity.value = false;
       });
       final codeUnits = response.body.codeUnits;

@@ -34,14 +34,14 @@ mixin NetworkManagerUser on NetworkGeneral {
       );
       var url = _baseURL + '/api/v2/auth/login/confirm';
       var body = jsonEncode(aRequest.toJson());
-      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
       Response response = await r.retry(
         () => post(Uri.parse(url), body: body, headers: _headers).timeout(Duration(seconds: _timeout)),
         retryIf: (e) => e is SocketException || e is TimeoutException,
       );
-      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _networkActivity.value = false;
       });
       final codeUnits = response.body.codeUnits;
@@ -73,7 +73,7 @@ mixin NetworkManagerUser on NetworkGeneral {
       );
       var url = _baseURL + '/api/v2/auth/login/send';
       var body = jsonEncode(aRequest.toJson());
-      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
       Response response = await r.retry(
@@ -81,7 +81,7 @@ mixin NetworkManagerUser on NetworkGeneral {
         retryIf: (e) => e is SocketException || e is TimeoutException,
       );
 
-      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _networkActivity.value = false;
       });
 
@@ -92,7 +92,7 @@ mixin NetworkManagerUser on NetworkGeneral {
       return baseResponse;
     } catch (e) {
       safePrint('ERROR - registerUser: $e');
-      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _networkActivity.value = false;
       });
       _refreshTokenRetryCounter = 0;
@@ -110,14 +110,14 @@ mixin NetworkManagerUser on NetworkGeneral {
       var body = jsonEncode({
         "user": {"firstName": name, "lastName": surname}
       });
-      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
       Response response = await r.retry(
         () => post(Uri.parse(url), body: body, headers: _headers).timeout(Duration(seconds: _timeout)),
         retryIf: (e) => e is SocketException || e is TimeoutException,
       );
-      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _networkActivity.value = false;
       });
       final codeUnits = response.body.codeUnits;
@@ -149,14 +149,14 @@ mixin NetworkManagerUser on NetworkGeneral {
         _headers['Authorization'] = 'Bearer $_accessToken';
       }
       var url = _baseURL + '/api/v2/user/me';
-      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
       Response response = await r.retry(
         () => get(Uri.parse(url), headers: _headers).timeout(Duration(seconds: _timeout)),
         retryIf: (e) => e is SocketException || e is TimeoutException,
       );
-      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _networkActivity.value = false;
       });
       final codeUnits = response.body.codeUnits;
@@ -193,14 +193,14 @@ mixin NetworkManagerUser on NetworkGeneral {
         _headers['Authorization'] = 'Bearer $_accessToken';
       }
       var url = _baseURL + '/api/v2/user/me/preferences';
-      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
       Response response = await r.retry(
         () => get(Uri.parse(url), headers: _headers).timeout(Duration(seconds: _timeout)),
         retryIf: (e) => e is SocketException || e is TimeoutException,
       );
-      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _networkActivity.value = false;
       });
       final codeUnits = response.body.codeUnits;
@@ -238,14 +238,14 @@ mixin NetworkManagerUser on NetworkGeneral {
       }
       var url = _baseURL + '/api/v2/user/me';
       var body = jsonEncode({"firstName": firstName, "lastName": lastName});
-      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
       Response response = await r.retry(
         () => put(Uri.parse(url), body: body, headers: _headers).timeout(Duration(seconds: _timeout)),
         retryIf: (e) => e is SocketException || e is TimeoutException,
       );
-      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _networkActivity.value = false;
       });
       final codeUnits = response.body.codeUnits;
@@ -284,11 +284,11 @@ mixin NetworkManagerUser on NetworkGeneral {
       }
 
       var url = _baseURL + '/api/v2/user/me/pudos/' + id;
-      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
       Response response = await delete(Uri.parse(url), headers: _headers).timeout(Duration(seconds: _timeout));
-      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _networkActivity.value = false;
       });
       final codeUnits = response.body.codeUnits;
@@ -332,14 +332,14 @@ mixin NetworkManagerUser on NetworkGeneral {
       }
 
       var url = _baseURL + '/api/v1/users/$userId';
-      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
       Response response = await r.retry(
         () => get(Uri.parse(url), headers: _headers).timeout(Duration(seconds: _timeout)),
         retryIf: (e) => e is SocketException || e is TimeoutException,
       );
-      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _networkActivity.value = false;
       });
       final codeUnits = response.body.codeUnits;
@@ -378,14 +378,14 @@ mixin NetworkManagerUser on NetworkGeneral {
       }
 
       var url = _baseURL + '/api/v2/user/me/pudos/$pudoId';
-      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
       Response response = await r.retry(
         () => post(Uri.parse(url), headers: _headers).timeout(Duration(seconds: _timeout)),
         retryIf: (e) => e is SocketException || e is TimeoutException,
       );
-      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _networkActivity.value = false;
       });
       final codeUnits = response.body.codeUnits;
@@ -428,11 +428,11 @@ mixin NetworkManagerUser on NetworkGeneral {
       }
 
       var url = _baseURL + '/api/v1/users/me/pudos/$pudoId';
-      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
       Response response = await delete(Uri.parse(url), headers: _headers).timeout(Duration(seconds: _timeout));
-      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _networkActivity.value = false;
       });
       final codeUnits = response.body.codeUnits;
@@ -475,14 +475,14 @@ mixin NetworkManagerUser on NetworkGeneral {
       }
 
       var url = _baseURL + '/api/v2/user/me/pudos';
-      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
       Response response = await r.retry(
         () => get(Uri.parse(url), headers: _headers).timeout(Duration(seconds: _timeout)),
         retryIf: (e) => e is SocketException || e is TimeoutException,
       );
-      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _networkActivity.value = false;
       });
       final codeUnits = response.body.codeUnits;
@@ -525,14 +525,14 @@ mixin NetworkManagerUser on NetworkGeneral {
       }
       var url = _baseURL + '/api/v2/user/me/preferences';
       var body = jsonEncode({"showPhoneNumber": showNumber});
-      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
       Response response = await r.retry(
         () => put(Uri.parse(url), body: body, headers: _headers).timeout(Duration(seconds: _timeout)),
         retryIf: (e) => e is SocketException || e is TimeoutException,
       );
-      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _networkActivity.value = false;
       });
       final codeUnits = response.body.codeUnits;
@@ -571,14 +571,14 @@ mixin NetworkManagerUser on NetworkGeneral {
       }
 
       var url = _baseURL + '/api/v2/user/$userId';
-      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
       Response response = await r.retry(
         () => get(Uri.parse(url), headers: _headers).timeout(Duration(seconds: _timeout)),
         retryIf: (e) => e is SocketException || e is TimeoutException,
       );
-      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _networkActivity.value = false;
       });
       final codeUnits = response.body.codeUnits;
@@ -624,14 +624,14 @@ mixin NetworkManagerUser on NetworkGeneral {
       );
       var body = jsonEncode(aRequest.toJson());
 
-      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
       Response response = await r.retry(
         () => post(Uri.parse(url), body: body, headers: _headers).timeout(Duration(seconds: _timeout)),
         retryIf: (e) => e is SocketException || e is TimeoutException,
       );
-      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _networkActivity.value = false;
       });
 
@@ -672,14 +672,14 @@ mixin NetworkManagerUser on NetworkGeneral {
 
       var url = _baseURL + '/api/v2/auth/account';
 
-      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
       Response response = await r.retry(
         () => delete(Uri.parse(url), headers: _headers).timeout(Duration(seconds: _timeout)),
         retryIf: (e) => e is SocketException || e is TimeoutException,
       );
-      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _networkActivity.value = false;
       });
       final codeUnits = response.body.codeUnits;

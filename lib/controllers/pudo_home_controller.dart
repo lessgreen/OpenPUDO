@@ -47,7 +47,7 @@ class _PudoHomeControllerState extends State<PudoHomeController> with Connection
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance?.addPostFrameCallback((timestamp) {
+    WidgetsBinding.instance.addPostFrameCallback((timestamp) {
       setState(() {
         _controllers = [
           TabControllerContainer(
@@ -77,7 +77,7 @@ class _PudoHomeControllerState extends State<PudoHomeController> with Connection
         ];
       });
 
-      WidgetsBinding.instance!.addPostFrameCallback((_) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
         _handleInitialMessage(_controllers.first.tabView.navigatorKey!.currentContext!);
         _handleMessages(_controllers.first.tabView.navigatorKey!.currentContext!);
       });

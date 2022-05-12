@@ -31,14 +31,14 @@ mixin NetworkManagerPackages on NetworkGeneral {
       }
 
       var url = _baseURL + '/api/v2/package/by-qrcode/$shareLink';
-      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
       Response response = await r.retry(
         () => get(Uri.parse(url), headers: _headers).timeout(Duration(seconds: _timeout)),
         retryIf: (e) => e is SocketException || e is TimeoutException,
       );
-      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _networkActivity.value = false;
       });
       final codeUnits = response.body.codeUnits;
@@ -79,14 +79,14 @@ mixin NetworkManagerPackages on NetworkGeneral {
       }
 
       var url = _baseURL + '/api/v2/package/$packageId';
-      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
       Response response = await r.retry(
         () => get(Uri.parse(url), headers: _headers).timeout(Duration(seconds: _timeout)),
         retryIf: (e) => e is SocketException || e is TimeoutException,
       );
-      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _networkActivity.value = false;
       });
       final codeUnits = response.body.codeUnits;
@@ -142,14 +142,14 @@ mixin NetworkManagerPackages on NetworkGeneral {
       String? body;
       var request = ChangePackageStatusRequest(notes: notes);
       body = jsonEncode(request.toJson());
-      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
       Response response = await r.retry(
         () => post(Uri.parse(url), body: body, headers: _headers).timeout(Duration(seconds: _timeout)),
         retryIf: (e) => e is SocketException || e is TimeoutException,
       );
-      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _networkActivity.value = false;
       });
       final codeUnits = response.body.codeUnits;
@@ -211,12 +211,12 @@ mixin NetworkManagerPackages on NetworkGeneral {
       _headers.forEach((k, v) {
         request.headers[k] = v;
       });
-      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
       var response = await request.send();
       var respStr = await response.stream.bytesToString();
-      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _networkActivity.value = false;
       });
       var json = jsonDecode(respStr);
@@ -263,14 +263,14 @@ mixin NetworkManagerPackages on NetworkGeneral {
       var url = _baseURL + '/api/v2/package';
       var body = jsonEncode(request.toJson());
 
-      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
       Response response = await r.retry(
         () => post(Uri.parse(url), body: body, headers: _headers).timeout(Duration(seconds: _timeout)),
         retryIf: (e) => e is SocketException || e is TimeoutException,
       );
-      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _networkActivity.value = false;
       });
       final codeUnits = response.body.codeUnits;
@@ -316,14 +316,14 @@ mixin NetworkManagerPackages on NetworkGeneral {
 
       var url = _baseURL + '/api/v2/${isPudo ? "pudo" : "user"}/me/packages$queryString';
 
-      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
       Response response = await r.retry(
         () => get(Uri.parse(url), headers: _headers).timeout(Duration(seconds: _timeout)),
         retryIf: (e) => e is SocketException || e is TimeoutException,
       );
-      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _networkActivity.value = false;
       });
       final codeUnits = response.body.codeUnits;
@@ -384,12 +384,12 @@ mixin NetworkManagerPackages on NetworkGeneral {
     });
 
     try {
-      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
       var response = await request.send();
       var respStr = await response.stream.bytesToString();
-      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _networkActivity.value = false;
       });
       var json = jsonDecode(respStr);

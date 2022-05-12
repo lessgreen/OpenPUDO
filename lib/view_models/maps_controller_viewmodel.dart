@@ -139,7 +139,7 @@ class MapsControllerViewModel extends ChangeNotifier {
       position = LatLng(value.latitude ?? 45.464664, value.longitude ?? 9.188540);
       userPosition = position;
 
-      WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         animateMapTo(this, position);
       });
       return Future.value(value);

@@ -35,7 +35,7 @@ mixin NetworkManagerPudo on NetworkGeneral {
 
       var url = _baseURL + '/api/v2/map/suggested-zoom$queryString';
       if (showNetworkActivity) {
-        WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+        WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
           _networkActivity.value = true;
         });
       }
@@ -44,7 +44,7 @@ mixin NetworkManagerPudo on NetworkGeneral {
         retryIf: (e) => e is SocketException || e is TimeoutException,
       );
       if (showNetworkActivity) {
-        WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+        WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
           _networkActivity.value = false;
         });
       }
@@ -85,14 +85,14 @@ mixin NetworkManagerPudo on NetworkGeneral {
       }
 
       var url = _baseURL + '/api/v2/pudo/$pudoId';
-      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
       Response response = await r.retry(
         () => get(Uri.parse(url), headers: _headers).timeout(Duration(seconds: _timeout)),
         retryIf: (e) => e is SocketException || e is TimeoutException,
       );
-      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _networkActivity.value = false;
       });
       final codeUnits = response.body.codeUnits;
@@ -138,7 +138,7 @@ mixin NetworkManagerPudo on NetworkGeneral {
 
       var url = _baseURL + '/api/v2/map/pudos$queryString';
       if (showNetworkActivity) {
-        WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+        WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
           _networkActivity.value = true;
         });
       }
@@ -147,7 +147,7 @@ mixin NetworkManagerPudo on NetworkGeneral {
         retryIf: (e) => e is SocketException || e is TimeoutException,
       );
       if (showNetworkActivity) {
-        WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+        WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
           _networkActivity.value = false;
         });
       }
@@ -191,14 +191,14 @@ mixin NetworkManagerPudo on NetworkGeneral {
       }
 
       var url = _baseURL + '/api/v2/pudo/reward-schema';
-      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
       Response response = await r.retry(
         () => get(Uri.parse(url), headers: _headers).timeout(Duration(seconds: _timeout)),
         retryIf: (e) => e is SocketException || e is TimeoutException,
       );
-      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _networkActivity.value = false;
       });
       final codeUnits = response.body.codeUnits;
@@ -241,14 +241,14 @@ mixin NetworkManagerPudo on NetworkGeneral {
       }
 
       var url = _baseURL + '/api/v2/pudo/me/reward-policy';
-      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
       Response response = await r.retry(
         () => get(Uri.parse(url), headers: _headers).timeout(Duration(seconds: _timeout)),
         retryIf: (e) => e is SocketException || e is TimeoutException,
       );
-      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _networkActivity.value = false;
       });
       final codeUnits = response.body.codeUnits;

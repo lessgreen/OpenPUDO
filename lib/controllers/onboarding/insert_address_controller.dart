@@ -47,7 +47,7 @@ class _InsertAddressControllerState extends State<InsertAddressController> with 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       FocusScope.of(context).requestFocus(_address);
     });
   }
