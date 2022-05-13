@@ -354,7 +354,7 @@ public class AuthService {
                 TbPudo pudo = pudoDao.get(pudoId);
                 sb.append("PUDO name: ").append(pudo.getBusinessName()).append("\r\n");
                 if (pudo.getPublicPhoneNumber() != null) {
-                    sb.append("PUDO phone number: ").append(pudo.getBusinessName()).append("\r\n");
+                    sb.append("PUDO phone number: ").append(pudo.getPublicPhoneNumber()).append("\r\n");
                 }
                 TbAddress address = addressDao.get(pudoId);
                 sb.append("PUDO address: ").append(address.getLabel()).append("\r\n");
