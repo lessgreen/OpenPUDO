@@ -15,14 +15,14 @@
         <quarkus.platform.groupId>io.quarkus.platform</quarkus.platform.groupId>
         <quarkus.platform.artifactId>quarkus-bom</quarkus.platform.artifactId>
         <quarkus.platform.version>2.6.3.Final</quarkus.platform.version>
-        <lombok.version>1.18.22</lombok.version>
+        <lombok.version>1.18.24</lombok.version>
         <mapstruct.version>1.4.2.Final</mapstruct.version>
         <pmd.version>3.14.0</pmd.version>
-        <libphonenumber.version>8.12.44</libphonenumber.version>
-        <unirest.version>3.13.6</unirest.version>
+        <libphonenumber.version>8.12.48</libphonenumber.version>
+        <unirest.version>3.13.8</unirest.version>
         <firebase.version>8.1.0</firebase.version>
         <hashids.version>1.0.3</hashids.version>
-        <zxing.version>3.4.1</zxing.version>
+        <zxing.version>3.5.0</zxing.version>
     </properties>
 
     <dependencyManagement>
