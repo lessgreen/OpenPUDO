@@ -1,0 +1,138 @@
+<!doctype html>
+
+<html lang="it">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Pacco pronto per il ritiro</title>
+    <meta name="description" content="Condividi questo link per far ritirare il pacco {package.packageName} ad un amico">
+    <meta name="author" content="QuiGreen">
+
+    <meta property="og:site_name" content="QuiGreen">
+    <meta property="og:title" content="Pacco pronto per il ritiro">
+    <meta property="og:description" content="Condividi questo link per far ritirare il pacco {package.packageName} ad un amico">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{appBaseUrl}/api/v2/share/{package.shareLink}">
+    <meta property="og:image" content="https://www.quigreen.it/wp-content/uploads/2021/10/LogoQuiGreenss.png">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
+
+    <style>
+            body {
+                font-family: 'Montserrat', sans-serif;
+            }
+
+            .flex {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                width: 100%;
+                max-width: 500px;
+            }
+
+            .navbar {
+                position: fixed;
+                width: 100%;
+                top: 0;
+                left: 0;
+                background-color: #a0b92c;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+
+            .navcontent {
+                color: white;
+                font-size: 1.5em;
+                font-weight: 500;
+                padding-top: 0.25em;
+                padding-bottom: 0.25em;
+            }
+
+            .content {
+                margin-top: 4em;
+            }
+
+            .sharemessage {
+                font-size: 1.5em;
+                font-weight: 500;
+                text-align: center;
+            }
+
+            .image {
+                width: 100%;
+                height: auto;
+            }
+
+            .greybg {
+                font-size: 1.1em;
+                padding-top: 0.25em;
+                padding-bottom: 0.25em;
+                background-color: #dcdcdc;
+                width: 100%;
+            }
+
+            td {
+                vertical-align: top;
+            }
+
+            .firstcolumn {
+                font-weight: 500;
+                white-space: nowrap;
+            }
+
+            .secondcolumn {
+                padding-left: 20px;
+            }
+    </style>
+</head>
+
+<body>
+<div class="flex" style="margin: auto;">
+    <div class="navbar">
+        <div class="navcontent">
+            Pacco pronto per il ritiro
+        </div>
+    </div>
+
+    <div class="content">
+        <div class="sharemessage">
+            Mostra questo QRCode<br/>al punto di ritiro <span style="color: #95c11f">QuiGreen</span>
+        </div>
+        <div>
+            <img class="image" src="/api/v2/share/qrcode/{package.shareLink}" alt="package QRCode">
+        </div>
+
+        {#if package.packagePicId}
+        <div>
+            <div class="greybg">FOTO DEL PACCO</div>
+            <img class="image" src="/api/v2/file/{package.packagePicId}" alt="package picture">
+        </div>
+        {/if}
+
+        {#if package.events}
+        <div style="margin-top: 25px;">
+            <div class="greybg">DETTAGLI DEL PACCO</div>
+            <table>
+                {#for event in package.events}
+                <tr>
+                    <td class="firstcolumn">{time:format(event.createTms,'dd/MM/yyyy HH:mm')}</td>
+                    <td class="secondcolumn">{event.packageStatusMessage}</td>
+                </tr>
+                {#if event.notes}
+                <tr>
+                    <td></td>
+                    <td class="secondcolumn">Note: <span style="font-style: italic;">{event.notes}</span></td>
+                </tr>
+                {/if}
+                {/for}
+            </table>
+        </div>
+        {/if}
+    </div>
+</div>
+</body>
+</html>
