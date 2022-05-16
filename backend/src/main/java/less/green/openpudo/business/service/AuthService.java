@@ -218,7 +218,7 @@ public class AuthService {
         userPreferencesDao.persist(userPreferences);
         userPreferencesDao.flush();
         if (!user.getTestAccountFlag()) {
-            emailService.sendNotificationEmail("User registration", getUserData(user, false), false);
+            emailService.sendNotificationEmail("User registration", getUserData(user, false, false), false);
         }
         log.info("[{}] Registered user: {} as: {}", context.getExecutionId(), user.getUserId(), user.getAccountType());
         return jwtService.generateUserTokenData(user.getUserId(), mapAccountTypeToAccessProfile(user.getAccountType()));
@@ -276,7 +276,7 @@ public class AuthService {
         rewardPolicyDao.persist(rewardPolicy);
         pudoDao.flush();
         if (!user.getTestAccountFlag()) {
-            emailService.sendNotificationEmail("PUDO registration", getUserData(user, false), false);
+            emailService.sendNotificationEmail("PUDO registration", getUserData(user, false, false), false);
         }
         log.info("[{}] Registered user: {} as: {} with id: {}", context.getExecutionId(), user.getUserId(), user.getAccountType(), pudo.getPudoId());
         return jwtService.generateUserTokenData(user.getUserId(), mapAccountTypeToAccessProfile(user.getAccountType()));
@@ -293,8 +293,12 @@ public class AuthService {
 
     public void supportRequest(SupportRequest req) {
         TbUser user = userDao.get(context.getUserId());
-        String subject = String.format("Support request from user: %s (phone: %s)", context.getUserId(), user.getPhoneNumber());
-        emailService.sendSupportEmail(subject, req.getMessage().trim(), true);
+        String subject = String.format("Support request from user: %s", context.getUserId());
+        String sb = "*** User data ***" + "\r\n"
+                    + getUserData(user, false, false) + "\r\n"
+                    + "*** User message ***" + "\r\n"
+                    + req.getMessage().trim();
+        emailService.sendSupportEmail(subject, sb, true);
         log.info("[{}] Sent support request for user: {}", context.getExecutionId(), context.getUserId());
     }
 
@@ -305,7 +309,7 @@ public class AuthService {
         }
         log.info("[{}] Deleting user: {}", context.getExecutionId(), context.getUserId());
         String phoneNumber = user.getPhoneNumber();
-        String userData = getUserData(user, true);
+        String userData = getUserData(user, true, true);
         TbDeletedUserData deletedUserData = new TbDeletedUserData();
         deletedUserData.setUserDataId(UUID.randomUUID());
         deletedUserData.setCreateTms(new Date());
@@ -329,12 +333,12 @@ public class AuthService {
         return downloadUrl;
     }
 
-    private String getUserData(TbUser user, boolean deletedDate) {
+    private String getUserData(TbUser user, boolean withDeletedDate, boolean withPackages) {
         StringBuilder sb = new StringBuilder();
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         sb.append("Phone number: ").append(user.getPhoneNumber()).append("\r\n");
         sb.append("Registered at: ").append(sdf.format(user.getCreateTms())).append("\r\n");
-        if (deletedDate) {
+        if (withDeletedDate) {
             sb.append("Deleted at: ").append(sdf.format(new Date())).append("\r\n");
         }
         List<TbPackage> packages = null;
@@ -346,7 +350,9 @@ public class AuthService {
             if (userProfile.getLastName() != null) {
                 sb.append("Last name: ").append(userProfile.getLastName()).append("\r\n");
             }
-            packages = packageDao.getAllPackages(user.getAccountType(), context.getUserId());
+            if (withPackages) {
+                packages = packageDao.getAllPackages(user.getAccountType(), context.getUserId());
+            }
         }
         if (user.getAccountType() == AccountType.PUDO) {
             Long pudoId = userPudoRelationDao.getPudoIdByOwnerUserId(user.getUserId());
@@ -358,7 +364,9 @@ public class AuthService {
                 }
                 TbAddress address = addressDao.get(pudoId);
                 sb.append("PUDO address: ").append(address.getLabel()).append("\r\n");
-                packages = packageDao.getAllPackages(user.getAccountType(), pudoId);
+                if (withPackages) {
+                    packages = packageDao.getAllPackages(user.getAccountType(), pudoId);
+                }
             }
         }
         if (packages != null && !packages.isEmpty()) {
