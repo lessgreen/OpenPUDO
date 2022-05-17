@@ -35,7 +35,8 @@
             "doneButton": "Fatto",
             "hintText": "Non hai ricevuto il codice?",
             "hintButton": "Invia di nuovo.",
-            "submitButton": "Invia"
+            "submitButton": "Invia",
+            "inserPinPlaceholder": "Premi qui per inserire il PIN ricevuto."
         },
         "LoginControllerState": {
             "mainLabel":  "Non sei ancora registrato?",
@@ -50,7 +51,8 @@
             "mainLabel":  "Inserisci il tuo numero di cellulare",
             "secondaryLabel": "Ti invieremo un sms di conferma\n per assicurarci che sei tu",
             "doneButton": "Fatto",
-            "submitButton": "Invia"
+            "submitButton": "Invia",
+            "inserPhonePlaceholder": "Premi qui per inserire il tuo numero."
         },
         "PersonalDataBusinessControllerState": {
             "mainLabel":  "Qualche informazione\nsulla tua attività",
@@ -350,7 +352,8 @@
             "doneButton": "Done",
             "hintText": "Didn't receive the code?",
             "hintButton": "Send again.",
-            "submitButton": "Submit"
+            "submitButton": "Submit",
+            "inserPinPlaceholder": "Tap here to insert the received PIN."
         },
         "LoginControllerState": {
             "mainLabel":  "Not registered yet?",
@@ -365,7 +368,8 @@
             "mainLabel":  "Insert your mobile phone number",
             "secondaryLabel": "We will send you a confirmation SMS\n to check that it's really you",
             "doneButton": "Done",
-            "submitButton": "Submit"
+            "submitButton": "Submit",
+            "inserPhonePlaceholder": "Tap here to insert your phone number."
         },
         "PersonalDataBusinessControllerState": {
             "mainLabel":  "Some question about your business",
