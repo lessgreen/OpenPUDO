@@ -1,0 +1,13 @@
+/* 
+  InfoPlist.strings
+  Runner
+
+  Created by Costantino Pistagna on 17/05/22.
+  
+*/
+
+NSCameraUsageDescription = "QuiGreen richiese l'uso della fotocamera per inquadrare il QRCode e scattare foto.";
+NSLocationAlwaysAndWhenInUseUsageDescription = "QuiGreen ha bisogno di conoscere la tua posizione per mostrarti PUDO nelle vicinanze.";
+NSLocationWhenInUseUsageDescription = "QuiGreen ha bisogno di conoscere la tua posizione per mostrarti PUDO nelle vicinanze.";
+NSPhotoLibraryUsageDescription = "QuiGreen richiese l'uso della libreria per aggiungere foto al tuo profilo o al tuo pacco.";
+

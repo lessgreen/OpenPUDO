@@ -96,6 +96,7 @@ class _InsertPhoneControllerState extends State<InsertPhoneController> with Conn
                     Padding(
                       padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
                       child: CupertinoTextField(
+                        placeholder: "inserPhonePlaceholder".localized(context, "InsertPhoneControllerState"),
                         decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Theme.of(context).primaryColor))),
                         autofocus: false,
                         focusNode: _phoneNumber,

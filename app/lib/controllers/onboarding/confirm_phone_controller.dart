@@ -121,6 +121,7 @@ class _ConfirmPhoneControllerState extends State<ConfirmPhoneController> with Co
                   Padding(
                     padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
                     child: CupertinoTextField(
+                      placeholder: "inserPinPlaceholder".localized(context, "ConfirmPhoneControllerState"),
                       decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Theme.of(context).primaryColor))),
                       autofocus: false,
                       focusNode: _confirmValueFocus,

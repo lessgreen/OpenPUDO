@@ -1,0 +1,12 @@
+/* 
+  InfoPlist.strings
+  Runner
+
+  Created by Costantino Pistagna on 17/05/22.
+  
+*/
+
+NSCameraUsageDescription = "QuiGreen needs to access your camera to scan the QRCode and shoot photos for your package.";
+NSLocationAlwaysAndWhenInUseUsageDescription = "QuiGreen needs to access your location in order to show your PUDO nearby.";
+NSLocationWhenInUseUsageDescription = "QuiGreen needs to access your location in order to show your PUDO nearby.";
+NSPhotoLibraryUsageDescription = "QuiGreen needs to access your camera and Photo Library to add photos to your profile.";
