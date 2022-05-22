@@ -51,6 +51,7 @@ void mainCommon({required String host, required bool isProd}) async {
     overlays: [SystemUiOverlay.bottom],
   );
   await Firebase.initializeApp();
+  await LocalizationManager.updateLocalizationsFromNetwork();
   initFirebaseMessaging();
   SystemChrome.setSystemUIOverlayStyle(
     SystemUiOverlayStyle(

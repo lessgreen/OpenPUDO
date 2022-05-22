@@ -19,26 +19,62 @@
 */
 
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:html_unescape/html_unescape.dart';
 import 'package:intl/intl.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:qui_green/commons/extensions/trace_reflection.dart';
+import 'package:qui_green/singletons/network/network_manager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LocalizationManager {
   Locale locale;
   late Map<String, dynamic> _dataSource;
 
+  static Future<String> get _localPath async {
+    final directory = await getApplicationDocumentsDirectory();
+    return directory.path;
+  }
+
+  static Future<File> get _localFile async {
+    final path = await _localPath;
+    return File('$path/locale.json');
+  }
+
   LocalizationManager(this.locale);
 
   static Future<LocalizationManager> preloadLocale(Locale locale) async {
-    rootBundle.evict('resources/localization.json');
-    var localeFile = await rootBundle.loadString('resources/localization.json');
-    var jsonLocale = jsonDecode(localeFile);
-    var retObject = LocalizationManager(locale);
-    retObject._dataSource = jsonLocale as Map<String, dynamic>;
-    return retObject;
+    try {
+      //first of all, try to load updated content from file
+      var localeFile = await LocalizationManager._localFile;
+      var localeString = await localeFile.readAsString();
+      var jsonLocale = jsonDecode(localeString);
+      if (jsonLocale is Map<String, dynamic>) {
+        var retObject = LocalizationManager(locale);
+        retObject._dataSource = jsonLocale;
+        return retObject;
+      } else {
+        throw ('UPDATED-LOCALE-NOT-FOUND');
+      }
+    } catch (e) {
+      rootBundle.evict('resources/localization.json');
+      var localeFile = await rootBundle.loadString('resources/localization.json');
+      var jsonLocale = jsonDecode(localeFile);
+      var retObject = LocalizationManager(locale);
+      retObject._dataSource = jsonLocale as Map<String, dynamic>;
+      return retObject;
+    }
+  }
+
+  static updateLocalizationsFromNetwork() async {
+    var newLocalizations = await NetworkManager.instance.getLocalizations();
+    if (newLocalizations is Map<String, dynamic>) {
+      var localeFile = await LocalizationManager._localFile;
+      var jsonEncoded = jsonEncode(newLocalizations);
+      await localeFile.writeAsString(jsonEncoded, flush: true);
+    }
   }
 
   static LocalizationManager of(BuildContext context) {
