@@ -72,7 +72,7 @@ class PersonalDataBusinessControllerViewModel extends ChangeNotifier {
     if (_name.isEmpty) {
       return false;
     }
-    if (_phoneNumber.isEmpty || !_phoneNumber.replaceAll("+39", "").isValidPhoneNumber()) {
+    if (_phoneNumber.isEmpty || !_phoneNumber.isValidPhoneNumber()) {
       return false;
     }
     // if (_address == null) {

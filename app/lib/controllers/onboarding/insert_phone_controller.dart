@@ -18,10 +18,10 @@
  If not, see <https://github.com/lessgreen/OpenPUDO>.
 */
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:qui_green/commons/alert_dialog.dart';
 import 'package:qui_green/commons/extensions/formfields_validators.dart';
 import 'package:qui_green/commons/utilities/keyboard_visibility.dart';
@@ -44,12 +44,37 @@ class InsertPhoneController extends StatefulWidget {
 class _InsertPhoneControllerState extends State<InsertPhoneController> with ConnectionAware {
   final FocusNode _phoneNumber = FocusNode();
   String _phoneNumberValue = "";
+  String _initialCountry = 'IT';
+  PhoneNumber _number = PhoneNumber(isoCode: 'IT');
+  bool _buttonEnabled = false;
+  final TextEditingController _phoneTextController = TextEditingController();
+
+  String _getCountryISOCode() {
+    final WidgetsBinding? instance = WidgetsBinding.instance;
+    if (instance != null) {
+      final List<Locale> systemLocales = instance.window.locales;
+      String? isoCountryCode = systemLocales.first.countryCode;
+      if (isoCountryCode != null) {
+        return isoCountryCode;
+      } else {
+        throw ("Unable to get Country ISO code");
+      }
+    } else {
+      throw ("Unable to get Country ISO code");
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _initialCountry = _getCountryISOCode();
+    _number = PhoneNumber(isoCode: _initialCountry);
+  }
 
   Future<void> sendRequest() async {
-    //TODO create a national phone prefix selector, the be needs it,for now lets presume it's all italy
-    NetworkManager.instance.sendPhoneAuth(phoneNumber: "+39$_phoneNumberValue").then((response) {
+    NetworkManager.instance.sendPhoneAuth(phoneNumber: _phoneNumberValue).then((response) {
       if (response is OPBaseResponse && response.returnCode == 0) {
-        Navigator.of(context).pushReplacementNamed(Routes.confirmPhone, arguments: "+39$_phoneNumberValue");
+        Navigator.of(context).pushReplacementNamed(Routes.confirmPhone, arguments: "$_phoneNumberValue");
       } else {
         throw response;
       }
@@ -95,36 +120,58 @@ class _InsertPhoneControllerState extends State<InsertPhoneController> with Conn
                     ),
                     Padding(
                       padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-                      child: CupertinoTextField(
-                        placeholder: "inserPhonePlaceholder".localized(context, "InsertPhoneControllerState"),
-                        decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Theme.of(context).primaryColor))),
-                        autofocus: false,
-                        focusNode: _phoneNumber,
-                        suffix: TextFieldButton(
-                          onPressed: () {
-                            setState(() {
-                              _phoneNumber.unfocus();
-                              if (_phoneNumberValue.isValidPhoneNumber()) {
-                                sendRequest();
-                              }
-                            });
-                          },
-                          text: isKeyboardVisible ? 'doneButton'.localized(context) : "",
-                        ),
-                        keyboardType: TextInputType.phone,
-                        textInputAction: TextInputAction.done,
-                        onChanged: (newValue) {
-                          setState(() {
-                            _phoneNumberValue = newValue;
-                          });
-                        },
+                      child: Stack(
+                        children: [
+                          InternationalPhoneNumberInput(
+                              searchBoxDecoration: InputDecoration(labelText: 'insertCountry'.localized(context, 'InsertPhoneControllerState')),
+                              hintText: 'phoneNumber'.localized(context, 'InsertPhoneControllerState'),
+                              errorMessage: 'wrongPhoneNumber'.localized(context, 'InsertPhoneControllerState'),
+                              focusNode: _phoneNumber,
+                              spaceBetweenSelectorAndTextField: 0,
+                              onInputChanged: (PhoneNumber number) {
+                                _phoneNumberValue = number.phoneNumber ?? '';
+                              },
+                              onInputValidated: (bool value) {
+                                setState(() {
+                                  _buttonEnabled = value;
+                                });
+                              },
+                              selectorConfig: const SelectorConfig(
+                                selectorType: PhoneInputSelectorType.BOTTOM_SHEET,
+                              ),
+                              ignoreBlank: false,
+                              autoValidateMode: AutovalidateMode.onUserInteraction,
+                              selectorTextStyle: const TextStyle(color: Colors.black),
+                              initialValue: _number,
+                              textFieldController: _phoneTextController,
+                              formatInput: true,
+                              keyboardType: const TextInputType.numberWithOptions(decimal: true)),
+                          Visibility(
+                            visible: _phoneNumber.hasFocus,
+                            child: Positioned(
+                              right: -15,
+                              child: MaterialButton(
+                                child: Text(
+                                  'doneButton'.localized(context),
+                                  style: TextStyle(color: Theme.of(context).primaryColor),
+                                ),
+                                onPressed: () {
+                                  _phoneNumber.unfocus();
+                                  if (_buttonEnabled) {
+                                    sendRequest();
+                                  }
+                                },
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                     const Spacer(),
                     MainButton(
                       onPressed: sendRequest,
                       text: 'submitButton'.localized(context),
-                      enabled: _phoneNumberValue.isValidPhoneNumber(),
+                      enabled: _buttonEnabled,
                     ),
                   ],
                 ),

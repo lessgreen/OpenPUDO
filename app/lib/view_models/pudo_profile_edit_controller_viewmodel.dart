@@ -403,7 +403,7 @@ class PudoProfileEditControllerViewModel extends ChangeNotifier {
         await NetworkManager.instance.updatePudo(UpdatePudoRequest(
             pudo: PudoRequest(
               businessName: businessNameController.text,
-              publicPhoneNumber: phoneController.text.contains("+39") ? phoneController.text : "+39" + phoneController.text,
+              publicPhoneNumber: phoneController.text,
             ),
             addressMarker: _address));
       }
