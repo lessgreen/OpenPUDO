@@ -52,7 +52,10 @@
             "secondaryLabel": "Ti invieremo un sms di conferma\n per assicurarci che sei tu",
             "doneButton": "Fatto",
             "submitButton": "Invia",
-            "inserPhonePlaceholder": "Premi qui per inserire il tuo numero."
+            "inserPhonePlaceholder": "Premi qui per inserire il tuo numero.",
+            "phoneNumber": "Numero di telefono",
+            "wrongPhoneNumber": "Numero di telefono non valido",
+            "insertCountry": "Digita la tua nazione"
         },
         "PersonalDataBusinessControllerState": {
             "mainLabel":  "Qualche informazione\nsulla tua attività",
@@ -369,7 +372,10 @@
             "secondaryLabel": "We will send you a confirmation SMS\n to check that it's really you",
             "doneButton": "Done",
             "submitButton": "Submit",
-            "inserPhonePlaceholder": "Tap here to insert your phone number."
+            "inserPhonePlaceholder": "Tap here to insert your phone number.",
+            "phoneNumber": "Phone number",
+            "wrongPhoneNumber": "Invalid phone number",
+            "insertCountry": "Insert country code"
         },
         "PersonalDataBusinessControllerState": {
             "mainLabel":  "Some question about your business",
