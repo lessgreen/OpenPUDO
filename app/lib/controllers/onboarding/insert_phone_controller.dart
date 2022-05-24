@@ -23,11 +23,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:qui_green/commons/alert_dialog.dart';
-import 'package:qui_green/commons/extensions/formfields_validators.dart';
 import 'package:qui_green/commons/utilities/keyboard_visibility.dart';
 import 'package:qui_green/widgets/main_button.dart';
 import 'package:qui_green/widgets/sascaffold.dart';
-import 'package:qui_green/widgets/text_field_button.dart';
 import 'package:qui_green/models/base_response.dart';
 import 'package:qui_green/resources/res.dart';
 import 'package:qui_green/resources/routes_enum.dart';
@@ -67,8 +65,10 @@ class _InsertPhoneControllerState extends State<InsertPhoneController> with Conn
   @override
   void initState() {
     super.initState();
-    _initialCountry = _getCountryISOCode();
-    _number = PhoneNumber(isoCode: _initialCountry);
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      _initialCountry = _getCountryISOCode();
+      _number = PhoneNumber(isoCode: _initialCountry);
+    });
   }
 
   Future<void> sendRequest() async {
