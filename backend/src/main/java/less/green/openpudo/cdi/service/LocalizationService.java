@@ -46,7 +46,7 @@ public class LocalizationService {
     }
 
     public JsonNode getAppLocalization() throws IOException {
-        return Encoders.OBJECT_MAPPER.readTree(this.getClass().getResourceAsStream("/localization/app_localization.json"));
+        return Encoders.OBJECT_MAPPER.readTree(this.getClass().getResourceAsStream("/localization/app/localization.json"));
     }
 
 }
