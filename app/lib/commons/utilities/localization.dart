@@ -72,9 +72,29 @@ class LocalizationManager {
     var newLocalizations = await NetworkManager.instance.getLocalizations();
     if (newLocalizations is Map<String, dynamic>) {
       var localeFile = await LocalizationManager._localFile;
-      var jsonEncoded = jsonEncode(newLocalizations);
+      rootBundle.evict('resources/localization.json');
+      var localeString = await rootBundle.loadString('resources/localization.json');
+      var localeLanguages = jsonDecode(localeString) as Map<String, dynamic>;
+      var updatedLanguages = pedanticDiff(localeLanguages, newLocalizations);
+      var jsonEncoded = jsonEncode(updatedLanguages);
       await localeFile.writeAsString(jsonEncoded, flush: true);
     }
+  }
+
+  static Map<String, dynamic> pedanticDiff(Map<String, dynamic> oldDictionary, Map<String, dynamic> newDictionary) {
+    var retDict = {...oldDictionary};
+    retDict.forEach((key, oldLanguageDict) {
+      if (newDictionary.containsKey(key)) {
+        newDictionary[key]?.forEach((newKey, newTranslation) {
+          if (newTranslation is Map<String, dynamic> && oldLanguageDict.containsKey(newKey)) {
+            oldLanguageDict[newKey] = pedanticDiff(oldLanguageDict[newKey], newDictionary);
+          } else {
+            oldLanguageDict[newKey] = newTranslation;
+          }
+        });
+      }
+    });
+    return retDict;
   }
 
   static LocalizationManager of(BuildContext context) {
