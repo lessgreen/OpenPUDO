@@ -49,6 +49,16 @@ class NetworkManager with NetworkGeneral, NetworkManagerUser, NetworkManagerNoti
 
   NetworkManager._internal(AppConfig _config);
 
+  String get currentLanguage {
+    final WidgetsBinding? instance = WidgetsBinding.instance;
+    if (instance != null) {
+      final List<Locale> systemLocales = instance.window.locales;
+      String languageCode = systemLocales.first.languageCode;
+      return languageCode;
+    }
+    return "en";
+  }
+
   NetworkManager({required AppConfig config}) {
     _checkNetwork();
     _inst.networkSubscription = _connectivity.onConnectivityChanged.listen((result) {
@@ -59,7 +69,6 @@ class NetworkManager with NetworkGeneral, NetworkManagerUser, NetworkManagerNoti
     _inst.networkActivity = ValueNotifier(false);
     _inst.config = config;
     _inst.baseURL = config.host;
-    var currentLanguage = config.sharedPreferencesInstance?.getString('languagePref') ?? 'en';
     _inst.headers = {
       'Content-type': 'application/json',
       'Accept': 'application/json',
