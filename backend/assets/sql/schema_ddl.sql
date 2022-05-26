@@ -304,27 +304,37 @@ CREATE TABLE IF NOT EXISTS tb_deleted_user_data (
 
 
 -- views
+DROP VIEW IF EXISTS vw_customer;
 CREATE OR REPLACE VIEW vw_customer AS
-SELECT u.user_id, u.create_tms, u.last_login_tms, u.test_account_flag, u.phone_number, up.update_tms profile_update_tms, up.first_name, up.last_name, up.profile_pic_id
+SELECT u.user_id, u.create_tms, u.last_login_tms, u.phone_number, up.update_tms profile_update_tms, up.first_name, up.last_name, up.profile_pic_id
 FROM tb_user u, tb_user_profile up
 WHERE u.user_id = up.user_id
 AND u.account_type = 'customer';
 
+DROP VIEW IF EXISTS vw_pudo;
 CREATE OR REPLACE VIEW vw_pudo AS
-SELECT u.user_id, u.create_tms, u.last_login_tms, u.test_account_flag, u.phone_number, p.pudo_id, p.update_tms pudo_update_tms, p.business_name, p.public_phone_number, p.pudo_pic_id, a.label
+SELECT u.user_id, u.create_tms, u.last_login_tms, u.phone_number, p.pudo_id, p.update_tms pudo_update_tms, p.business_name, p.public_phone_number, p.pudo_pic_id, a.label
 FROM tb_user u, tb_user_pudo_relation upr, tb_pudo p, tb_address a
 WHERE u.user_id = upr.user_id AND upr.pudo_id = p.pudo_id AND p.pudo_id = a.pudo_id
 AND u.account_type = 'pudo'
 AND upr.relation_type = 'owner';
 
+DROP VIEW IF EXISTS vw_package_status;
 CREATE OR REPLACE VIEW vw_package_status AS
-SELECT pa.package_id, pa.create_tms, pa.update_tms, pa.pudo_id, pu.business_name, pa.user_id, up.first_name || up.last_name customer_name, pae.package_event_id, pae.package_status, pae.notes
+SELECT pa.package_id, pa.create_tms, pa.update_tms, pa.pudo_id, pu.business_name, pa.user_id, up.first_name || ' ' || up.last_name customer_name, pae.package_event_id, pae.package_status, pae.notes
 FROM tb_package pa, tb_package_event pae, tb_user_profile up, tb_pudo pu
 WHERE pa.package_id = pae.package_id
 AND pa.user_id = up.user_id
 AND pa.pudo_id = pu.pudo_id
 AND pae.create_tms = (SELECT MAX(pae2.create_tms) FROM tb_package_event pae2 WHERE pae2.package_id = pa.package_id);
 
+DROP VIEW IF EXISTS vw_pudo_customer;
+CREATE OR REPLACE VIEW vw_pudo_customer AS
+SELECT p.pudo_id, p.business_name, a.label, u.user_id, up.first_name || ' ' || up.last_name customer_name, upr.user_pudo_relation_id, upr.create_tms, upr.customer_suffix
+FROM tb_user u, tb_user_profile up, tb_user_pudo_relation upr, tb_pudo p, tb_address a
+WHERE u.user_id = up.user_id AND u.user_id = upr.user_id AND upr.pudo_id = p.pudo_id AND p.pudo_id = a.pudo_id AND upr.delete_tms IS NULL
+AND u.account_type = 'customer'
+AND upr.relation_type = 'customer';
 
 -- maintenance
 VACUUM FULL ANALYZE;
