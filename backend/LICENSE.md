@@ -9,4 +9,4 @@
 - [hashids](https://hashids.org/): All hashids libraries are under MIT license.
 - [zxing](https://github.com/zxing/zxing): Apache License Version 2.0.
 - [thumbnailator](https://github.com/coobird/thumbnailator): MIT license.
-- [Firebase](https://firebase.google.com/) -> Apache License Version 2.0.
+- [Firebase](https://firebase.google.com/): Apache License Version 2.0.
