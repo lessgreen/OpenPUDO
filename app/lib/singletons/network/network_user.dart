@@ -21,8 +21,6 @@
 part of 'network_shared.dart';
 
 mixin NetworkManagerUser on NetworkGeneral {
-  //TODO: implement API calls (user related)
-
   Future<dynamic> login({required String login, required String password}) async {
     try {
       if (!isOnline) {

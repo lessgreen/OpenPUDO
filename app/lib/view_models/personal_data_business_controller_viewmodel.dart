@@ -23,9 +23,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
-import 'package:intl_phone_number_input/intl_phone_number_input_test.dart';
 import 'package:location/location.dart';
-import 'package:qui_green/commons/extensions/formfields_validators.dart';
 import 'package:qui_green/commons/utilities/image_picker_helper.dart';
 import 'package:qui_green/models/geo_marker.dart';
 import 'package:qui_green/models/pudo_profile.dart';

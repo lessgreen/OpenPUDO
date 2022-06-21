@@ -74,7 +74,7 @@ class _InsertPhoneControllerState extends State<InsertPhoneController> with Conn
   Future<void> sendRequest() async {
     NetworkManager.instance.sendPhoneAuth(phoneNumber: _phoneNumberValue).then((response) {
       if (response is OPBaseResponse && response.returnCode == 0) {
-        Navigator.of(context).pushReplacementNamed(Routes.confirmPhone, arguments: "$_phoneNumberValue");
+        Navigator.of(context).pushReplacementNamed(Routes.confirmPhone, arguments: _phoneNumberValue);
       } else {
         throw response;
       }

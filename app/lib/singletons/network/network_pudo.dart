@@ -21,7 +21,6 @@
 part of 'network_shared.dart';
 
 mixin NetworkManagerPudo on NetworkGeneral {
-  //TODO: implement API calls (pudo related)
   Future<dynamic> getSuggestedZoom({required double lat, required double lon, bool showNetworkActivity = false}) async {
     try {
       if (!isOnline) {
