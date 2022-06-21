@@ -124,7 +124,7 @@ class _PersonalDataBusinessControllerState extends State<PersonalDataBusinessCon
                       child: CupertinoTextField(
                         placeholder: 'placeHolderAddress'.localized(context),
                         controller: viewModel.addressController,
-                        decoration: _buildAddressBoxDecoration(), //BoxDecoration(border: Border(bottom: BorderSide(color: Theme.of(context).primaryColor))),
+                        decoration: _buildAddressBoxDecoration(),
                         autofocus: false,
                         textInputAction: TextInputAction.done,
                         onChanged: (newValue) => viewModel.onSearchChanged(newValue),
@@ -239,19 +239,25 @@ class _PersonalDataBusinessControllerState extends State<PersonalDataBusinessCon
             bottomSheet: AnimatedCrossFade(
               crossFadeState: isKeyboardVisible ? CrossFadeState.showSecond : CrossFadeState.showFirst,
               secondChild: const SizedBox(),
-              firstChild: MainButton(
-                enabled: viewModel.isValid && termsAndConditionsChecked,
-                onPressed: () {
-                  setState(() {
-                    _addressValidationFailed = (viewModel.address == null);
-                  });
-                  if (viewModel.address != null) {
-                    Navigator.of(context).pushReplacementNamed(Routes.rewardPolicy, arguments: viewModel.buildRequest());
-                  } else {
-                    SAAlertDialog.displayAlertWithClose(context, 'genericErrorTitle'.localized(context, 'general'), 'specifyValidAddress'.localized(context, 'PersonalDataBusinessControllerState'));
-                  }
+              firstChild: FutureBuilder<bool>(
+                future: viewModel.isValid,
+                builder: (context, snapshot) {
+                  return MainButton(
+                    enabled: (snapshot.data ?? false) && termsAndConditionsChecked,
+                    onPressed: () {
+                      setState(() {
+                        _addressValidationFailed = (viewModel.address == null);
+                      });
+                      if (viewModel.address != null) {
+                        Navigator.of(context).pushReplacementNamed(Routes.rewardPolicy, arguments: viewModel.buildRequest());
+                      } else {
+                        SAAlertDialog.displayAlertWithClose(
+                            context, 'genericErrorTitle'.localized(context, 'general'), 'specifyValidAddress'.localized(context, 'PersonalDataBusinessControllerState'));
+                      }
+                    },
+                    text: 'nextButton'.localized(context),
+                  );
                 },
-                text: 'nextButton'.localized(context),
               ),
               duration: const Duration(milliseconds: 150),
             ),

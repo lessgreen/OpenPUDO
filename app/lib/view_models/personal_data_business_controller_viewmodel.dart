@@ -22,6 +22,8 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:intl_phone_number_input/intl_phone_number_input.dart';
+import 'package:intl_phone_number_input/intl_phone_number_input_test.dart';
 import 'package:location/location.dart';
 import 'package:qui_green/commons/extensions/formfields_validators.dart';
 import 'package:qui_green/commons/utilities/image_picker_helper.dart';
@@ -68,16 +70,20 @@ class PersonalDataBusinessControllerViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  get isValid {
+  Future<bool> get isValid async {
     if (_name.isEmpty) {
       return false;
     }
-    if (_phoneNumber.isEmpty || !_phoneNumber.isValidPhoneNumber()) {
+    PhoneNumber? isValidPhoneNumber;
+    try {
+      isValidPhoneNumber = await PhoneNumber.getRegionInfoFromPhoneNumber(_phoneNumber);
+    } catch (e) {
+      isValidPhoneNumber = null;
+    }
+
+    if (_phoneNumber.isEmpty || isValidPhoneNumber == null) {
       return false;
     }
-    // if (_address == null) {
-    //   return false;
-    // }
     return true;
   }
 
