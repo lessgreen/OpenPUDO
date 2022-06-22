@@ -81,7 +81,17 @@ public class PudoService {
                 customizedAddress = createCustomizedAddress(rs.getValue0(), rs.getValue1(), "AB123");
             }
         }
-        return dtoMapper.mapPudoDto(rs.getValue0(), rs.getValue1(), rs.getValue2(), rewardMessage, customerCount, packageCount, savedCO2, customizedAddress);
+        Pudo ret = dtoMapper.mapPudoDto(rs.getValue0(), rs.getValue1(), rs.getValue2(), rewardMessage, customerCount, packageCount, savedCO2, customizedAddress);
+        // pudo email, if any, must be visible only to pudo owner
+        if (context.getUserId() == null) {
+            ret.setEmail(null);
+        } else {
+            TbUser caller = userDao.get(context.getUserId());
+            if (caller.getAccountType() == AccountType.CUSTOMER || !getCurrentPudoId().equals(pudoId)) {
+                ret.setEmail(null);
+            }
+        }
+        return ret;
     }
 
     public Pudo getCurrentPudo() {
@@ -98,6 +108,7 @@ public class PudoService {
             pudo.setUpdateTms(now);
             pudo.setBusinessName(sanitizeString(req.getPudo().getBusinessName()));
             pudo.setPublicPhoneNumber(sanitizeString(req.getPudo().getPublicPhoneNumber()));
+            pudo.setEmail(sanitizeString((req.getPudo().getEmail())));
             pudoDao.flush();
         }
         if (req.getAddressMarker() != null) {
@@ -564,6 +575,8 @@ public class PudoService {
         sb.append(" (");
         sb.append(address.getProvince());
         sb.append(")");
+        sb.append(", ");
+        sb.append(address.getCountry());
         return sb.toString();
     }
 

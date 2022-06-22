@@ -249,6 +249,7 @@ public class AuthService {
         pudo.setUpdateTms(now);
         pudo.setBusinessName(sanitizeString(req.getPudo().getBusinessName()));
         pudo.setPublicPhoneNumber(sanitizeString(req.getPudo().getPublicPhoneNumber()));
+        pudo.setEmail(sanitizeString((req.getPudo().getEmail())));
         pudo.setPudoPicId(null);
         pudoDao.persist(pudo);
         pudoDao.flush();
@@ -361,6 +362,9 @@ public class AuthService {
                 sb.append("PUDO name: ").append(pudo.getBusinessName()).append("\r\n");
                 if (pudo.getPublicPhoneNumber() != null) {
                     sb.append("PUDO phone number: ").append(pudo.getPublicPhoneNumber()).append("\r\n");
+                }
+                if (pudo.getEmail() != null) {
+                    sb.append("PUDO email: ").append(pudo.getEmail()).append("\r\n");
                 }
                 TbAddress address = addressDao.get(pudoId);
                 sb.append("PUDO address: ").append(address.getLabel()).append("\r\n");
