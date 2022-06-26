@@ -85,6 +85,17 @@ CREATE TABLE IF NOT EXISTS tb_otp_request (
 );
 
 
+DROP TABLE IF EXISTS tb_google_places_session CASCADE;
+CREATE TABLE IF NOT EXISTS tb_google_places_session (
+	session_id UUID PRIMARY KEY,
+	create_tms TIMESTAMP(3) NOT NULL,
+	update_tms TIMESTAMP(3) NOT NULL,
+	user_id BIGINT REFERENCES tb_user(user_id),
+	phone_number TEXT
+	CHECK(num_nonnulls(user_id, phone_number) = 1)
+);
+
+
 DROP TABLE IF EXISTS tb_external_file CASCADE;
 CREATE TABLE IF NOT EXISTS tb_external_file (
 	external_file_id UUID PRIMARY KEY,

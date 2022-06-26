@@ -2,7 +2,6 @@ package less.green.openpudo.rest.resource;
 
 import less.green.openpudo.business.service.AuthService;
 import less.green.openpudo.cdi.ExecutionContext;
-import less.green.openpudo.cdi.service.CryptoService;
 import less.green.openpudo.cdi.service.LocalizationService;
 import less.green.openpudo.common.ApiReturnCodes;
 import less.green.openpudo.common.PhoneNumberUtils;
@@ -36,9 +35,6 @@ public class AuthResource {
 
     @Inject
     LocalizationService localizationService;
-
-    @Inject
-    CryptoService cryptoService;
 
     @Inject
     AuthService authService;
@@ -142,8 +138,6 @@ public class AuthResource {
             throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.address.not_precise"));
         } else if (isEmpty(req.getAddressMarker().getSignature())) {
             throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.empty_mandatory_field", "signature"));
-        } else if (!cryptoService.isValidSignature(req.getAddressMarker().getAddress(), req.getAddressMarker().getSignature())) {
-            throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.invalid_field", "signature"));
         } else if (req.getRewardPolicy() == null || req.getRewardPolicy().isEmpty()) {
             throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.empty_mandatory_field", "rewardPolicy"));
         } else if (context.getPrivateClaims() == null || context.getPrivateClaims().getPhoneNumber() == null) {

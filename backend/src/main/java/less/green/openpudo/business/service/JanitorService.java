@@ -2,6 +2,7 @@ package less.green.openpudo.business.service;
 
 import less.green.openpudo.business.dao.DeviceTokenDao;
 import less.green.openpudo.business.dao.ExternalFileDao;
+import less.green.openpudo.business.dao.GooglePlacesSessionDao;
 import less.green.openpudo.business.dao.OtpRequestDao;
 import less.green.openpudo.common.CalendarUtils;
 import lombok.extern.log4j.Log4j2;
@@ -22,6 +23,8 @@ public class JanitorService {
     @Inject
     ExternalFileDao externalFileDao;
     @Inject
+    GooglePlacesSessionDao googlePlacesSessionDao;
+    @Inject
     OtpRequestDao otpRequestDao;
 
     public int removeExpiredOtpRequests() {
@@ -38,6 +41,13 @@ public class JanitorService {
 
     public Set<String> getAllStoredFiles() {
         return externalFileDao.getAllStoredFiles();
+    }
+
+    public int removeExpiredGooglePlacesSessions() {
+        // remove Google Places session being stale for more than 10 minutes
+        Calendar cal = CalendarUtils.getCalendar();
+        cal.add(Calendar.MINUTE, -5);
+        return googlePlacesSessionDao.removeExpiredGooglePlacesSessions(cal.getTime());
     }
 
 }

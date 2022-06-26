@@ -1,20 +1,18 @@
 package less.green.openpudo.business.service;
 
+import less.green.openpudo.business.dao.GooglePlacesSessionDao;
 import less.green.openpudo.business.dao.PudoDao;
+import less.green.openpudo.business.model.TbGooglePlacesSession;
 import less.green.openpudo.business.model.TbRating;
 import less.green.openpudo.cdi.ExecutionContext;
-import less.green.openpudo.cdi.service.CryptoService;
-import less.green.openpudo.cdi.service.GeocodeService;
+import less.green.openpudo.cdi.service.GooglePlacesService;
 import less.green.openpudo.cdi.service.LocalizationService;
 import less.green.openpudo.common.ApiReturnCodes;
 import less.green.openpudo.common.ExceptionUtils;
-import less.green.openpudo.common.StringUtils;
-import less.green.openpudo.common.dto.geojson.Feature;
 import less.green.openpudo.common.dto.tuple.Septet;
 import less.green.openpudo.rest.config.exception.ApiException;
 import less.green.openpudo.rest.dto.DtoMapper;
 import less.green.openpudo.rest.dto.map.AddressMarker;
-import less.green.openpudo.rest.dto.map.AddressSearchResult;
 import less.green.openpudo.rest.dto.map.GPSMarker;
 import less.green.openpudo.rest.dto.map.PudoMarker;
 import less.green.openpudo.rest.dto.pudo.PudoSummary;
@@ -27,9 +25,7 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.*;
-import java.util.stream.Collectors;
 
-import static less.green.openpudo.common.FormatUtils.smartElapsed;
 import static less.green.openpudo.common.GPSUtils.calculateDistanceFromOrigin;
 
 @RequestScoped
@@ -37,7 +33,7 @@ import static less.green.openpudo.common.GPSUtils.calculateDistanceFromOrigin;
 @Log4j2
 public class MapService {
 
-    private static final int MIN_PUDO_COUNT_FOR_ZOOM_LEVEL = 5;
+    private static final int MIN_PUDO_COUNT_FOR_ZOOM_LEVEL = 3;
     private static final int MAX_PUDO_MARKER_COUNT_ON_MAP = 25;
     private static final int MAX_SEARCH_RESULTS = 5;
 
@@ -48,10 +44,10 @@ public class MapService {
     LocalizationService localizationService;
 
     @Inject
-    CryptoService cryptoService;
-    @Inject
-    GeocodeService geocodeService;
+    GooglePlacesService googlePlacesService;
 
+    @Inject
+    GooglePlacesSessionDao googlePlacesSessionDao;
     @Inject
     PudoDao pudoDao;
 
@@ -124,75 +120,63 @@ public class MapService {
         return ret;
     }
 
-    @Transactional(Transactional.TxType.NOT_SUPPORTED)
-    public List<AddressMarker> searchAddress(String text, BigDecimal lat, BigDecimal lon, Boolean precise) {
+    public List<AddressMarker> searchAddress(String text, BigDecimal lat, BigDecimal lon) {
         // prevent returning meaningless results with too few characters
         if (text.trim().length() <= 3) {
             return Collections.emptyList();
         }
         try {
-            long startTime = System.nanoTime();
-            // fetching geocode results
-            boolean relevanceFiltering = false;
-            List<Feature> rs = geocodeService.autocomplete(context.getLanguage(), text, lat, lon).getFeatures();
-            // if we get no result, retry without coordinates to disable relevance filtering remote side
-            if (rs.isEmpty()) {
-                relevanceFiltering = true;
-                rs = geocodeService.autocomplete(context.getLanguage(), text, null, null).getFeatures();
-            }
-            long endTime = System.nanoTime();
-            log.info("Geocode search took {}", smartElapsed(endTime - startTime));
-
-            // mapping to inner dto
-            List<AddressSearchResult> addresses = new ArrayList<>(rs.size());
-            for (var row : rs) {
-                AddressSearchResult address = dtoMapper.mapFeatureToAddressSearchResult(row);
-                // remove results not suitable for pudo address
-                if (precise && (address.getLabel() == null || address.getStreet() == null || address.getCity() == null || address.getProvince() == null || address.getCountry() == null)) {
-                    continue;
-                }
-                addresses.add(address);
-            }
-
-            // mapping to final dto
-            List<AddressMarker> ret = new ArrayList<>(addresses.size());
-            for (var address : addresses) {
-                String signature = cryptoService.signObject(address);
-                BigDecimal distanceFromOrigin = lat != null && lon != null ? calculateDistanceFromOrigin(address.getLat(), address.getLon(), lat, lon) : null;
-                AddressMarker marker = dtoMapper.mapAddressMarkerDto(address, signature, address.getLat(), address.getLon(), distanceFromOrigin);
-                ret.add(marker);
-            }
-
-            // ordering by distance or by text similarity
-            if (ret.size() > 1) {
-                if (lat != null && lon != null && !relevanceFiltering) {
-                    ret.sort(Comparator.comparingDouble(i -> i.getDistanceFromOrigin().doubleValue()));
-                } else if (relevanceFiltering) {
-                    ret.sort(Comparator.comparingInt(i -> StringUtils.levenshteinDistance(text, i.getAddress().getLabel())));
-                }
-            }
-
-            // searching for eventual exact matches, with decreasing priority
-            List<AddressMarker> exactMatches = ret.stream().filter(i -> text.equalsIgnoreCase(i.getAddress().getCity())).collect(Collectors.toList());
-            exactMatches.addAll(ret.stream().filter(i -> text.equalsIgnoreCase(i.getAddress().getProvince()) && !exactMatches.contains(i)).collect(Collectors.toList()));
-            exactMatches.addAll(ret.stream().filter(i -> text.equalsIgnoreCase(i.getAddress().getCountry()) && !exactMatches.contains(i)).collect(Collectors.toList()));
-            if (exactMatches.isEmpty()) {
-                // restricting results if necessary
-                if (ret.size() > MAX_SEARCH_RESULTS) {
-                    ret = ret.subList(0, MAX_SEARCH_RESULTS);
-                }
-                return ret;
+            TbGooglePlacesSession googlePlacesSession;
+            if (context.getUserId() != null) {
+                googlePlacesSession = googlePlacesSessionDao.getSessionByUserId(context.getUserId());
             } else {
-                ret.removeAll(exactMatches);
-                // restricting results if necessary
-                int nonExactMatchesToKeep = Math.max(MAX_SEARCH_RESULTS - exactMatches.size(), 0);
-                if (ret.size() > nonExactMatchesToKeep) {
-                    ret = ret.subList(0, nonExactMatchesToKeep);
-                }
-                // adding left partial matches at the end, keeping exact on top
-                exactMatches.addAll(ret);
-                return exactMatches;
+                googlePlacesSession = googlePlacesSessionDao.getSessionByPhoneNumber(context.getPrivateClaims().getPhoneNumber());
             }
+
+            UUID sessionId;
+            Date now = new Date();
+            if (googlePlacesSession == null) {
+                sessionId = UUID.randomUUID();
+                googlePlacesSession = new TbGooglePlacesSession();
+                googlePlacesSession.setSessionId(sessionId);
+                googlePlacesSession.setCreateTms(now);
+                googlePlacesSession.setUpdateTms(now);
+                if (context.getUserId() != null) {
+                    googlePlacesSession.setUserId(context.getUserId());
+                } else {
+                    googlePlacesSession.setPhoneNumber(context.getPrivateClaims().getPhoneNumber());
+                }
+                googlePlacesSessionDao.persist(googlePlacesSession);
+            } else {
+                sessionId = googlePlacesSession.getSessionId();
+                googlePlacesSession.setUpdateTms(now);
+            }
+
+            return googlePlacesService.autocomplete(sessionId, context.getLanguage(), text, lat, lon);
+        } catch (RuntimeException ex) {
+            log.fatal("[{}] {}", context.getExecutionId(), ExceptionUtils.getCanonicalFormWithStackTrace(ex));
+            throw new ApiException(ApiReturnCodes.SERVICE_UNAVAILABLE, localizationService.getMessage(context.getLanguage(), "error.service_unavailable"));
+        }
+    }
+
+    public AddressMarker getAddressDetails(String signature, BigDecimal lat, BigDecimal lon) {
+        try {
+            TbGooglePlacesSession googlePlacesSession;
+            if (context.getUserId() != null) {
+                googlePlacesSession = googlePlacesSessionDao.getSessionByUserId(context.getUserId());
+            } else {
+                googlePlacesSession = googlePlacesSessionDao.getSessionByPhoneNumber(context.getPrivateClaims().getPhoneNumber());
+            }
+
+            UUID sessionId;
+            if (googlePlacesSession != null) {
+                sessionId = googlePlacesSession.getSessionId();
+                googlePlacesSessionDao.remove(googlePlacesSession);
+            } else {
+                sessionId = UUID.randomUUID();
+            }
+
+            return googlePlacesService.getAddressDetails(sessionId, context.getLanguage(), signature, lat, lon);
         } catch (RuntimeException ex) {
             log.fatal("[{}] {}", context.getExecutionId(), ExceptionUtils.getCanonicalFormWithStackTrace(ex));
             throw new ApiException(ApiReturnCodes.SERVICE_UNAVAILABLE, localizationService.getMessage(context.getLanguage(), "error.service_unavailable"));
@@ -226,7 +210,7 @@ public class MapService {
     }
 
     public List<GPSMarker> searchGlobal(String text, BigDecimal lat, BigDecimal lon) {
-        List<AddressMarker> rs1 = searchAddress(text, lat, lon, false);
+        List<AddressMarker> rs1 = searchAddress(text, lat, lon);
         List<PudoMarker> rs2 = searchPudo(text, lat, lon);
         List<GPSMarker> ret = new ArrayList<>(rs1.size() + rs2.size());
         ret.addAll(rs1);

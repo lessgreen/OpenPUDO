@@ -17,9 +17,10 @@ import java.util.stream.Collectors;
 @Log4j2
 public class JanitorCronService extends BaseCronService {
 
-    private static final String JANITOR_DEVICE_TOKEN_LOCK = "janitor.device_token";
     private static final String JANITOR_OTP_REQUEST_LOCK = "janitor.otp_request";
+    private static final String JANITOR_DEVICE_TOKEN_LOCK = "janitor.device_token";
     private static final String JANITOR_ORPHAN_FILES_LOCK = "janitor.orphan_files";
+    private static final String JANITOR_GOOGLE_PLACES_SESSION_LOCK = "janitor.google_places_session";
 
     @Inject
     ExecutionContext context;
@@ -88,6 +89,23 @@ public class JanitorCronService extends BaseCronService {
             log.fatal("[{}] {}", context.getExecutionId(), ExceptionUtils.getCanonicalFormWithStackTrace(ex));
         } finally {
             releaseLock(context.getExecutionId(), JANITOR_ORPHAN_FILES_LOCK);
+        }
+    }
+
+    @Scheduled(cron = "0 * * * * ?", concurrentExecution = Scheduled.ConcurrentExecution.SKIP)
+    void removeExpiredGooglePlacesSessions() {
+        if (!acquireLock(context.getExecutionId(), JANITOR_GOOGLE_PLACES_SESSION_LOCK)) {
+            return;
+        }
+        try {
+            int cnt = janitorService.removeExpiredGooglePlacesSessions();
+            if (cnt > 0) {
+                log.info("[{}] Removed expired Google Places sessions: {}", context.getExecutionId(), cnt);
+            }
+        } catch (Exception ex) {
+            log.fatal("[{}] {}", context.getExecutionId(), ExceptionUtils.getCanonicalFormWithStackTrace(ex));
+        } finally {
+            releaseLock(context.getExecutionId(), JANITOR_GOOGLE_PLACES_SESSION_LOCK);
         }
     }
 

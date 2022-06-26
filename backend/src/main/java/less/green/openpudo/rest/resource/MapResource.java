@@ -108,8 +108,7 @@ public class MapResource {
     public AddressMarkerListResponse searchAddress(
             @Parameter(description = "Query text", required = true) @QueryParam("text") String text,
             @Parameter(description = "Latitude value of map center point") @QueryParam("lat") BigDecimal lat,
-            @Parameter(description = "Longitude value of map center point") @QueryParam("lon") BigDecimal lon,
-            @Parameter(description = "Force results to be at street level, precise enough to be user as PUDO address") @DefaultValue("false") @QueryParam("precise") Boolean precise) {
+            @Parameter(description = "Longitude value of map center point") @QueryParam("lon") BigDecimal lon) {
         // sanitize input
         if (isEmpty(text)) {
             throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.empty_mandatory_field", "text"));
@@ -124,8 +123,35 @@ public class MapResource {
             }
         }
 
-        List<AddressMarker> ret = mapService.searchAddress(text.trim(), lat, lon, precise);
+        List<AddressMarker> ret = mapService.searchAddress(text.trim(), lat, lon);
         return new AddressMarkerListResponse(context.getExecutionId(), ApiReturnCodes.OK, ret);
+    }
+
+    @GET
+    @Path("/address/detail")
+    @ProtectedAPI
+    @SecurityRequirement(name = "JWT")
+    @Operation(summary = "Get details of a previously autocompleted address")
+    public AddressMarkerResponse getAddressDetails(
+            @Parameter(description = "Signature of previously autocompleted address", required = true) @QueryParam("text") String signature,
+            @Parameter(description = "Latitude value of map center point") @QueryParam("lat") BigDecimal lat,
+            @Parameter(description = "Longitude value of map center point") @QueryParam("lon") BigDecimal lon) {
+        // sanitize input
+        if (isEmpty(signature)) {
+            throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.empty_mandatory_field", "signature"));
+        }
+
+        // more sanitizing
+        if (lat != null && lon != null) {
+            if (lat.compareTo(BigDecimal.valueOf(-90)) < 0 || lat.compareTo(BigDecimal.valueOf(90)) > 0) {
+                throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.invalid_field", "lat"));
+            } else if (lon.compareTo(BigDecimal.valueOf(-180)) < 0 || lat.compareTo(BigDecimal.valueOf(180)) > 0) {
+                throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.invalid_field", "lon"));
+            }
+        }
+
+        AddressMarker ret = mapService.getAddressDetails(signature, lat, lon);
+        return new AddressMarkerResponse(context.getExecutionId(), ApiReturnCodes.OK, ret);
     }
 
     @GET
