@@ -133,7 +133,7 @@ public class MapResource {
     @SecurityRequirement(name = "JWT")
     @Operation(summary = "Get details of a previously autocompleted address")
     public AddressMarkerResponse getAddressDetails(
-            @Parameter(description = "Signature of previously autocompleted address", required = true) @QueryParam("text") String signature,
+            @Parameter(description = "Signature of previously autocompleted address", required = true) @QueryParam("signature") String signature,
             @Parameter(description = "Latitude value of map center point") @QueryParam("lat") BigDecimal lat,
             @Parameter(description = "Longitude value of map center point") @QueryParam("lon") BigDecimal lon) {
         // sanitize input
