@@ -186,7 +186,7 @@ class PersonalDataBusinessControllerViewModel extends ChangeNotifier {
 
   Future<void> fetchSuggestions(String val) async {
     if (val.trim().isNotEmpty) {
-      var res = await NetworkManager.instance.getAddresses(text: val, precise: true);
+      var res = await NetworkManager.instance.getAddresses(text: val);
       if (res is List<GeoMarker>) {
         if (res.isNotEmpty) {
           addresses = res;

@@ -195,13 +195,10 @@ mixin NetworkGeneral {
     return false;
   }
 
-  Future<dynamic> getAddresses({double? lat, double? lon, required String text, precise = false}) async {
+  Future<dynamic> getAddresses({double? lat, double? lon, required String text}) async {
     var queryString = "?text=$text";
     if (lat != null && lon != null) {
       queryString += "&lat=$lat&lon=$lon";
-    }
-    if (precise) {
-      queryString += "&precise=$precise";
     }
     if (_accessToken != null) {
       _headers['Authorization'] = 'Bearer $_accessToken';
