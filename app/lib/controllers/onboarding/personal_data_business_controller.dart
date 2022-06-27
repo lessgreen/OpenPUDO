@@ -111,6 +111,7 @@ class _PersonalDataBusinessControllerState extends State<PersonalDataBusinessCon
                     Padding(
                       padding: const EdgeInsets.fromLTRB(Dimension.paddingM, 16, Dimension.paddingM, 0),
                       child: CupertinoTextField(
+                        scrollPadding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
                         placeholder: 'placeHolderName'.localized(context),
                         decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Theme.of(context).primaryColor))),
                         autofocus: false,
@@ -125,6 +126,7 @@ class _PersonalDataBusinessControllerState extends State<PersonalDataBusinessCon
                       padding: const EdgeInsets.fromLTRB(Dimension.paddingM, 16, Dimension.paddingM, 0),
                       child: CupertinoTextField(
                         placeholder: 'placeHolderAddress'.localized(context),
+                        scrollPadding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
                         controller: viewModel.addressController,
                         decoration: _buildAddressBoxDecoration(),
                         autofocus: false,
@@ -167,6 +169,7 @@ class _PersonalDataBusinessControllerState extends State<PersonalDataBusinessCon
                     Padding(
                       padding: const EdgeInsets.fromLTRB(Dimension.paddingM, 16, Dimension.paddingM, 0),
                       child: CupertinoTextField(
+                        scrollPadding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
                         placeholder: 'placeHolderPhone'.localized(context),
                         controller: viewModel.phoneNumberController,
                         keyboardType: TextInputType.number,
@@ -185,13 +188,14 @@ class _PersonalDataBusinessControllerState extends State<PersonalDataBusinessCon
                         padding: const EdgeInsets.only(left: Dimension.paddingM, right: Dimension.paddingM),
                         child: Text(
                           'hintPhone'.localized(context),
-                          style: Theme.of(context).textTheme.bodyText1,
+                          style: Theme.of(context).textTheme.caption,
                         ),
                       ),
                     ),
                     Padding(
                       padding: const EdgeInsets.fromLTRB(Dimension.paddingM, 16, Dimension.paddingM, 0),
                       child: CupertinoTextField(
+                        scrollPadding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
                         placeholder: 'placeHolderEmail'.localized(context),
                         controller: viewModel.emailController,
                         keyboardType: TextInputType.emailAddress,
@@ -205,6 +209,16 @@ class _PersonalDataBusinessControllerState extends State<PersonalDataBusinessCon
                       ),
                     ),
                     const SizedBox(height: 10),
+                    Center(
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: Dimension.paddingM, right: Dimension.paddingM),
+                        child: Text(
+                          'hintEmail'.localized(context),
+                          style: Theme.of(context).textTheme.caption,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
                     Padding(
                       padding: const EdgeInsets.only(left: Dimension.padding, right: Dimension.padding),
                       child: Row(mainAxisAlignment: MainAxisAlignment.start, children: [
