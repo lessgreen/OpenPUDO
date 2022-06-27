@@ -26,12 +26,14 @@ Map<String, dynamic> _$UpdatePudoRequestToJson(UpdatePudoRequest instance) =>
 PudoRequest _$PudoRequestFromJson(Map<String, dynamic> json) => PudoRequest(
       businessName: json['businessName'] as String,
       publicPhoneNumber: json['publicPhoneNumber'] as String,
+      email: json['email'] as String?,
     );
 
 Map<String, dynamic> _$PudoRequestToJson(PudoRequest instance) =>
     <String, dynamic>{
       'businessName': instance.businessName,
       'publicPhoneNumber': instance.publicPhoneNumber,
+      'email': instance.email,
     };
 
 PudoAddressMarker _$PudoAddressMarkerFromJson(Map<String, dynamic> json) =>

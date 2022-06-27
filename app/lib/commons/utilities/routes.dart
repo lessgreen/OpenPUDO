@@ -80,8 +80,21 @@ dynamic routeWithSetting(RouteSettings settings) {
         ),
       );
     case Routes.aboutYou:
+      String? email;
+      String? phoneNumber;
+      if (settings.arguments is Map) {
+        if ((settings.arguments as Map).containsKey('email')) {
+          email = (settings.arguments as Map)['email'];
+        }
+        if ((settings.arguments as Map).containsKey('phoneNumber')) {
+          phoneNumber = (settings.arguments as Map)['phoneNumber'];
+        }
+      }
       return PageRouteHelper.buildPage(
-        AboutYouController(phoneNumber: settings.arguments as String),
+        AboutYouController(
+          phoneNumber: phoneNumber,
+          email: email,
+        ),
       );
     case Routes.userPosition:
       return PageRouteHelper.buildPage(
@@ -152,10 +165,21 @@ dynamic routeWithSetting(RouteSettings settings) {
         ),
       );
     case Routes.personalDataBusiness:
+      String? email;
+      String? phoneNumber;
+      if (settings.arguments is Map) {
+        if ((settings.arguments as Map).containsKey('email')) {
+          email = (settings.arguments as Map)['email'];
+        }
+        if ((settings.arguments as Map).containsKey('phoneNumber')) {
+          phoneNumber = (settings.arguments as Map)['phoneNumber'];
+        }
+      }
       return PageRouteHelper.buildPage(
         PersonalDataBusinessController(
           canGoBack: true,
-          phoneNumber: settings.arguments as String,
+          phoneNumber: phoneNumber ?? "",
+          email: email,
         ),
       );
     case Routes.userPudoTutorial:

@@ -26,20 +26,24 @@ class RegistrationPudoModel {
   final String? businessName;
   final PudoAddressMarker? addressMarker;
   final String? publicPhoneNumber;
+  final String? email;
   final File? profilePic;
   final List<RewardOption>? rewardPolicy;
 
-  RegistrationPudoModel({this.businessName, this.publicPhoneNumber, this.profilePic, this.addressMarker, this.rewardPolicy});
+  RegistrationPudoModel({this.businessName, this.publicPhoneNumber, this.email, this.profilePic, this.addressMarker, this.rewardPolicy});
 
-  RegistrationPudoModel copyWith({String? businessName, String? publicPhoneNumber, File? profilePic, PudoAddressMarker? addressMarker, List<RewardOption>? rewardPolicy}) => RegistrationPudoModel(
-      businessName: businessName ?? this.businessName,
-      publicPhoneNumber: publicPhoneNumber ?? this.publicPhoneNumber,
-      profilePic: profilePic ?? this.profilePic,
-      addressMarker: addressMarker ?? this.addressMarker,
-      rewardPolicy: rewardPolicy ?? this.rewardPolicy);
+  RegistrationPudoModel copyWith({String? businessName, String? publicPhoneNumber, String? email, File? profilePic, PudoAddressMarker? addressMarker, List<RewardOption>? rewardPolicy}) =>
+      RegistrationPudoModel(
+          businessName: businessName ?? this.businessName,
+          publicPhoneNumber: publicPhoneNumber ?? this.publicPhoneNumber,
+          email: email ?? this.email,
+          profilePic: profilePic ?? this.profilePic,
+          addressMarker: addressMarker ?? this.addressMarker,
+          rewardPolicy: rewardPolicy ?? this.rewardPolicy);
 
   RegistrationPudoRequest toRequest() => RegistrationPudoRequest(
-      pudo: PudoRequest(publicPhoneNumber: publicPhoneNumber!, businessName: businessName!),
-      addressMarker: addressMarker,
-      rewardPolicy: rewardPolicy);
+        pudo: PudoRequest(publicPhoneNumber: publicPhoneNumber!, businessName: businessName!, email: email),
+        addressMarker: addressMarker,
+        rewardPolicy: rewardPolicy,
+      );
 }

@@ -29,8 +29,9 @@ import 'package:qui_green/widgets/main_button.dart';
 import 'package:qui_green/widgets/sascaffold.dart';
 
 class AboutYouController extends StatefulWidget {
-  const AboutYouController({Key? key, this.phoneNumber}) : super(key: key);
+  const AboutYouController({Key? key, this.phoneNumber, this.email}) : super(key: key);
   final String? phoneNumber;
+  final String? email;
   @override
   _AboutYouControllerState createState() => _AboutYouControllerState();
 }
@@ -84,7 +85,10 @@ class _AboutYouControllerState extends State<AboutYouController> {
                 horizontal: Dimension.padding,
               ),
               onPressed: () {
-                Navigator.of(context).pushNamed(Routes.personalDataBusiness, arguments: widget.phoneNumber);
+                Navigator.of(context).pushNamed(
+                  Routes.personalDataBusiness,
+                  arguments: {'phoneNumber': widget.phoneNumber, 'email': widget.email},
+                );
               },
               text: 'pudoUserButton'.localized(context),
             ),

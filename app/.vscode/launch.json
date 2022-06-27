@@ -10,21 +10,21 @@
             "name": "qui_green - Dev",
             "request": "launch",
             "type": "dart",
-            "program": "lib/prod/main.dart",
+            "program": "lib/dev/main.dart",
             "flutterMode": "debug"
         },
         {
             "name": "qui_green - Prod",
             "request": "launch",
             "type": "dart",
-            "program": "lib/prod/main.dart",
+            "program": "lib/dev/main.dart",
             "flutterMode": "release"
         },
         {
             "name": "qui_green (profile mode)",
             "request": "launch",
             "type": "dart",
-            "program": "lib/prod/main.dart",
+            "program": "lib/dev/main.dart",
             "flutterMode": "profile"
         }
     ]

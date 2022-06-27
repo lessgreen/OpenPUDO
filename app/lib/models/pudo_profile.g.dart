@@ -9,6 +9,7 @@ part of 'pudo_profile.dart';
 PudoProfile _$PudoProfileFromJson(Map<String, dynamic> json) => PudoProfile(
       pudoId: json['pudoId'] as int,
       businessName: json['businessName'] as String,
+      email: json['email'] as String?,
       createTms: json['createTms'] as String?,
       publicPhoneNumber: json['publicPhoneNumber'] as String?,
       updateTms: json['updateTms'] as String?,
@@ -31,6 +32,7 @@ Map<String, dynamic> _$PudoProfileToJson(PudoProfile instance) =>
     <String, dynamic>{
       'pudoId': instance.pudoId,
       'businessName': instance.businessName,
+      'email': instance.email,
       'pudoPicId': instance.pudoPicId,
       'rating': instance.rating,
       'customizedAddress': instance.customizedAddress,
