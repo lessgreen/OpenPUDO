@@ -330,4 +330,56 @@ mixin NetworkManagerUserPudo on NetworkGeneral {
       return e;
     }
   }
+
+  Future<dynamic> getPlacemarkDetails(MapSearchAddressesRequest request) async {
+    try {
+      if (!isOnline) {
+        throw ("Network is offline");
+      }
+      if (_accessToken != null) {
+        _headers['Authorization'] = 'Bearer $_accessToken';
+      }
+
+      var queryString = "?signature=${request.text}";
+      if (request.lat != null && request.lon != null) {
+        queryString += "&lat=${request.lat}&lon=${request.lon}";
+      }
+
+      var url = _baseURL + '/api/v2/map/address/detail/$queryString';
+
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+        _networkActivity.value = true;
+      });
+      Response response = await r.retry(
+        () => get(Uri.parse(url), headers: _headers).timeout(Duration(seconds: _timeout)),
+        retryIf: (e) => e is SocketException || e is TimeoutException,
+      );
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+        _networkActivity.value = false;
+      });
+      final codeUnits = response.body.codeUnits;
+      var decodedUTF8 = const Utf8Decoder().convert(codeUnits);
+      var json = jsonDecode(decodedUTF8);
+      var baseResponse = OPBaseResponse.fromJson(json);
+
+      var needHandleTokenRefresh = _handleTokenRefresh(
+        baseResponse,
+        () {
+          getMyPudoProfile().catchError((onError) => throw onError);
+        },
+      );
+      if (needHandleTokenRefresh == false) {
+        if (baseResponse.returnCode == 0 && baseResponse.payload != null && baseResponse.payload is Map) {
+          return GeoMarker.fromJson(baseResponse.payload);
+        } else {
+          throw ErrorDescription('Error ${baseResponse.returnCode}: ${baseResponse.message}');
+        }
+      }
+    } catch (e) {
+      safePrint('ERROR - getPlacemarkDetails: $e');
+      _refreshTokenRetryCounter = 0;
+      _networkActivity.value = false;
+      return e;
+    }
+  }
 }
