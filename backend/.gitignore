@@ -1,4 +1,5 @@
-/.idea/
+.idea/
 /target/
 /.env
 /firebase-config.json
+/src/main/resources/localization/app/
