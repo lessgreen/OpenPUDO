@@ -32,9 +32,11 @@ import 'package:qui_green/models/registration_pudo_request.dart';
 import 'package:qui_green/singletons/network/network_manager.dart';
 
 class PersonalDataBusinessControllerViewModel extends ChangeNotifier {
-  PersonalDataBusinessControllerViewModel(String phoneNumber) {
+  PersonalDataBusinessControllerViewModel(String phoneNumber, String? email) {
     this.phoneNumber = phoneNumber;
     phoneNumberController.text = phoneNumber;
+    this.email = email;
+    emailController.text = email ?? "";
   }
 
   Function(String)? showErrorDialog;
@@ -49,6 +51,7 @@ class PersonalDataBusinessControllerViewModel extends ChangeNotifier {
   }
 
   TextEditingController phoneNumberController = TextEditingController(text: "");
+  TextEditingController emailController = TextEditingController(text: "");
 
   String _phoneNumber = "";
 
@@ -62,6 +65,15 @@ class PersonalDataBusinessControllerViewModel extends ChangeNotifier {
   File? _image;
 
   File? get image => _image;
+
+  String? _email;
+  String? get email => _email;
+  set email(String? newVal) {
+    if (newVal != null) {
+      _email = newVal;
+      notifyListeners();
+    }
+  }
 
   set image(File? newVal) {
     _image = newVal;
@@ -192,6 +204,13 @@ class PersonalDataBusinessControllerViewModel extends ChangeNotifier {
   }
 
   RegistrationPudoModel buildRequest() {
-    return RegistrationPudoModel(profilePic: image, businessName: name, publicPhoneNumber: phoneNumber, addressMarker: address!, rewardPolicy: null);
+    return RegistrationPudoModel(
+      profilePic: image,
+      businessName: name,
+      email: email,
+      publicPhoneNumber: phoneNumber,
+      addressMarker: address!,
+      rewardPolicy: null,
+    );
   }
 }

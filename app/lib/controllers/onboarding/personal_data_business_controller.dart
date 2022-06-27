@@ -37,9 +37,10 @@ import 'package:qui_green/widgets/profile_pic_box.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class PersonalDataBusinessController extends StatefulWidget {
-  const PersonalDataBusinessController({Key? key, required this.canGoBack, required this.phoneNumber}) : super(key: key);
+  const PersonalDataBusinessController({Key? key, required this.canGoBack, required this.phoneNumber, this.email}) : super(key: key);
   final bool canGoBack;
   final String phoneNumber;
+  final String? email;
 
   @override
   _PersonalDataBusinessControllerState createState() => _PersonalDataBusinessControllerState();
@@ -52,7 +53,7 @@ class _PersonalDataBusinessControllerState extends State<PersonalDataBusinessCon
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (context) => PersonalDataBusinessControllerViewModel(widget.phoneNumber),
+      create: (context) => PersonalDataBusinessControllerViewModel(widget.phoneNumber, widget.email),
       child: Consumer<PersonalDataBusinessControllerViewModel>(builder: (context, viewModel, _) {
         return KeyboardVisibilityBuilder(builder: (context, child, isKeyboardVisible) {
           return Scaffold(
@@ -173,6 +174,21 @@ class _PersonalDataBusinessControllerState extends State<PersonalDataBusinessCon
                           'hintPhone'.localized(context),
                           style: Theme.of(context).textTheme.bodyText1,
                         ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(Dimension.paddingM, 16, Dimension.paddingM, 0),
+                      child: CupertinoTextField(
+                        placeholder: 'placeHolderEmail'.localized(context),
+                        controller: viewModel.emailController,
+                        keyboardType: TextInputType.emailAddress,
+                        textInputAction: TextInputAction.done,
+                        decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Theme.of(context).primaryColor))),
+                        autofocus: false,
+                        onChanged: (newValue) => viewModel.email = newValue,
+                        onTap: () {
+                          setState(() {});
+                        },
                       ),
                     ),
                     const SizedBox(height: 10),

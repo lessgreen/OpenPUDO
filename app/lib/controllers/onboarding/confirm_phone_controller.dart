@@ -73,7 +73,7 @@ class _ConfirmPhoneControllerState extends State<ConfirmPhoneController> with Co
           Provider.of<CurrentUser>(context, listen: false).refresh(context);
           break;
         case "guest":
-          Navigator.of(context).pushReplacementNamed(Routes.aboutYou, arguments: widget.phoneNumber);
+          Navigator.of(context).pushReplacementNamed(Routes.aboutYou, arguments: {'phoneNumber': widget.phoneNumber});
           break;
         default:
           NetworkErrorHelper.helper(context, value);

@@ -41,8 +41,9 @@ class RegistrationPudoRequest {
 class PudoRequest {
   final String businessName;
   final String publicPhoneNumber;
+  final String? email;
 
-  PudoRequest({required this.businessName, required this.publicPhoneNumber});
+  PudoRequest({required this.businessName, required this.publicPhoneNumber, this.email});
 
   factory PudoRequest.fromJson(Map<String, dynamic> json) => _$PudoRequestFromJson(json);
 

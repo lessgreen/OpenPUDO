@@ -66,6 +66,7 @@ class PudoProfileEditControllerViewModel extends ChangeNotifier {
     hasBeenRewardPolicyChanged = false;
     businessNameController.text = profile.businessName;
     phoneController.text = profile.publicPhoneNumber ?? "";
+    emailController.text = profile.email ?? "";
     addressController.text = profile.address?.label ?? "";
     _name = null;
     _phoneNumber = null;
@@ -91,7 +92,7 @@ class PudoProfileEditControllerViewModel extends ChangeNotifier {
   bool hasBeenRewardPolicyChanged = false;
 
   TextEditingController businessNameController = TextEditingController();
-
+  TextEditingController emailController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
 
   List<RewardOption> _dataSource = [];
@@ -244,13 +245,21 @@ class PudoProfileEditControllerViewModel extends ChangeNotifier {
   }
 
   String? _name;
-
   String? get name => _name;
-
   set name(String? newVal) {
     hasBeenDetailsChanged = true;
     _name = newVal;
     notifyListeners();
+  }
+
+  String? _email;
+  String? get email => _email;
+  set email(String? newVal) {
+    if (newVal != null) {
+      hasBeenDetailsChanged = true;
+      _email = newVal;
+      notifyListeners();
+    }
   }
 
   String? _phoneNumber;
@@ -404,6 +413,7 @@ class PudoProfileEditControllerViewModel extends ChangeNotifier {
             pudo: PudoRequest(
               businessName: businessNameController.text,
               publicPhoneNumber: phoneController.text,
+              email: emailController.text,
             ),
             addressMarker: _address));
       }

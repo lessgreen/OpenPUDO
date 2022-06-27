@@ -380,6 +380,46 @@ class _PudoProfileEditControllerState extends State<PudoProfileEditController> w
                 onChanged: (newVal) => viewModel.phoneNumber = newVal,
               ),
             ),
+            const SizedBox(height: Dimension.paddingS),
+            _buildEditable(
+              viewModel,
+              RichText(
+                textAlign: TextAlign.start,
+                text: TextSpan(text: '', style: Theme.of(context).textTheme.bodyText2, children: [
+                  const WidgetSpan(
+                    alignment: PlaceholderAlignment.middle,
+                    child: Icon(
+                      Icons.email_outlined,
+                      size: 23,
+                      color: AppColors.primaryColorDark,
+                    ),
+                  ),
+                  const WidgetSpan(
+                    child: SizedBox(
+                      width: Dimension.paddingS,
+                    ),
+                  ),
+                  TextSpan(text: currentUser.pudoProfile!.email ?? ""),
+                ]),
+              ),
+              CupertinoTextField(
+                controller: viewModel.emailController,
+                prefix: SvgPicture.asset(
+                  ImageSrc.phoneIconFill,
+                  color: AppColors.primaryColorDark,
+                  width: 23,
+                  height: 23,
+                ),
+                padding: const EdgeInsets.all(Dimension.padding),
+                placeholderStyle: Theme.of(context).textTheme.bodyTextSecondary,
+                decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Theme.of(context).primaryColor))),
+                autofocus: false,
+                textInputAction: TextInputAction.done,
+                onChanged: (newVal) {
+                  viewModel.email = newVal;
+                },
+              ),
+            ),
           ],
         ),
       );

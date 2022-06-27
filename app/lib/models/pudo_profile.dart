@@ -31,6 +31,7 @@ class PudoProfile with PudoCardRepresentation {
   int pudoId;
   @override
   String businessName;
+  String? email;
   @override
   String? pudoPicId;
   @override
@@ -55,6 +56,7 @@ class PudoProfile with PudoCardRepresentation {
   PudoProfile({
     required this.pudoId,
     required this.businessName,
+    this.email,
     this.createTms,
     this.publicPhoneNumber,
     this.updateTms,
