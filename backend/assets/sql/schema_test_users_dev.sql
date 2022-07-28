@@ -8,7 +8,7 @@ INSERT INTO openpudo.tb_user (user_id, create_tms, last_login_tms, account_type,
 INSERT INTO openpudo.tb_user (user_id, create_tms, last_login_tms, account_type, test_account_flag, phone_number) VALUES (4, '2022-01-17 12:30:00.000', '2022-01-17 12:30:00.000', 'pudo', true, '+39328000004');
 INSERT INTO openpudo.tb_user (user_id, create_tms, last_login_tms, account_type, test_account_flag, phone_number) VALUES (5, '2022-01-17 12:30:00.000', '2022-01-17 12:30:00.000', 'pudo', true, '+39328000005');
 
-INSERT INTO openpudo.tb_pudo (pudo_id, create_tms, update_tms, business_name, public_phone_number, pudo_pic_id, business_name_search) VALUES (1, '2022-01-17 12:30:00.000', '2022-01-17 12:30:00.000', 'Bar La Pinta', NULL, NULL, DEFAULT);
+INSERT INTO openpudo.tb_pudo (pudo_id, create_tms, update_tms, business_name, public_phone_number, email, pudo_pic_id, business_name_search) VALUES (1, '2022-01-17 12:30:00.000', '2022-01-17 12:30:00.000', 'Bar La Pinta', NULL, 'foo@bar.com', NULL, DEFAULT);
 INSERT INTO openpudo.tb_pudo (pudo_id, create_tms, update_tms, business_name, public_phone_number, pudo_pic_id, business_name_search) VALUES (2, '2022-01-17 12:30:00.000', '2022-01-17 12:30:00.000', 'Il Paradiso della Porchetta', NULL, NULL, DEFAULT);
 INSERT INTO openpudo.tb_pudo (pudo_id, create_tms, update_tms, business_name, public_phone_number, pudo_pic_id, business_name_search) VALUES (3, '2022-01-17 12:30:00.000', '2022-01-17 12:30:00.000', 'Sushi Arigato Restaurant', NULL, NULL, DEFAULT);
 INSERT INTO openpudo.tb_pudo (pudo_id, create_tms, update_tms, business_name, public_phone_number, pudo_pic_id, business_name_search) VALUES (4, '2022-01-17 12:30:00.000', '2022-01-17 12:30:00.000', 'Tabacchi Fortunato', NULL, NULL, DEFAULT);

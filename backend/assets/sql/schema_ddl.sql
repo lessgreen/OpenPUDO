@@ -85,6 +85,17 @@ CREATE TABLE IF NOT EXISTS tb_otp_request (
 );
 
 
+DROP TABLE IF EXISTS tb_google_places_session CASCADE;
+CREATE TABLE IF NOT EXISTS tb_google_places_session (
+	session_id UUID PRIMARY KEY,
+	create_tms TIMESTAMP(3) NOT NULL,
+	update_tms TIMESTAMP(3) NOT NULL,
+	user_id BIGINT REFERENCES tb_user(user_id),
+	phone_number TEXT
+	CHECK(num_nonnulls(user_id, phone_number) = 1)
+);
+
+
 DROP TABLE IF EXISTS tb_external_file CASCADE;
 CREATE TABLE IF NOT EXISTS tb_external_file (
 	external_file_id UUID PRIMARY KEY,
@@ -140,6 +151,7 @@ CREATE TABLE IF NOT EXISTS tb_pudo (
 	update_tms TIMESTAMP(3) NOT NULL,
 	business_name TEXT NOT NULL,
 	public_phone_number TEXT,
+	email TEXT,
 	pudo_pic_id UUID REFERENCES tb_external_file(external_file_id),
 	business_name_search tsvector GENERATED ALWAYS AS (to_tsvector('simple', business_name)) STORED
 );
@@ -313,7 +325,7 @@ AND u.account_type = 'customer';
 
 DROP VIEW IF EXISTS vw_pudo;
 CREATE OR REPLACE VIEW vw_pudo AS
-SELECT u.user_id, u.create_tms, u.last_login_tms, u.phone_number, p.pudo_id, p.update_tms pudo_update_tms, p.business_name, p.public_phone_number, p.pudo_pic_id, a.label
+SELECT u.user_id, u.create_tms, u.last_login_tms, u.phone_number, p.pudo_id, p.update_tms pudo_update_tms, p.business_name, p.public_phone_number, p.email, p.pudo_pic_id, a.label
 FROM tb_user u, tb_user_pudo_relation upr, tb_pudo p, tb_address a
 WHERE u.user_id = upr.user_id AND upr.pudo_id = p.pudo_id AND p.pudo_id = a.pudo_id
 AND u.account_type = 'pudo'

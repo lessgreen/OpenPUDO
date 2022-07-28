@@ -35,6 +35,9 @@ public class TbPudo implements Serializable {
     @Column(name = "public_phone_number")
     private String publicPhoneNumber;
 
+    @Column(name = "email")
+    private String email;
+
     @Column(name = "pudo_pic_id")
     private UUID pudoPicId;
 

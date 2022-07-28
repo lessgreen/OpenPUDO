@@ -26,6 +26,8 @@ public class Pudo {
 
     private String publicPhoneNumber;
 
+    private String email;
+
     @Schema(readOnly = true)
     private UUID pudoPicId;
 
