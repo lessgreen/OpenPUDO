@@ -16,7 +16,7 @@ public class StringArrayConverter implements AttributeConverter<String[], String
         if (attribute == null || attribute.length == 0) {
             return null;
         }
-        return Encoders.writeValueAsStringSafe(attribute);
+        return Encoders.dumpJson(attribute);
     }
 
     @Override

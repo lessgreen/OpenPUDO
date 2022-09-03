@@ -87,7 +87,7 @@ public class ShareResource {
     @PublicAPI
     @Operation(summary = "Handle Firebase Dynamic Link request")
     public Response getDynamicLink(@PathParam(value = "linkId") UUID linkId) throws URISyntaxException {
-        log.info(Encoders.writeValueAsPrettyStringSafe(context));
+        log.info("Context: \n{}", Encoders.dumpJsonCompactPretty(context));
         if ("dev".equals(ProfileManager.getActiveProfile()) || (!isEmpty(context.getUserAgent()) && context.getUserAgent().startsWith("OpenPudo"))) {
             return shareService.getDynamicLink(linkId);
         }

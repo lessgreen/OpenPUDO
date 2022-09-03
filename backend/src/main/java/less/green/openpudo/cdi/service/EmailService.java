@@ -51,7 +51,7 @@ public class EmailService {
             var req = Unirest.post(MAILJET_EMAIL_API_URL)
                     .basicAuth(apiKey, secretKey)
                     .header("Content-Type", "application/json")
-                    .body(Encoders.writeValueAsStringSafe(body));
+                    .body(Encoders.dumpJson(body));
             var res = req.asJson();
             if (res == null || res.getBody() == null) {
                 throw new RuntimeException("Email service returned empty response");

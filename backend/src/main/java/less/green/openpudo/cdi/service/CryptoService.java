@@ -55,7 +55,7 @@ public class CryptoService {
 
     public String signObject(Object obj) {
         Mac mac = createMac();
-        String json = Encoders.writeValueAsStringSafe(obj);
+        String json = Encoders.dumpJson(obj);
         byte[] signature = mac.doFinal(json.getBytes(StandardCharsets.UTF_8));
         return Encoders.BASE64_URL_ENCODER.encodeToString(signature);
     }

@@ -44,7 +44,7 @@ public class RestPostFilter implements ContainerRequestFilter, ContainerResponse
         } else if (httpServerRequest.remoteAddress() != null) {
             context.setRemoteAddress(httpServerRequest.remoteAddress().hostAddress());
         }
-        context.setRequestHeaders(Encoders.writeValueAsStringSafe(requestContext.getHeaders()));
+        context.setRequestHeaders(Encoders.dumpJson(requestContext.getHeaders()));
         if (!isEmpty(requestContext.getHeaderString(LANGUAGE_HEADER))) {
             context.setLanguage(requestContext.getHeaderString(LANGUAGE_HEADER).trim());
         } else if ("dev".equals(ProfileManager.getActiveProfile())) {
