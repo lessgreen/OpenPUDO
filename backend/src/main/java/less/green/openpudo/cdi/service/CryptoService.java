@@ -1,5 +1,6 @@
 package less.green.openpudo.cdi.service;
 
+import io.quarkus.runtime.Startup;
 import less.green.openpudo.common.Encoders;
 import lombok.extern.log4j.Log4j2;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
@@ -14,6 +15,7 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 
 @ApplicationScoped
+@Startup
 @Log4j2
 public class CryptoService {
 

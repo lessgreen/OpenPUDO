@@ -1,6 +1,7 @@
 package less.green.openpudo.cdi.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import io.quarkus.runtime.Startup;
 import less.green.openpudo.common.Encoders;
 import lombok.extern.log4j.Log4j2;
 
@@ -14,6 +15,7 @@ import java.util.ResourceBundle;
 import static less.green.openpudo.common.StringUtils.isEmpty;
 
 @ApplicationScoped
+@Startup
 @Log4j2
 public class LocalizationService {
 

@@ -2,6 +2,7 @@ package less.green.openpudo.rest.config;
 
 import less.green.openpudo.cdi.ExecutionContext;
 import less.green.openpudo.rest.config.annotation.BinaryAPI;
+import less.green.openpudo.rest.dto.BaseResponse;
 import lombok.extern.log4j.Log4j2;
 
 import javax.annotation.Priority;
@@ -19,7 +20,7 @@ import static less.green.openpudo.common.StreamUtils.readAllBytesFromInputStream
 import static less.green.openpudo.common.StringUtils.isEmpty;
 
 @Provider
-@Priority(2)
+@Priority(3)
 @Log4j2
 public class RestBodyFilter implements ContainerRequestFilter, ContainerResponseFilter {
 
@@ -31,7 +32,7 @@ public class RestBodyFilter implements ContainerRequestFilter, ContainerResponse
 
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
-        if (log.isTraceEnabled() && requestContext.hasEntity() && !resourceInfo.getResourceMethod().isAnnotationPresent(BinaryAPI.class)) {
+        if (requestContext.hasEntity() && !resourceInfo.getResourceMethod().isAnnotationPresent(BinaryAPI.class)) {
             byte[] entityBytes;
             try (InputStream originalStream = requestContext.getEntityStream()) {
                 entityBytes = readAllBytesFromInputStream(originalStream);
@@ -40,6 +41,7 @@ public class RestBodyFilter implements ContainerRequestFilter, ContainerResponse
             requestContext.setEntityStream(clonedStream);
             String entity = new String(entityBytes, StandardCharsets.UTF_8);
             if (!isEmpty(entity)) {
+                context.setRequestBody(entity);
                 log.trace("[{}] Request: {}", context.getExecutionId(), entity);
             }
         }
@@ -51,8 +53,10 @@ public class RestBodyFilter implements ContainerRequestFilter, ContainerResponse
         if (resourceInfo.getResourceMethod() == null) {
             return;
         }
-        if (log.isTraceEnabled() && responseContext.hasEntity() && !resourceInfo.getResourceMethod().isAnnotationPresent(BinaryAPI.class)) {
-            log.trace("[{}] Response: {}", context.getExecutionId(), OBJECT_MAPPER_COMPACT.writeValueAsString(responseContext.getEntity()));
+        if (responseContext.hasEntity() && !resourceInfo.getResourceMethod().isAnnotationPresent(BinaryAPI.class) && BaseResponse.class.isAssignableFrom(responseContext.getEntity().getClass())) {
+            String entity = OBJECT_MAPPER_COMPACT.writeValueAsString(responseContext.getEntity());
+            context.setResponseBody(entity);
+            log.trace("[{}] Response: {}", context.getExecutionId(), entity);
         }
     }
 

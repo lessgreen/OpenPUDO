@@ -1,7 +1,6 @@
 package less.green.openpudo.rest.config;
 
 import less.green.openpudo.cdi.ExecutionContext;
-import less.green.openpudo.rest.dto.BaseResponse;
 import lombok.extern.log4j.Log4j2;
 
 import javax.annotation.Priority;
@@ -9,6 +8,7 @@ import javax.inject.Inject;
 import javax.ws.rs.container.*;
 import javax.ws.rs.ext.Provider;
 import java.io.IOException;
+import java.util.Date;
 
 import static less.green.openpudo.common.FormatUtils.smartElapsed;
 
@@ -27,9 +27,9 @@ public class RestFilter implements ContainerRequestFilter, ContainerResponseFilt
         if (requestContext.getMethod().equals("OPTIONS")) {
             return;
         }
-        context.setStartTimestamp(System.nanoTime());
-        log.info("[{}] {} {}{}", context.getExecutionId(), requestContext.getMethod(), requestContext.getUriInfo().getRequestUri().getPath(),
-                requestContext.getUriInfo().getRequestUri().getQuery() == null ? "" : "?" + requestContext.getUriInfo().getRequestUri().getQuery());
+        context.setStartNanos(System.nanoTime());
+        context.setStartTimestamp(new Date());
+        log.info("[{}] {} {}", context.getExecutionId(), requestContext.getMethod(), requestContext.getUriInfo().getRequestUri().getPath() + (requestContext.getUriInfo().getRequestUri().getQuery() == null ? "" : "?" + requestContext.getUriInfo().getRequestUri().getQuery()));
 
     }
 
@@ -39,10 +39,9 @@ public class RestFilter implements ContainerRequestFilter, ContainerResponseFilt
         if (requestContext.getMethod().equals("OPTIONS")) {
             return;
         }
-        context.setEndTimestamp(System.nanoTime());
-        log.info("[{}] {} {}", context.getExecutionId(),
-                responseContext.hasEntity() && BaseResponse.class.isAssignableFrom(responseContext.getEntity().getClass()) ? ((BaseResponse) responseContext.getEntity()).getReturnCode() : responseContext.getStatus(),
-                smartElapsed(context.getEndTimestamp() - context.getStartTimestamp()));
+        context.setEndTimestamp(new Date());
+        context.setEndNanos(System.nanoTime());
+        log.info("[{}] {} {} {}", context.getExecutionId(), context.getResponseHttpStatusCode(), context.getReturnCode() != null ? context.getReturnCode() : "-", smartElapsed(context.getEndNanos() - context.getStartNanos()));
     }
 
 }

@@ -29,4 +29,12 @@ public class Encoders {
         }
     }
 
+    public static String writeValueAsPrettyStringSafe(Object obj) {
+        try {
+            return OBJECT_MAPPER_PRETTY.writeValueAsString(obj);
+        } catch (JsonProcessingException ex) {
+            throw new InternalServerErrorException("Error while serializing to JSON", ex);
+        }
+    }
+
 }

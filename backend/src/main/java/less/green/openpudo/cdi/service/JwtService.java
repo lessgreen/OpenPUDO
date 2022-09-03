@@ -1,6 +1,7 @@
 package less.green.openpudo.cdi.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import io.quarkus.runtime.Startup;
 import less.green.openpudo.common.CalendarUtils;
 import less.green.openpudo.common.dto.jwt.*;
 import lombok.extern.log4j.Log4j2;
@@ -15,6 +16,7 @@ import java.util.Date;
 import static less.green.openpudo.common.Encoders.*;
 
 @ApplicationScoped
+@Startup
 @Log4j2
 public class JwtService {
 

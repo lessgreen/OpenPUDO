@@ -1,5 +1,6 @@
 package less.green.openpudo.cdi.service;
 
+import io.quarkus.runtime.Startup;
 import lombok.extern.log4j.Log4j2;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
@@ -15,6 +16,7 @@ import static less.green.openpudo.common.Encoders.BASE64_DECODER;
 import static less.green.openpudo.common.Encoders.BASE64_ENCODER;
 
 @ApplicationScoped
+@Startup
 @Log4j2
 public class StorageService {
 

@@ -1,11 +1,12 @@
 package less.green.openpudo.rest.resource;
 
 import com.google.zxing.WriterException;
-import io.vertx.core.http.HttpServerRequest;
+import io.quarkus.runtime.configuration.ProfileManager;
 import less.green.openpudo.business.service.ShareService;
 import less.green.openpudo.cdi.ExecutionContext;
 import less.green.openpudo.cdi.service.LocalizationService;
 import less.green.openpudo.common.ApiReturnCodes;
+import less.green.openpudo.common.Encoders;
 import less.green.openpudo.rest.config.annotation.BinaryAPI;
 import less.green.openpudo.rest.config.annotation.PublicAPI;
 import less.green.openpudo.rest.config.exception.ApiException;
@@ -16,12 +17,12 @@ import org.eclipse.microprofile.openapi.annotations.parameters.Parameter;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.*;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.UUID;
 
 import static less.green.openpudo.common.StringUtils.isEmpty;
 
@@ -32,9 +33,6 @@ public class ShareResource {
 
     @Inject
     ExecutionContext context;
-
-    @Context
-    HttpServerRequest httpServerRequest;
 
     @Inject
     LocalizationService localizationService;
@@ -71,18 +69,29 @@ public class ShareResource {
     @Path("/redirect/{channel}")
     @PublicAPI
     @Operation(summary = "Get QRCode of the provided share link, simulating a static resource served by an http server")
-    public Response redirect(@PathParam(value = "channel") String channel, @HeaderParam("User-Agent") String userAgent) throws URISyntaxException {
+    public Response redirect(@PathParam(value = "channel") String channel) throws URISyntaxException {
         // avoid persisting incomplete links fetched by messaging apps or social networks
         if (!isEmpty(channel) && channel.length() == 4) {
-            shareService.saveRedirectLog(channel, httpServerRequest);
+            shareService.saveRedirectLog(channel);
         }
-        if (!isEmpty(userAgent) && (userAgent.toLowerCase().contains("iphone") || userAgent.toLowerCase().contains("ipad"))) {
+        if (!isEmpty(context.getUserAgent()) && (context.getUserAgent().toLowerCase().contains("iphone") || context.getUserAgent().toLowerCase().contains("ipad"))) {
             return Response.temporaryRedirect(new URI("https://www.quigreen.it/app-ios/")).build();
-        } else if (!isEmpty(userAgent) && userAgent.toLowerCase().contains("android")) {
+        } else if (!isEmpty(context.getUserAgent()) && context.getUserAgent().toLowerCase().contains("android")) {
             return Response.temporaryRedirect(new URI("https://www.quigreen.it/app-android/")).build();
-        } else {
-            return Response.temporaryRedirect(new URI("https://www.quigreen.it/")).build();
         }
+        return Response.temporaryRedirect(new URI("https://www.quigreen.it/")).build();
+    }
+
+    @GET
+    @Path("/link/{linkId}")
+    @PublicAPI
+    @Operation(summary = "Handle Firebase Dynamic Link request")
+    public Response getDynamicLink(@PathParam(value = "linkId") UUID linkId) throws URISyntaxException {
+        log.info(Encoders.writeValueAsPrettyStringSafe(context));
+        if ("dev".equals(ProfileManager.getActiveProfile()) || (!isEmpty(context.getUserAgent()) && context.getUserAgent().startsWith("OpenPudo"))) {
+            return shareService.getDynamicLink(linkId);
+        }
+        return Response.temporaryRedirect(new URI("https://www.quigreen.it/")).build();
     }
 
 }
