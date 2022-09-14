@@ -14,13 +14,13 @@
         <maven.compiler.release>11</maven.compiler.release>
         <quarkus.platform.groupId>io.quarkus.platform</quarkus.platform.groupId>
         <quarkus.platform.artifactId>quarkus-bom</quarkus.platform.artifactId>
-        <quarkus.platform.version>2.8.3.Final</quarkus.platform.version>
+        <quarkus.platform.version>2.12.0.Final</quarkus.platform.version>
         <lombok.version>1.18.24</lombok.version>
         <mapstruct.version>1.4.2.Final</mapstruct.version>
         <pmd.version>3.14.0</pmd.version>
         <libphonenumber.version>8.12.54</libphonenumber.version>
-        <unirest.version>3.13.10</unirest.version>
-        <firebase.version>8.2.0</firebase.version>
+        <unirest.version>3.13.11</unirest.version>
+        <firebase.version>9.0.0</firebase.version>
         <hashids.version>1.0.3</hashids.version>
         <zxing.version>3.5.0</zxing.version>
     </properties>

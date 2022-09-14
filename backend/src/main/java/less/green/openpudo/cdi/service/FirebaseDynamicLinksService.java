@@ -9,6 +9,7 @@ import lombok.extern.log4j.Log4j2;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import javax.enterprise.context.ApplicationScoped;
+import java.util.UUID;
 
 import static less.green.openpudo.common.Encoders.OBJECT_MAPPER;
 
@@ -37,7 +38,7 @@ public class FirebaseDynamicLinksService {
     @ConfigProperty(name = "app.base.url")
     String appBaseUrl;
 
-    public String generateDynamicLink(String linkId) {
+    public String generateDynamicLink(UUID linkId) {
         ObjectNode body = createBody(linkId);
         try {
             var req = Unirest.post(FIREBASE_DYNAMIC_LINKS_API)
@@ -57,12 +58,12 @@ public class FirebaseDynamicLinksService {
         }
     }
 
-    public ObjectNode createBody(String linkId) {
+    public ObjectNode createBody(UUID linkId) {
         var body = OBJECT_MAPPER.createObjectNode();
         var dynamicLinkInfo = OBJECT_MAPPER.createObjectNode();
         body.set("dynamicLinkInfo", dynamicLinkInfo);
         dynamicLinkInfo.set("domainUriPrefix", OBJECT_MAPPER.valueToTree(domain));
-        dynamicLinkInfo.set("link", OBJECT_MAPPER.valueToTree(appBaseUrl + "/api/v2/share/link/" + linkId));
+        dynamicLinkInfo.set("link", OBJECT_MAPPER.valueToTree(appBaseUrl + "/api/v2/share/link/" + linkId.toString()));
         var androidInfo = OBJECT_MAPPER.createObjectNode();
         dynamicLinkInfo.set("androidInfo", androidInfo);
         androidInfo.set("androidPackageName", OBJECT_MAPPER.valueToTree(apn));
