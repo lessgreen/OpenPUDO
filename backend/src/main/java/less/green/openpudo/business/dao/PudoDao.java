@@ -32,7 +32,7 @@ public class PudoDao extends BaseEntityDao<TbPudo, Long> {
     public Quartet<TbPudo, TbAddress, TbRating, TbRewardPolicy> getPudo(Long pudoId) {
         String qs = "SELECT t1, t2, t3, t4 "
                     + "FROM TbPudo t1, TbAddress t2, TbRating t3, TbRewardPolicy t4 "
-                    + "WHERE t1.pudoId = :pudoId AND t1.pudoId = t2.pudoId AND t1.pudoId = t3.pudoId AND t1.pudoId = t4.pudoId and t4.deleteTms IS NULL";
+                    + "WHERE t1.pudoId = :pudoId AND t1.pudoId = t2.pudoId AND t1.pudoId = t3.pudoId AND t1.pudoId = t4.pudoId AND t4.deleteTms IS NULL";
         try {
             TypedQuery<Object[]> q = em.createQuery(qs, Object[].class);
             q.setParameter("pudoId", pudoId);
