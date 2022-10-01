@@ -25,7 +25,7 @@ public class JwtService {
 
     private static final int EXPIRE_DATE_LONG_TIMEUNIT = Calendar.MONTH;
     private static final int EXPIRE_DATE_LONG_AMOUNT = 1;
-    private static final int EXPIRE_DATE_SHORT_TIMEUNIT = Calendar.HOUR_OF_DAY;
+    private static final int EXPIRE_DATE_SHORT_TIMEUNIT = Calendar.DAY_OF_MONTH;
     private static final int EXPIRE_DATE_SHORT_AMOUNT = 1;
 
     @Inject
