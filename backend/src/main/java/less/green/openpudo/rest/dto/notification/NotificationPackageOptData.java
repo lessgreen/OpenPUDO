@@ -10,6 +10,7 @@ import java.util.Map;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Schema
 public class NotificationPackageOptData extends NotificationOptData {
 
     @Schema(readOnly = true)

@@ -7,8 +7,10 @@ import lombok.Data;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 import java.util.List;
+import java.util.UUID;
 
 @Data
+@Schema
 public class RegisterPudoRequest {
 
     @Schema(required = true)
@@ -19,5 +21,7 @@ public class RegisterPudoRequest {
 
     @Schema(required = true)
     private List<RewardOption> rewardPolicy;
+
+    private UUID dynamicLinkId;
 
 }

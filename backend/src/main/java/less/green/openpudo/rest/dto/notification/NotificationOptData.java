@@ -10,6 +10,7 @@ import java.util.Map;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Schema
 public abstract class NotificationOptData {
 
     @Schema(readOnly = true)

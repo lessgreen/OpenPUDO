@@ -10,6 +10,7 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 @JsonInclude(JsonInclude.Include.ALWAYS)
 @NoArgsConstructor
 @AllArgsConstructor
+@Schema
 public class RewardOption {
 
     @Schema(required = true)
@@ -36,4 +37,5 @@ public class RewardOption {
         this.exclusive = exclusive;
         this.checked = checked;
     }
+
 }

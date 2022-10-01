@@ -13,7 +13,7 @@
     <meta property="og:title" content="Pacco pronto per il ritiro">
     <meta property="og:description" content="Condividi questo link per far ritirare il pacco {package.packageName} ad un amico">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="{appBaseUrl}/api/v2/share/{package.shareLink}">
+    <meta property="og:url" content="{appBaseUrl}/api/v2/share/package/{package.shareLink}">
     <meta property="og:image" content="https://www.quigreen.it/wp-content/uploads/2021/10/LogoQuiGreenss.png">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -103,7 +103,7 @@
             Mostra questo QRCode<br/>al punto di ritiro <span style="color: #95c11f">QuiGreen</span>
         </div>
         <div>
-            <img class="image" src="/api/v2/share/qrcode/{package.shareLink}" alt="package QRCode">
+            <img class="image" src="/api/v2/share/package/qrcode/{package.shareLink}" alt="package QRCode">
         </div>
 
         {#if package.packagePicId}

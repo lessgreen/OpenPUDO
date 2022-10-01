@@ -3,11 +3,13 @@ package less.green.openpudo.common.dto.jwt;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 import java.util.Date;
 
 @Data
 @AllArgsConstructor
+@Schema
 public class AccessTokenData {
 
     private String accessToken;

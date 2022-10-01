@@ -10,9 +10,13 @@ import less.green.openpudo.common.Encoders;
 import less.green.openpudo.rest.config.annotation.BinaryAPI;
 import less.green.openpudo.rest.config.annotation.PublicAPI;
 import less.green.openpudo.rest.config.exception.ApiException;
+import less.green.openpudo.rest.dto.link.DynamicLinkResponse;
 import lombok.extern.log4j.Log4j2;
 import org.eclipse.microprofile.openapi.annotations.Operation;
+import org.eclipse.microprofile.openapi.annotations.media.Content;
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.eclipse.microprofile.openapi.annotations.parameters.Parameter;
+import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -28,6 +32,8 @@ import static less.green.openpudo.common.StringUtils.isEmpty;
 
 @RequestScoped
 @Path("/share")
+@Produces(value = MediaType.APPLICATION_JSON)
+@Consumes(value = MediaType.APPLICATION_JSON)
 @Log4j2
 public class ShareResource {
 
@@ -41,7 +47,7 @@ public class ShareResource {
     ShareService shareService;
 
     @GET
-    @Path("/{shareLink}")
+    @Path("/package/{shareLink}")
     @Produces(MediaType.TEXT_HTML)
     @PublicAPI
     @BinaryAPI
@@ -51,7 +57,7 @@ public class ShareResource {
     }
 
     @GET
-    @Path("/qrcode/{shareLink}")
+    @Path("/package/qrcode/{shareLink}")
     @Produces("image/png")
     @PublicAPI
     @BinaryAPI
@@ -83,13 +89,15 @@ public class ShareResource {
     }
 
     @GET
-    @Path("/link/{linkId}")
+    @Path("/link/{dynamicLinkId}")
+    @Produces(MediaType.APPLICATION_JSON)
     @PublicAPI
     @Operation(summary = "Handle Firebase Dynamic Link request")
-    public Response getDynamicLink(@PathParam(value = "linkId") UUID linkId) throws URISyntaxException {
+    @APIResponse(content = @Content(schema = @Schema(implementation = DynamicLinkResponse.class)))
+    public Response getDynamicLink(@PathParam(value = "dynamicLinkId") UUID dynamicLinkId) throws URISyntaxException {
         log.info("Context: \n{}", Encoders.dumpJsonCompactPretty(context));
         if ("dev".equals(ProfileManager.getActiveProfile()) || (!isEmpty(context.getUserAgent()) && context.getUserAgent().startsWith("OpenPudo"))) {
-            return shareService.getDynamicLink(linkId);
+            return shareService.getDynamicLink(dynamicLinkId);
         }
         return Response.temporaryRedirect(new URI("https://www.quigreen.it/")).build();
     }

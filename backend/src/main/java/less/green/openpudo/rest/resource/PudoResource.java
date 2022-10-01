@@ -2,7 +2,6 @@ package less.green.openpudo.rest.resource;
 
 import less.green.openpudo.business.service.PudoService;
 import less.green.openpudo.cdi.ExecutionContext;
-import less.green.openpudo.cdi.service.CryptoService;
 import less.green.openpudo.cdi.service.LocalizationService;
 import less.green.openpudo.common.ApiReturnCodes;
 import less.green.openpudo.common.ExceptionUtils;
@@ -50,9 +49,6 @@ public class PudoResource {
 
     @Inject
     LocalizationService localizationService;
-
-    @Inject
-    CryptoService cryptoService;
 
     @Inject
     PudoService pudoService;

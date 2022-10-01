@@ -6,6 +6,7 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import java.util.UUID;
 
 @Data
+@Schema
 public class UserSummary {
 
     @Schema(readOnly = true)

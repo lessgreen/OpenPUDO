@@ -7,6 +7,7 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 @Data
 @ToString(callSuper = true)
+@Schema
 public class PudoMarker extends GPSMarker {
 
     @Schema(readOnly = true)

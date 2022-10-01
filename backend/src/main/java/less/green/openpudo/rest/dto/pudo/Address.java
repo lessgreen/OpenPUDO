@@ -8,6 +8,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 @Data
+@Schema
 public class Address {
 
     @Schema(readOnly = true)

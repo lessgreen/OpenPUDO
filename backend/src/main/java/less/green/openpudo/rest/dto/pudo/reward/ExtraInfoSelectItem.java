@@ -9,6 +9,7 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Schema
 @JsonInclude(JsonInclude.Include.ALWAYS)
 public class ExtraInfoSelectItem {
 

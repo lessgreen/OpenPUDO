@@ -6,6 +6,7 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 @Data
 @ToString(callSuper = true)
+@Schema
 public class AddressMarker extends GPSMarker {
 
     @Schema(required = true)

@@ -11,6 +11,7 @@ import java.math.BigDecimal;
 @Data
 @NoArgsConstructor
 @ToString(callSuper = true)
+@Schema
 @JsonInclude(JsonInclude.Include.ALWAYS)
 public class ExtraInfoDecimal extends ExtraInfo {
 

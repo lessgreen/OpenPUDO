@@ -9,6 +9,7 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 @Data
 @NoArgsConstructor
 @ToString(callSuper = true)
+@Schema()
 @JsonInclude(JsonInclude.Include.ALWAYS)
 public class ExtraInfoText extends ExtraInfo {
 

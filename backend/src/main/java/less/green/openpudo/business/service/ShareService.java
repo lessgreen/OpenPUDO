@@ -15,16 +15,20 @@ import less.green.openpudo.business.dao.RedirectLogDao;
 import less.green.openpudo.business.model.TbPackage;
 import less.green.openpudo.business.model.TbPackageEvent;
 import less.green.openpudo.business.model.TbRedirectLog;
+import less.green.openpudo.business.model.usertype.AccountType;
 import less.green.openpudo.business.model.usertype.PackageStatus;
 import less.green.openpudo.cdi.ExecutionContext;
 import less.green.openpudo.cdi.service.CryptoService;
+import less.green.openpudo.cdi.service.JwtService;
 import less.green.openpudo.common.ApiReturnCodes;
 import less.green.openpudo.common.ExceptionUtils;
+import less.green.openpudo.common.dto.jwt.JwtPrivateClaims;
 import less.green.openpudo.common.dto.tuple.Pair;
 import less.green.openpudo.rest.dto.DtoMapper;
 import less.green.openpudo.rest.dto.link.DynamicLink;
 import less.green.openpudo.rest.dto.link.DynamicLinkResponse;
 import less.green.openpudo.rest.dto.link.DynamicLinkRoute;
+import less.green.openpudo.rest.dto.link.EnrollProspectData;
 import less.green.openpudo.rest.dto.pack.Package;
 import less.green.openpudo.rest.dto.pack.PackageEvent;
 import lombok.extern.log4j.Log4j2;
@@ -56,6 +60,8 @@ public class ShareService {
 
     @Inject
     CryptoService cryptoService;
+    @Inject
+    JwtService jwtService;
 
     @Inject
     PackageService packageService;
@@ -123,10 +129,16 @@ public class ShareService {
         }
     }
 
-    public Response getDynamicLink(UUID linkId) {
+    public Response getDynamicLink(UUID dynamicLinkId) {
         DynamicLink ret = new DynamicLink();
-        ret.setRoute(DynamicLinkRoute.HOME);
-        ret.setPayload(new HashMap<>());
+        ret.setRoute(DynamicLinkRoute.ENROLL_PROSPECT);
+        EnrollProspectData data = new EnrollProspectData();
+        data.setAccessTokenData(jwtService.generateGuestTokenData(new JwtPrivateClaims("+323281234567")));
+        data.setPhoneNumber("+323281234567");
+        data.setAccountType(AccountType.CUSTOMER);
+        data.setFirstName("Enrolled");
+        data.setLastName("User");
+        ret.setData(data);
         return Response.ok(new DynamicLinkResponse(context.getExecutionId(), ApiReturnCodes.OK, ret)).build();
     }
 }

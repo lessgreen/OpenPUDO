@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Data
+@Schema
 public class Package {
 
     @Schema(readOnly = true)

@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.Map;
 
 @Data
+@Schema
 public class Notification {
 
     @Schema(readOnly = true)

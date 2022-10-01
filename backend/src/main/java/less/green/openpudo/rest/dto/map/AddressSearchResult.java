@@ -1,10 +1,12 @@
 package less.green.openpudo.rest.dto.map;
 
 import lombok.Data;
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 import java.math.BigDecimal;
 
 @Data
+@Schema
 public class AddressSearchResult {
 
     private String label;

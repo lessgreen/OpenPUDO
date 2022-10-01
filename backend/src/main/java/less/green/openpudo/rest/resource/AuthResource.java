@@ -44,8 +44,7 @@ public class AuthResource {
     @PublicAPI
     @Operation(summary = "First phase of password-less authentication or registration",
             description = "The client calls this API to request an OTP to validate its credentials.\n\n"
-                          + "The phone number must start with international prefix, and will be internally normalized in E.164 standard format.\n\n"
-                          + "This is a public API and can be invoked without a valid access token.")
+                          + "The phone number must start with international prefix, and will be internally normalized in E.164 standard format.")
     public BaseResponse loginSend(LoginSendRequest req) {
         // sanitize input
         if (req == null) {
@@ -69,8 +68,7 @@ public class AuthResource {
     @Path("/login/confirm")
     @PublicAPI
     @Operation(summary = "Second phase of password-less authentication or registration",
-            description = "The client calls this API to confirm the OTP and validate its credentials.\n\n"
-                          + "This is a public API and can be invoked without a valid access token.")
+            description = "The client calls this API to confirm the OTP and validate its credentials")
     public LoginConfirmResponse loginConfirm(LoginConfirmRequest req) {
         // sanitize input
         if (req == null) {
@@ -136,8 +134,6 @@ public class AuthResource {
                    || req.getAddressMarker().getAddress().getCity() == null || req.getAddressMarker().getAddress().getProvince() == null
                    || req.getAddressMarker().getAddress().getCountry() == null) {
             throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.address.not_precise"));
-        } else if (isEmpty(req.getAddressMarker().getSignature())) {
-            throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.empty_mandatory_field", "signature"));
         } else if (req.getRewardPolicy() == null || req.getRewardPolicy().isEmpty()) {
             throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.empty_mandatory_field", "rewardPolicy"));
         } else if (context.getPrivateClaims() == null || context.getPrivateClaims().getPhoneNumber() == null) {
@@ -183,7 +179,8 @@ public class AuthResource {
     @DELETE
     @Path("/account")
     @SecurityRequirement(name = "JWT")
-    @Operation(summary = "Delete user account permanently")
+    @Operation(summary = "Delete user account permanently",
+            description = "Returns the URL from which the deleted user data can be downloaded for a limited period of time")
     public StringResponse deleteCurrentAccount() {
         String ret = authService.deleteCurrentAccount();
         return new StringResponse(context.getExecutionId(), ApiReturnCodes.OK, ret);

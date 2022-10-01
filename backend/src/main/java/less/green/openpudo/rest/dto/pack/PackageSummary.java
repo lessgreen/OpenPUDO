@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.UUID;
 
 @Data
+@Schema
 public class PackageSummary {
 
     // from package

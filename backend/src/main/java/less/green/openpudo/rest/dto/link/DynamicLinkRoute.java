@@ -4,10 +4,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
-@Schema(enumeration = {"home"})
+@Schema(enumeration = {"enroll-prospect"})
 public enum DynamicLinkRoute {
-    @JsonProperty("home")
-    HOME("home");
+    @JsonProperty("enroll-prospect")
+    ENROLL_PROSPECT("enroll-prospect");
 
     @Getter
     private final String value;
@@ -15,4 +15,5 @@ public enum DynamicLinkRoute {
     DynamicLinkRoute(String value) {
         this.value = value;
     }
+
 }

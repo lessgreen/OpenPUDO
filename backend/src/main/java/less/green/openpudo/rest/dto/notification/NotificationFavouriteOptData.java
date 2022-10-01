@@ -6,6 +6,7 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import java.util.Map;
 
 @Data
+@Schema
 public class NotificationFavouriteOptData extends NotificationOptData {
 
     @Schema(readOnly = true)

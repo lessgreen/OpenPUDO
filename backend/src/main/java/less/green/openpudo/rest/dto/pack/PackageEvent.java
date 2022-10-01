@@ -8,6 +8,7 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import java.util.Date;
 
 @Data
+@Schema
 public class PackageEvent {
 
     @Schema(readOnly = true)

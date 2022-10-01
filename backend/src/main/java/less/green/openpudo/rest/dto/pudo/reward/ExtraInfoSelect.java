@@ -11,6 +11,7 @@ import java.util.List;
 @Data
 @ToString(callSuper = true)
 @NoArgsConstructor
+@Schema
 @JsonInclude(JsonInclude.Include.ALWAYS)
 public class ExtraInfoSelect extends ExtraInfo {
 

@@ -8,6 +8,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 @Data
+@Schema
 public class UserPreferences implements Serializable {
 
     @Schema(readOnly = true)

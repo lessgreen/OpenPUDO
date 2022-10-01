@@ -10,6 +10,7 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Schema
 public class PudoSummary {
 
     @Schema(readOnly = true)

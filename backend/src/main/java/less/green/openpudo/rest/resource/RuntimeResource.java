@@ -1,10 +1,12 @@
 package less.green.openpudo.rest.resource;
 
 import com.sun.management.OperatingSystemMXBean;
+import less.green.openpudo.cdi.service.FirebaseDynamicLinksService;
 import lombok.extern.log4j.Log4j2;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 
 import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -15,6 +17,7 @@ import javax.ws.rs.core.Response;
 import java.lang.management.ManagementFactory;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.UUID;
 
 @RequestScoped
 @Path("/runtime")
@@ -22,6 +25,9 @@ import java.math.RoundingMode;
 @Consumes(value = MediaType.APPLICATION_JSON)
 @Log4j2
 public class RuntimeResource {
+
+    @Inject
+    FirebaseDynamicLinksService firebaseDynamicLinksService;
 
     @GET
     @Path("/health")
@@ -54,6 +60,10 @@ public class RuntimeResource {
     @Operation(summary = "Test API for debugging purposes. DO NOT USE!")
     @Transactional(Transactional.TxType.REQUIRED)
     public Response test() throws Exception {
+        UUID linkId = UUID.randomUUID();
+        log.info("UUID: {}", linkId);
+        var dynamicLink = firebaseDynamicLinksService.generateDynamicLink(linkId);
+        log.info("Generated dynamic link: {}", dynamicLink);
         return null;
     }
 
