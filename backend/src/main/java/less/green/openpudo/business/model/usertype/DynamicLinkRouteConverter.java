@@ -6,10 +6,10 @@ import javax.persistence.Converter;
 import static less.green.openpudo.common.StringUtils.isEmpty;
 
 @Converter
-public class AccountTypeConverter implements AttributeConverter<AccountType, String> {
+public class DynamicLinkRouteConverter implements AttributeConverter<DynamicLinkRoute, String> {
 
     @Override
-    public String convertToDatabaseColumn(AccountType attribute) {
+    public String convertToDatabaseColumn(DynamicLinkRoute attribute) {
         if (attribute == null) {
             return null;
         }
@@ -17,16 +17,16 @@ public class AccountTypeConverter implements AttributeConverter<AccountType, Str
     }
 
     @Override
-    public AccountType convertToEntityAttribute(String dbData) {
+    public DynamicLinkRoute convertToEntityAttribute(String dbData) {
         if (isEmpty(dbData)) {
             return null;
         }
-        for (var i : AccountType.values()) {
+        for (var i : DynamicLinkRoute.values()) {
             if (i.getValue().equals(dbData)) {
                 return i;
             }
         }
-        throw new IllegalArgumentException("Invalid AccountType: " + dbData);
+        throw new IllegalArgumentException("Invalid DynamicLinkRoute: " + dbData);
     }
 
 }

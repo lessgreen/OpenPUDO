@@ -1,4 +1,4 @@
-package less.green.openpudo.rest.dto.link;
+package less.green.openpudo.business.model.usertype;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;

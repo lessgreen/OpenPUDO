@@ -8,7 +8,7 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 @Data
 @Schema
-public class EnrollProspectData extends DynamicLinkData {
+public class DynamicLinkEnrollProspectData extends DynamicLinkData {
 
     @Schema(readOnly = true)
     private AccessTokenData accessTokenData;

@@ -38,8 +38,8 @@ public class FirebaseDynamicLinksService {
     @ConfigProperty(name = "app.base.url")
     String appBaseUrl;
 
-    public String generateDynamicLink(UUID linkId) {
-        ObjectNode body = createBody(linkId);
+    public String generateDynamicLink(UUID dynamicLinkId) {
+        ObjectNode body = createBody(dynamicLinkId);
         try {
             var req = Unirest.post(FIREBASE_DYNAMIC_LINKS_API)
                     .queryString("key", apiKey)
@@ -58,12 +58,12 @@ public class FirebaseDynamicLinksService {
         }
     }
 
-    public ObjectNode createBody(UUID linkId) {
+    private ObjectNode createBody(UUID dynamicLinkId) {
         var body = OBJECT_MAPPER.createObjectNode();
         var dynamicLinkInfo = OBJECT_MAPPER.createObjectNode();
         body.set("dynamicLinkInfo", dynamicLinkInfo);
         dynamicLinkInfo.set("domainUriPrefix", OBJECT_MAPPER.valueToTree(domain));
-        dynamicLinkInfo.set("link", OBJECT_MAPPER.valueToTree(appBaseUrl + "/api/v2/share/link/" + linkId.toString()));
+        dynamicLinkInfo.set("link", OBJECT_MAPPER.valueToTree(appBaseUrl + "/api/v2/share/link/" + dynamicLinkId.toString()));
         var androidInfo = OBJECT_MAPPER.createObjectNode();
         dynamicLinkInfo.set("androidInfo", androidInfo);
         androidInfo.set("androidPackageName", OBJECT_MAPPER.valueToTree(apn));
@@ -77,7 +77,6 @@ public class FirebaseDynamicLinksService {
         var suffix = OBJECT_MAPPER.createObjectNode();
         body.set("suffix", suffix);
         suffix.set("option", OBJECT_MAPPER.valueToTree("UNGUESSABLE"));
-        log.info(body);
         return body;
     }
 

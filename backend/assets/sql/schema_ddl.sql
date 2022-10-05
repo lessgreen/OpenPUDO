@@ -315,6 +315,20 @@ CREATE TABLE IF NOT EXISTS tb_deleted_user_data (
 );
 
 
+DROP TABLE IF EXISTS tb_dynamic_link CASCADE;
+CREATE TABLE IF NOT EXISTS tb_dynamic_link (
+	dynamic_link_id UUID PRIMARY KEY,
+	dynamic_link_url TEXT,
+	create_tms TIMESTAMP(3),
+	access_tms TIMESTAMP(3),
+	used_tms TIMESTAMP(3),
+	reusable_flag BOOLEAN NOT NULL,
+	origin_user_id BIGINT REFERENCES tb_user(user_id),
+	route TEXT NOT NULL,
+	data JSONB NOT NULL
+);
+
+
 -- views
 DROP VIEW IF EXISTS vw_customer;
 CREATE OR REPLACE VIEW vw_customer AS

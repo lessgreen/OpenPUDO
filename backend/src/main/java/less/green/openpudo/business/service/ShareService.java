@@ -10,25 +10,27 @@ import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 import io.quarkus.qute.Location;
 import io.quarkus.qute.Template;
 import io.quarkus.qute.TemplateInstance;
+import less.green.openpudo.business.dao.DynamicLinkDao;
 import less.green.openpudo.business.dao.PackageDao;
 import less.green.openpudo.business.dao.RedirectLogDao;
+import less.green.openpudo.business.model.TbDynamicLink;
 import less.green.openpudo.business.model.TbPackage;
 import less.green.openpudo.business.model.TbPackageEvent;
 import less.green.openpudo.business.model.TbRedirectLog;
-import less.green.openpudo.business.model.usertype.AccountType;
+import less.green.openpudo.business.model.usertype.DynamicLinkRoute;
 import less.green.openpudo.business.model.usertype.PackageStatus;
 import less.green.openpudo.cdi.ExecutionContext;
 import less.green.openpudo.cdi.service.CryptoService;
 import less.green.openpudo.cdi.service.JwtService;
 import less.green.openpudo.common.ApiReturnCodes;
+import less.green.openpudo.common.Encoders;
 import less.green.openpudo.common.ExceptionUtils;
 import less.green.openpudo.common.dto.jwt.JwtPrivateClaims;
 import less.green.openpudo.common.dto.tuple.Pair;
 import less.green.openpudo.rest.dto.DtoMapper;
 import less.green.openpudo.rest.dto.link.DynamicLink;
+import less.green.openpudo.rest.dto.link.DynamicLinkEnrollProspectData;
 import less.green.openpudo.rest.dto.link.DynamicLinkResponse;
-import less.green.openpudo.rest.dto.link.DynamicLinkRoute;
-import less.green.openpudo.rest.dto.link.EnrollProspectData;
 import less.green.openpudo.rest.dto.pack.Package;
 import less.green.openpudo.rest.dto.pack.PackageEvent;
 import lombok.extern.log4j.Log4j2;
@@ -42,6 +44,7 @@ import javax.ws.rs.core.Response;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -66,6 +69,8 @@ public class ShareService {
     @Inject
     PackageService packageService;
 
+    @Inject
+    DynamicLinkDao dynamicLinkDao;
     @Inject
     PackageDao packageDao;
     @Inject
@@ -130,15 +135,28 @@ public class ShareService {
     }
 
     public Response getDynamicLink(UUID dynamicLinkId) {
+        TbDynamicLink ent = dynamicLinkDao.get(dynamicLinkId);
+        if (ent == null) {
+            return Response.ok(new DynamicLinkResponse(context.getExecutionId(), ApiReturnCodes.OK, null)).build();
+        }
+
+        if (ent.getAccessTms() == null) {
+            ent.setAccessTms(Instant.now());
+            dynamicLinkDao.flush();
+        }
+
         DynamicLink ret = new DynamicLink();
-        ret.setRoute(DynamicLinkRoute.ENROLL_PROSPECT);
-        EnrollProspectData data = new EnrollProspectData();
-        data.setAccessTokenData(jwtService.generateGuestTokenData(new JwtPrivateClaims("+323281234567")));
-        data.setPhoneNumber("+323281234567");
-        data.setAccountType(AccountType.CUSTOMER);
-        data.setFirstName("Enrolled");
-        data.setLastName("User");
-        ret.setData(data);
+        ret.setRoute(ent.getRoute());
+        if (ent.getRoute() == DynamicLinkRoute.ENROLL_PROSPECT) {
+            DynamicLinkEnrollProspectData data = Encoders.OBJECT_MAPPER.convertValue(ent.getData(), DynamicLinkEnrollProspectData.class);
+            if (data.getPhoneNumber() != null) {
+                data.setAccessTokenData(jwtService.generateGuestTokenData(new JwtPrivateClaims(data.getPhoneNumber())));
+            }
+            ret.setData(data);
+        } else {
+            throw new AssertionError("Unsupported DynamicLinkRoute: " + ent.getRoute());
+        }
+
         return Response.ok(new DynamicLinkResponse(context.getExecutionId(), ApiReturnCodes.OK, ret)).build();
     }
 }

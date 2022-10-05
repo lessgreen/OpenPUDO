@@ -21,7 +21,7 @@ public class OtpRequestTypeConverter implements AttributeConverter<OtpRequestTyp
         if (isEmpty(dbData)) {
             return null;
         }
-        for (OtpRequestType i : OtpRequestType.values()) {
+        for (var i : OtpRequestType.values()) {
             if (i.getValue().equals(dbData)) {
                 return i;
             }

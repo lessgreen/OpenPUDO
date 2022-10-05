@@ -6,7 +6,6 @@ import less.green.openpudo.business.service.ShareService;
 import less.green.openpudo.cdi.ExecutionContext;
 import less.green.openpudo.cdi.service.LocalizationService;
 import less.green.openpudo.common.ApiReturnCodes;
-import less.green.openpudo.common.Encoders;
 import less.green.openpudo.rest.config.annotation.BinaryAPI;
 import less.green.openpudo.rest.config.annotation.PublicAPI;
 import less.green.openpudo.rest.config.exception.ApiException;
@@ -95,7 +94,6 @@ public class ShareResource {
     @Operation(summary = "Handle Firebase Dynamic Link request")
     @APIResponse(content = @Content(schema = @Schema(implementation = DynamicLinkResponse.class)))
     public Response getDynamicLink(@PathParam(value = "dynamicLinkId") UUID dynamicLinkId) throws URISyntaxException {
-        log.info("Context: \n{}", Encoders.dumpJsonCompactPretty(context));
         if ("dev".equals(ProfileManager.getActiveProfile()) || (!isEmpty(context.getUserAgent()) && context.getUserAgent().startsWith("OpenPudo"))) {
             return shareService.getDynamicLink(dynamicLinkId);
         }

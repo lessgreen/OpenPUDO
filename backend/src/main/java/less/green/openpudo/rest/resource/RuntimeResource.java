@@ -1,7 +1,14 @@
 package less.green.openpudo.rest.resource;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.sun.management.OperatingSystemMXBean;
+import less.green.openpudo.business.dao.DynamicLinkDao;
+import less.green.openpudo.business.model.TbDynamicLink;
+import less.green.openpudo.business.model.usertype.AccountType;
+import less.green.openpudo.business.model.usertype.DynamicLinkRoute;
 import less.green.openpudo.cdi.service.FirebaseDynamicLinksService;
+import less.green.openpudo.common.Encoders;
+import less.green.openpudo.rest.dto.link.DynamicLinkEnrollProspectData;
 import lombok.extern.log4j.Log4j2;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 
@@ -17,6 +24,7 @@ import javax.ws.rs.core.Response;
 import java.lang.management.ManagementFactory;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.Instant;
 import java.util.UUID;
 
 @RequestScoped
@@ -28,6 +36,8 @@ public class RuntimeResource {
 
     @Inject
     FirebaseDynamicLinksService firebaseDynamicLinksService;
+    @Inject
+    DynamicLinkDao dynamicLinkDao;
 
     @GET
     @Path("/health")
@@ -60,10 +70,27 @@ public class RuntimeResource {
     @Operation(summary = "Test API for debugging purposes. DO NOT USE!")
     @Transactional(Transactional.TxType.REQUIRED)
     public Response test() throws Exception {
-        UUID linkId = UUID.randomUUID();
-        log.info("UUID: {}", linkId);
-        var dynamicLink = firebaseDynamicLinksService.generateDynamicLink(linkId);
-        log.info("Generated dynamic link: {}", dynamicLink);
+        UUID dynamicLinkId = UUID.randomUUID();
+        String url = firebaseDynamicLinksService.generateDynamicLink(dynamicLinkId);
+
+        TbDynamicLink ent = new TbDynamicLink();
+        ent.setDynamicLinkId(dynamicLinkId);
+        ent.setDynamicLinkUrl(url);
+        ent.setCreateTms(Instant.now());
+        ent.setReusableFlag(false);
+        ent.setRoute(DynamicLinkRoute.ENROLL_PROSPECT);
+
+        DynamicLinkEnrollProspectData data = new DynamicLinkEnrollProspectData();
+        data.setPhoneNumber("+393281234567");
+        data.setAccountType(AccountType.CUSTOMER);
+        data.setFirstName("Enrolled");
+        data.setLastName("User");
+        ent.setData(Encoders.OBJECT_MAPPER_COMPACT.convertValue(data, new TypeReference<>() {
+        }));
+
+        dynamicLinkDao.persist(ent);
+        dynamicLinkDao.flush();
+
         return null;
     }
 

@@ -4,6 +4,6 @@ import lombok.Data;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 @Data
-@Schema(oneOf = {EnrollProspectData.class})
+@Schema
 public abstract class DynamicLinkData {
 }

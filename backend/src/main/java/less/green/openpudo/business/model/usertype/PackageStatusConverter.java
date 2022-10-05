@@ -21,7 +21,7 @@ public class PackageStatusConverter implements AttributeConverter<PackageStatus,
         if (isEmpty(dbData)) {
             return null;
         }
-        for (PackageStatus i : PackageStatus.values()) {
+        for (var i : PackageStatus.values()) {
             if (i.getValue().equals(dbData)) {
                 return i;
             }

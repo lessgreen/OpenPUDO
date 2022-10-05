@@ -21,7 +21,7 @@ public class RelationTypeConverter implements AttributeConverter<RelationType, S
         if (isEmpty(dbData)) {
             return null;
         }
-        for (RelationType i : RelationType.values()) {
+        for (var i : RelationType.values()) {
             if (i.getValue().equals(dbData)) {
                 return i;
             }
