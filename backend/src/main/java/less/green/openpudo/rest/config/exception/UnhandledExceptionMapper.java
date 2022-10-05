@@ -2,6 +2,7 @@ package less.green.openpudo.rest.config.exception;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import io.quarkus.runtime.configuration.ProfileManager;
 import less.green.openpudo.cdi.ExecutionContext;
 import less.green.openpudo.cdi.service.EmailService;
 import less.green.openpudo.common.ApiReturnCodes;
@@ -49,8 +50,10 @@ public class UnhandledExceptionMapper implements ExceptionMapper<Exception> {
         }
         String stackTrace = ExceptionUtils.getCanonicalFormWithStackTrace(ex);
         log.fatal("[{}] {}", context.getExecutionId(), stackTrace);
-        emailService.sendNotificationEmail("Unhandled exception", stackTrace, false);
         context.setStackTrace(stackTrace);
+        if (!"dev".equals(ProfileManager.getActiveProfile())) {
+            emailService.sendNotificationEmail("Unhandled exception", stackTrace, false);
+        }
         BaseResponse res = new BaseResponse(context.getExecutionId(), ApiReturnCodes.INTERNAL_SERVER_ERROR, Response.Status.INTERNAL_SERVER_ERROR.getReasonPhrase());
         return Response.serverError().entity(res).build();
     }
