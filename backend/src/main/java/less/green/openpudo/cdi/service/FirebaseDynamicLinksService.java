@@ -44,7 +44,7 @@ public class FirebaseDynamicLinksService {
             var req = Unirest.post(FIREBASE_DYNAMIC_LINKS_API)
                     .queryString("key", apiKey)
                     .header("Content-Type", "application/json")
-                    .body(Encoders.dumpJson(body));
+                    .body(Encoders.writeJson(body));
             var res = req.asJson();
             if (res == null || res.getBody() == null) {
                 throw new RuntimeException("Sms service returned empty response");

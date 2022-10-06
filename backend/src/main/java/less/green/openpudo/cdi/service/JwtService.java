@@ -20,7 +20,7 @@ import static less.green.openpudo.common.Encoders.*;
 @Log4j2
 public class JwtService {
 
-    private static final String HEADER_INSTANCE_JSON = dumpJson(new JwtHeader());
+    private static final String HEADER_INSTANCE_JSON = writeJson(new JwtHeader());
     private static final String HEADER_INSTANCE_JSON_BASE64 = BASE64_URL_ENCODER.encodeToString(HEADER_INSTANCE_JSON.getBytes(StandardCharsets.UTF_8));
 
     private static final int EXPIRE_DATE_LONG_TIMEUNIT = Calendar.MONTH;
@@ -52,7 +52,7 @@ public class JwtService {
     }
 
     private String generateAccessToken(JwtPayload payload) {
-        String payloadJson = dumpJson(payload);
+        String payloadJson = writeJson(payload);
         String payloadJsonBase64 = BASE64_URL_ENCODER.encodeToString(payloadJson.getBytes(StandardCharsets.UTF_8));
 
         Mac mac = cryptoService.createMac();

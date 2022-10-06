@@ -2,11 +2,13 @@ package less.green.openpudo.common;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
 import javax.ws.rs.InternalServerErrorException;
 import java.util.Base64;
+import java.util.Map;
 
 public class Encoders {
 
@@ -22,7 +24,7 @@ public class Encoders {
     private Encoders() {
     }
 
-    public static String dumpJson(Object obj) {
+    public static String writeJson(Object obj) {
         try {
             return OBJECT_MAPPER.writeValueAsString(obj);
         } catch (JsonProcessingException ex) {
@@ -30,7 +32,7 @@ public class Encoders {
         }
     }
 
-    public static String dumpJsonCompact(Object obj) {
+    public static String writeJsonCompact(Object obj) {
         try {
             return OBJECT_MAPPER_COMPACT.writeValueAsString(obj);
         } catch (JsonProcessingException ex) {
@@ -38,7 +40,7 @@ public class Encoders {
         }
     }
 
-    public static String dumpJsonPretty(Object obj) {
+    public static String writeJsonPretty(Object obj) {
         try {
             return OBJECT_MAPPER_PRETTY.writeValueAsString(obj);
         } catch (JsonProcessingException ex) {
@@ -46,11 +48,28 @@ public class Encoders {
         }
     }
 
-    public static String dumpJsonCompactPretty(Object obj) {
+    public static String writeJsonCompactPretty(Object obj) {
         try {
             return OBJECT_MAPPER_PRETTY_COMPACT.writeValueAsString(obj);
         } catch (JsonProcessingException ex) {
             throw new InternalServerErrorException("Error while serializing to JSON", ex);
+        }
+    }
+
+    public static Map<String, Object> readJsonAsMap(String str) {
+        try {
+            return Encoders.OBJECT_MAPPER.readValue(str, new TypeReference<>() {
+            });
+        } catch (JsonProcessingException ex) {
+            throw new InternalServerErrorException("Error while deserializing from JSON as map", ex);
+        }
+    }
+
+    public static String[] readJsonAsStringArray(String str) {
+        try {
+            return Encoders.OBJECT_MAPPER.readValue(str, String[].class);
+        } catch (JsonProcessingException ex) {
+            throw new InternalServerErrorException("Error while deserializing from JSON as string array", ex);
         }
     }
 

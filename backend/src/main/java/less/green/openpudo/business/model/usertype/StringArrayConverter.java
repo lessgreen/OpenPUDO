@@ -1,6 +1,5 @@
 package less.green.openpudo.business.model.usertype;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import less.green.openpudo.common.Encoders;
 
 import javax.persistence.AttributeConverter;
@@ -16,7 +15,7 @@ public class StringArrayConverter implements AttributeConverter<String[], String
         if (attribute == null || attribute.length == 0) {
             return null;
         }
-        return Encoders.dumpJson(attribute);
+        return Encoders.writeJson(attribute);
     }
 
     @Override
@@ -24,11 +23,7 @@ public class StringArrayConverter implements AttributeConverter<String[], String
         if (isEmpty(dbData)) {
             return null;
         }
-        try {
-            return Encoders.OBJECT_MAPPER.readValue(dbData, String[].class);
-        } catch (JsonProcessingException ex) {
-            throw new IllegalArgumentException("Invalid String[] value: " + dbData);
-        }
+        return Encoders.readJsonAsStringArray(dbData);
     }
 
 }

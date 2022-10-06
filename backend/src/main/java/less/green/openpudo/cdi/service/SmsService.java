@@ -31,7 +31,7 @@ public class SmsService {
             var req = Unirest.post(MAILJET_SMS_API_URL)
                     .header("Authorization", "Bearer " + apiToken)
                     .header("Content-Type", "application/json")
-                    .body(Encoders.dumpJson(body));
+                    .body(Encoders.writeJson(body));
             var res = req.asJson();
             if (res == null || res.getBody() == null) {
                 throw new RuntimeException("Sms service returned empty response");
