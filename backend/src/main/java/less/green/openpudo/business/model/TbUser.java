@@ -9,6 +9,7 @@ import lombok.ToString;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.UUID;
 
 @Entity
 @Table(name = "tb_user")
@@ -39,5 +40,8 @@ public class TbUser implements Serializable {
 
     @Column(name = "phone_number")
     private String phoneNumber;
+
+    @Column(name = "dynamic_link_id")
+    private UUID dynamicLinkId;
 
 }

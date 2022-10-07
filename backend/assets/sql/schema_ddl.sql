@@ -66,7 +66,8 @@ CREATE TABLE IF NOT EXISTS tb_user (
 	last_login_tms TIMESTAMP(3) NOT NULL,
 	account_type TEXT NOT NULL REFERENCES tb_anag_account_type(account_type),
 	test_account_flag BOOLEAN NOT NULL,
-	phone_number TEXT NOT NULL
+	phone_number TEXT NOT NULL,
+	dynamic_link_id UUID
 );
 CREATE UNIQUE INDEX tb_user_phone_number_idx ON tb_user(phone_number);
 

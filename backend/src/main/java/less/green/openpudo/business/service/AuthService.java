@@ -4,6 +4,7 @@ import io.quarkus.runtime.configuration.ProfileManager;
 import less.green.openpudo.business.dao.*;
 import less.green.openpudo.business.model.*;
 import less.green.openpudo.business.model.usertype.AccountType;
+import less.green.openpudo.business.model.usertype.DynamicLinkRoute;
 import less.green.openpudo.business.model.usertype.OtpRequestType;
 import less.green.openpudo.business.model.usertype.RelationType;
 import less.green.openpudo.cdi.ExecutionContext;
@@ -26,6 +27,7 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -68,6 +70,8 @@ public class AuthService {
     AddressDao addressDao;
     @Inject
     DeletedUserDataDao deletedUserDataDao;
+    @Inject
+    DynamicLinkDao dynamicLinkDao;
     @Inject
     OtpRequestDao otpRequestDao;
     @Inject
@@ -192,6 +196,7 @@ public class AuthService {
             log.error("[{}] Register request for already registered user: {}", context.getExecutionId(), user.getUserId());
             throw new ApiException(ApiReturnCodes.FORBIDDEN, localizationService.getMessage(context.getLanguage(), "error.auth.already_registered"));
         }
+
         Date now = new Date();
         user = new TbUser();
         user.setCreateTms(now);
@@ -200,6 +205,16 @@ public class AuthService {
         user.setTestAccountFlag(authBackdoor && context.getPrivateClaims().getPhoneNumber().matches("\\+393280000\\d{2}"));
         // we trust the phone number contained in the signed private claims
         user.setPhoneNumber(context.getPrivateClaims().getPhoneNumber());
+        // check for dynamic link usability
+        if (req.getDynamicLinkId() != null) {
+            TbDynamicLink dynamicLink = dynamicLinkDao.get(req.getDynamicLinkId());
+            if (dynamicLink == null || dynamicLink.getRoute() != DynamicLinkRoute.ENROLL_PROSPECT || dynamicLink.getUsedTms() != null) {
+                log.error("[{}] Register request with invalid dynamicLinkId: {}", context.getExecutionId(), req.getDynamicLinkId().toString());
+                throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.invalid_field", "dynamicLinkId"));
+            }
+            user.setDynamicLinkId(req.getDynamicLinkId());
+            dynamicLink.setUsedTms(Instant.now());
+        }
         userDao.persist(user);
         userDao.flush();
         TbUserProfile userProfile = new TbUserProfile();
@@ -242,6 +257,16 @@ public class AuthService {
         user.setTestAccountFlag(authBackdoor && context.getPrivateClaims().getPhoneNumber().matches("\\+393280000\\d{2}"));
         // we trust the phone number contained in the signed private claims
         user.setPhoneNumber(context.getPrivateClaims().getPhoneNumber());
+        // check for dynamic link usability
+        if (req.getDynamicLinkId() != null) {
+            TbDynamicLink dynamicLink = dynamicLinkDao.get(req.getDynamicLinkId());
+            if (dynamicLink == null || dynamicLink.getRoute() != DynamicLinkRoute.ENROLL_PROSPECT || dynamicLink.getUsedTms() != null) {
+                log.error("[{}] Register request with invalid dynamicLinkId: {}", context.getExecutionId(), req.getDynamicLinkId().toString());
+                throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.invalid_field", "dynamicLinkId"));
+            }
+            user.setDynamicLinkId(req.getDynamicLinkId());
+            dynamicLink.setUsedTms(Instant.now());
+        }
         userDao.persist(user);
         userDao.flush();
         TbPudo pudo = new TbPudo();
