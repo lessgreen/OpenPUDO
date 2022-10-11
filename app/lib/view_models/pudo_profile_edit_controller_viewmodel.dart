@@ -382,7 +382,6 @@ class PudoProfileEditControllerViewModel extends ChangeNotifier {
   }
 
   void savePudoChanges(BuildContext context) async {
-    bool changesMade = false;
     if (hasBeenDetailsChanged) {
       if (isValid != UpdateValidation.valid) {
         if (isValid == UpdateValidation.businessName) {
@@ -408,29 +407,27 @@ class PudoProfileEditControllerViewModel extends ChangeNotifier {
         }
         return;
       } else {
-        changesMade = true;
-        await NetworkManager.instance.updatePudo(UpdatePudoRequest(
-            pudo: PudoRequest(
-              businessName: businessNameController.text,
-              publicPhoneNumber: phoneController.text,
-              email: emailController.text,
-            ),
-            addressMarker: _address));
+        NetworkManager.instance
+            .updatePudo(UpdatePudoRequest(
+                pudo: PudoRequest(
+                  businessName: businessNameController.text,
+                  publicPhoneNumber: phoneController.text.contains("+39") ? phoneController.text : "+39${phoneController.text}",
+                ),
+                addressMarker: _address))
+            .then((value) {
+          Provider.of<CurrentUser>(context, listen: false).triggerUserReload();
+        });
       }
     }
     if (hasBeenRewardPolicyChanged) {
-      changesMade = true;
-      await NetworkManager.instance.updatePudoPolicy(dataSource);
+      NetworkManager.instance.updatePudoPolicy(dataSource).then((value) {
+        Provider.of<CurrentUser>(context, listen: false).triggerUserReload();
+      });
     }
     if (_image != null) {
-      changesMade = true;
-      await NetworkManager.instance.photoUpload(
-        _image!,
-        isPudo: true,
-      );
-    }
-    if (changesMade) {
-      Provider.of<CurrentUser>(context, listen: false).triggerUserReload();
+      NetworkManager.instance.photoUpload(_image!, isPudo: true).then((value) {
+        Provider.of<CurrentUser>(context, listen: false).triggerUserReload();
+      });
     }
     if (isOnHome) {
       Navigator.of(context).pop();

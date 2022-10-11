@@ -71,8 +71,8 @@ class CustomNetworkImage extends StatelessWidget {
     );
     return isCircle
         ? ClipRRect(
-            child: sizedBox,
             borderRadius: BorderRadius.circular(50),
+            child: sizedBox,
           )
         : ClipRect(
             child: sizedBox,

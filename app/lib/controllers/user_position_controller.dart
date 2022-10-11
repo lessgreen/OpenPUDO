@@ -34,7 +34,7 @@ class UserPositionController extends StatefulWidget {
   final bool canGoBack;
 
   @override
-  _UserPositionControllerState createState() => _UserPositionControllerState();
+  State<UserPositionController> createState() => _UserPositionControllerState();
 }
 
 class _UserPositionControllerState extends State<UserPositionController> {

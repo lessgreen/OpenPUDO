@@ -37,14 +37,14 @@ class TextFieldButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => TextButton(
-        child: Text(
-          text,
-          style: Theme.of(context).textTheme.bodyText2?.copyWith(color: textColor),
-        ),
         style: Theme.of(context).textButtonTheme.style?.copyWith(
             padding: MaterialStateProperty.all(padding),
             backgroundColor: MaterialStateProperty.all(Colors.transparent),
             shape: MaterialStateProperty.all(const RoundedRectangleBorder(side: BorderSide.none))),
         onPressed: onPressed,
+        child: Text(
+          text,
+          style: Theme.of(context).textTheme.bodyText2?.copyWith(color: textColor),
+        ),
       );
 }

@@ -34,7 +34,7 @@ class ContactUsController extends StatefulWidget {
   const ContactUsController({Key? key}) : super(key: key);
 
   @override
-  _ContactUsControllerState createState() => _ContactUsControllerState();
+  State<ContactUsController> createState() => _ContactUsControllerState();
 }
 
 class _ContactUsControllerState extends State<ContactUsController> {

@@ -32,8 +32,9 @@ class AboutYouController extends StatefulWidget {
   const AboutYouController({Key? key, this.phoneNumber, this.email}) : super(key: key);
   final String? phoneNumber;
   final String? email;
+
   @override
-  _AboutYouControllerState createState() => _AboutYouControllerState();
+  State<AboutYouController> createState() => _AboutYouControllerState();
 }
 
 class _AboutYouControllerState extends State<AboutYouController> {

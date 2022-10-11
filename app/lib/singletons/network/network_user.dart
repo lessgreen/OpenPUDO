@@ -18,7 +18,7 @@
  If not, see <https://github.com/lessgreen/OpenPUDO>.
 */
 
-part of 'network_shared.dart';
+part of 'network_commons.dart';
 
 mixin NetworkManagerUser on NetworkGeneral {
   Future<dynamic> login({required String login, required String password}) async {
@@ -30,7 +30,7 @@ mixin NetworkManagerUser on NetworkGeneral {
         phoneNumber: login,
         otp: password,
       );
-      var url = _baseURL + '/api/v2/auth/login/confirm';
+      var url = "$_baseURL/api/v2/auth/login/confirm";
       var body = jsonEncode(aRequest.toJson());
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
@@ -69,7 +69,7 @@ mixin NetworkManagerUser on NetworkGeneral {
       RegistrationRequest aRequest = RegistrationRequest(
         phoneNumber: phoneNumber,
       );
-      var url = _baseURL + '/api/v2/auth/login/send';
+      var url = "$_baseURL/api/v2/auth/login/send";
       var body = jsonEncode(aRequest.toJson());
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
@@ -104,7 +104,7 @@ mixin NetworkManagerUser on NetworkGeneral {
       if (!isOnline) {
         throw ("Network is offline");
       }
-      var url = _baseURL + '/api/v2/auth/register/customer';
+      var url = "$_baseURL/api/v2/auth/register/customer";
       var body = jsonEncode({
         "user": {"firstName": name, "lastName": surname}
       });
@@ -146,7 +146,7 @@ mixin NetworkManagerUser on NetworkGeneral {
       if (_accessToken != null) {
         _headers['Authorization'] = 'Bearer $_accessToken';
       }
-      var url = _baseURL + '/api/v2/user/me';
+      var url = "$_baseURL/api/v2/user/me";
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
@@ -190,7 +190,7 @@ mixin NetworkManagerUser on NetworkGeneral {
       if (_accessToken != null) {
         _headers['Authorization'] = 'Bearer $_accessToken';
       }
-      var url = _baseURL + '/api/v2/user/me/preferences';
+      var url = "$_baseURL/api/v2/user/me/preferences";
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
@@ -234,7 +234,7 @@ mixin NetworkManagerUser on NetworkGeneral {
       if (_accessToken != null) {
         _headers['Authorization'] = 'Bearer $_accessToken';
       }
-      var url = _baseURL + '/api/v2/user/me';
+      var url = "$_baseURL/api/v2/user/me";
       var body = jsonEncode({"firstName": firstName, "lastName": lastName});
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
@@ -281,7 +281,7 @@ mixin NetworkManagerUser on NetworkGeneral {
         _headers['Authorization'] = 'Bearer $_accessToken';
       }
 
-      var url = _baseURL + '/api/v2/user/me/pudos/' + id;
+      var url = "$_baseURL/api/v2/user/me/pudos/$id";
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
@@ -317,7 +317,7 @@ mixin NetworkManagerUser on NetworkGeneral {
   }
 
   String getProfilePicID(String id) {
-    return _baseURL + '/api/v2/file/$id';
+    return "$_baseURL/api/v2/file/$id";
   }
 
   Future<dynamic> getPublicProfile(String userId) async {
@@ -329,7 +329,7 @@ mixin NetworkManagerUser on NetworkGeneral {
         _headers['Authorization'] = 'Bearer $_accessToken';
       }
 
-      var url = _baseURL + '/api/v1/users/$userId';
+      var url = "$_baseURL/api/v1/users/$userId";
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
@@ -375,7 +375,7 @@ mixin NetworkManagerUser on NetworkGeneral {
         _headers['Authorization'] = 'Bearer $_accessToken';
       }
 
-      var url = _baseURL + '/api/v2/user/me/pudos/$pudoId';
+      var url = "$_baseURL/api/v2/user/me/pudos/$pudoId";
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
@@ -425,7 +425,7 @@ mixin NetworkManagerUser on NetworkGeneral {
         _headers['Authorization'] = 'Bearer $_accessToken';
       }
 
-      var url = _baseURL + '/api/v1/users/me/pudos/$pudoId';
+      var url = "$_baseURL/api/v1/users/me/pudos/$pudoId";
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
@@ -472,7 +472,7 @@ mixin NetworkManagerUser on NetworkGeneral {
         _headers['Authorization'] = 'Bearer $_accessToken';
       }
 
-      var url = _baseURL + '/api/v2/user/me/pudos';
+      var url = "$_baseURL/api/v2/user/me/pudos";
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
@@ -521,7 +521,7 @@ mixin NetworkManagerUser on NetworkGeneral {
       if (_accessToken != null) {
         _headers['Authorization'] = 'Bearer $_accessToken';
       }
-      var url = _baseURL + '/api/v2/user/me/preferences';
+      var url = "$_baseURL/api/v2/user/me/preferences";
       var body = jsonEncode({"showPhoneNumber": showNumber});
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
@@ -568,7 +568,7 @@ mixin NetworkManagerUser on NetworkGeneral {
         _headers['Authorization'] = 'Bearer $_accessToken';
       }
 
-      var url = _baseURL + '/api/v2/user/$userId';
+      var url = "$_baseURL/api/v2/user/$userId";
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
@@ -616,7 +616,7 @@ mixin NetworkManagerUser on NetworkGeneral {
         _headers['Authorization'] = 'Bearer $_accessToken';
       }
 
-      var url = _baseURL + '/api/v2/auth/support';
+      var url = "$_baseURL/api/v2/auth/support";
       SupportRequest aRequest = SupportRequest(
         message: feedback,
       );
@@ -668,7 +668,7 @@ mixin NetworkManagerUser on NetworkGeneral {
         _headers['Authorization'] = 'Bearer $_accessToken';
       }
 
-      var url = _baseURL + '/api/v2/auth/account';
+      var url = "$_baseURL/api/v2/auth/account";
 
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;

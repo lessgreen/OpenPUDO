@@ -18,7 +18,7 @@
  If not, see <https://github.com/lessgreen/OpenPUDO>.
 */
 
-part of 'network_shared.dart';
+part of 'network_commons.dart';
 
 mixin NetworkManagerNotification on NetworkGeneral {
   Future<dynamic> getNotificationsCount() async {
@@ -30,7 +30,7 @@ mixin NetworkManagerNotification on NetworkGeneral {
         _headers['Authorization'] = 'Bearer $_accessToken';
       }
 
-      var url = _baseURL + '/api/v2/notification/count';
+      var url = "$_baseURL/api/v2/notification/count";
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
@@ -77,7 +77,7 @@ mixin NetworkManagerNotification on NetworkGeneral {
         _headers['Authorization'] = 'Bearer $_accessToken';
       }
 
-      var url = _baseURL + '/api/v2/notification/$notificationId';
+      var url = "$_baseURL/api/v2/notification/$notificationId";
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
@@ -119,7 +119,7 @@ mixin NetworkManagerNotification on NetworkGeneral {
         _headers['Authorization'] = 'Bearer $_accessToken';
       }
 
-      var url = _baseURL + '/api/v2/notification/$notificationId/mark-as-read';
+      var url = "$_baseURL/api/v2/notification/$notificationId/mark-as-read";
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
@@ -161,7 +161,7 @@ mixin NetworkManagerNotification on NetworkGeneral {
         _headers['Authorization'] = 'Bearer $_accessToken';
       }
 
-      var url = _baseURL + '/api/v1/notification/mark-as-read';
+      var url = "$_baseURL/api/v1/notification/mark-as-read";
 
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
@@ -206,7 +206,7 @@ mixin NetworkManagerNotification on NetworkGeneral {
 
       var queryString = "?limit=$limit&offset=$offset";
 
-      var url = _baseURL + '/api/v2/notification$queryString';
+      var url = "$_baseURL/api/v2/notification$queryString";
 
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;

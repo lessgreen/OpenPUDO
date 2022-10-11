@@ -65,7 +65,7 @@ class _DeletableListViewState<T> extends State<DeletableListView<T>> {
     if (widget.items.length != tilesState.length) {
       tilesState = List.generate(widget.items.length, (index) => GlobalKey<DeletableCardState>());
     }
-    var _listView = ListView(
+    var listView = ListView(
       controller: widget.controller,
       physics: const AlwaysScrollableScrollPhysics(),
       children: [
@@ -122,6 +122,6 @@ class _DeletableListViewState<T> extends State<DeletableListView<T>> {
             })
       ],
     );
-    return widget.hasScrollBar ? CupertinoScrollbar(child: _listView) : _listView;
+    return widget.hasScrollBar ? CupertinoScrollbar(child: listView) : listView;
   }
 }

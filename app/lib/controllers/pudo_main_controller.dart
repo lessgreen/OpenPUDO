@@ -36,7 +36,7 @@ class PudoMainController extends StatefulWidget {
   const PudoMainController({Key? key}) : super(key: key);
 
   @override
-  _PudoMainControllerState createState() => _PudoMainControllerState();
+  State<PudoMainController> createState() => _PudoMainControllerState();
 }
 
 class _PudoMainControllerState extends State<PudoMainController> with ConnectionAware {

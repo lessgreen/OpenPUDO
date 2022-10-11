@@ -36,6 +36,8 @@ class NoPackagesWidget extends StatelessWidget {
         return SingleChildScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
           child: SizedBox(
+            width: constraints.maxWidth,
+            height: constraints.maxHeight,
             child: Column(
               children: [
                 Flexible(
@@ -54,8 +56,6 @@ class NoPackagesWidget extends StatelessWidget {
                 ),
               ],
             ),
-            width: constraints.maxWidth,
-            height: constraints.maxHeight,
           ),
         );
       },

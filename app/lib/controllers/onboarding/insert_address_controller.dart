@@ -38,7 +38,7 @@ class InsertAddressController extends StatefulWidget {
   final bool useCupertinoScaffold;
 
   @override
-  _InsertAddressControllerState createState() => _InsertAddressControllerState();
+  State<InsertAddressController> createState() => _InsertAddressControllerState();
 }
 
 class _InsertAddressControllerState extends State<InsertAddressController> with ConnectionAware {

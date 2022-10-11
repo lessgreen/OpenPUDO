@@ -18,7 +18,7 @@
  If not, see <https://github.com/lessgreen/OpenPUDO>.
 */
 
-part of 'network_shared.dart';
+part of 'network_commons.dart';
 
 mixin NetworkManagerPudo on NetworkGeneral {
   Future<dynamic> getSuggestedZoom({required double lat, required double lon, bool showNetworkActivity = false}) async {
@@ -32,7 +32,7 @@ mixin NetworkManagerPudo on NetworkGeneral {
 
       var queryString = "?lat=$lat&lon=$lon";
 
-      var url = _baseURL + '/api/v2/map/suggested-zoom$queryString';
+      var url = "$_baseURL/api/v2/map/suggested-zoom$queryString";
       if (showNetworkActivity) {
         WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
           _networkActivity.value = true;
@@ -83,7 +83,7 @@ mixin NetworkManagerPudo on NetworkGeneral {
         _headers['Authorization'] = 'Bearer $_accessToken';
       }
 
-      var url = _baseURL + '/api/v2/pudo/$pudoId';
+      var url = "$_baseURL/api/v2/pudo/$pudoId";
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
@@ -135,7 +135,7 @@ mixin NetworkManagerPudo on NetworkGeneral {
         _headers['Authorization'] = 'Bearer $_accessToken';
       }
 
-      var url = _baseURL + '/api/v2/map/pudos$queryString';
+      var url = "$_baseURL/api/v2/map/pudos$queryString";
       if (showNetworkActivity) {
         WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
           _networkActivity.value = true;
@@ -189,7 +189,7 @@ mixin NetworkManagerPudo on NetworkGeneral {
         _headers['Authorization'] = 'Bearer $_accessToken';
       }
 
-      var url = _baseURL + '/api/v2/pudo/reward-schema';
+      var url = "$_baseURL/api/v2/pudo/reward-schema";
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
@@ -239,7 +239,7 @@ mixin NetworkManagerPudo on NetworkGeneral {
         _headers['Authorization'] = 'Bearer $_accessToken';
       }
 
-      var url = _baseURL + '/api/v2/pudo/me/reward-policy';
+      var url = "$_baseURL/api/v2/pudo/me/reward-policy";
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });

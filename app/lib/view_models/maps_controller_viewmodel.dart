@@ -117,21 +117,21 @@ class MapsControllerViewModel extends ChangeNotifier {
   }
 
   Future<LocationData?> tryGetUserLocation(BuildContext context) async {
-    bool _serviceEnabled;
-    PermissionStatus _permissionGranted;
+    bool serviceEnabled;
+    PermissionStatus permissionGranted;
 
-    _serviceEnabled = await userLocationManager.serviceEnabled();
-    if (!_serviceEnabled) {
-      _serviceEnabled = await userLocationManager.requestService();
-      if (!_serviceEnabled) {
+    serviceEnabled = await userLocationManager.serviceEnabled();
+    if (!serviceEnabled) {
+      serviceEnabled = await userLocationManager.requestService();
+      if (!serviceEnabled) {
         return null;
       }
     }
 
-    _permissionGranted = await userLocationManager.hasPermission();
-    if (_permissionGranted == PermissionStatus.denied) {
-      _permissionGranted = await userLocationManager.requestPermission();
-      if (_permissionGranted != PermissionStatus.granted) {
+    permissionGranted = await userLocationManager.hasPermission();
+    if (permissionGranted == PermissionStatus.denied) {
+      permissionGranted = await userLocationManager.requestPermission();
+      if (permissionGranted != PermissionStatus.granted) {
         return null;
       }
     }

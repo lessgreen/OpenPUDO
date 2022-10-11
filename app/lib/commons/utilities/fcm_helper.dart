@@ -18,9 +18,9 @@ import 'package:qui_green/singletons/network/network_manager.dart';
 Future<void> initFirebaseMessaging() async {
   //Firebase stuff
   flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-  NotificationAppLaunchDetails? lunchDetails = await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
-  if (lunchDetails != null) {
-    safePrint(lunchDetails.payload ?? "");
+  NotificationAppLaunchDetails? launchDetails = await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
+  if (launchDetails != null) {
+    safePrint(launchDetails.notificationResponse?.payload ?? "");
   }
   channel = const AndroidNotificationChannel(
     'high_importance_channel', // id

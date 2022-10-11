@@ -18,7 +18,7 @@
  If not, see <https://github.com/lessgreen/OpenPUDO>.
 */
 
-part of 'network_shared.dart';
+part of 'network_commons.dart';
 
 mixin NetworkManagerUserPudo on NetworkGeneral {
   Future<dynamic> registerPudo(RegistrationPudoModel requestModel) async {
@@ -26,7 +26,7 @@ mixin NetworkManagerUserPudo on NetworkGeneral {
       if (!isOnline) {
         throw ("Network is offline");
       }
-      var url = _baseURL + '/api/v2/auth/register/pudo';
+      var url = "$_baseURL/api/v2/auth/register/pudo";
       var body = jsonEncode(requestModel.toRequest().toJson());
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
@@ -65,7 +65,7 @@ mixin NetworkManagerUserPudo on NetworkGeneral {
         _headers['Authorization'] = 'Bearer $_accessToken';
       }
 
-      var url = _baseURL + '/api/v2/pudo/me/users';
+      var url = "$_baseURL/api/v2/pudo/me/users";
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
@@ -114,7 +114,7 @@ mixin NetworkManagerUserPudo on NetworkGeneral {
       if (_accessToken != null) {
         _headers['Authorization'] = 'Bearer $_accessToken';
       }
-      var url = _baseURL + '/api/v1/pudos/me/address';
+      var url = "$_baseURL/api/v1/pudos/me/address";
       var body = jsonEncode(address.toJson());
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
@@ -161,7 +161,7 @@ mixin NetworkManagerUserPudo on NetworkGeneral {
         _headers['Authorization'] = 'Bearer $_accessToken';
       }
 
-      var url = _baseURL + '/api/v1/pudos/me';
+      var url = "$_baseURL/api/v1/pudos/me";
       var body = jsonEncode(profile.toJson());
 
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
@@ -209,7 +209,7 @@ mixin NetworkManagerUserPudo on NetworkGeneral {
         _headers['Authorization'] = 'Bearer $_accessToken';
       }
 
-      var url = _baseURL + '/api/v2/pudo/me';
+      var url = "$_baseURL/api/v2/pudo/me";
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
@@ -251,7 +251,7 @@ mixin NetworkManagerUserPudo on NetworkGeneral {
       if (!isOnline) {
         throw ("Network is offline");
       }
-      var url = _baseURL + '/api/v2/pudo/me';
+      var url = "$_baseURL/api/v2/pudo/me";
       var body = jsonEncode(requestModel.toJson());
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
@@ -293,7 +293,7 @@ mixin NetworkManagerUserPudo on NetworkGeneral {
       if (!isOnline) {
         throw ("Network is offline");
       }
-      var url = _baseURL + '/api/v2/pudo/me/reward-policy';
+      var url = "$_baseURL/api/v2/pudo/me/reward-policy";
       var body = jsonEncode(rewardOptions.map((e) => e.toJson()).toList());
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
@@ -345,7 +345,7 @@ mixin NetworkManagerUserPudo on NetworkGeneral {
         queryString += "&lat=${request.lat}&lon=${request.lon}";
       }
 
-      var url = _baseURL + '/api/v2/map/address/detail/$queryString';
+      var url = "$_baseURL/api/v2/map/address/detail/$queryString";
 
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;

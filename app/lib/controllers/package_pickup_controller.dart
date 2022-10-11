@@ -43,7 +43,7 @@ class PackagePickupController extends StatefulWidget {
   final bool isForPudo;
 
   @override
-  _PackagePickupControllerState createState() => _PackagePickupControllerState();
+  State<PackagePickupController> createState() => _PackagePickupControllerState();
 }
 
 class _PackagePickupControllerState extends State<PackagePickupController> {
@@ -149,13 +149,13 @@ class _PackagePickupControllerState extends State<PackagePickupController> {
                       boxShadow: Shadows.baseShadow,
                     ),
                     alignment: Alignment.center,
+                    height: MediaQuery.of(context).size.width / 2,
+                    width: MediaQuery.of(context).size.width / 2,
                     child: QrImage(
                       data: widget.packageModel.shareLink ?? "",
                       version: QrVersions.auto,
                       size: MediaQuery.of(context).size.width / 3,
                     ),
-                    height: MediaQuery.of(context).size.width / 2,
-                    width: MediaQuery.of(context).size.width / 2,
                   ),
                 ],
               )

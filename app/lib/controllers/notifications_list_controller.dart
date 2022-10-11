@@ -33,7 +33,7 @@ class NotificationsListController extends StatefulWidget {
   const NotificationsListController({Key? key}) : super(key: key);
 
   @override
-  _NotificationsListControllerState createState() => _NotificationsListControllerState();
+  State<NotificationsListController> createState() => _NotificationsListControllerState();
 }
 
 class _NotificationsListControllerState extends State<NotificationsListController> with ConnectionAware {

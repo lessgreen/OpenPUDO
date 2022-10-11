@@ -34,14 +34,14 @@ import 'package:qui_green/view_models/personal_data_controller_viewmodel.dart';
 import 'package:qui_green/widgets/main_button.dart';
 import 'package:qui_green/widgets/profile_pic_box.dart';
 import 'package:qui_green/widgets/sascaffold.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 class PersonalDataController extends StatefulWidget {
   const PersonalDataController({Key? key, this.pudoDataModel}) : super(key: key);
   final PudoProfile? pudoDataModel;
 
   @override
-  _PersonalDataControllerState createState() => _PersonalDataControllerState();
+  State<PersonalDataController> createState() => _PersonalDataControllerState();
 }
 
 class _PersonalDataControllerState extends State<PersonalDataController> with ConnectionAware {
@@ -183,7 +183,7 @@ class _PersonalDataControllerState extends State<PersonalDataController> with Co
                                     style: Theme.of(context).textTheme.bodyTextItalicBoldAccent,
                                     recognizer: TapGestureRecognizer()
                                       ..onTap = () {
-                                        launch('https://tools.quigreen.it/terms.html');
+                                        launchUrlString('https://tools.quigreen.it/terms.html');
                                       },
                                   ),
                                 ],

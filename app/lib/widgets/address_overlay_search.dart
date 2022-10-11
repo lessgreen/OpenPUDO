@@ -11,7 +11,7 @@ class AddressOverlaySearch extends StatefulWidget {
   const AddressOverlaySearch({Key? key, required this.addresses, required this.onTap, this.borderRadius}) : super(key: key);
 
   @override
-  _AddressOverlaySearchState createState() => _AddressOverlaySearchState();
+  State<AddressOverlaySearch> createState() => _AddressOverlaySearchState();
 }
 
 class _AddressOverlaySearchState extends State<AddressOverlaySearch> {

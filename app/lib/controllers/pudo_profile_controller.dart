@@ -37,13 +37,13 @@ import 'package:qui_green/singletons/network/network_manager.dart';
 import 'package:qui_green/widgets/sascaffold.dart';
 import 'package:qui_green/widgets/table_view_cell.dart';
 import 'package:qui_green/widgets/user_profile_recap_widget.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 class PudoProfileController extends StatefulWidget {
   const PudoProfileController({Key? key}) : super(key: key);
 
   @override
-  _PudoProfileControllerState createState() => _PudoProfileControllerState();
+  State<PudoProfileController> createState() => _PudoProfileControllerState();
 }
 
 class _PudoProfileControllerState extends State<PudoProfileController> with ConnectionAware {
@@ -178,7 +178,7 @@ class _PudoProfileControllerState extends State<PudoProfileController> with Conn
                                     style: Theme.of(context).textTheme.bodyTextAccent,
                                   ),
                                   onPressed: () {
-                                    launch(value).then((value) {
+                                    launchUrlString(value).then((value) {
                                       Navigator.pop(context);
                                       NetworkManager.instance.setAccessToken(null);
                                       currentUser.refresh();

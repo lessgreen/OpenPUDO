@@ -19,6 +19,7 @@
 */
 
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -34,6 +35,8 @@ import 'package:qui_green/resources/routes_enum.dart';
 import 'package:qui_green/singletons/current_user.dart';
 import 'package:qui_green/singletons/network/network_manager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'models/dynamiclink_response.dart';
 
 ValueNotifier currentRouteName = ValueNotifier('/');
 late FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
@@ -51,6 +54,23 @@ void mainCommon({required String host, required bool isProd}) async {
     overlays: [SystemUiOverlay.bottom],
   );
   await Firebase.initializeApp();
+
+  //get any initial links
+  final PendingDynamicLinkData? initialLink = await FirebaseDynamicLinks.instance.getInitialLink();
+  print(initialLink);
+  FirebaseDynamicLinks.instance.onLink.listen((dynamicLinkData) {
+    var magicLinkID = dynamicLinkData.link.pathSegments.last;
+    NetworkManager.instance.getDynamicLink(dynamicLinkId: magicLinkID).then((value) {
+      if (value is! DynamicLinkResponse) {
+        return;
+      }
+      if (value.data.accountType == "customer") {}
+      ;
+    });
+  }).onError((error) {
+    print(error);
+  });
+
   await LocalizationManager.updateLocalizationsFromNetwork();
   initFirebaseMessaging();
   SystemChrome.setSystemUIOverlayStyle(

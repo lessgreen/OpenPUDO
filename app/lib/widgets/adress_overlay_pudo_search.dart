@@ -12,7 +12,7 @@ class AdressOverlayPudoSearch extends StatefulWidget {
   const AdressOverlayPudoSearch({Key? key, required this.viewModel}) : super(key: key);
 
   @override
-  _AdressOverlayPudoSearchState createState() => _AdressOverlayPudoSearchState();
+  State<AdressOverlayPudoSearch> createState() => _AdressOverlayPudoSearchState();
 }
 
 class _AdressOverlayPudoSearchState extends State<AdressOverlayPudoSearch> {

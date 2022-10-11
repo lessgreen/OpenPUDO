@@ -18,7 +18,7 @@
  If not, see <https://github.com/lessgreen/OpenPUDO>.
 */
 
-part of 'network_shared.dart';
+part of 'network_commons.dart';
 
 mixin NetworkManagerPackages on NetworkGeneral {
   Future<dynamic> getPackageDetailsByQrCode({required String shareLink}) async {
@@ -30,7 +30,7 @@ mixin NetworkManagerPackages on NetworkGeneral {
         _headers['Authorization'] = 'Bearer $_accessToken';
       }
 
-      var url = _baseURL + '/api/v2/package/by-qrcode/$shareLink';
+      var url = "$_baseURL/api/v2/package/by-qrcode/$shareLink";
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
@@ -78,7 +78,7 @@ mixin NetworkManagerPackages on NetworkGeneral {
         _headers['Authorization'] = 'Bearer $_accessToken';
       }
 
-      var url = _baseURL + '/api/v2/package/$packageId';
+      var url = "$_baseURL/api/v2/package/$packageId";
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });
@@ -129,13 +129,13 @@ mixin NetworkManagerPackages on NetworkGeneral {
       var url = _baseURL;
 
       if (newStatus == PackageStatus.accepted) {
-        url = _baseURL + '/api/v2/package/$packageId/accepted';
+        url = "$_baseURL/api/v2/package/$packageId/accepted";
       } else if (newStatus == PackageStatus.collected) {
-        url = _baseURL + '/api/v2/package/$packageId/collected';
+        url = "$_baseURL/api/v2/package/$packageId/collected";
       } else if (newStatus == PackageStatus.notified) {
-        url = _baseURL + '/api/v2/package/$packageId/notified';
+        url = "$_baseURL/api/v2/package/$packageId/notified";
       } else if (newStatus == PackageStatus.notifySent) {
-        url = _baseURL + '/api/v2/package/$packageId/notified';
+        url = "$_baseURL/api/v2/package/$packageId/notified";
       } else {
         return ErrorDescription('Error Unsupported PackageStatus specified.');
       }
@@ -194,7 +194,7 @@ mixin NetworkManagerPackages on NetworkGeneral {
         _headers['Authorization'] = 'Bearer $_accessToken';
       }
 
-      var url = _baseURL + '/api/v1/packages/picture/$externalFileId';
+      var url = "$_baseURL/api/v1/packages/picture/$externalFileId";
       var uri = Uri.parse(url);
 
       // create multipart request
@@ -260,7 +260,7 @@ mixin NetworkManagerPackages on NetworkGeneral {
       } else {
         return ErrorDescription('Error missing parameters.');
       }
-      var url = _baseURL + '/api/v2/package';
+      var url = "$_baseURL/api/v2/package";
       var body = jsonEncode(request.toJson());
 
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
@@ -314,7 +314,7 @@ mixin NetworkManagerPackages on NetworkGeneral {
 
       var queryString = enablePagination ? "?history=$history&limit=$limit&offset=$offset" : "?history=$history";
 
-      var url = _baseURL + '/api/v2/${isPudo ? "pudo" : "user"}/me/packages$queryString';
+      var url = "$_baseURL/api/v2/${isPudo ? "pudo" : "user"}/me/packages$queryString";
 
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
@@ -365,7 +365,7 @@ mixin NetworkManagerPackages on NetworkGeneral {
       _headers['Authorization'] = 'Bearer $_accessToken';
     }
 
-    var url = _baseURL + '/api/v2/package/$packageId/picture';
+    var url = "$_baseURL/api/v2/package/$packageId/picture";
     var uri = Uri.parse(url);
 
     // create multipart request

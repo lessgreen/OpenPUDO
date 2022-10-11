@@ -38,6 +38,8 @@ class ErrorScreenWidget extends StatelessWidget {
         return SingleChildScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
           child: SizedBox(
+            width: constraints.maxWidth,
+            height: constraints.maxHeight,
             child: Column(
               children: [
                 Flexible(
@@ -60,8 +62,6 @@ class ErrorScreenWidget extends StatelessWidget {
                 const Spacer(flex: 2),
               ],
             ),
-            width: constraints.maxWidth,
-            height: constraints.maxHeight,
           ),
         );
       },

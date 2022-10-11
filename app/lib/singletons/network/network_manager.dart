@@ -28,9 +28,9 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:qui_green/commons/alert_dialog.dart';
 import 'package:qui_green/commons/utilities/localization.dart';
 import 'package:qui_green/resources/app_config.dart';
-import 'package:qui_green/singletons/network/network_shared.dart';
+import 'package:qui_green/singletons/network/network_commons.dart';
 
-class NetworkManager with NetworkGeneral, NetworkManagerUser, NetworkManagerNotification, NetworkManagerPackages, NetworkManagerPudo, NetworkManagerUserPudo {
+class NetworkManager with NetworkGeneral, NetworkManagerUser, NetworkManagerNotification, NetworkManagerPackages, NetworkManagerPudo, NetworkManagerUserPudo, NetworkShare {
   BuildContext? context;
   final _connectivity = Connectivity();
   late StreamSubscription<ConnectivityResult> networkSubscription;
@@ -47,16 +47,14 @@ class NetworkManager with NetworkGeneral, NetworkManagerUser, NetworkManagerNoti
     return NetworkManager._inst;
   }
 
+  // ignore: no_leading_underscores_for_local_identifiers
   NetworkManager._internal(AppConfig _config);
 
   String get currentLanguage {
-    final WidgetsBinding? instance = WidgetsBinding.instance;
-    if (instance != null) {
-      final List<Locale> systemLocales = instance.window.locales;
-      String languageCode = systemLocales.first.languageCode;
-      return languageCode;
-    }
-    return "en";
+    final WidgetsBinding instance = WidgetsBinding.instance;
+    final List<Locale> systemLocales = instance.window.locales;
+    String languageCode = systemLocales.first.languageCode;
+    return languageCode;
   }
 
   NetworkManager({required AppConfig config}) {

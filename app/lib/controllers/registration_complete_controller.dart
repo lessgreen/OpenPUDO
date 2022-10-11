@@ -42,7 +42,7 @@ class RegistrationCompleteController extends StatefulWidget {
   final bool useCupertinoScaffold;
 
   @override
-  _RegistrationCompleteControllerState createState() => _RegistrationCompleteControllerState();
+  State<RegistrationCompleteController> createState() => _RegistrationCompleteControllerState();
 }
 
 class _RegistrationCompleteControllerState extends State<RegistrationCompleteController> with ConnectionAware {
@@ -127,6 +127,7 @@ class _RegistrationCompleteControllerState extends State<RegistrationCompleteCon
                               }
                             }
                             return AnimatedSwitcher(
+                                duration: const Duration(milliseconds: 150),
                                 child: state
                                     ? PudoCard(
                                         dataSource: value.data as PudoProfile,
@@ -137,8 +138,7 @@ class _RegistrationCompleteControllerState extends State<RegistrationCompleteCon
                                         dataSource: widget.pudoDataModel!,
                                         onTap: () {},
                                         showCustomizedAddress: false,
-                                      ),
-                                duration: const Duration(milliseconds: 150));
+                                      ));
                           }),
                     )
                   : const SizedBox(),

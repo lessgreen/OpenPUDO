@@ -44,7 +44,7 @@ class PudoDetailController extends StatefulWidget {
   final bool useCupertinoScaffold;
 
   @override
-  _PudoDetailControllerState createState() => _PudoDetailControllerState();
+  State<PudoDetailController> createState() => _PudoDetailControllerState();
 }
 
 class _PudoDetailControllerState extends State<PudoDetailController> with ConnectionAware {

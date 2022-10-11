@@ -36,7 +36,7 @@ class PudoHomeController extends StatefulWidget {
   const PudoHomeController({Key? key}) : super(key: key);
 
   @override
-  _PudoHomeControllerState createState() => _PudoHomeControllerState();
+  State<PudoHomeController> createState() => _PudoHomeControllerState();
 }
 
 class _PudoHomeControllerState extends State<PudoHomeController> with ConnectionAware {
@@ -93,21 +93,22 @@ class _PudoHomeControllerState extends State<PudoHomeController> with Connection
   }
 
   ///Checks if an initialMessage is available from the app in a closed state (open app from notification)
-  void _handleInitialMessage(BuildContext subContext) async {
-    RemoteMessage? message = await FirebaseMessaging.instance.getInitialMessage();
-    if (message != null) {
-      if (message.data.containsKey("notificationType")) {
-        if (message.data["notificationType"] == "package") {
-          if (message.data.containsKey("packageId")) {
-            handlePackageRouting(subContext, message.data['notificationId'], int.parse(message.data["packageId"]));
-          }
-        } else if (message.data["notifitcationType"] == "favourite") {
-          if (message.data.containsKey("userId")) {
-            handleUserRouting(subContext, message.data['notificationId'], int.parse(message.data["userId"]));
+  void _handleInitialMessage(BuildContext subContext) {
+    FirebaseMessaging.instance.getInitialMessage().then((message) {
+      if (message != null) {
+        if (message.data.containsKey("notificationType")) {
+          if (message.data["notificationType"] == "package") {
+            if (message.data.containsKey("packageId")) {
+              handlePackageRouting(subContext, message.data['notificationId'], int.parse(message.data["packageId"]));
+            }
+          } else if (message.data["notifitcationType"] == "favourite") {
+            if (message.data.containsKey("userId")) {
+              handleUserRouting(subContext, message.data['notificationId'], int.parse(message.data["userId"]));
+            }
           }
         }
       }
-    }
+    });
   }
 
   BuildContext getCurrentContext() {

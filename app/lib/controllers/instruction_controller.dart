@@ -43,7 +43,7 @@ class InstructionController extends StatefulWidget {
   final bool isForPudo;
 
   @override
-  _InstructionControllerState createState() => _InstructionControllerState();
+  State<InstructionController> createState() => _InstructionControllerState();
 }
 
 class _InstructionControllerState extends State<InstructionController> with ConnectionAware {
@@ -75,6 +75,21 @@ class _InstructionControllerState extends State<InstructionController> with Conn
           margin: const EdgeInsets.symmetric(horizontal: Dimension.padding),
           padding: const EdgeInsets.all(Dimension.padding),
           width: double.infinity,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.5),
+                spreadRadius: 1,
+                blurRadius: 5,
+                offset: const Offset(0, 3), // changes position of shadow
+              ),
+            ],
+            border: Border.all(color: Colors.grey),
+            borderRadius: const BorderRadius.all(
+              Radius.circular(Dimension.borderRadiusS),
+            ),
+          ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
@@ -94,21 +109,6 @@ class _InstructionControllerState extends State<InstructionController> with Conn
               ),
               const SizedBox(height: 30)
             ],
-          ),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.withOpacity(0.5),
-                spreadRadius: 1,
-                blurRadius: 5,
-                offset: const Offset(0, 3), // changes position of shadow
-              ),
-            ],
-            border: Border.all(color: Colors.grey),
-            borderRadius: const BorderRadius.all(
-              Radius.circular(Dimension.borderRadiusS),
-            ),
           ),
         ),
         if (widget.isForPudo) const Spacer(),

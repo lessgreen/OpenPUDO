@@ -42,7 +42,7 @@ class PackageReceivedController extends StatefulWidget {
   const PackageReceivedController({Key? key}) : super(key: key);
 
   @override
-  _PackageReceivedControllerState createState() => _PackageReceivedControllerState();
+  State<PackageReceivedController> createState() => _PackageReceivedControllerState();
 }
 
 class _PackageReceivedControllerState extends State<PackageReceivedController> {

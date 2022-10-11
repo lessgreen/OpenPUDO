@@ -46,13 +46,13 @@ class MainButton extends StatelessWidget {
                       AppColors.primarySwatch.withAlpha(100),
                     ),
                   ),
+          onPressed: enabled ? onPressed : null,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(text),
             ],
           ),
-          onPressed: enabled ? onPressed : null,
         ),
       );
 }

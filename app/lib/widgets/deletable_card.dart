@@ -79,7 +79,7 @@ class DeletableCardState extends State<DeletableCard> with TickerProviderStateMi
       widget.onOpenStateChange();
     }
 
-    final _zoomTween = Tween<double>(begin: deleteSize, end: open ? maxSize : 0);
+    final zoomTween = Tween<double>(begin: deleteSize, end: open ? maxSize : 0);
     var controller = AnimationController(duration: const Duration(milliseconds: 100), vsync: this);
     Animation<double> animation = CurvedAnimation(
       parent: controller,
@@ -87,7 +87,7 @@ class DeletableCardState extends State<DeletableCard> with TickerProviderStateMi
     );
     controller.addListener(() {
       setState(() {
-        deleteSize = _zoomTween.evaluate(animation);
+        deleteSize = zoomTween.evaluate(animation);
       });
     });
     animation.addStatusListener((status) {

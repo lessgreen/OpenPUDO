@@ -14,7 +14,7 @@ class AdressFieldPudoSearch extends StatefulWidget {
   const AdressFieldPudoSearch({Key? key, required this.viewModel}) : super(key: key);
 
   @override
-  _AdressFieldPudoSearchState createState() => _AdressFieldPudoSearchState();
+  State<AdressFieldPudoSearch> createState() => _AdressFieldPudoSearchState();
 
   onAddressTap(AddressModel e) {
     viewModel.position = LatLng(e.lat!, e.lon!);

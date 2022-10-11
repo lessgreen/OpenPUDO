@@ -33,10 +33,10 @@ import 'package:qui_green/models/base_response.dart';
 import 'package:qui_green/models/change_package_status_request.dart';
 import 'package:qui_green/models/delivery_package_request.dart';
 import 'package:qui_green/models/device_info_model.dart';
+import 'package:qui_green/models/dynamiclink_response.dart';
 import 'package:qui_green/models/geo_marker.dart';
 import 'package:qui_green/models/login_request.dart';
 import 'package:qui_green/models/map_search_addresses_request.dart';
-import 'package:qui_green/models/map_search_request.dart';
 import 'package:qui_green/models/openpudo_notification.dart';
 import 'package:qui_green/models/package_summary.dart';
 import 'package:qui_green/models/pudo_package.dart';
@@ -59,6 +59,7 @@ part 'network_package.dart';
 part 'network_pudo.dart';
 part 'network_user.dart';
 part 'network_user_pudo.dart';
+part 'network_share.dart';
 
 mixin NetworkGeneral {
   late AppConfig config;
@@ -121,7 +122,7 @@ mixin NetworkGeneral {
     if (_accessToken != null) {
       _headers['Authorization'] = 'Bearer $_accessToken';
     }
-    var url = _baseURL + '/api/v2/auth/renew';
+    var url = "$_baseURL/api/v2/auth/renew";
     try {
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
@@ -203,7 +204,7 @@ mixin NetworkGeneral {
     if (_accessToken != null) {
       _headers['Authorization'] = 'Bearer $_accessToken';
     }
-    var url = _baseURL + '/api/v2/map/search/address$queryString';
+    var url = "$_baseURL/api/v2/map/search/address$queryString";
 
     try {
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
@@ -254,7 +255,7 @@ mixin NetworkGeneral {
       _headers['Authorization'] = 'Bearer $_accessToken';
     }
 
-    var url = _baseURL + '/api/v2/map/search/$queryString';
+    var url = "$_baseURL/api/v2/map/search/$queryString";
 
     try {
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
@@ -354,7 +355,7 @@ mixin NetworkGeneral {
     if (_accessToken != null) {
       _headers['Authorization'] = 'Bearer $_accessToken';
     }
-    var url = _baseURL + '/api/v2/user/me/device-tokens';
+    var url = "$_baseURL/api/v2/user/me/device-tokens";
     var body = jsonEncode(infoRequest.toJson());
     try {
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
@@ -397,7 +398,7 @@ mixin NetworkGeneral {
     if (_accessToken != null) {
       _headers['Authorization'] = 'Bearer $_accessToken';
     }
-    var url = _baseURL + '/api/v2/file/localization';
+    var url = "$_baseURL/api/v2/file/localization";
 
     try {
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {

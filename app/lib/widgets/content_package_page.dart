@@ -41,7 +41,7 @@ class ContentPackagesPage extends StatefulWidget {
 class _ContentPackagesPageState extends State<ContentPackagesPage> {
   @override
   Widget build(BuildContext context) {
-    var _placeHolderWidget = SvgPicture.asset(
+    var placeHolderWidget = SvgPicture.asset(
       ImageSrc.imageSVGPlaceHolder,
       width: 110,
       height: 100,
@@ -72,7 +72,7 @@ class _ContentPackagesPageState extends State<ContentPackagesPage> {
                     return PackageCard(
                       dataSource: currentPackage,
                       stars: 0,
-                      placeHolderWidget: _placeHolderWidget,
+                      placeHolderWidget: placeHolderWidget,
                       onTap: () => viewModel.onPackageCard(currentPackage),
                     );
                   },

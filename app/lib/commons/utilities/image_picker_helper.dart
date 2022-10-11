@@ -17,8 +17,8 @@ void showImageChoice(BuildContext context, Function(File?) onPicked) => SAAlertD
     ]);
 
 Future<File?> _pickImage(ImageSource source) async {
-  final ImagePicker _picker = ImagePicker();
-  final XFile? result = await _picker.pickImage(source: source);
+  final ImagePicker picker = ImagePicker();
+  final XFile? result = await picker.pickImage(source: source);
   if (result != null) {
     return File(result.path);
   }

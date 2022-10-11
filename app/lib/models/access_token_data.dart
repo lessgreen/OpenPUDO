@@ -22,13 +22,22 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'access_token_data.g.dart';
 
+enum AccessProfileType {
+  @JsonValue("guest")
+  guest,
+  @JsonValue("pudo")
+  pudo,
+  @JsonValue("customer")
+  customer
+}
+
 @JsonSerializable()
 class AccessTokenData {
   final String accessToken;
   final String expireDate;
   final String issueDate;
-  final String accessProfile;
-  AccessTokenData({required this.accessToken, required this.expireDate, required this.issueDate,required this.accessProfile});
+  final AccessProfileType accessProfile;
+  AccessTokenData({required this.accessToken, required this.expireDate, required this.issueDate, required this.accessProfile});
   factory AccessTokenData.fromJson(Map<String, dynamic> json) => _$AccessTokenDataFromJson(json);
   Map<String, dynamic> toJson() => _$AccessTokenDataToJson(this);
 }

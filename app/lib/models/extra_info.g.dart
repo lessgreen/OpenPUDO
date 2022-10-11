@@ -25,7 +25,7 @@ Map<String, dynamic> _$ExtraInfoToJson(ExtraInfo instance) {
   final val = <String, dynamic>{
     'name': instance.name,
     'text': instance.text,
-    'type': _$ExtraInfoTypeEnumMap[instance.type],
+    'type': _$ExtraInfoTypeEnumMap[instance.type]!,
     'mandatoryValue': instance.mandatoryValue,
   };
 

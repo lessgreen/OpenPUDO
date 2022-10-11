@@ -26,6 +26,7 @@ import 'package:flutter_app_badger/flutter_app_badger.dart';
 import 'package:qui_green/commons/alert_dialog.dart';
 import 'package:qui_green/commons/utilities/localization.dart';
 import 'package:qui_green/commons/utilities/print_helper.dart';
+import 'package:qui_green/models/access_token_data.dart';
 import 'package:qui_green/models/base_response.dart';
 import 'package:qui_green/models/pudo_profile.dart';
 import 'package:qui_green/models/user_profile.dart';
@@ -62,7 +63,7 @@ class CurrentUser with ChangeNotifier {
       NetworkManager.instance.renewToken(accessToken: oldToken!).then((response) {
         if (response is OPBaseResponse) {
           switch (NetworkManager.instance.accessTokenAccess) {
-            case "customer":
+            case AccessProfileType.customer:
               NetworkManager.instance.getMyProfile().then((profile) {
                 if (profile != null) {
                   user = profile;
@@ -79,7 +80,7 @@ class CurrentUser with ChangeNotifier {
                 safePrint(onError);
               });
               break;
-            case "pudo":
+            case AccessProfileType.pudo:
               NetworkManager.instance.getMyPudoProfile().then((profile) {
                 if (profile != null) {
                   pudoProfile = profile;
@@ -96,7 +97,7 @@ class CurrentUser with ChangeNotifier {
                 safePrint(onError);
               });
               break;
-            case "guest":
+            case AccessProfileType.guest:
               pushPage(Routes.aboutYou);
               break;
             default:
@@ -164,7 +165,7 @@ class CurrentUser with ChangeNotifier {
 
   void triggerUserReload() {
     switch (NetworkManager.instance.accessTokenAccess) {
-      case "customer":
+      case AccessProfileType.customer:
         NetworkManager.instance.getMyProfile().then((profile) {
           if (profile != null) {
             user = profile;
@@ -176,7 +177,7 @@ class CurrentUser with ChangeNotifier {
           safePrint(onError);
         });
         break;
-      case "pudo":
+      case AccessProfileType.pudo:
         NetworkManager.instance.getMyPudoProfile().then((profile) {
           if (profile != null) {
             pudoProfile = profile;
@@ -188,7 +189,7 @@ class CurrentUser with ChangeNotifier {
           safePrint(onError);
         });
         break;
-      case "guest":
+      case AccessProfileType.guest:
         pushPage(Routes.aboutYou);
         break;
       default:

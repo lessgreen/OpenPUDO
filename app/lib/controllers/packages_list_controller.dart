@@ -37,7 +37,7 @@ class PackagesListController extends StatefulWidget {
   final bool isForPudo;
 
   @override
-  _PackagesListControllerState createState() => _PackagesListControllerState();
+  State<PackagesListController> createState() => _PackagesListControllerState();
 }
 
 class _PackagesListControllerState extends State<PackagesListController> with ConnectionAware {

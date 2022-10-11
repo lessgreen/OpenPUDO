@@ -47,7 +47,7 @@ class PudoListController extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _PudoListControllerState createState() => _PudoListControllerState();
+  State<PudoListController> createState() => _PudoListControllerState();
 }
 
 class _PudoListControllerState extends State<PudoListController> {

@@ -36,7 +36,7 @@ import 'package:qui_green/view_models/personal_data_business_controller_viewmode
 import 'package:qui_green/widgets/address_overlay_search.dart';
 import 'package:qui_green/widgets/main_button.dart';
 import 'package:qui_green/widgets/profile_pic_box.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 class PersonalDataBusinessController extends StatefulWidget {
   const PersonalDataBusinessController({Key? key, required this.canGoBack, required this.phoneNumber, this.email}) : super(key: key);
@@ -45,7 +45,7 @@ class PersonalDataBusinessController extends StatefulWidget {
   final String? email;
 
   @override
-  _PersonalDataBusinessControllerState createState() => _PersonalDataBusinessControllerState();
+  State<PersonalDataBusinessController> createState() => _PersonalDataBusinessControllerState();
 }
 
 class _PersonalDataBusinessControllerState extends State<PersonalDataBusinessController> {
@@ -243,7 +243,7 @@ class _PersonalDataBusinessControllerState extends State<PersonalDataBusinessCon
                                   style: Theme.of(context).textTheme.bodyTextItalicBoldAccent,
                                   recognizer: TapGestureRecognizer()
                                     ..onTap = () {
-                                      launch('https://tools.quigreen.it/terms.html');
+                                      launchUrlString('https://tools.quigreen.it/terms.html');
                                     }),
                             ]),
                           ),

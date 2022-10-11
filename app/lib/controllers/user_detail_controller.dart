@@ -37,7 +37,7 @@ class UserDetailController extends StatefulWidget {
   final UserProfile userModel;
 
   @override
-  _UserDetailControllerState createState() => _UserDetailControllerState();
+  State<UserDetailController> createState() => _UserDetailControllerState();
 }
 
 class _UserDetailControllerState extends State<UserDetailController> with ConnectionAware {

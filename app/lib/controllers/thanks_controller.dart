@@ -32,7 +32,7 @@ class ThanksController extends StatefulWidget {
   const ThanksController({Key? key}) : super(key: key);
 
   @override
-  _ThanksControllerState createState() => _ThanksControllerState();
+  State<ThanksController> createState() => _ThanksControllerState();
 }
 
 class _ThanksControllerState extends State<ThanksController> {

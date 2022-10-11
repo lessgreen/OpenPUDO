@@ -41,7 +41,7 @@ class PudoUsersListController extends StatefulWidget {
   final bool isOnReceivePack;
 
   @override
-  _PudoUsersListControllerState createState() => _PudoUsersListControllerState();
+  State<PudoUsersListController> createState() => _PudoUsersListControllerState();
 }
 
 class _PudoUsersListControllerState extends State<PudoUsersListController> {

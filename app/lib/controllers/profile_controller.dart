@@ -41,13 +41,13 @@ import 'package:qui_green/singletons/network/network_manager.dart';
 import 'package:qui_green/widgets/sascaffold.dart';
 import 'package:qui_green/widgets/table_view_cell.dart';
 import 'package:qui_green/widgets/user_profile_recap_widget.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 class ProfileController extends StatefulWidget {
   const ProfileController({Key? key}) : super(key: key);
 
   @override
-  _ProfileControllerState createState() => _ProfileControllerState();
+  State<ProfileController> createState() => _ProfileControllerState();
 }
 
 class _ProfileControllerState extends State<ProfileController> with ConnectionAware {
@@ -208,7 +208,7 @@ class _ProfileControllerState extends State<ProfileController> with ConnectionAw
                                         style: Theme.of(context).textTheme.bodyTextAccent,
                                       ),
                                       onPressed: () {
-                                        launch(value).then((value) {
+                                        launchUrlString(value).then((value) {
                                           Navigator.pop(context);
                                           NetworkManager.instance.setAccessToken(null);
                                           currentUser.refresh();
@@ -322,11 +322,11 @@ class _ProfileControllerState extends State<ProfileController> with ConnectionAw
                 _info == null
                     ? const SizedBox()
                     : Positioned(
+                        bottom: 90,
                         child: Text(
                           'v${_info!.version}#${_info!.buildNumber}',
                           style: Theme.of(context).textTheme.captionSmall,
                         ),
-                        bottom: 90,
                       ),
               ],
             ),

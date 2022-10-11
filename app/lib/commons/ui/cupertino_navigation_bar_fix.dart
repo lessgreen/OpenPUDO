@@ -22,7 +22,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:qui_green/resources/res.dart';
 
 //https://github.com/flutter/flutter/issues/42759
-//FIXME: Should be checked on next Flutter release if still required.
+//TODO: Should be checked on next Flutter release if still required.
 
 extension CupertinoNavigationBarFix on CupertinoNavigationBar {
   static CupertinoNavigationBar build(

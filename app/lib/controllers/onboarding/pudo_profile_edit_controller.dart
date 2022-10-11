@@ -45,7 +45,7 @@ class PudoProfileEditController extends StatefulWidget {
   final List<RewardOption>? rewardOptions;
 
   @override
-  _PudoProfileEditControllerState createState() => _PudoProfileEditControllerState();
+  State<PudoProfileEditController> createState() => _PudoProfileEditControllerState();
 }
 
 class _PudoProfileEditControllerState extends State<PudoProfileEditController> with ConnectionAware {

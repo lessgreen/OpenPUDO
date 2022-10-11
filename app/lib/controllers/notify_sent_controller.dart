@@ -32,7 +32,7 @@ class NotifySentController extends StatefulWidget {
   final bool canGoBack;
 
   @override
-  _NotifySentControllerState createState() => _NotifySentControllerState();
+  State<NotifySentController> createState() => _NotifySentControllerState();
 }
 
 class _NotifySentControllerState extends State<NotifySentController> {

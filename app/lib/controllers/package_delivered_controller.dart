@@ -40,7 +40,7 @@ class PackageDeliveredController extends StatefulWidget {
   const PackageDeliveredController({Key? key}) : super(key: key);
 
   @override
-  _PackageDeliveredControllerState createState() => _PackageDeliveredControllerState();
+  State<PackageDeliveredController> createState() => _PackageDeliveredControllerState();
 }
 
 class _PackageDeliveredControllerState extends State<PackageDeliveredController> {

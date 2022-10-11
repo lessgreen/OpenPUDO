@@ -21,7 +21,7 @@ Map<String, dynamic> _$RewardOptionToJson(RewardOption instance) {
   final val = <String, dynamic>{
     'name': instance.name,
     'text': instance.text,
-    'icon': _$IconInfoTypeEnumMap[instance.icon],
+    'icon': _$IconInfoTypeEnumMap[instance.icon]!,
   };
 
   void writeNotNull(String key, dynamic value) {

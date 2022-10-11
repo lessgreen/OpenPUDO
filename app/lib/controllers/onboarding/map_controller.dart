@@ -81,29 +81,29 @@ class MapController extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _MapControllerState createState() => _MapControllerState();
+  State<MapController> createState() => _MapControllerState();
 }
 
 class _MapControllerState extends State<MapController> with ConnectionAware, TickerProviderStateMixin {
   void _showErrorDialog(BuildContext context, String val) => SAAlertDialog.displayAlertWithClose(context, 'genericErrorTitle'.localized(context, 'general'), val);
 
   void animateMapTo(MapsControllerViewModel viewModel, LatLng pos, {bool forceZoom = false}) {
-    final _latTween = Tween<double>(
+    final latTween = Tween<double>(
       begin: viewModel.mapController?.center.latitude,
       end: pos.latitude,
     );
-    final _lngTween = Tween<double>(
+    final lngTween = Tween<double>(
       begin: viewModel.mapController?.center.longitude,
       end: pos.longitude,
     );
-    Tween<double> _zoomTween;
+    Tween<double> zoomTween;
     if (!viewModel.currentMapPosition!.bounds!.contains(pos)) {
       LatLngBounds newBounds = viewModel.currentMapPosition!.bounds!;
       newBounds.extend(pos);
       CenterZoom? newZoom = viewModel.mapController?.centerZoomFitBounds(newBounds);
-      _zoomTween = Tween<double>(begin: viewModel.mapController?.zoom, end: newZoom!.zoom < 13 ? 13 : newZoom.zoom);
+      zoomTween = Tween<double>(begin: viewModel.mapController?.zoom, end: newZoom!.zoom < 13 ? 13 : newZoom.zoom);
     } else {
-      _zoomTween = Tween<double>(begin: viewModel.mapController?.zoom, end: forceZoom ? 16 : viewModel.mapController?.zoom);
+      zoomTween = Tween<double>(begin: viewModel.mapController?.zoom, end: forceZoom ? 16 : viewModel.mapController?.zoom);
     }
 
     var controller = AnimationController(duration: const Duration(milliseconds: 500), vsync: this);
@@ -114,8 +114,8 @@ class _MapControllerState extends State<MapController> with ConnectionAware, Tic
 
     controller.addListener(() {
       viewModel.mapController?.move(
-        LatLng(_latTween.evaluate(animation), _lngTween.evaluate(animation)),
-        _zoomTween.evaluate(animation),
+        LatLng(latTween.evaluate(animation), lngTween.evaluate(animation)),
+        zoomTween.evaluate(animation),
       );
     });
 
@@ -442,11 +442,11 @@ class _MapControllerState extends State<MapController> with ConnectionAware, Tic
                   builder: (context, markers) {
                     return FloatingActionButton(
                       heroTag: Key(markers.length.toString() + markers.first.point.toSexagesimal()),
+                      onPressed: null,
                       child: Text(
                         markers.length.toString(),
                         style: Theme.of(context).textTheme.captionWhite,
                       ),
-                      onPressed: null,
                     );
                   },
                 ),

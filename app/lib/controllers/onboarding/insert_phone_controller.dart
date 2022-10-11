@@ -36,7 +36,7 @@ class InsertPhoneController extends StatefulWidget {
   const InsertPhoneController({Key? key}) : super(key: key);
 
   @override
-  _InsertPhoneControllerState createState() => _InsertPhoneControllerState();
+  State<InsertPhoneController> createState() => _InsertPhoneControllerState();
 }
 
 class _InsertPhoneControllerState extends State<InsertPhoneController> with ConnectionAware {
@@ -48,15 +48,11 @@ class _InsertPhoneControllerState extends State<InsertPhoneController> with Conn
   final TextEditingController _phoneTextController = TextEditingController();
 
   String _getCountryISOCode() {
-    final WidgetsBinding? instance = WidgetsBinding.instance;
-    if (instance != null) {
-      final List<Locale> systemLocales = instance.window.locales;
-      String? isoCountryCode = systemLocales.first.countryCode;
-      if (isoCountryCode != null) {
-        return isoCountryCode;
-      } else {
-        throw ("Unable to get Country ISO code");
-      }
+    final WidgetsBinding instance = WidgetsBinding.instance;
+    final List<Locale> systemLocales = instance.window.locales;
+    String? isoCountryCode = systemLocales.first.countryCode;
+    if (isoCountryCode != null) {
+      return isoCountryCode;
     } else {
       throw ("Unable to get Country ISO code");
     }

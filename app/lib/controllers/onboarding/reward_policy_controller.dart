@@ -38,7 +38,7 @@ class RewardPolicyController extends StatefulWidget {
   final RegistrationPudoModel pudoRegistrationModel;
 
   @override
-  _RewardPolicyControllerState createState() => _RewardPolicyControllerState();
+  State<RewardPolicyController> createState() => _RewardPolicyControllerState();
 }
 
 class _RewardPolicyControllerState extends State<RewardPolicyController> {

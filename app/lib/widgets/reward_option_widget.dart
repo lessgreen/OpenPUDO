@@ -302,7 +302,7 @@ class ExtraInfoTextWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var textValue = (extraInfo.value != null && extraInfo.value is String) ? extraInfo.value : "";
-    final TextEditingController _textController = TextEditingController()
+    final TextEditingController textController = TextEditingController()
       ..text = textValue
       ..selection = TextSelection.collapsed(offset: textValue.length);
 
@@ -310,17 +310,17 @@ class ExtraInfoTextWidget extends StatelessWidget {
       onFocusChange: (value) {
         if (value == false) {
           if (subIndex != null) {
-            viewModel.onSubTextChange(index, subIndex!, _textController.text);
+            viewModel.onSubTextChange(index, subIndex!, textController.text);
           } else {
-            viewModel.onTextChange(index, _textController.text);
+            viewModel.onTextChange(index, textController.text);
           }
         } else {
-          _textController.selection = TextSelection.collapsed(offset: _textController.text.length);
+          textController.selection = TextSelection.collapsed(offset: textController.text.length);
         }
       },
       child: TextFormField(
         scrollPadding: const EdgeInsets.only(bottom: 100),
-        controller: _textController,
+        controller: textController,
         maxLines: 5,
         decoration: InputDecoration(
           hintText: extraInfo.text,

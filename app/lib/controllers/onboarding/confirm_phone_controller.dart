@@ -30,6 +30,7 @@ import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
 import 'package:qui_green/commons/utilities/keyboard_visibility.dart';
 import 'package:qui_green/commons/utilities/localization.dart';
 import 'package:qui_green/commons/utilities/network_error_helper.dart';
+import 'package:qui_green/models/access_token_data.dart';
 import 'package:qui_green/resources/res.dart';
 import 'package:qui_green/resources/routes_enum.dart';
 import 'package:qui_green/singletons/current_user.dart';
@@ -43,7 +44,7 @@ class ConfirmPhoneController extends StatefulWidget {
   final String phoneNumber;
 
   @override
-  _ConfirmPhoneControllerState createState() => _ConfirmPhoneControllerState();
+  State<ConfirmPhoneController> createState() => _ConfirmPhoneControllerState();
 }
 
 class _ConfirmPhoneControllerState extends State<ConfirmPhoneController> with ConnectionAware {
@@ -66,13 +67,13 @@ class _ConfirmPhoneControllerState extends State<ConfirmPhoneController> with Co
   void sendOtp() {
     NetworkManager.instance.login(login: widget.phoneNumber, password: _confirmValue).then((value) {
       switch (NetworkManager.instance.accessTokenAccess) {
-        case "customer":
+        case AccessProfileType.customer:
           Provider.of<CurrentUser>(context, listen: false).refresh(context);
           break;
-        case "pudo":
+        case AccessProfileType.pudo:
           Provider.of<CurrentUser>(context, listen: false).refresh(context);
           break;
-        case "guest":
+        case AccessProfileType.guest:
           Navigator.of(context).pushReplacementNamed(Routes.aboutYou, arguments: {'phoneNumber': widget.phoneNumber});
           break;
         default:

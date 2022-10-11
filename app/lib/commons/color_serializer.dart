@@ -34,7 +34,7 @@ extension ColorSerializer on Color {
     if (blueValue.length < 2) {
       blueValue = '0$blueValue';
     }
-    return '0xff' + redValue + greenValue + blueValue;
+    return "0xff$redValue$greenValue$blueValue";
   }
 
   static Color? fromString(String hexString) {

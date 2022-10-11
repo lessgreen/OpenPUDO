@@ -30,7 +30,7 @@ class ListViewHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var _listView = ListView.builder(
+    var listView = ListView.builder(
       itemCount: actualItemCount,
       physics: physics,
       shrinkWrap: shrinkWrap,
@@ -65,8 +65,8 @@ class ListViewHeader extends StatelessWidget {
     return hasScrollbar
         ? CupertinoScrollbar(
             controller: scrollController,
-            child: _listView,
+            child: listView,
           )
-        : _listView;
+        : listView;
   }
 }

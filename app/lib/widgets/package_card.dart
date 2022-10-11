@@ -113,6 +113,8 @@ class PackageCard extends StatelessWidget {
                 ),
                 (dataSource.packageStatus == PackageStatus.notifySent)
                     ? Positioned(
+                        top: 6,
+                        right: 12,
                         child: Container(
                           decoration: const BoxDecoration(
                               color: Colors.red,
@@ -122,8 +124,6 @@ class PackageCard extends StatelessWidget {
                           height: 12,
                           width: 12,
                         ),
-                        top: 6,
-                        right: 12,
                       )
                     : const SizedBox()
               ],

@@ -18,7 +18,7 @@
  If not, see <https://github.com/lessgreen/OpenPUDO>.
 */
 
-import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 class UrlLauncherHelper {
   static void launchUrl(UrlTypes type, String url) {
@@ -39,7 +39,7 @@ class UrlLauncherHelper {
   }
 
   static void _launchURL(String type, String phoneNumber, {bool addEndSlashes = true}) async {
-    if (!await launch('$type:${addEndSlashes ? '//' : ''}$phoneNumber')) throw 'Could not launch $type:$phoneNumber';
+    if (!await launchUrlString('$type:${addEndSlashes ? '//' : ''}$phoneNumber')) throw 'Could not launch $type:$phoneNumber';
   }
 }
 

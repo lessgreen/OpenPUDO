@@ -85,10 +85,10 @@ class UserProfileRecapWidget extends StatelessWidget {
               onTap?.call();
               _shareDidPress(context);
             },
+            style: AdditionalButtonStyles.simpleStyle(context),
             child: Text(
               'shareButton'.localized(context),
             ),
-            style: AdditionalButtonStyles.simpleStyle(context),
           )
         ],
       ),

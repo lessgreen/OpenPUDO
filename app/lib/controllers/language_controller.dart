@@ -36,7 +36,7 @@ class LanguageController extends StatefulWidget {
   const LanguageController({Key? key}) : super(key: key);
 
   @override
-  _LanguageControllerState createState() => _LanguageControllerState();
+  State<LanguageController> createState() => _LanguageControllerState();
 }
 
 class _LanguageControllerState extends State<LanguageController> with ConnectionAware {

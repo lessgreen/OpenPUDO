@@ -35,7 +35,7 @@ class HomeUserPackages extends StatefulWidget {
   const HomeUserPackages({Key? key}) : super(key: key);
 
   @override
-  _HomeUserPackagesState createState() => _HomeUserPackagesState();
+  State<HomeUserPackages> createState() => _HomeUserPackagesState();
 }
 
 enum HomeUserState { hasPackages, noPackages, noPudo, unknown }

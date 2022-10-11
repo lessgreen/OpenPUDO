@@ -85,7 +85,9 @@ class ContentNotificationsPageViewModel with ChangeNotifier {
       } else {
         ///Show error
       }
-    }).catchError((onError) => safePrint(onError));
+    }).catchError((onError) {
+      safePrint(onError);
+    });
   }
 
   onNotificationTile(OpenPudoNotification notification) async {
