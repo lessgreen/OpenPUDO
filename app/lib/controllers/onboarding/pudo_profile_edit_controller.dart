@@ -23,10 +23,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
+import 'package:qui_green/commons/alert_dialog.dart';
 import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
 import 'package:qui_green/commons/ui/cupertino_navigation_bar_fix.dart';
 import 'package:qui_green/commons/utilities/localization.dart';
 import 'package:qui_green/models/geo_marker.dart';
+import 'package:qui_green/models/map_search_addresses_request.dart';
 import 'package:qui_green/models/reward_option.dart';
 import 'package:qui_green/resources/res.dart';
 import 'package:qui_green/singletons/current_user.dart';
@@ -331,8 +333,22 @@ class _PudoProfileEditControllerState extends State<PudoProfileEditController> w
                       child: AddressOverlaySearch(
                         borderRadius: BorderRadius.zero,
                         onTap: (GeoMarker marker) {
-                          viewModel.address = viewModel.convertGeoMarker(marker);
-                          viewModel.addressController.text = marker.address!.label ?? "";
+                          var signature = marker.signature;
+                          if (signature != null) {
+                            NetworkManager.instance.getPlacemarkDetails(MapSearchAddressesRequest(text: signature)).then((markerDetails) {
+                              if (markerDetails is GeoMarker && markerDetails.lat != null && markerDetails.lon != null) {
+                                viewModel.address = viewModel.convertGeoMarker(markerDetails);
+                                viewModel.addressController.text = marker.address!.label ?? "";
+                              }
+                            }).catchError((onError) {
+                              SAAlertDialog.displayAlertWithClose(
+                                context,
+                                "genericErrorTitle".localized(context, 'general'),
+                                onError,
+                                barrierDismissable: false,
+                              );
+                            });
+                          }
                           viewModel.isOpenListAddress = false;
                         },
                         addresses: viewModel.addresses,
