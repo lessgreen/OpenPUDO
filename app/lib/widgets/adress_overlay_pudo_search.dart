@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:qui_green/commons/alert_dialog.dart';
 import 'package:qui_green/commons/extensions/additional_text_theme_styles.dart';
+import 'package:qui_green/commons/utilities/localization.dart';
 import 'package:qui_green/models/geo_marker.dart';
+import 'package:qui_green/models/map_search_addresses_request.dart';
 import 'package:qui_green/resources/res.dart';
+import 'package:qui_green/singletons/network/network_manager.dart';
 import 'package:qui_green/view_models/maps_controller_viewmodel.dart';
 
 class AdressOverlayPudoSearch extends StatefulWidget {
@@ -21,7 +25,22 @@ class _AdressOverlayPudoSearchState extends State<AdressOverlayPudoSearch> {
       widget.viewModel.onPudoClick(context, e, false);
     } else {
       widget.viewModel.isOpenListAddress = false;
-      widget.viewModel.animateMapTo(widget.viewModel, LatLng(e.lat!, e.lon!));
+
+      var signature = e.signature;
+      if (signature != null) {
+        NetworkManager.instance.getPlacemarkDetails(MapSearchAddressesRequest(text: signature)).then((markerDetails) {
+          if (markerDetails is GeoMarker && markerDetails.lat != null && markerDetails.lon != null) {
+            widget.viewModel.animateMapTo(widget.viewModel, LatLng(markerDetails.lat!, markerDetails.lon!));
+          }
+        }).catchError((onError) {
+          SAAlertDialog.displayAlertWithClose(
+            context,
+            "genericErrorTitle".localized(context, 'general'),
+            onError,
+            barrierDismissable: false,
+          );
+        });
+      }
     }
   }
 
