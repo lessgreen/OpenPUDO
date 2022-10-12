@@ -19,6 +19,7 @@ RegistrationPudoRequest _$RegistrationPudoRequestFromJson(
       rewardPolicy: (json['rewardPolicy'] as List<dynamic>?)
           ?.map((e) => RewardOption.fromJson(e as Map<String, dynamic>))
           .toList(),
+      dynamicLinkId: json['dynamicLinkId'] as String?,
     );
 
 Map<String, dynamic> _$RegistrationPudoRequestToJson(
@@ -27,6 +28,7 @@ Map<String, dynamic> _$RegistrationPudoRequestToJson(
       'pudo': instance.pudo,
       'addressMarker': instance.addressMarker,
       'rewardPolicy': instance.rewardPolicy,
+      'dynamicLinkId': instance.dynamicLinkId,
     };
 
 PudoRequest _$PudoRequestFromJson(Map<String, dynamic> json) => PudoRequest(

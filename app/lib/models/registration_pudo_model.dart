@@ -29,21 +29,21 @@ class RegistrationPudoModel {
   final String? email;
   final File? profilePic;
   final List<RewardOption>? rewardPolicy;
+  final String? dynamicLinkId;
 
-  RegistrationPudoModel({this.businessName, this.publicPhoneNumber, this.email, this.profilePic, this.addressMarker, this.rewardPolicy});
+  RegistrationPudoModel({this.businessName, this.publicPhoneNumber, this.email, this.profilePic, this.addressMarker, this.rewardPolicy, this.dynamicLinkId});
 
-  RegistrationPudoModel copyWith({String? businessName, String? publicPhoneNumber, String? email, File? profilePic, PudoAddressMarker? addressMarker, List<RewardOption>? rewardPolicy}) =>
+  RegistrationPudoModel copyWith(
+          {String? businessName, String? publicPhoneNumber, String? email, File? profilePic, PudoAddressMarker? addressMarker, List<RewardOption>? rewardPolicy, String? dynamicLinkId}) =>
       RegistrationPudoModel(
           businessName: businessName ?? this.businessName,
           publicPhoneNumber: publicPhoneNumber ?? this.publicPhoneNumber,
           email: email ?? this.email,
           profilePic: profilePic ?? this.profilePic,
           addressMarker: addressMarker ?? this.addressMarker,
-          rewardPolicy: rewardPolicy ?? this.rewardPolicy);
+          rewardPolicy: rewardPolicy ?? this.rewardPolicy,
+          dynamicLinkId: dynamicLinkId ?? this.dynamicLinkId);
 
   RegistrationPudoRequest toRequest() => RegistrationPudoRequest(
-        pudo: PudoRequest(publicPhoneNumber: publicPhoneNumber!, businessName: businessName!, email: email),
-        addressMarker: addressMarker,
-        rewardPolicy: rewardPolicy,
-      );
+      pudo: PudoRequest(publicPhoneNumber: publicPhoneNumber!, businessName: businessName!, email: email), addressMarker: addressMarker, rewardPolicy: rewardPolicy, dynamicLinkId: dynamicLinkId);
 }

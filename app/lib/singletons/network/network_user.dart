@@ -99,15 +99,28 @@ mixin NetworkManagerUser on NetworkGeneral {
     }
   }
 
-  Future<dynamic> registerUser({required String name, required String surname}) async {
+  Future<dynamic> registerUser({required String name, required String surname, String? dynamicLinkId}) async {
     try {
       if (!isOnline) {
         throw ("Network is offline");
       }
       var url = "$_baseURL/api/v2/auth/register/customer";
-      var body = jsonEncode({
-        "user": {"firstName": name, "lastName": surname}
-      });
+      Map<String, Object?> jsonBody = {
+        "user": {
+          "firstName": name,
+          "lastName": surname,
+        }
+      };
+      if (dynamicLinkId != null) {
+        jsonBody = {
+          "user": {
+            "firstName": name,
+            "lastName": surname,
+          },
+          "dynamicLinkId": dynamicLinkId
+        };
+      }
+      var body = jsonEncode(jsonBody);
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _networkActivity.value = true;
       });

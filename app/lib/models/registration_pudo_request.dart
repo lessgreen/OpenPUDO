@@ -29,8 +29,9 @@ class RegistrationPudoRequest {
   final PudoRequest? pudo;
   final PudoAddressMarker? addressMarker;
   final List<RewardOption>? rewardPolicy;
+  final String? dynamicLinkId;
 
-  RegistrationPudoRequest({required this.pudo, this.addressMarker, this.rewardPolicy});
+  RegistrationPudoRequest({required this.pudo, this.addressMarker, this.rewardPolicy, this.dynamicLinkId});
 
   factory RegistrationPudoRequest.fromJson(Map<String, dynamic> json) => _$RegistrationPudoRequestFromJson(json);
 
