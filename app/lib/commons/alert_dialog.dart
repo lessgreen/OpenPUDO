@@ -23,6 +23,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:html_unescape/html_unescape_small.dart';
 import 'package:qui_green/commons/utilities/localization.dart';
 import 'package:qui_green/models/base_response.dart';
@@ -45,44 +46,44 @@ class SAAlertDialog extends StatelessWidget {
       return;
     }
     isAlreadyShown = true;
-    showCupertinoModalPopup<void>(
-        context: context,
-        builder: (BuildContext subContext) {
-          List<CupertinoActionSheetAction> modifiedActions = actions
-              .asMap()
-              .map((key, value) {
-                return MapEntry(
-                  key,
-                  CupertinoActionSheetAction(
-                    child: value.child,
-                    onPressed: () {
-                      isAlreadyShown = false;
-                      value.onPressed.call();
-                      if (Navigator.of(subContext).canPop() == true) {
-                        Navigator.of(subContext).pop();
-                      }
-                    },
-                  ),
-                );
-              })
-              .values
-              .toList();
-          return CupertinoActionSheet(
-            title: Text(title),
-            cancelButton: CupertinoActionSheetAction(
-              child: Text('cancelButtonTitle'.localized(context, 'general')),
-              onPressed: () {
-                isAlreadyShown = false;
-                if (Navigator.of(subContext).canPop() == true) {
-                  Navigator.of(subContext).pop();
-                }
-              },
-            ),
-            actions: modifiedActions,
-          );
-        }).then((value) {
-      isAlreadyShown = false;
-    });
+    SchedulerBinding.instance.addPostFrameCallback((_) => showCupertinoModalPopup<void>(
+            context: context,
+            builder: (BuildContext subContext) {
+              List<CupertinoActionSheetAction> modifiedActions = actions
+                  .asMap()
+                  .map((key, value) {
+                    return MapEntry(
+                      key,
+                      CupertinoActionSheetAction(
+                        child: value.child,
+                        onPressed: () {
+                          isAlreadyShown = false;
+                          value.onPressed.call();
+                          if (Navigator.of(subContext).canPop() == true) {
+                            Navigator.of(subContext).pop();
+                          }
+                        },
+                      ),
+                    );
+                  })
+                  .values
+                  .toList();
+              return CupertinoActionSheet(
+                title: Text(title),
+                cancelButton: CupertinoActionSheetAction(
+                  child: Text('cancelButtonTitle'.localized(context, 'general')),
+                  onPressed: () {
+                    isAlreadyShown = false;
+                    if (Navigator.of(subContext).canPop() == true) {
+                      Navigator.of(subContext).pop();
+                    }
+                  },
+                ),
+                actions: modifiedActions,
+              );
+            }).then((value) {
+          isAlreadyShown = false;
+        }));
   }
 
   static displayAlertWithButtons(BuildContext context, String title, String description, List<MaterialButton> actions, {bool barrierDismissable = false}) {
@@ -91,35 +92,35 @@ class SAAlertDialog extends StatelessWidget {
     }
     isAlreadyShown = true;
 
-    showDialog(
-            barrierDismissible: barrierDismissable,
-            builder: (subContext) {
-              List<MaterialButton> modifiedActions = actions
-                  .asMap()
-                  .map((key, value) {
-                    return MapEntry(
-                      key,
-                      MaterialButton(
-                        elevation: 0,
-                        child: value.child,
-                        onPressed: () {
-                          isAlreadyShown = false;
-                          if (Navigator.of(subContext).canPop() == true) {
-                            Navigator.of(subContext).pop();
-                          }
-                          value.onPressed?.call();
-                        },
-                      ),
-                    );
-                  })
-                  .values
-                  .toList();
-              return SAAlertDialog(title: title, description: HtmlUnescape().convert(description), actions: modifiedActions);
-            },
-            context: context)
-        .then((value) {
-      isAlreadyShown = false;
-    });
+    SchedulerBinding.instance.addPostFrameCallback((_) => showDialog(
+                barrierDismissible: barrierDismissable,
+                builder: (subContext) {
+                  List<MaterialButton> modifiedActions = actions
+                      .asMap()
+                      .map((key, value) {
+                        return MapEntry(
+                          key,
+                          MaterialButton(
+                            elevation: 0,
+                            child: value.child,
+                            onPressed: () {
+                              isAlreadyShown = false;
+                              if (Navigator.of(subContext).canPop() == true) {
+                                Navigator.of(subContext).pop();
+                              }
+                              value.onPressed?.call();
+                            },
+                          ),
+                        );
+                      })
+                      .values
+                      .toList();
+                  return SAAlertDialog(title: title, description: HtmlUnescape().convert(description), actions: modifiedActions);
+                },
+                context: context)
+            .then((value) {
+          isAlreadyShown = false;
+        }));
   }
 
   static displayAlertWithClose(BuildContext context, String title, dynamic description, {bool barrierDismissable = true, Function? completion}) {
@@ -127,48 +128,48 @@ class SAAlertDialog extends StatelessWidget {
       return;
     }
     isAlreadyShown = true;
-    showDialog(
-            barrierDismissible: barrierDismissable,
-            builder: (subContext) {
-              return SAAlertDialog(
-                title: title,
-                description: (description is OPBaseResponse)
-                    ? HtmlUnescape().convert(
-                        description.message ?? 'genericErrorDescription'.localized(context, 'general'),
+    SchedulerBinding.instance.addPostFrameCallback((_) => showDialog(
+                barrierDismissible: barrierDismissable,
+                builder: (subContext) {
+                  return SAAlertDialog(
+                    title: title,
+                    description: (description is OPBaseResponse)
+                        ? HtmlUnescape().convert(
+                            description.message ?? 'genericErrorDescription'.localized(context, 'general'),
+                          )
+                        : (description is Error)
+                            ? HtmlUnescape().convert(description.toString())
+                            : (description is ErrorDescription)
+                                ? HtmlUnescape().convert(description.value.first.toString())
+                                : (description is SocketException)
+                                    ? HtmlUnescape().convert(description.message)
+                                    : (description is TimeoutException)
+                                        ? HtmlUnescape().convert(
+                                            description.message ?? 'timeoutDescription'.localized(context, 'general'),
+                                          )
+                                        : (description is String)
+                                            ? HtmlUnescape().convert(description)
+                                            : 'unknownDescription'.localized(context, 'general'),
+                    actions: <Widget>[
+                      MaterialButton(
+                        elevation: 0,
+                        child: Text(
+                          'closeButtonTitle'.localized(context, 'general'),
+                        ),
+                        onPressed: () {
+                          isAlreadyShown = false;
+                          Navigator.of(subContext).pop();
+                          completion?.call();
+                        },
                       )
-                    : (description is Error)
-                        ? HtmlUnescape().convert(description.toString())
-                        : (description is ErrorDescription)
-                            ? HtmlUnescape().convert(description.value.first.toString())
-                            : (description is SocketException)
-                                ? HtmlUnescape().convert(description.message)
-                                : (description is TimeoutException)
-                                    ? HtmlUnescape().convert(
-                                        description.message ?? 'timeoutDescription'.localized(context, 'general'),
-                                      )
-                                    : (description is String)
-                                        ? HtmlUnescape().convert(description)
-                                        : 'unknownDescription'.localized(context, 'general'),
-                actions: <Widget>[
-                  MaterialButton(
-                    elevation: 0,
-                    child: Text(
-                      'closeButtonTitle'.localized(context, 'general'),
-                    ),
-                    onPressed: () {
-                      isAlreadyShown = false;
-                      Navigator.of(subContext).pop();
-                      completion?.call();
-                    },
-                  )
-                ],
-              );
-            },
-            context: context)
-        .then((value) {
-      isAlreadyShown = false;
-      completion?.call();
-    });
+                    ],
+                  );
+                },
+                context: context)
+            .then((value) {
+          isAlreadyShown = false;
+          completion?.call();
+        }));
   }
 
   @override

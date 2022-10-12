@@ -382,6 +382,15 @@ class PudoProfileEditControllerViewModel extends ChangeNotifier {
   }
 
   void savePudoChanges(BuildContext context) async {
+    _onCloseHandler() {
+      if (isOnHome) {
+        Navigator.of(context).pop();
+      } else {
+        _editEnabled = false;
+        notifyListeners();
+      }
+    }
+
     if (hasBeenDetailsChanged) {
       if (isValid != UpdateValidation.valid) {
         if (isValid == UpdateValidation.businessName) {
@@ -415,25 +424,31 @@ class PudoProfileEditControllerViewModel extends ChangeNotifier {
                 ),
                 addressMarker: _address))
             .then((value) {
-          Provider.of<CurrentUser>(context, listen: false).triggerUserReload();
+          if (value is ErrorDescription) {
+            SAAlertDialog.displayAlertWithClose(
+              context,
+              "genericErrorTitle".localized(context, 'general'),
+              value,
+              barrierDismissable: false,
+            );
+          } else {
+            Provider.of<CurrentUser>(context, listen: false).triggerUserReload();
+            _onCloseHandler();
+          }
         });
       }
     }
     if (hasBeenRewardPolicyChanged) {
       NetworkManager.instance.updatePudoPolicy(dataSource).then((value) {
         Provider.of<CurrentUser>(context, listen: false).triggerUserReload();
+        _onCloseHandler();
       });
     }
     if (_image != null) {
       NetworkManager.instance.photoUpload(_image!, isPudo: true).then((value) {
         Provider.of<CurrentUser>(context, listen: false).triggerUserReload();
+        _onCloseHandler();
       });
-    }
-    if (isOnHome) {
-      Navigator.of(context).pop();
-    } else {
-      _editEnabled = false;
-      notifyListeners();
     }
   }
 }
