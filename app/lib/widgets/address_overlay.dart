@@ -19,8 +19,8 @@
 */
 
 import 'package:flutter/material.dart';
+import 'package:qui_green/models/geo_marker.dart';
 import 'package:qui_green/view_models/insert_address_controller_viewmodel.dart';
-import 'package:qui_green/models/address_model.dart';
 import 'package:qui_green/resources/res.dart';
 
 class AddressOverlay extends StatefulWidget {
@@ -28,7 +28,7 @@ class AddressOverlay extends StatefulWidget {
   final double positionTop;
   final double positionLeft;
   final double width;
-  final Function(AddressModel) onSelect;
+  final Function(GeoMarker) onSelect;
   final Function() removeOverlay;
 
   const AddressOverlay({Key? key, required this.viewModel, required this.positionTop, required this.positionLeft, required this.width, required this.removeOverlay, required this.onSelect})
@@ -75,7 +75,7 @@ class _AddressOverlayState extends State<AddressOverlay> {
                             const SizedBox(
                               height: Dimension.paddingXS,
                             ),
-                            Text(e.label ?? ""),
+                            Text(e.address?.label ?? ""),
                             const SizedBox(
                               height: Dimension.paddingXS,
                             ),

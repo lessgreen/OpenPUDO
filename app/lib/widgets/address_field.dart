@@ -21,6 +21,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:qui_green/commons/alert_dialog.dart';
+import 'package:qui_green/commons/utilities/localization.dart';
+import 'package:qui_green/models/geo_marker.dart';
+import 'package:qui_green/models/map_search_addresses_request.dart';
+import 'package:qui_green/singletons/network/network_manager.dart';
 import 'package:qui_green/view_models/insert_address_controller_viewmodel.dart';
 import 'package:qui_green/resources/res.dart';
 
@@ -30,8 +35,7 @@ class AddressField extends StatefulWidget {
   final InsertAddressControllerViewModel viewModel;
   final FocusNode node;
 
-  const AddressField({Key? key, required this.viewModel, required this.node})
-      : super(key: key);
+  const AddressField({Key? key, required this.viewModel, required this.node}) : super(key: key);
 
   @override
   State<AddressField> createState() => _AddressFieldState();
@@ -54,12 +58,7 @@ class _AddressFieldState extends State<AddressField> {
     overlayEntry.remove();
   }
 
-  void _showOverlay(
-      {required InsertAddressControllerViewModel viewModel,
-      required BuildContext context,
-      required double top,
-      required double left,
-      required double width}) async {
+  void _showOverlay({required InsertAddressControllerViewModel viewModel, required BuildContext context, required double top, required double left, required double width}) async {
     if (!overlayCreated) {
       OverlayState? overlayState = Overlay.of(context);
       overlayEntry = OverlayEntry(builder: (context) {
@@ -69,14 +68,27 @@ class _AddressFieldState extends State<AddressField> {
           positionTop: top,
           width: width,
           onSelect: (val) {
-            viewModel.isSelectingFromOverlay = true;
-            viewModel.hasSelected = true;
-            viewModel.addressController.text = val.label!;
-            viewModel.position = LatLng(val.lat!, val.lon!);
-            Future.delayed(const Duration(milliseconds: 100),
-                () => viewModel.isSelectingFromOverlay = false);
+            var signature = val.signature;
+            if (signature != null) {
+              NetworkManager.instance.getPlacemarkDetails(MapSearchAddressesRequest(text: signature)).then((markerDetails) {
+                if (markerDetails is GeoMarker && markerDetails.lat != null && markerDetails.lon != null) {
+                  viewModel.isSelectingFromOverlay = true;
+                  viewModel.hasSelected = true;
+                  viewModel.addressController.text = val.address?.label ?? "";
+                  viewModel.position = LatLng(markerDetails.lat!, markerDetails.lon!);
+                  viewModel.onSendClick(context);
+                }
+              }).catchError((onError) {
+                SAAlertDialog.displayAlertWithClose(
+                  context,
+                  "genericErrorTitle".localized(context, 'general'),
+                  onError,
+                  barrierDismissable: false,
+                );
+              });
+            }
+            Future.delayed(const Duration(milliseconds: 100), () => viewModel.isSelectingFromOverlay = false);
             removeOverlay();
-            viewModel.onSendClick(context);
           },
           removeOverlay: removeOverlay,
         );
@@ -90,16 +102,10 @@ class _AddressFieldState extends State<AddressField> {
 
   void onAfter() {
     _key.currentContext?.size?.width;
-    final RenderBox renderBox =
-        _key.currentContext?.findRenderObject() as RenderBox;
+    final RenderBox renderBox = _key.currentContext?.findRenderObject() as RenderBox;
     Offset? positionRed = renderBox.localToGlobal(Offset.zero);
     double top = (positionRed.dy) + (_key.currentContext?.size?.height ?? 0);
-    _showOverlay(
-        context: context,
-        top: top + Dimension.paddingXS,
-        width: _key.currentContext?.size?.width ?? 0,
-        left: positionRed.dx,
-        viewModel: widget.viewModel);
+    _showOverlay(context: context, top: top + Dimension.paddingXS, width: _key.currentContext?.size?.width ?? 0, left: positionRed.dx, viewModel: widget.viewModel);
   }
 
   @override
@@ -107,9 +113,7 @@ class _AddressFieldState extends State<AddressField> {
     return CupertinoTextField(
       key: _key,
       controller: widget.viewModel.addressController,
-      decoration: BoxDecoration(
-          border: Border(
-              bottom: BorderSide(color: Theme.of(context).primaryColor))),
+      decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Theme.of(context).primaryColor))),
       autofocus: false,
       focusNode: widget.node,
       textInputAction: TextInputAction.done,

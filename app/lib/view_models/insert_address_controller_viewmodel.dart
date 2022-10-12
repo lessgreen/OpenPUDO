@@ -45,9 +45,9 @@ class InsertAddressControllerViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  List<AddressModel> _addresses = [];
-  List<AddressModel> get addresses => _addresses;
-  set addresses(List<AddressModel> newVal) {
+  List<GeoMarker> _addresses = [];
+  List<GeoMarker> get addresses => _addresses;
+  set addresses(List<GeoMarker> newVal) {
     _addresses = newVal;
     notifyListeners();
   }
@@ -75,7 +75,7 @@ class InsertAddressControllerViewModel extends ChangeNotifier {
       var res = await NetworkManager.instance.getAddresses(text: val);
       if (res is List<GeoMarker>) {
         if (res.isNotEmpty && res.addresses != null) {
-          addresses = res.addresses!;
+          addresses = res;
           onAfter();
         } else {
           addresses = [];
