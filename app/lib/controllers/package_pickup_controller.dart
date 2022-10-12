@@ -101,7 +101,7 @@ class _PackagePickupControllerState extends State<PackagePickupController> {
   //MARK: Actions
   void _sharePackage() {
     if (widget.packageModel.shareLink != null) {
-      Share.share(NetworkManager.instance.baseURL + "/api/v2/share/${widget.packageModel.shareLink!}");
+      Share.share(NetworkManager.instance.baseURL + "/api/v2/share/package/${widget.packageModel.shareLink!}");
     } else {
       SAAlertDialog.displayAlertWithClose(
         context,
