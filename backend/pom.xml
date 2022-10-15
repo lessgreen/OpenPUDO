@@ -14,7 +14,7 @@
         <maven.compiler.release>11</maven.compiler.release>
         <quarkus.platform.groupId>io.quarkus.platform</quarkus.platform.groupId>
         <quarkus.platform.artifactId>quarkus-bom</quarkus.platform.artifactId>
-        <quarkus.platform.version>2.13.0.Final</quarkus.platform.version>
+        <quarkus.platform.version>2.13.2.Final</quarkus.platform.version>
         <lombok.version>1.18.24</lombok.version>
         <mapstruct.version>1.4.2.Final</mapstruct.version>
         <pmd.version>3.14.0</pmd.version>
