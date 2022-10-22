@@ -1,5 +1,6 @@
 package less.green.openpudo.rest.dto.pack;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import less.green.openpudo.business.model.usertype.PackageStatus;
 import lombok.Data;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
@@ -16,6 +17,7 @@ public class PackageSummary {
     private Long packageId;
 
     @Schema(readOnly = true)
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Instant createTms;
 
     @Schema(readOnly = true)

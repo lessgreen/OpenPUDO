@@ -1,5 +1,6 @@
 package less.green.openpudo.rest.dto.user;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
@@ -14,9 +15,11 @@ public class User {
     private Long userId;
 
     @Schema(readOnly = true)
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Instant createTms;
 
     @Schema(readOnly = true)
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Instant updateTms;
 
     @Schema(required = true)
