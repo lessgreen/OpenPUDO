@@ -12,10 +12,10 @@ import java.util.Map;
 
 public class Encoders {
 
-    public static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
-    public static final ObjectMapper OBJECT_MAPPER_COMPACT = new ObjectMapper().setSerializationInclusion(JsonInclude.Include.NON_NULL);
-    public static final ObjectMapper OBJECT_MAPPER_PRETTY = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
-    public static final ObjectMapper OBJECT_MAPPER_PRETTY_COMPACT = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT).setSerializationInclusion(JsonInclude.Include.NON_NULL);
+    public static final ObjectMapper OBJECT_MAPPER = new ObjectMapper().findAndRegisterModules();;
+    public static final ObjectMapper OBJECT_MAPPER_COMPACT = new ObjectMapper().setSerializationInclusion(JsonInclude.Include.NON_NULL).findAndRegisterModules();;
+    public static final ObjectMapper OBJECT_MAPPER_PRETTY = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT).findAndRegisterModules();;
+    public static final ObjectMapper OBJECT_MAPPER_PRETTY_COMPACT = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT).setSerializationInclusion(JsonInclude.Include.NON_NULL).findAndRegisterModules();;
     public static final Base64.Encoder BASE64_ENCODER = Base64.getEncoder();
     public static final Base64.Decoder BASE64_DECODER = Base64.getDecoder();
     public static final Base64.Encoder BASE64_URL_ENCODER = Base64.getUrlEncoder().withoutPadding();

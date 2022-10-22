@@ -18,9 +18,9 @@
         <lombok.version>1.18.24</lombok.version>
         <mapstruct.version>1.4.2.Final</mapstruct.version>
         <pmd.version>3.14.0</pmd.version>
-        <libphonenumber.version>8.12.56</libphonenumber.version>
+        <libphonenumber.version>8.12.57</libphonenumber.version>
         <unirest.version>3.13.11</unirest.version>
-        <firebase.version>9.0.0</firebase.version>
+        <firebase.version>9.1.0</firebase.version>
         <hashids.version>1.0.3</hashids.version>
         <zxing.version>3.5.0</zxing.version>
     </properties>
@@ -90,6 +90,11 @@
             <artifactId>mapstruct-processor</artifactId>
             <version>${mapstruct.version}</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+<!--            <version>2.13.4</version>-->
         </dependency>
         <dependency>
             <groupId>com.google.maps</groupId>
