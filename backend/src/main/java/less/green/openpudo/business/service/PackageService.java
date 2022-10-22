@@ -8,7 +8,6 @@ import less.green.openpudo.cdi.ExecutionContext;
 import less.green.openpudo.cdi.service.CryptoService;
 import less.green.openpudo.cdi.service.LocalizationService;
 import less.green.openpudo.common.ApiReturnCodes;
-import less.green.openpudo.common.CalendarUtils;
 import less.green.openpudo.common.dto.tuple.Pair;
 import less.green.openpudo.common.dto.tuple.Sextet;
 import less.green.openpudo.rest.config.exception.ApiException;
@@ -21,7 +20,11 @@ import lombok.extern.log4j.Log4j2;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
-import java.util.*;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static less.green.openpudo.common.StringUtils.sanitizeString;
@@ -135,7 +138,7 @@ public class PackageService {
             throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.forbidden"));
         }
 
-        Date now = new Date();
+        Instant now = Instant.now();
         TbPackage pack = new TbPackage();
         pack.setCreateTms(now);
         pack.setUpdateTms(now);
@@ -191,11 +194,11 @@ public class PackageService {
             throw new ApiException(ApiReturnCodes.FORBIDDEN, localizationService.getMessage(context.getLanguage(), "error.forbidden"));
         }
 
-        // since the user can react to push notification even much after
+        // since the user can react to push notification even much later
         // if package is in expected states we make the transition, otherwise we silently skip it and return the current state
         if (rs.getValue1().get(0).getPackageStatus() == PackageStatus.DELIVERED
             || rs.getValue1().get(0).getPackageStatus() == PackageStatus.NOTIFY_SENT) {
-            Date now = new Date();
+            Instant now = Instant.now();
             rs.getValue0().setUpdateTms(now);
             TbPackageEvent packageEvent = new TbPackageEvent();
             packageEvent.setPackageId(packageId);
@@ -229,7 +232,7 @@ public class PackageService {
             throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.package.illegal_state"));
         }
 
-        Date now = new Date();
+        Instant now = Instant.now();
         rs.getValue0().setUpdateTms(now);
         TbPackageEvent packageEvent = new TbPackageEvent();
         packageEvent.setPackageId(packageId);
@@ -284,7 +287,7 @@ public class PackageService {
             throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.package.illegal_state"));
         }
 
-        Date now = new Date();
+        Instant now = Instant.now();
         rs.getValue0().setUpdateTms(now);
         TbPackageEvent packageEvent = new TbPackageEvent();
         packageEvent.setPackageId(packageId);
@@ -323,13 +326,13 @@ public class PackageService {
 
     public List<Long> getPackageIdsToNotifySent() {
         // get packages in delivered status for more than 30 seconds
-        Date timeThreshold = CalendarUtils.getDateWithOffset(new Date(), Calendar.SECOND, -30);
+        Instant timeThreshold = Instant.now().minus(30, ChronoUnit.SECONDS);
         return packageDao.getPackageIdsToNotifySent(timeThreshold);
     }
 
     public void notifySentPackage(Long packageId) {
         // we are coming from a cron job, so no need to check the existence of the package nor the grants to access it
-        Date now = new Date();
+        Instant now = Instant.now();
         Pair<TbPackage, List<TbPackageEvent>> rs = packageDao.getPackage(packageId);
         rs.getValue0().setUpdateTms(now);
         TbPackageEvent packageEvent = new TbPackageEvent();
@@ -368,13 +371,13 @@ public class PackageService {
 
     public List<Long> getPackageIdsToExpired() {
         // get packages in notified or notify_sent status for more than 30 days
-        Date timeThreshold = CalendarUtils.getDateWithOffset(new Date(), Calendar.DAY_OF_MONTH, -30);
+        Instant timeThreshold = Instant.now().minus(30, ChronoUnit.DAYS);
         return packageDao.getPackageIdsToExpired(timeThreshold);
     }
 
     public void expiredPackage(Long packageId) {
         // we are coming from a cron job, so no need to check the existence of the package nor the grants to access it
-        Date now = new Date();
+        Instant now = Instant.now();
         Pair<TbPackage, List<TbPackageEvent>> rs = packageDao.getPackage(packageId);
         rs.getValue0().setUpdateTms(now);
         TbPackageEvent packageEvent = new TbPackageEvent();
@@ -391,13 +394,13 @@ public class PackageService {
 
     public List<Long> getPackageIdsToAccepted() {
         // get packages in collected status for more than 7 days
-        Date timeThreshold = CalendarUtils.getDateWithOffset(new Date(), Calendar.DAY_OF_MONTH, -7);
+        Instant timeThreshold = Instant.now().minus(7, ChronoUnit.DAYS);
         return packageDao.getPackageIdsToAccepted(timeThreshold);
     }
 
     public void autoAcceptedPackage(Long packageId) {
         // we are coming from a cron job, so no need to check the existence of the package nor the grants to access it
-        Date now = new Date();
+        Instant now = Instant.now();
         Pair<TbPackage, List<TbPackageEvent>> rs = packageDao.getPackage(packageId);
         rs.getValue0().setUpdateTms(now);
         TbPackageEvent packageEvent = new TbPackageEvent();

@@ -4,7 +4,7 @@ import less.green.openpudo.common.dto.jwt.JwtPrivateClaims;
 import lombok.Data;
 
 import javax.enterprise.context.RequestScoped;
-import java.util.Date;
+import java.time.Instant;
 import java.util.UUID;
 
 @RequestScoped
@@ -17,7 +17,7 @@ public class ExecutionContext {
     private JwtPrivateClaims privateClaims;
     // request
     private Long startNanos;
-    private Date startTimestamp;
+    private Instant startTimestamp;
     private String requestHttpMethod;
     private String requestUri;
     private String resourceMethod;
@@ -26,7 +26,7 @@ public class ExecutionContext {
     private String requestBody;
     // response
     private Long endNanos;
-    private Date endTimestamp;
+    private Instant endTimestamp;
     private int responseHttpStatusCode;
     private Integer returnCode;
     private String responseBody;

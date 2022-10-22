@@ -7,7 +7,6 @@ import less.green.openpudo.business.model.usertype.RelationType;
 import less.green.openpudo.cdi.ExecutionContext;
 import less.green.openpudo.cdi.service.LocalizationService;
 import less.green.openpudo.common.ApiReturnCodes;
-import less.green.openpudo.common.CalendarUtils;
 import less.green.openpudo.common.FormatUtils;
 import less.green.openpudo.common.dto.tuple.Quartet;
 import less.green.openpudo.rest.config.exception.ApiException;
@@ -22,7 +21,11 @@ import lombok.extern.log4j.Log4j2;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
-import java.util.*;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
@@ -109,7 +112,7 @@ public class UserService {
             throw new ApiException(ApiReturnCodes.FORBIDDEN, localizationService.getMessage(context.getLanguage(), "error.forbidden.wrong_account_type"));
         }
         TbUserProfile userProfile = userProfileDao.get(context.getUserId());
-        userProfile.setUpdateTms(new Date());
+        userProfile.setUpdateTms(Instant.now());
         userProfile.setFirstName(sanitizeString(req.getFirstName()));
         userProfile.setLastName(sanitizeString(req.getLastName()));
         userProfileDao.flush();
@@ -152,7 +155,7 @@ public class UserService {
             throw new ApiException(ApiReturnCodes.FORBIDDEN, localizationService.getMessage(context.getLanguage(), "error.forbidden.wrong_account_type"));
         }
         TbUserPreferences userPreferences = userPreferencesDao.get(context.getUserId());
-        userPreferences.setUpdateTms(new Date());
+        userPreferences.setUpdateTms(Instant.now());
         userPreferences.setShowPhoneNumber(req.getShowPhoneNumber());
         userPreferencesDao.flush();
         log.info("[{}] Updated preferences for user: {}", context.getExecutionId(), context.getUserId());
@@ -160,7 +163,7 @@ public class UserService {
     }
 
     public void upsertDeviceToken(DeviceToken req) {
-        Date now = new Date();
+        Instant now = Instant.now();
         TbDeviceToken token = deviceTokenDao.get(req.getDeviceToken().trim());
         if (token == null) {
             // if not found, associate it with current user
@@ -236,7 +239,7 @@ public class UserService {
                 customerSuffix = generateCustomerSuffix(userProfile.getFirstName(), userProfile.getLastName());
             } while (suffixes.contains(customerSuffix));
         }
-        Date now = new Date();
+        Instant now = Instant.now();
         userPudoRelation = new TbUserPudoRelation();
         userPudoRelation.setUserId(context.getUserId());
         userPudoRelation.setPudoId(pudoId);
@@ -253,7 +256,7 @@ public class UserService {
         notification.setUserId(ownerUserId);
         notification.setCreateTms(now);
         notification.setQueuedFlag(true);
-        notification.setDueTms(CalendarUtils.getDateWithOffset(now, Calendar.MINUTE, 10));
+        notification.setDueTms(now.plus(10, ChronoUnit.MINUTES));
         notification.setReadTms(null);
         notification.setTitle("notification.relation.favourite.title");
         notification.setTitleParams(null);
@@ -286,7 +289,7 @@ public class UserService {
             throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.forbidden.package_in_transit"));
         }
 
-        userPudoRelation.setDeleteTms(new Date());
+        userPudoRelation.setDeleteTms(Instant.now());
         userPudoRelationDao.flush();
         notificationDao.removeQueuedNotificationFavourite(context.getUserId(), pudo.getPudoId());
         log.info("[{}] Removed PUDO: {} from favourites of user: {}", context.getExecutionId(), pudoId, context.getUserId());

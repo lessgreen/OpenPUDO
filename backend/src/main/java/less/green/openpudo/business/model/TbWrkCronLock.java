@@ -4,9 +4,12 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.io.Serializable;
-import java.util.Date;
+import java.time.Instant;
 
 @Entity
 @Table(name = "tb_wrk_cron_lock")
@@ -23,11 +26,9 @@ public class TbWrkCronLock implements Serializable {
     private Boolean acquiredFlag;
 
     @Column(name = "acquire_tms")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date acquireTms;
+    private Instant acquireTms;
 
     @Column(name = "lease_tms")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date leaseTms;
+    private Instant leaseTms;
 
 }

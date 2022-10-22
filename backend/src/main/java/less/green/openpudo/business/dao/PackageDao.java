@@ -11,9 +11,9 @@ import lombok.extern.log4j.Log4j2;
 import javax.enterprise.context.RequestScoped;
 import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -122,7 +122,7 @@ public class PackageDao extends BaseEntityDao<TbPackage, Long> {
         return rs.isEmpty() ? Collections.emptyList() : rs;
     }
 
-    public List<Long> getPackageIdsToNotifySent(Date timeThreshold) {
+    public List<Long> getPackageIdsToNotifySent(Instant timeThreshold) {
         String qs = "SELECT t1.packageId "
                     + "FROM TbPackage t1, TbPackageEvent t2 "
                     + "WHERE t2.packageId = t1.packageId "
@@ -137,7 +137,7 @@ public class PackageDao extends BaseEntityDao<TbPackage, Long> {
         return rs.isEmpty() ? Collections.emptyList() : rs;
     }
 
-    public List<Long> getPackageIdsToExpired(Date timeThreshold) {
+    public List<Long> getPackageIdsToExpired(Instant timeThreshold) {
         String qs = "SELECT t1.packageId "
                     + "FROM TbPackage t1, TbPackageEvent t2 "
                     + "WHERE t2.packageId = t1.packageId "
@@ -152,7 +152,7 @@ public class PackageDao extends BaseEntityDao<TbPackage, Long> {
         return rs.isEmpty() ? Collections.emptyList() : rs;
     }
 
-    public List<Long> getPackageIdsToAccepted(Date timeThreshold) {
+    public List<Long> getPackageIdsToAccepted(Instant timeThreshold) {
         String qs = "SELECT t1.packageId "
                     + "FROM TbPackage t1, TbPackageEvent t2 "
                     + "WHERE t2.packageId = t1.packageId "

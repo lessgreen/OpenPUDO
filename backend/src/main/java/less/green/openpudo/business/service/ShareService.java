@@ -45,7 +45,10 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.time.Instant;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static less.green.openpudo.common.StringUtils.sanitizeString;
@@ -122,7 +125,7 @@ public class ShareService {
     public void saveRedirectLog(String channel) {
         try {
             TbRedirectLog tbRedirectLog = new TbRedirectLog();
-            tbRedirectLog.setCreateTms(new Date());
+            tbRedirectLog.setCreateTms(Instant.now());
             tbRedirectLog.setChannel(sanitizeString(channel));
             tbRedirectLog.setRemoteAddress(context.getRemoteAddress());
             tbRedirectLog.setUserAgent(context.getUserAgent());

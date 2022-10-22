@@ -23,6 +23,7 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -101,7 +102,7 @@ public class PudoService {
 
     public Pudo updateCurrentPudo(UpdatePudoRequest req) {
         Long pudoId = getCurrentPudoId();
-        Date now = new Date();
+        Instant now = Instant.now();
         // we could update pudo, address, or both
         if (req.getPudo() != null) {
             TbPudo pudo = pudoDao.get(pudoId);
@@ -248,7 +249,7 @@ public class PudoService {
     public List<RewardOption> updateCurrentPudoRewardPolicy(List<RewardOption> rewardPolicy) {
         Long pudoId = getCurrentPudoId();
         TbRewardPolicy newRewardPolicy = mapRewardPolicyDtoToEntity(rewardPolicy);
-        Date now = new Date();
+        Instant now = Instant.now();
         TbRewardPolicy oldRewardPolicy = rewardPolicyDao.getActiveRewardPolicy(pudoId);
         oldRewardPolicy.setDeleteTms(now);
         rewardPolicyDao.flush();

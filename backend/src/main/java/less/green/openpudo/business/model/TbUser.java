@@ -8,7 +8,7 @@ import lombok.ToString;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Date;
+import java.time.Instant;
 import java.util.UUID;
 
 @Entity
@@ -24,12 +24,10 @@ public class TbUser implements Serializable {
     private Long userId;
 
     @Column(name = "create_tms")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date createTms;
+    private Instant createTms;
 
     @Column(name = "last_login_tms")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date lastLoginTms;
+    private Instant lastLoginTms;
 
     @Column(name = "account_type")
     @Convert(converter = AccountTypeConverter.class)

@@ -7,8 +7,8 @@ import javax.enterprise.context.RequestScoped;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
+import java.time.Instant;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 @RequestScoped
@@ -41,7 +41,7 @@ public class NotificationDao extends BaseEntityDao<TbNotification, Long> {
         String qs = "UPDATE TbNotification t SET t.readTms = :now WHERE t.userId = :userId AND t.queuedFlag = false AND t.readTms IS NULL";
         Query q = em.createQuery(qs);
         q.setParameter("userId", userId);
-        q.setParameter("now", new Date());
+        q.setParameter("now", Instant.now());
         return q.executeUpdate();
     }
 
@@ -63,7 +63,7 @@ public class NotificationDao extends BaseEntityDao<TbNotification, Long> {
     public List<Long> getQueuedNotificationFavouriteIdsToSend() {
         String qs = "SELECT t.notificationId FROM TbNotification t WHERE t.queuedFlag = true AND t.dueTms <= :now";
         TypedQuery<Long> q = em.createQuery(qs, Long.class);
-        q.setParameter("now", new Date());
+        q.setParameter("now", Instant.now());
         List<Long> rs = q.getResultList();
         return rs.isEmpty() ? Collections.emptyList() : rs;
     }

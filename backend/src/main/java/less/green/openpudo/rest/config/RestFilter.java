@@ -8,7 +8,7 @@ import javax.inject.Inject;
 import javax.ws.rs.container.*;
 import javax.ws.rs.ext.Provider;
 import java.io.IOException;
-import java.util.Date;
+import java.time.Instant;
 
 import static less.green.openpudo.common.FormatUtils.smartElapsed;
 
@@ -28,7 +28,7 @@ public class RestFilter implements ContainerRequestFilter, ContainerResponseFilt
             return;
         }
         context.setStartNanos(System.nanoTime());
-        context.setStartTimestamp(new Date());
+        context.setStartTimestamp(Instant.now());
         log.info("[{}] {} {}", context.getExecutionId(), requestContext.getMethod(), requestContext.getUriInfo().getRequestUri().getPath() + (requestContext.getUriInfo().getRequestUri().getQuery() == null ? "" : "?" + requestContext.getUriInfo().getRequestUri().getQuery()));
 
     }
@@ -39,7 +39,7 @@ public class RestFilter implements ContainerRequestFilter, ContainerResponseFilt
         if (requestContext.getMethod().equals("OPTIONS")) {
             return;
         }
-        context.setEndTimestamp(new Date());
+        context.setEndTimestamp(Instant.now());
         context.setEndNanos(System.nanoTime());
         log.info("[{}] {} {} {}", context.getExecutionId(), context.getResponseHttpStatusCode(), context.getReturnCode() != null ? context.getReturnCode() : "-", smartElapsed(context.getEndNanos() - context.getStartNanos()));
     }

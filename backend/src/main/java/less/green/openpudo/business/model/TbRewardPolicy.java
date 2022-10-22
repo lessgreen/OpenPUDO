@@ -7,7 +7,7 @@ import lombok.ToString;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.Instant;
 
 @Entity
 @Table(name = "tb_reward_policy")
@@ -25,12 +25,10 @@ public class TbRewardPolicy implements Serializable {
     private Long pudoId;
 
     @Column(name = "create_tms")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date createTms;
+    private Instant createTms;
 
     @Column(name = "delete_tms")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date deleteTms;
+    private Instant deleteTms;
 
     @Column(name = "free_checked")
     private Boolean freeChecked;

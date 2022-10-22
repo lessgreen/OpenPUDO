@@ -8,7 +8,7 @@ import lombok.ToString;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Date;
+import java.time.Instant;
 
 @Entity
 @Table(name = "tb_package_event")
@@ -26,8 +26,7 @@ public class TbPackageEvent implements Serializable {
     private Long packageId;
 
     @Column(name = "create_tms")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date createTms;
+    private Instant createTms;
 
     @Column(name = "package_status")
     @Convert(converter = PackageStatusConverter.class)

@@ -4,9 +4,12 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.io.Serializable;
-import java.util.Date;
+import java.time.Instant;
 
 @Entity
 @Table(name = "tb_device_token")
@@ -23,12 +26,10 @@ public class TbDeviceToken implements Serializable {
     private Long userId;
 
     @Column(name = "create_tms")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date createTms;
+    private Instant createTms;
 
     @Column(name = "update_tms")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date updateTms;
+    private Instant updateTms;
 
     @Column(name = "device_type")
     private String deviceType;
@@ -49,15 +50,13 @@ public class TbDeviceToken implements Serializable {
     private String applicationLanguage;
 
     @Column(name = "last_success_tms")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date lastSuccessTms;
+    private Instant lastSuccessTms;
 
     @Column(name = "last_success_message_id")
     private String lastSuccessMessageId;
 
     @Column(name = "last_failure_tms")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date lastFailureTms;
+    private Instant lastFailureTms;
 
     @Column(name = "failure_count")
     private Integer failureCount;

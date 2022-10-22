@@ -1,10 +1,9 @@
 package less.green.openpudo.rest.dto.notification;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
-import java.util.Date;
+import java.time.Instant;
 import java.util.Map;
 
 @Data
@@ -18,12 +17,10 @@ public class Notification {
     private Long userId;
 
     @Schema(readOnly = true)
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
-    private Date createTms;
+    private Instant createTms;
 
     @Schema(readOnly = true)
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
-    private Date readTms;
+    private Instant readTms;
 
     @Schema(readOnly = true)
     private String title;

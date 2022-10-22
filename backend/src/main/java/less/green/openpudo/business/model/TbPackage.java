@@ -6,7 +6,7 @@ import lombok.ToString;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Date;
+import java.time.Instant;
 import java.util.UUID;
 
 @Entity
@@ -28,12 +28,10 @@ public class TbPackage implements Serializable {
     private Long userId;
 
     @Column(name = "create_tms")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date createTms;
+    private Instant createTms;
 
     @Column(name = "update_tms")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date updateTms;
+    private Instant updateTms;
 
     @Column(name = "package_pic_id")
     private UUID packagePicId;

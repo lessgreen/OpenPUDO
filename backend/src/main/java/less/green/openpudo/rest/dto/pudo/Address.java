@@ -1,11 +1,10 @@
 package less.green.openpudo.rest.dto.pudo;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.Instant;
 
 @Data
 @Schema
@@ -15,12 +14,10 @@ public class Address {
     private Long pudoId;
 
     @Schema(readOnly = true)
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
-    private Date createTms;
+    private Instant createTms;
 
     @Schema(readOnly = true)
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
-    private Date updateTms;
+    private Instant updateTms;
 
     @Schema(readOnly = true)
     private String label;

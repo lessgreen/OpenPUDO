@@ -24,6 +24,7 @@ import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
+import java.time.Instant;
 import java.util.*;
 
 import static less.green.openpudo.common.GPSUtils.calculateDistanceFromOrigin;
@@ -134,7 +135,7 @@ public class MapService {
             }
 
             UUID sessionId;
-            Date now = new Date();
+            Instant now = Instant.now();
             if (googlePlacesSession == null) {
                 sessionId = UUID.randomUUID();
                 googlePlacesSession = new TbGooglePlacesSession();

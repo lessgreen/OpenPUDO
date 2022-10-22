@@ -26,9 +26,8 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
-import java.text.SimpleDateFormat;
 import java.time.Instant;
-import java.util.Date;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
@@ -112,7 +111,7 @@ public class AuthService {
             // if no request found, send message and create row
             String otp = Integer.toString(ThreadLocalRandom.current().nextInt(100_000, 1_000_000));
             sendOtpMessage(phoneNumber, otp);
-            Date now = new Date();
+            Instant now = Instant.now();
             otpRequest = new TbOtpRequest();
             otpRequest.setRequestId(UUID.randomUUID());
             otpRequest.setCreateTms(now);
@@ -134,7 +133,7 @@ public class AuthService {
                 throw new ApiException(ApiReturnCodes.INVALID_OTP, localizationService.getMessage(context.getLanguage(), "error.otp.too_many_attempts"));
             }
             sendOtpMessage(phoneNumber, otpRequest.getOtp());
-            otpRequest.setUpdateTms(new Date());
+            otpRequest.setUpdateTms(Instant.now());
             otpRequest.setSendCount(otpRequest.getSendCount() + 1);
         }
         otpRequestDao.flush();
@@ -151,7 +150,7 @@ public class AuthService {
                 return jwtService.generateGuestTokenData(new JwtPrivateClaims(phoneNumber));
             } else {
                 // fs user is registered, we generate full access token
-                user.setLastLoginTms(new Date());
+                user.setLastLoginTms(Instant.now());
                 return jwtService.generateUserTokenData(user.getUserId(), mapAccountTypeToAccessProfile(user.getAccountType()));
             }
         }
@@ -180,7 +179,7 @@ public class AuthService {
             ret = jwtService.generateGuestTokenData(new JwtPrivateClaims(phoneNumber));
         } else {
             // is user is registered, we generate full access token
-            user.setLastLoginTms(new Date());
+            user.setLastLoginTms(Instant.now());
             ret = jwtService.generateUserTokenData(user.getUserId(), mapAccountTypeToAccessProfile(user.getAccountType()));
         }
         otpRequestDao.remove(otpRequest);
@@ -197,7 +196,7 @@ public class AuthService {
             throw new ApiException(ApiReturnCodes.FORBIDDEN, localizationService.getMessage(context.getLanguage(), "error.auth.already_registered"));
         }
 
-        Date now = new Date();
+        Instant now = Instant.now();
         user = new TbUser();
         user.setCreateTms(now);
         user.setLastLoginTms(now);
@@ -249,7 +248,7 @@ public class AuthService {
         // deep validation of reward policy before persisting data
         TbRewardPolicy rewardPolicy = pudoService.mapRewardPolicyDtoToEntity(req.getRewardPolicy());
 
-        Date now = new Date();
+        Instant now = Instant.now();
         user = new TbUser();
         user.setCreateTms(now);
         user.setLastLoginTms(now);
@@ -313,7 +312,7 @@ public class AuthService {
         if (user == null) {
             throw new ApiException(ApiReturnCodes.EXPIRED_JWT_TOKEN, localizationService.getMessage(context.getLanguage(), "error.auth.expired_access_token"));
         }
-        user.setLastLoginTms(new Date());
+        user.setLastLoginTms(Instant.now());
         return jwtService.generateUserTokenData(user.getUserId(), mapAccountTypeToAccessProfile(user.getAccountType()));
     }
 
@@ -338,7 +337,7 @@ public class AuthService {
         String userData = getUserData(user, true, true);
         TbDeletedUserData deletedUserData = new TbDeletedUserData();
         deletedUserData.setUserDataId(UUID.randomUUID());
-        deletedUserData.setCreateTms(new Date());
+        deletedUserData.setCreateTms(Instant.now());
         deletedUserData.setUserData(userData);
         deletedUserDataDao.persist(deletedUserData);
         deletedUserDataDao.flush();
@@ -361,11 +360,10 @@ public class AuthService {
 
     private String getUserData(TbUser user, boolean withDeletedDate, boolean withPackages) {
         StringBuilder sb = new StringBuilder();
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         sb.append("Phone number: ").append(user.getPhoneNumber()).append("\r\n");
-        sb.append("Registered at: ").append(sdf.format(user.getCreateTms())).append("\r\n");
+        sb.append("Registered at: ").append(DateTimeFormatter.RFC_1123_DATE_TIME.format(user.getCreateTms())).append("\r\n");
         if (withDeletedDate) {
-            sb.append("Deleted at: ").append(sdf.format(new Date())).append("\r\n");
+            sb.append("Deleted at: ").append(DateTimeFormatter.RFC_1123_DATE_TIME.format(Instant.now())).append("\r\n");
         }
         List<TbPackage> packages = null;
         if (user.getAccountType() == AccountType.CUSTOMER) {
@@ -402,7 +400,7 @@ public class AuthService {
             sb.append("\r\n");
             sb.append("Received packages: ").append("\r\n");
             sb.append(packages.stream()
-                    .map(i -> String.format("- Package %s, received at: %s", cryptoService.hashidEncodeShort(i.getPackageId()), sdf.format(i.getCreateTms())))
+                    .map(i -> String.format("- Package %s, received at: %s", cryptoService.hashidEncodeShort(i.getPackageId()), DateTimeFormatter.RFC_1123_DATE_TIME.format(i.getCreateTms())))
                     .collect(Collectors.joining("\r\n")));
         }
         return sb.toString();

@@ -26,7 +26,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.Date;
+import java.time.Instant;
 import java.util.UUID;
 
 import static less.green.openpudo.common.FormatUtils.prettyPrint;
@@ -106,7 +106,7 @@ public class ExternalFileService {
         // persist entity
         TbExternalFile ret = new TbExternalFile();
         ret.setExternalFileId(newId);
-        ret.setCreateTms(new Date());
+        ret.setCreateTms(Instant.now());
         ret.setMimeType("image/jpeg");
         externalFileDao.persist(ret);
         externalFileDao.flush();

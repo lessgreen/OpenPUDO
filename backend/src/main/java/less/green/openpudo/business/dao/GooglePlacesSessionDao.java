@@ -8,7 +8,7 @@ import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
-import java.util.Date;
+import java.time.Instant;
 import java.util.UUID;
 
 @RequestScoped
@@ -42,7 +42,7 @@ public class GooglePlacesSessionDao extends BaseEntityDao<TbGooglePlacesSession,
         }
     }
 
-    public int removeExpiredGooglePlacesSessions(Date timeThreshold) {
+    public int removeExpiredGooglePlacesSessions(Instant timeThreshold) {
         String qs = "DELETE FROM TbGooglePlacesSession t WHERE t.updateTms < :timeThreshold";
         Query q = em.createQuery(qs);
         q.setParameter("timeThreshold", timeThreshold);

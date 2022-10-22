@@ -1,10 +1,9 @@
 package less.green.openpudo.common.dto.jwt;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.time.Instant;
 
 @Data
 @NoArgsConstructor
@@ -17,17 +16,15 @@ public class JwtPayload {
     private Long sub;
 
     // issued at
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
-    private Date iat;
+    private Instant iat;
 
     // expire date
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
-    private Date exp;
+    private Instant exp;
 
     // private claims specific to our application, those claims are not collision resistant and are not intended for interoperability
     private JwtPrivateClaims privateClaims;
 
-    public JwtPayload(Long sub, Date iat, Date exp, JwtPrivateClaims privateClaims) {
+    public JwtPayload(Long sub, Instant iat, Instant exp, JwtPrivateClaims privateClaims) {
         this.iss = "OpenPUDO";
         this.sub = sub;
         this.iat = iat;

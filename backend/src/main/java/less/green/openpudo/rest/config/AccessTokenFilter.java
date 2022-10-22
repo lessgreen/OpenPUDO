@@ -20,7 +20,7 @@ import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.container.ResourceInfo;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.ext.Provider;
-import java.util.Date;
+import java.time.Instant;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -91,7 +91,7 @@ public class AccessTokenFilter implements ContainerRequestFilter {
         }
 
         // checking for expiration
-        if (new Date().after(payload.getExp())) {
+        if (Instant.now().isAfter(payload.getExp())) {
             log.debug("[{}] Authorization failed: token expired", context.getExecutionId());
             throw new ApiException(ApiReturnCodes.EXPIRED_JWT_TOKEN, localizationService.getMessage(context.getLanguage(), "error.auth.expired_access_token"));
         }

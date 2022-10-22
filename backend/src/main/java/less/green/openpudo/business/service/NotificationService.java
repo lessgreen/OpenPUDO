@@ -24,8 +24,8 @@ import lombok.extern.log4j.Log4j2;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -90,7 +90,7 @@ public class NotificationService {
         if (notification.getReadTms() != null) {
             return;
         }
-        notification.setReadTms(new Date());
+        notification.setReadTms(Instant.now());
         notificationDao.flush();
     }
 
@@ -139,7 +139,7 @@ public class NotificationService {
                     }
                     messageId = null;
                 }
-                Date now = new Date();
+                Instant now = Instant.now();
                 row.setUpdateTms(now);
                 if (messageId != null) {
                     row.setLastSuccessTms(now);

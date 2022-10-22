@@ -1,11 +1,10 @@
 package less.green.openpudo.rest.dto.user;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.Instant;
 
 @Data
 @Schema
@@ -15,12 +14,10 @@ public class UserPreferences implements Serializable {
     private Long userId;
 
     @Schema(readOnly = true)
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
-    private Date createTms;
+    private Instant createTms;
 
     @Schema(readOnly = true)
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
-    private Date updateTms;
+    private Instant updateTms;
 
     @Schema(required = true)
     private Boolean showPhoneNumber;

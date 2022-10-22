@@ -2,7 +2,6 @@ package less.green.openpudo.cdi.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.quarkus.runtime.Startup;
-import less.green.openpudo.common.CalendarUtils;
 import less.green.openpudo.common.dto.jwt.*;
 import lombok.extern.log4j.Log4j2;
 
@@ -10,8 +9,9 @@ import javax.crypto.Mac;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.nio.charset.StandardCharsets;
-import java.util.Calendar;
-import java.util.Date;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 
 import static less.green.openpudo.common.Encoders.*;
 
@@ -23,29 +23,23 @@ public class JwtService {
     private static final String HEADER_INSTANCE_JSON = writeJson(new JwtHeader());
     private static final String HEADER_INSTANCE_JSON_BASE64 = BASE64_URL_ENCODER.encodeToString(HEADER_INSTANCE_JSON.getBytes(StandardCharsets.UTF_8));
 
-    private static final int EXPIRE_DATE_LONG_TIMEUNIT = Calendar.MONTH;
-    private static final int EXPIRE_DATE_LONG_AMOUNT = 1;
-    private static final int EXPIRE_DATE_SHORT_TIMEUNIT = Calendar.DAY_OF_MONTH;
-    private static final int EXPIRE_DATE_SHORT_AMOUNT = 1;
+    private static final Duration EXPIRE_LONG_DURATION = Duration.of(30, ChronoUnit.DAYS);
+    private static final Duration EXPIRE_SHORT_DURATION = Duration.of(1, ChronoUnit.DAYS);
 
     @Inject
     CryptoService cryptoService;
 
     public AccessTokenData generateUserTokenData(Long userId, AccessProfile profile) {
-        Calendar cal = CalendarUtils.getCalendar();
-        Date iat = cal.getTime();
-        cal.add(EXPIRE_DATE_LONG_TIMEUNIT, EXPIRE_DATE_LONG_AMOUNT);
-        Date exp = cal.getTime();
+        Instant iat = Instant.now();
+        Instant exp = iat.plus(EXPIRE_LONG_DURATION);
         JwtPayload payload = new JwtPayload(userId, iat, exp, null);
         String accessToken = generateAccessToken(payload);
         return new AccessTokenData(accessToken, profile, iat, exp);
     }
 
     public AccessTokenData generateGuestTokenData(JwtPrivateClaims privateClaims) {
-        Calendar cal = CalendarUtils.getCalendar();
-        Date iat = cal.getTime();
-        cal.add(EXPIRE_DATE_SHORT_TIMEUNIT, EXPIRE_DATE_SHORT_AMOUNT);
-        Date exp = cal.getTime();
+        Instant iat = Instant.now();
+        Instant exp = iat.plus(EXPIRE_SHORT_DURATION);
         JwtPayload payload = new JwtPayload(null, iat, exp, privateClaims);
         String accessToken = generateAccessToken(payload);
         return new AccessTokenData(accessToken, AccessProfile.GUEST, iat, exp);

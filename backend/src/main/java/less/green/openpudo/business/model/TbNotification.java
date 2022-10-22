@@ -7,7 +7,7 @@ import lombok.ToString;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Date;
+import java.time.Instant;
 
 @Entity
 @Table(name = "tb_notification")
@@ -26,19 +26,16 @@ public class TbNotification implements Serializable {
     private Long userId;
 
     @Column(name = "create_tms")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date createTms;
+    private Instant createTms;
 
     @Column(name = "queued_flag")
     private Boolean queuedFlag;
 
     @Column(name = "due_tms")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date dueTms;
+    private Instant dueTms;
 
     @Column(name = "read_tms")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date readTms;
+    private Instant readTms;
 
     @Column(name = "title")
     private String title;
