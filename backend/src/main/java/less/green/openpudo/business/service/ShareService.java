@@ -139,7 +139,7 @@ public class ShareService {
 
     public Response getDynamicLink(UUID dynamicLinkId) {
         TbDynamicLink ent = dynamicLinkDao.get(dynamicLinkId);
-        if (ent == null) {
+        if (ent == null || (!ent.getReusableFlag() && ent.getUsedTms() != null)) {
             return Response.ok(new DynamicLinkResponse(context.getExecutionId(), ApiReturnCodes.OK, null)).build();
         }
 
