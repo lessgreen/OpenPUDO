@@ -27,10 +27,13 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.time.Instant;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static less.green.openpudo.common.StringUtils.sanitizeString;
@@ -40,6 +43,8 @@ import static less.green.openpudo.common.StringUtils.sanitizeString;
 @Log4j2
 public class AuthService {
 
+    private static final String TEST_ACCOUNT_REGEX = "\\+39328000\\d{3}";
+    private static final Pattern TEST_ACCOUNT_PATTERN = Pattern.compile(TEST_ACCOUNT_REGEX);
     private static final int LOGIN_ERROR_DELAY_MS = 1_000;
 
     @ConfigProperty(name = "app.base.url")
@@ -97,7 +102,7 @@ public class AuthService {
         // searching for user
         TbUser user = userDao.getUserByPhoneNumber(phoneNumber);
         // if backdoor access for test user, simply pretend sending
-        if ("dev".equals(ProfileManager.getActiveProfile()) || (authBackdoor && phoneNumber.matches("\\+393280000\\d{2}")) || (user != null && user.getTestAccountFlag())) {
+        if ("dev".equals(ProfileManager.getActiveProfile()) || (authBackdoor && TEST_ACCOUNT_PATTERN.matcher(phoneNumber).matches()) || (user != null && user.getTestAccountFlag())) {
             return;
         }
         // searching for existing otp request
@@ -144,7 +149,7 @@ public class AuthService {
         // searching for user
         TbUser user = userDao.getUserByPhoneNumber(phoneNumber);
         // if backdoor access for test user, accept any otp
-        if ("dev".equals(ProfileManager.getActiveProfile()) || (authBackdoor && phoneNumber.matches("\\+393280000\\d{2}")) || (user != null && user.getTestAccountFlag())) {
+        if ("dev".equals(ProfileManager.getActiveProfile()) || (authBackdoor && TEST_ACCOUNT_PATTERN.matcher(phoneNumber).matches()) || (user != null && user.getTestAccountFlag())) {
             if (user == null) {
                 // if user is a guest, we generate a short-lived token with phone number in private claims
                 return jwtService.generateGuestTokenData(new JwtPrivateClaims(phoneNumber));
@@ -201,7 +206,7 @@ public class AuthService {
         user.setCreateTms(now);
         user.setLastLoginTms(now);
         user.setAccountType(AccountType.CUSTOMER);
-        user.setTestAccountFlag(authBackdoor && context.getPrivateClaims().getPhoneNumber().matches("\\+393280000\\d{2}"));
+        user.setTestAccountFlag(authBackdoor && TEST_ACCOUNT_PATTERN.matcher(context.getPrivateClaims().getPhoneNumber()).matches());
         // we trust the phone number contained in the signed private claims
         user.setPhoneNumber(context.getPrivateClaims().getPhoneNumber());
         // check for dynamic link usability
@@ -253,7 +258,7 @@ public class AuthService {
         user.setCreateTms(now);
         user.setLastLoginTms(now);
         user.setAccountType(AccountType.PUDO);
-        user.setTestAccountFlag(authBackdoor && context.getPrivateClaims().getPhoneNumber().matches("\\+393280000\\d{2}"));
+        user.setTestAccountFlag(authBackdoor && TEST_ACCOUNT_PATTERN.matcher(context.getPrivateClaims().getPhoneNumber()).matches());
         // we trust the phone number contained in the signed private claims
         user.setPhoneNumber(context.getPrivateClaims().getPhoneNumber());
         // check for dynamic link usability
@@ -361,9 +366,9 @@ public class AuthService {
     private String getUserData(TbUser user, boolean withDeletedDate, boolean withPackages) {
         StringBuilder sb = new StringBuilder();
         sb.append("Phone number: ").append(user.getPhoneNumber()).append("\r\n");
-        sb.append("Registered at: ").append(DateTimeFormatter.RFC_1123_DATE_TIME.format(user.getCreateTms())).append("\r\n");
+        sb.append("Registered at: ").append(DateTimeFormatter.RFC_1123_DATE_TIME.format(ZonedDateTime.ofInstant(user.getCreateTms(), ZoneOffset.UTC))).append("\r\n");
         if (withDeletedDate) {
-            sb.append("Deleted at: ").append(DateTimeFormatter.RFC_1123_DATE_TIME.format(Instant.now())).append("\r\n");
+            sb.append("Deleted at: ").append(DateTimeFormatter.RFC_1123_DATE_TIME.format(ZonedDateTime.ofInstant(Instant.now(), ZoneOffset.UTC))).append("\r\n");
         }
         List<TbPackage> packages = null;
         if (user.getAccountType() == AccountType.CUSTOMER) {
@@ -400,7 +405,7 @@ public class AuthService {
             sb.append("\r\n");
             sb.append("Received packages: ").append("\r\n");
             sb.append(packages.stream()
-                    .map(i -> String.format("- Package %s, received at: %s", cryptoService.hashidEncodeShort(i.getPackageId()), DateTimeFormatter.RFC_1123_DATE_TIME.format(i.getCreateTms())))
+                    .map(i -> String.format("- Package %s, received at: %s", cryptoService.hashidEncodeShort(i.getPackageId()), DateTimeFormatter.RFC_1123_DATE_TIME.format(ZonedDateTime.ofInstant(i.getCreateTms(), ZoneOffset.UTC))))
                     .collect(Collectors.joining("\r\n")));
         }
         return sb.toString();

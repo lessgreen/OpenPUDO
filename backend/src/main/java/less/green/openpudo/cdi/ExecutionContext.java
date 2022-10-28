@@ -1,5 +1,6 @@
 package less.green.openpudo.cdi;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import less.green.openpudo.common.dto.jwt.JwtPrivateClaims;
 import lombok.Data;
 
@@ -17,6 +18,7 @@ public class ExecutionContext {
     private JwtPrivateClaims privateClaims;
     // request
     private Long startNanos;
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Instant startTimestamp;
     private String requestHttpMethod;
     private String requestUri;
@@ -26,6 +28,7 @@ public class ExecutionContext {
     private String requestBody;
     // response
     private Long endNanos;
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Instant endTimestamp;
     private int responseHttpStatusCode;
     private Integer returnCode;
