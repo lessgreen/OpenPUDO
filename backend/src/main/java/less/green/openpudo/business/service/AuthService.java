@@ -4,7 +4,6 @@ import io.quarkus.runtime.configuration.ProfileManager;
 import less.green.openpudo.business.dao.*;
 import less.green.openpudo.business.model.*;
 import less.green.openpudo.business.model.usertype.AccountType;
-import less.green.openpudo.business.model.usertype.DynamicLinkRoute;
 import less.green.openpudo.business.model.usertype.OtpRequestType;
 import less.green.openpudo.business.model.usertype.RelationType;
 import less.green.openpudo.cdi.ExecutionContext;
@@ -212,12 +211,13 @@ public class AuthService {
         // check for dynamic link usability
         if (req.getDynamicLinkId() != null) {
             TbDynamicLink dynamicLink = dynamicLinkDao.get(req.getDynamicLinkId());
-            if (dynamicLink == null || dynamicLink.getRoute() != DynamicLinkRoute.ENROLL_PROSPECT || dynamicLink.getUsedTms() != null) {
+            if (dynamicLink == null || (!dynamicLink.getReusableFlag() && dynamicLink.getUsedTms() != null)) {
                 log.error("[{}] Register request with invalid dynamicLinkId: {}", context.getExecutionId(), req.getDynamicLinkId().toString());
                 throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.invalid_field", "dynamicLinkId"));
             }
             user.setDynamicLinkId(req.getDynamicLinkId());
-            dynamicLink.setUsedTms(Instant.now());
+            // TODO: uncomment after testing
+            //dynamicLink.setUsedTms(Instant.now());
         }
         userDao.persist(user);
         userDao.flush();
@@ -264,12 +264,13 @@ public class AuthService {
         // check for dynamic link usability
         if (req.getDynamicLinkId() != null) {
             TbDynamicLink dynamicLink = dynamicLinkDao.get(req.getDynamicLinkId());
-            if (dynamicLink == null || dynamicLink.getRoute() != DynamicLinkRoute.ENROLL_PROSPECT || dynamicLink.getUsedTms() != null) {
+            if (dynamicLink == null || (!dynamicLink.getReusableFlag() && dynamicLink.getUsedTms() != null)) {
                 log.error("[{}] Register request with invalid dynamicLinkId: {}", context.getExecutionId(), req.getDynamicLinkId().toString());
                 throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.invalid_field", "dynamicLinkId"));
             }
             user.setDynamicLinkId(req.getDynamicLinkId());
-            dynamicLink.setUsedTms(Instant.now());
+            // TODO: uncomment after testing
+            //dynamicLink.setUsedTms(Instant.now());
         }
         userDao.persist(user);
         userDao.flush();
