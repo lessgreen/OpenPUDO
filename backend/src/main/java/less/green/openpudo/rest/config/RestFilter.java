@@ -39,6 +39,7 @@ public class RestFilter implements ContainerRequestFilter, ContainerResponseFilt
         if (requestContext.getMethod().equals("OPTIONS")) {
             return;
         }
+        context.setResponseHttpStatusCode(responseContext.getStatus());
         context.setEndTimestamp(Instant.now());
         context.setEndNanos(System.nanoTime());
         log.info("[{}] {} {} {}", context.getExecutionId(), context.getResponseHttpStatusCode(), context.getReturnCode() != null ? context.getReturnCode() : "-", smartElapsed(context.getEndNanos() - context.getStartNanos()));

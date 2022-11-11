@@ -61,7 +61,6 @@ public class RestPostFilter implements ContainerRequestFilter, ContainerResponse
         if (resourceInfo.getResourceMethod() == null) {
             return;
         }
-        context.setResponseHttpStatusCode(responseContext.getStatus());
         if (responseContext.hasEntity() && BaseResponse.class.isAssignableFrom(responseContext.getEntity().getClass())) {
             context.setReturnCode(((BaseResponse) responseContext.getEntity()).getReturnCode());
         }
