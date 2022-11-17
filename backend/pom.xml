@@ -12,24 +12,24 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <compiler-plugin.version>3.9.0</compiler-plugin.version>
         <maven.compiler.release>11</maven.compiler.release>
-        <quarkus.platform.groupId>io.quarkus.platform</quarkus.platform.groupId>
-        <quarkus.platform.artifactId>quarkus-bom</quarkus.platform.artifactId>
-        <quarkus.platform.version>2.13.2.Final</quarkus.platform.version>
+        <quarkus.platform.version>2.13.4.Final</quarkus.platform.version>
         <lombok.version>1.18.24</lombok.version>
         <mapstruct.version>1.4.2.Final</mapstruct.version>
-        <pmd.version>3.14.0</pmd.version>
-        <libphonenumber.version>8.12.57</libphonenumber.version>
-        <unirest.version>3.13.11</unirest.version>
-        <firebase.version>9.1.0</firebase.version>
+        <libphonenumber.version>8.13.0</libphonenumber.version>
+        <google.maps.version>2.1.2</google.maps.version>
+        <unirest.version>3.13.12</unirest.version>
+        <firebase.version>9.1.1</firebase.version>
         <hashids.version>1.0.3</hashids.version>
-        <zxing.version>3.5.0</zxing.version>
+        <zxing.version>3.5.1</zxing.version>
+        <thumbnailator.version>0.4.18</thumbnailator.version>
+        <pmd.version>3.14.0</pmd.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>${quarkus.platform.groupId}</groupId>
-                <artifactId>${quarkus.platform.artifactId}</artifactId>
+                <groupId>io.quarkus.platform</groupId>
+                <artifactId>quarkus-bom</artifactId>
                 <version>${quarkus.platform.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
@@ -98,7 +98,7 @@
         <dependency>
             <groupId>com.google.maps</groupId>
             <artifactId>google-maps-services</artifactId>
-            <version>2.1.0</version>
+            <version>${google.maps.version}</version>
         </dependency>
         <dependency>
             <groupId>com.googlecode.libphonenumber</groupId>
@@ -133,7 +133,7 @@
         <dependency>
             <groupId>net.coobird</groupId>
             <artifactId>thumbnailator</artifactId>
-            <version>0.4.17</version>
+            <version>${thumbnailator.version}</version>
         </dependency>
     </dependencies>
 
@@ -141,7 +141,7 @@
         <finalName>${project.artifactId}</finalName>
         <plugins>
             <plugin>
-                <groupId>${quarkus.platform.groupId}</groupId>
+                <groupId>io.quarkus.platform</groupId>
                 <artifactId>quarkus-maven-plugin</artifactId>
                 <version>${quarkus.platform.version}</version>
                 <extensions>true</extensions>
