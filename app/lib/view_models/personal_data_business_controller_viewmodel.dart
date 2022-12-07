@@ -29,6 +29,7 @@ import 'package:qui_green/models/geo_marker.dart';
 import 'package:qui_green/models/pudo_profile.dart';
 import 'package:qui_green/models/registration_pudo_model.dart';
 import 'package:qui_green/models/registration_pudo_request.dart';
+import 'package:qui_green/singletons/dynamicLink_manager.dart';
 import 'package:qui_green/singletons/network/network_manager.dart';
 
 class PersonalDataBusinessControllerViewModel extends ChangeNotifier {
@@ -36,7 +37,14 @@ class PersonalDataBusinessControllerViewModel extends ChangeNotifier {
     this.phoneNumber = phoneNumber;
     phoneNumberController.text = phoneNumber;
     this.email = email;
-    emailController.text = email ?? "";
+    name = DynamicLinkManager().dynamicLink?.data.businessName ?? "";
+    businessNameController.text = name;
+    var signature = DynamicLinkManager().dynamicLink?.data.address?.signature;
+    var addressModel = DynamicLinkManager().dynamicLink?.data.address?.address;
+    if (signature != null && addressModel != null) {
+      address = PudoAddressMarker(signature: signature, address: addressModel);
+      addressController.text = address?.address.label ?? "";
+    }
   }
 
   Function(String)? showErrorDialog;
@@ -50,8 +58,10 @@ class PersonalDataBusinessControllerViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  TextEditingController businessNameController = TextEditingController(text: "");
   TextEditingController phoneNumberController = TextEditingController(text: "");
   TextEditingController emailController = TextEditingController(text: "");
+  TextEditingController addressController = TextEditingController();
 
   String _phoneNumber = "";
 
@@ -167,8 +177,6 @@ class PersonalDataBusinessControllerViewModel extends ChangeNotifier {
     _isOpenListAddress = newVal;
     notifyListeners();
   }
-
-  TextEditingController addressController = TextEditingController();
 
   Timer _debounce = Timer(const Duration(days: 1), () {});
 

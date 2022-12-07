@@ -49,6 +49,10 @@ import 'package:qui_green/models/registration_pudo_model.dart';
 import 'package:qui_green/resources/res.dart';
 import 'package:qui_green/resources/routes_enum.dart';
 
+class GlobalVariable {
+  static final GlobalKey<NavigatorState> navState = GlobalKey<NavigatorState>();
+}
+
 dynamic routeWithSetting(RouteSettings settings) {
   log("current route name: ${settings.name}");
   //var analyticsScreenName = settings.name == "/" ? "/login" : settings.name;

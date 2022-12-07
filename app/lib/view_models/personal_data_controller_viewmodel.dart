@@ -30,12 +30,13 @@ import 'package:qui_green/models/pudo_profile.dart';
 import 'package:qui_green/models/user_profile.dart';
 import 'package:qui_green/resources/routes_enum.dart';
 import 'package:qui_green/singletons/current_user.dart';
+import 'package:qui_green/singletons/dynamicLink_manager.dart';
 import 'package:qui_green/singletons/network/network_manager.dart';
 
 class PersonalDataControllerViewModel extends ChangeNotifier {
   Function(String)? showErrorDialog;
 
-  String _name = "";
+  String _name = DynamicLinkManager().dynamicLink?.data.firstName ?? "";
 
   String get name => _name;
 
@@ -44,7 +45,7 @@ class PersonalDataControllerViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  String _surname = "";
+  String _surname = DynamicLinkManager().dynamicLink?.data.lastName ?? "";
 
   String get surname => _surname;
 
@@ -71,7 +72,10 @@ class PersonalDataControllerViewModel extends ChangeNotifier {
 
   // ************ Navigation *****
   onSendClick(BuildContext context, PudoProfile? pudoModel) {
-    NetworkManager.instance.registerUser(name: name, surname: surname).then((value) {
+    NetworkManager.instance.registerUser(name: name, surname: surname, dynamicLinkId: DynamicLinkManager().magicLinkId).then((value) {
+      var pudoId = DynamicLinkManager().dynamicLink?.data.favouritePudoId ?? pudoModel?.pudoId;
+      DynamicLinkManager().dynamicLink = null;
+      DynamicLinkManager().magicLinkId = null;
       if (value is ErrorDescription) {
         SAAlertDialog.displayAlertWithClose(context, 'genericErrorTitle'.localized(context, 'general'), value);
       } else {
@@ -81,9 +85,9 @@ class PersonalDataControllerViewModel extends ChangeNotifier {
             if (image != null) {
               NetworkManager.instance.photoUpload(image!).catchError((onError) => showErrorDialog?.call(onError));
             }
-            if (pudoModel != null) {
-              NetworkManager.instance.addPudoFavorite(pudoModel.pudoId.toString()).then((value) {
-                NetworkManager.instance.getPudoDetails(pudoId: pudoModel.pudoId.toString()).then((value) {
+            if (pudoId != null) {
+              NetworkManager.instance.addPudoFavorite(pudoId.toString()).then((value) {
+                NetworkManager.instance.getPudoDetails(pudoId: pudoId.toString()).then((value) {
                   Navigator.of(context).pushReplacementNamed(Routes.registrationComplete, arguments: value as PudoProfile?);
                 }).catchError((onError) => showErrorDialog?.call(onError));
               }).catchError((onError) => showErrorDialog?.call(onError));

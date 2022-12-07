@@ -34,6 +34,7 @@ import 'package:qui_green/models/access_token_data.dart';
 import 'package:qui_green/resources/res.dart';
 import 'package:qui_green/resources/routes_enum.dart';
 import 'package:qui_green/singletons/current_user.dart';
+import 'package:qui_green/singletons/dynamicLink_manager.dart';
 import 'package:qui_green/singletons/network/network_manager.dart';
 import 'package:qui_green/widgets/main_button.dart';
 import 'package:qui_green/widgets/sascaffold.dart';
@@ -66,12 +67,29 @@ class _ConfirmPhoneControllerState extends State<ConfirmPhoneController> with Co
 
   void sendOtp() {
     NetworkManager.instance.login(login: widget.phoneNumber, password: _confirmValue).then((value) {
-      switch (NetworkManager.instance.accessTokenAccess) {
+      var comingFromDynamicLink = false;
+      var userType = AccessProfileType.values.firstWhere(
+        (element) {
+          comingFromDynamicLink = true;
+          return element.toString().split(".").last == DynamicLinkManager().dynamicLink?.data.accountType;
+        },
+        orElse: () {
+          comingFromDynamicLink = false;
+          return NetworkManager.instance.accessTokenAccess;
+        },
+      );
+      switch (/*NetworkManager.instance.accessTokenAccess*/ userType) {
         case AccessProfileType.customer:
-          Provider.of<CurrentUser>(context, listen: false).refresh(context);
+          comingFromDynamicLink ? Navigator.of(context).pushReplacementNamed(Routes.personalData) : Provider.of<CurrentUser>(context, listen: false).refresh(context);
           break;
         case AccessProfileType.pudo:
-          Provider.of<CurrentUser>(context, listen: false).refresh(context);
+          var phoneNumber = DynamicLinkManager().dynamicLink?.data.phoneNumber ?? widget.phoneNumber;
+          comingFromDynamicLink
+              ? Navigator.of(context).pushReplacementNamed(
+                  Routes.personalDataBusiness,
+                  arguments: {'phoneNumber': phoneNumber},
+                )
+              : Provider.of<CurrentUser>(context, listen: false).refresh(context);
           break;
         case AccessProfileType.guest:
           Navigator.of(context).pushReplacementNamed(Routes.aboutYou, arguments: {'phoneNumber': widget.phoneNumber});

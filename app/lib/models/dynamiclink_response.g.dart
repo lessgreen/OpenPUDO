@@ -35,9 +35,10 @@ DynamicLinkData _$DynamicLinkDataFromJson(Map<String, dynamic> json) =>
       lastName: json['lastName'] as String?,
       businessName: json['businessName'] as String?,
       favouritePudoId: json['favouritePudoId'] as int?,
-    )..address = json['address'] == null
-        ? null
-        : GeoMarker.fromJson(json['address'] as Map<String, dynamic>);
+      address: json['addressMarker'] == null
+          ? null
+          : GeoMarker.fromJson(json['addressMarker'] as Map<String, dynamic>),
+    );
 
 Map<String, dynamic> _$DynamicLinkDataToJson(DynamicLinkData instance) =>
     <String, dynamic>{
@@ -48,5 +49,5 @@ Map<String, dynamic> _$DynamicLinkDataToJson(DynamicLinkData instance) =>
       'lastName': instance.lastName,
       'businessName': instance.businessName,
       'favouritePudoId': instance.favouritePudoId,
-      'address': instance.address,
+      'addressMarker': instance.address,
     };

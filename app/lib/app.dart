@@ -26,13 +26,17 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
+import 'package:qui_green/commons/alert_dialog.dart';
 import 'package:qui_green/commons/ui/base_theme.dart';
 import 'package:qui_green/commons/utilities/fcm_helper.dart';
 import 'package:qui_green/commons/utilities/localization.dart';
+import 'package:qui_green/commons/utilities/print_helper.dart';
 import 'package:qui_green/commons/utilities/routes.dart';
+import 'package:qui_green/models/access_token_data.dart';
 import 'package:qui_green/resources/app_config.dart';
 import 'package:qui_green/resources/routes_enum.dart';
 import 'package:qui_green/singletons/current_user.dart';
+import 'package:qui_green/singletons/dynamicLink_manager.dart';
 import 'package:qui_green/singletons/network/network_manager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -55,7 +59,7 @@ void mainCommon({required String host, required bool isProd}) async {
   );
   await Firebase.initializeApp();
 
-  //get any initial links
+  //get any initial links (required for post-install survive)
   final PendingDynamicLinkData? initialLink = await FirebaseDynamicLinks.instance.getInitialLink();
   print(initialLink);
   FirebaseDynamicLinks.instance.onLink.listen((dynamicLinkData) {
@@ -64,11 +68,44 @@ void mainCommon({required String host, required bool isProd}) async {
       if (value is! DynamicLinkResponse) {
         return;
       }
-      if (value.data.accountType == "customer") {}
-      ;
+      DynamicLinkManager().dynamicLink = value;
+      DynamicLinkManager().magicLinkId = magicLinkID;
+
+      AccessTokenData? accessTokenData = value.data.accessTokenData;
+      if (value.data.accountType == "customer") {
+        if (accessTokenData != null) {
+          NetworkManager.instance.setAccessToken(accessTokenData.accessToken);
+          NetworkManager.instance.setAccessTokenData(accessTokenData);
+          if (GlobalVariable.navState.currentContext != null) {
+            Navigator.of(GlobalVariable.navState.currentContext!).pushNamed(Routes.personalData);
+          }
+        } else {
+          if (GlobalVariable.navState.currentContext != null) {
+            Navigator.of(GlobalVariable.navState.currentContext!).pushReplacementNamed(Routes.insertPhone);
+          }
+        }
+      } else if (value.data.accountType == "pudo") {
+        if (accessTokenData != null) {
+          NetworkManager.instance.setAccessToken(accessTokenData.accessToken);
+          NetworkManager.instance.setAccessTokenData(accessTokenData);
+          if (GlobalVariable.navState.currentContext != null) {
+            Navigator.of(GlobalVariable.navState.currentContext!).pushNamed(Routes.personalDataBusiness);
+          }
+        } else {
+          if (GlobalVariable.navState.currentContext != null) {
+            Navigator.of(GlobalVariable.navState.currentContext!).pushReplacementNamed(Routes.insertPhone);
+          }
+        }
+      }
     });
   }).onError((error) {
-    print(error);
+    if (GlobalVariable.navState.currentContext != null) {
+      SAAlertDialog.displayAlertWithClose(
+        GlobalVariable.navState.currentContext!,
+        "Oops!",
+        "Si è verificato un errore nella gestione dell'operazione. Ti preghiamo di riprovare.",
+      );
+    }
   });
 
   await LocalizationManager.updateLocalizationsFromNetwork();
@@ -91,15 +128,15 @@ void mainCommon({required String host, required bool isProd}) async {
 
 class App extends StatelessWidget {
   final AppConfig config;
-  final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+  // final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
-  App({Key? key, required this.config}) : super(key: key);
+  const App({Key? key, required this.config}) : super(key: key);
 
   // checkRedirect uses two booleans to intercept changes in the user status (logged or not)
   // if the user is logged navigates the app to the home route
   // if the user is not logged navigates the app to the login route
 
-  void pushPage(String route) => navigatorKey.currentState?.pushNamedAndRemoveUntil(
+  void pushPage(String route) => GlobalVariable.navState.currentState?.pushNamedAndRemoveUntil(
         route,
         ModalRoute.withName('/'),
       );
@@ -113,7 +150,7 @@ class App extends StatelessWidget {
       child: Consumer<CurrentUser>(
         builder: (context, currentUser, _) {
           return MaterialApp(
-            navigatorKey: navigatorKey,
+            navigatorKey: GlobalVariable.navState,
             debugShowCheckedModeBanner: false,
             title: 'Qui Green',
             supportedLocales: const [

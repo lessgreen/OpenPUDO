@@ -53,17 +53,10 @@ class DynamicLinkData {
   String? lastName;
   String? businessName;
   int? favouritePudoId;
+  @JsonKey(name: "addressMarker")
   GeoMarker? address;
 
-  DynamicLinkData({
-    this.accessTokenData,
-    this.phoneNumber,
-    this.accountType,
-    this.firstName,
-    this.lastName,
-    this.businessName,
-    this.favouritePudoId,
-  });
+  DynamicLinkData({this.accessTokenData, this.phoneNumber, this.accountType, this.firstName, this.lastName, this.businessName, this.favouritePudoId, this.address});
 
   factory DynamicLinkData.fromJson(Map<String, dynamic> json) => _$DynamicLinkDataFromJson(json);
 

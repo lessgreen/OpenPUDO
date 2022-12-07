@@ -104,6 +104,9 @@ mixin NetworkManagerUser on NetworkGeneral {
       if (!isOnline) {
         throw ("Network is offline");
       }
+      if (_accessToken != null) {
+        _headers['Authorization'] = 'Bearer $_accessToken';
+      }
       var url = "$_baseURL/api/v2/auth/register/customer";
       Map<String, Object?> jsonBody = {
         "user": {

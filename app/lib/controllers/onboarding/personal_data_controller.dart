@@ -29,6 +29,7 @@ import 'package:qui_green/commons/utilities/keyboard_visibility.dart';
 import 'package:qui_green/commons/utilities/localization.dart';
 import 'package:qui_green/models/pudo_profile.dart';
 import 'package:qui_green/resources/res.dart';
+import 'package:qui_green/singletons/dynamicLink_manager.dart';
 import 'package:qui_green/singletons/network/network_manager.dart';
 import 'package:qui_green/view_models/personal_data_controller_viewmodel.dart';
 import 'package:qui_green/widgets/main_button.dart';
@@ -46,6 +47,8 @@ class PersonalDataController extends StatefulWidget {
 
 class _PersonalDataControllerState extends State<PersonalDataController> with ConnectionAware {
   bool termsAndConditionsChecked = true;
+  TextEditingController firstName = TextEditingController();
+  TextEditingController lastName = TextEditingController();
 
   void _showErrorDialog(BuildContext context, String val) => SAAlertDialog.displayAlertWithClose(
         context,
@@ -59,6 +62,8 @@ class _PersonalDataControllerState extends State<PersonalDataController> with Co
       create: (context) => PersonalDataControllerViewModel(),
       child: Consumer<PersonalDataControllerViewModel?>(
         builder: (_, viewModel, __) {
+          firstName.text = viewModel?.name ?? "";
+          lastName.text = viewModel?.surname ?? "";
           viewModel?.showErrorDialog = (String val) => _showErrorDialog(context, val);
           return KeyboardVisibilityBuilder(builder: (context, child, isKeyboardVisible) {
             return SAScaffold(
@@ -118,6 +123,7 @@ class _PersonalDataControllerState extends State<PersonalDataController> with Co
                     Padding(
                       padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
                       child: CupertinoTextField(
+                        controller: firstName,
                         placeholder: 'placeHolderName'.localized(context),
                         decoration: BoxDecoration(
                           border: Border(
@@ -134,6 +140,7 @@ class _PersonalDataControllerState extends State<PersonalDataController> with Co
                     Padding(
                       padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
                       child: CupertinoTextField(
+                        controller: lastName,
                         placeholder: 'placeHolderSurname'.localized(context),
                         decoration: BoxDecoration(
                           border: Border(

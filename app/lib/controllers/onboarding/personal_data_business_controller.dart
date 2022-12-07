@@ -113,6 +113,7 @@ class _PersonalDataBusinessControllerState extends State<PersonalDataBusinessCon
                       child: CupertinoTextField(
                         scrollPadding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
                         placeholder: 'placeHolderName'.localized(context),
+                        controller: viewModel.businessNameController,
                         decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Theme.of(context).primaryColor))),
                         autofocus: false,
                         textInputAction: TextInputAction.done,
@@ -176,7 +177,9 @@ class _PersonalDataBusinessControllerState extends State<PersonalDataBusinessCon
                         textInputAction: TextInputAction.done,
                         decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Theme.of(context).primaryColor))),
                         autofocus: false,
-                        onChanged: (newValue) => viewModel.phoneNumber = newValue,
+                        onChanged: (newValue) {
+                          viewModel.phoneNumber = newValue;
+                        },
                         onTap: () {
                           setState(() {});
                         },
