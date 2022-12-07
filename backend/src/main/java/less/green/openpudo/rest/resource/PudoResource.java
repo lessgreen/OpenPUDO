@@ -91,8 +91,8 @@ public class PudoResource {
             if (req.getAddressMarker().getAddress() == null) {
                 throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.empty_mandatory_field", "address"));
             } else if (req.getAddressMarker().getAddress().getLabel() == null || req.getAddressMarker().getAddress().getStreet() == null
-                       || req.getAddressMarker().getAddress().getCity() == null || req.getAddressMarker().getAddress().getProvince() == null
-                       || req.getAddressMarker().getAddress().getCountry() == null) {
+                    || req.getAddressMarker().getAddress().getCity() == null || req.getAddressMarker().getAddress().getProvince() == null
+                    || req.getAddressMarker().getAddress().getCountry() == null) {
                 throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.address.not_precise"));
             } else if (isEmpty(req.getAddressMarker().getSignature())) {
                 throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.empty_mandatory_field", "signature"));
@@ -175,7 +175,7 @@ public class PudoResource {
     @SecurityRequirement(name = "JWT")
     @Operation(summary = "Get package list for current PUDO, with optional query parameters",
             description = "If called without parameters, this API return the summary of all packages in \"open\" state for the current PUDO.\n\n"
-                          + "Parameters can be used to perform an historical search, and pagination will be used only in this mode.")
+                    + "Parameters can be used to perform an historical search, and pagination will be used only in this mode.")
     public PackageSummaryListResponse getCurrentPudoPackages(
             @Parameter(description = "Historical search") @DefaultValue("false") @QueryParam("history") boolean history,
             @Parameter(description = "Pagination limit, used only in historical search") @DefaultValue("20") @QueryParam("limit") int limit,

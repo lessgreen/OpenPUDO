@@ -44,7 +44,7 @@ public class AuthResource {
     @PublicAPI
     @Operation(summary = "First phase of password-less authentication or registration",
             description = "The client calls this API to request an OTP to validate its credentials.\n\n"
-                          + "The phone number must start with international prefix, and will be internally normalized in E.164 standard format.")
+                    + "The phone number must start with international prefix, and will be internally normalized in E.164 standard format.")
     public BaseResponse loginSend(LoginSendRequest req) {
         // sanitize input
         if (req == null) {
@@ -131,8 +131,8 @@ public class AuthResource {
         } else if (req.getAddressMarker().getAddress() == null) {
             throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.empty_mandatory_field", "address"));
         } else if (req.getAddressMarker().getAddress().getLabel() == null || req.getAddressMarker().getAddress().getStreet() == null
-                   || req.getAddressMarker().getAddress().getCity() == null || req.getAddressMarker().getAddress().getProvince() == null
-                   || req.getAddressMarker().getAddress().getCountry() == null) {
+                || req.getAddressMarker().getAddress().getCity() == null || req.getAddressMarker().getAddress().getProvince() == null
+                || req.getAddressMarker().getAddress().getCountry() == null) {
             throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.address.not_precise"));
         } else if (req.getRewardPolicy() == null || req.getRewardPolicy().isEmpty()) {
             throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.empty_mandatory_field", "rewardPolicy"));

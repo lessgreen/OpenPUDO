@@ -1,6 +1,7 @@
 package less.green.openpudo.rest.config;
 
 import less.green.openpudo.cdi.ExecutionContext;
+import less.green.openpudo.common.Encoders;
 import lombok.extern.log4j.Log4j2;
 
 import javax.annotation.Priority;
@@ -43,6 +44,7 @@ public class RestFilter implements ContainerRequestFilter, ContainerResponseFilt
         context.setEndTimestamp(Instant.now());
         context.setEndNanos(System.nanoTime());
         log.info("[{}] {} {} {}", context.getExecutionId(), context.getResponseHttpStatusCode(), context.getReturnCode() != null ? context.getReturnCode() : "-", smartElapsed(context.getEndNanos() - context.getStartNanos()));
+        //log.trace(Encoders.writeJsonPretty(context));
     }
 
 }

@@ -31,4 +31,5 @@ public class JwtPayload {
         this.exp = exp;
         this.privateClaims = privateClaims;
     }
+
 }

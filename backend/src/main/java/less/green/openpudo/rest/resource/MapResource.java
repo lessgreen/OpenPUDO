@@ -44,7 +44,7 @@ public class MapResource {
     @SecurityRequirement(name = "JWT")
     @Operation(summary = "Get suggested zoom for current location",
             description = "This API calculates the minimum zoom level that provides enough PUDOs in user surroundings.\n\n"
-                          + "This API should be throttled to prevent excessive load.")
+                    + "This API should be throttled to prevent excessive load.")
     public IntegerResponse getSuggestedZoom(
             @Parameter(description = "Latitude value of map center point", required = true) @QueryParam("lat") BigDecimal lat,
             @Parameter(description = "Longitude value of map center point", required = true) @QueryParam("lon") BigDecimal lon) {
@@ -103,8 +103,8 @@ public class MapResource {
     @SecurityRequirement(name = "JWT")
     @Operation(summary = "Address search based on user input autocompletion",
             description = "Text length must be greater than 3 characters, to provide meaningful results.\n\n"
-                          + "Coordinates parameters are optional, but the client should provide them to speed up queries and obtain more pertinent results.\n\n"
-                          + "This API should be throttled to prevent excessive load.")
+                    + "Coordinates parameters are optional, but the client should provide them to speed up queries and obtain more pertinent results.\n\n"
+                    + "This API should be throttled to prevent excessive load.")
     public AddressMarkerListResponse searchAddress(
             @Parameter(description = "Query text", required = true) @QueryParam("text") String text,
             @Parameter(description = "Latitude value of map center point") @QueryParam("lat") BigDecimal lat,
@@ -160,8 +160,8 @@ public class MapResource {
     @SecurityRequirement(name = "JWT")
     @Operation(summary = "PUDO search based on user input autocompletion",
             description = "Text length must be greater than 3 characters, to provide meaningful results.\n\n"
-                          + "Coordinates parameters are optional, but the client should provide them to speed up queries and obtain more pertinent results.\n\n"
-                          + "This API should be throttled to prevent excessive load.")
+                    + "Coordinates parameters are optional, but the client should provide them to speed up queries and obtain more pertinent results.\n\n"
+                    + "This API should be throttled to prevent excessive load.")
     public PudoMarkerListResponse searchPudo(
             @Parameter(description = "Query text", required = true) @QueryParam("text") String text,
             @Parameter(description = "Latitude value of map center point") @QueryParam("lat") BigDecimal lat,
@@ -190,8 +190,8 @@ public class MapResource {
     @SecurityRequirement(name = "JWT")
     @Operation(summary = "Global search (PUDOs and addresses) based on user input autocompletion",
             description = "Text length must be greater than 3 characters, to provide meaningful results.\n\n"
-                          + "Coordinates parameters are optional, but the client should provide them to speed up queries and obtain more pertinent results.\n\n"
-                          + "This API should be throttled to prevent excessive load.")
+                    + "Coordinates parameters are optional, but the client should provide them to speed up queries and obtain more pertinent results.\n\n"
+                    + "This API should be throttled to prevent excessive load.")
     public GPSMarkerListResponse searchGlobal(
             @Parameter(description = "Query text", required = true) @QueryParam("text") String text,
             @Parameter(description = "Latitude value of map center point") @QueryParam("lat") BigDecimal lat,

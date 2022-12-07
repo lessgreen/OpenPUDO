@@ -316,7 +316,7 @@ public class AuthService {
     public AccessTokenData renew() {
         TbUser user = userDao.get(context.getUserId());
         if (user == null) {
-            throw new ApiException(ApiReturnCodes.EXPIRED_JWT_TOKEN, localizationService.getMessage(context.getLanguage(), "error.auth.expired_access_token"));
+            throw new ApiException(ApiReturnCodes.INVALID_JWT_TOKEN, localizationService.getMessage(context.getLanguage(), "error.auth.invalid_access_token"));
         }
         user.setLastLoginTms(Instant.now());
         return jwtService.generateUserTokenData(user.getUserId(), mapAccountTypeToAccessProfile(user.getAccountType()));
@@ -326,9 +326,9 @@ public class AuthService {
         TbUser user = userDao.get(context.getUserId());
         String subject = String.format("Support request from user: %s", context.getUserId());
         String sb = "*** User data ***" + "\r\n"
-                    + getUserData(user, false, false) + "\r\n"
-                    + "*** User message ***" + "\r\n"
-                    + req.getMessage().trim();
+                + getUserData(user, false, false) + "\r\n"
+                + "*** User message ***" + "\r\n"
+                + req.getMessage().trim();
         emailService.sendSupportEmail(subject, sb, true);
         log.info("[{}] Sent support request for user: {}", context.getExecutionId(), context.getUserId());
     }

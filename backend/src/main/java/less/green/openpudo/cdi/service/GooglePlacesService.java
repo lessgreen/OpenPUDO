@@ -119,4 +119,5 @@ public class GooglePlacesService {
     void cleanup() {
         geoApiContext.shutdown();
     }
+
 }

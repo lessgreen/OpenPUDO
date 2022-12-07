@@ -189,7 +189,7 @@ public class UserResource {
     @SecurityRequirement(name = "JWT")
     @Operation(summary = "Get package list for current user, with optional query parameters",
             description = "If called without parameters, this API return the summary of all packages in \"open\" state for the current user.\n\n"
-                          + "Parameters can be used to perform an historical search, and pagination will be used only in this mode.")
+                    + "Parameters can be used to perform an historical search, and pagination will be used only in this mode.")
     public PackageSummaryListResponse getCurrentUserPackages(
             @Parameter(description = "Historical search") @DefaultValue("false") @QueryParam("history") boolean history,
             @Parameter(description = "Pagination limit, used only in historical search") @DefaultValue("20") @QueryParam("limit") int limit,

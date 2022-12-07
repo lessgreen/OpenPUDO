@@ -197,7 +197,7 @@ public class PackageService {
         // since the user can react to push notification even much later
         // if package is in expected states we make the transition, otherwise we silently skip it and return the current state
         if (rs.getValue1().get(0).getPackageStatus() == PackageStatus.DELIVERED
-            || rs.getValue1().get(0).getPackageStatus() == PackageStatus.NOTIFY_SENT) {
+                || rs.getValue1().get(0).getPackageStatus() == PackageStatus.NOTIFY_SENT) {
             Instant now = Instant.now();
             rs.getValue0().setUpdateTms(now);
             TbPackageEvent packageEvent = new TbPackageEvent();
@@ -227,8 +227,8 @@ public class PackageService {
 
         // operation is allowed if the package is in those states
         if (rs.getValue1().get(0).getPackageStatus() != PackageStatus.DELIVERED
-            && rs.getValue1().get(0).getPackageStatus() != PackageStatus.NOTIFY_SENT
-            && rs.getValue1().get(0).getPackageStatus() != PackageStatus.NOTIFIED) {
+                && rs.getValue1().get(0).getPackageStatus() != PackageStatus.NOTIFY_SENT
+                && rs.getValue1().get(0).getPackageStatus() != PackageStatus.NOTIFIED) {
             throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.package.illegal_state"));
         }
 
@@ -281,9 +281,9 @@ public class PackageService {
 
         // operation is allowed if the package is in those states
         if (rs.getValue1().get(0).getPackageStatus() != PackageStatus.DELIVERED
-            && rs.getValue1().get(0).getPackageStatus() != PackageStatus.NOTIFY_SENT
-            && rs.getValue1().get(0).getPackageStatus() != PackageStatus.NOTIFIED
-            && rs.getValue1().get(0).getPackageStatus() != PackageStatus.COLLECTED) {
+                && rs.getValue1().get(0).getPackageStatus() != PackageStatus.NOTIFY_SENT
+                && rs.getValue1().get(0).getPackageStatus() != PackageStatus.NOTIFIED
+                && rs.getValue1().get(0).getPackageStatus() != PackageStatus.COLLECTED) {
             throw new ApiException(ApiReturnCodes.BAD_REQUEST, localizationService.getMessage(context.getLanguage(), "error.package.illegal_state"));
         }
 

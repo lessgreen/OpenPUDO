@@ -31,8 +31,8 @@ public class PudoDao extends BaseEntityDao<TbPudo, Long> {
 
     public Quartet<TbPudo, TbAddress, TbRating, TbRewardPolicy> getPudo(Long pudoId) {
         String qs = "SELECT t1, t2, t3, t4 "
-                    + "FROM TbPudo t1, TbAddress t2, TbRating t3, TbRewardPolicy t4 "
-                    + "WHERE t1.pudoId = :pudoId AND t1.pudoId = t2.pudoId AND t1.pudoId = t3.pudoId AND t1.pudoId = t4.pudoId AND t4.deleteTms IS NULL";
+                + "FROM TbPudo t1, TbAddress t2, TbRating t3, TbRewardPolicy t4 "
+                + "WHERE t1.pudoId = :pudoId AND t1.pudoId = t2.pudoId AND t1.pudoId = t3.pudoId AND t1.pudoId = t4.pudoId AND t4.deleteTms IS NULL";
         try {
             TypedQuery<Object[]> q = em.createQuery(qs, Object[].class);
             q.setParameter("pudoId", pudoId);
@@ -45,10 +45,10 @@ public class PudoDao extends BaseEntityDao<TbPudo, Long> {
 
     public List<Septet<Long, String, UUID, String, TbRating, BigDecimal, BigDecimal>> getPudosOnMap(BigDecimal latMin, BigDecimal latMax, BigDecimal lonMin, BigDecimal lonMax) {
         String qs = "SELECT t1.pudoId, t1.businessName, t1.pudoPicId, t2.label, t3, t2.lat, t2.lon "
-                    + "FROM TbPudo t1, TbAddress t2, TbRating t3 "
-                    + "WHERE t1.pudoId = t2.pudoId AND t1.pudoId = t3.pudoId "
-                    + "AND t2.lat >= :latMin AND t2.lat <= :latMax "
-                    + "AND t2.lon >= :lonMin AND t2.lon <= :lonMax";
+                + "FROM TbPudo t1, TbAddress t2, TbRating t3 "
+                + "WHERE t1.pudoId = t2.pudoId AND t1.pudoId = t3.pudoId "
+                + "AND t2.lat >= :latMin AND t2.lat <= :latMax "
+                + "AND t2.lon >= :lonMin AND t2.lon <= :lonMax";
         TypedQuery<Object[]> q = em.createQuery(qs, Object[].class);
         q.setParameter("latMin", latMin);
         q.setParameter("latMax", latMax);
@@ -61,9 +61,9 @@ public class PudoDao extends BaseEntityDao<TbPudo, Long> {
     public List<Septet<Long, String, UUID, String, TbRating, BigDecimal, BigDecimal>> searchPudo(List<String> tokens) {
         String tsquery = tokens.stream().map(i -> i + ":*").collect(Collectors.joining(" | "));
         String qs = "SELECT t1.pudo_id, t1.business_name, CAST(t1.pudo_pic_id AS text), t2.label, t3.review_count, t3.average_score, t2.lat, t2.lon "
-                    + "FROM tb_pudo t1, tb_address t2, tb_rating t3 "
-                    + "WHERE t1.pudo_id = t2.pudo_id AND t1.pudo_id = t3.pudo_id "
-                    + "AND t1.business_name_search @@ to_tsquery('simple', :tsquery)";
+                + "FROM tb_pudo t1, tb_address t2, tb_rating t3 "
+                + "WHERE t1.pudo_id = t2.pudo_id AND t1.pudo_id = t3.pudo_id "
+                + "AND t1.business_name_search @@ to_tsquery('simple', :tsquery)";
         Query q = em.createNativeQuery(qs, Tuple.class);
         q.setParameter("tsquery", tsquery);
         @SuppressWarnings("unchecked")
@@ -89,10 +89,10 @@ public class PudoDao extends BaseEntityDao<TbPudo, Long> {
 
     public List<Quartet<TbPudo, TbAddress, TbUserPudoRelation, TbRating>> getUserPudos(Long userId) {
         String qs = "SELECT t1, t2, t3, t4 "
-                    + "FROM TbPudo t1, TbAddress t2, TbUserPudoRelation t3, TbRating t4 "
-                    + "WHERE t1.pudoId = t2.pudoId AND t1.pudoId = t3.pudoId AND t1.pudoId = t4.pudoId "
-                    + "AND t3.userId = :userId AND t3.relationType = :relationType AND t3.deleteTms IS NULL "
-                    + "ORDER BY t3.createTms ASC";
+                + "FROM TbPudo t1, TbAddress t2, TbUserPudoRelation t3, TbRating t4 "
+                + "WHERE t1.pudoId = t2.pudoId AND t1.pudoId = t3.pudoId AND t1.pudoId = t4.pudoId "
+                + "AND t3.userId = :userId AND t3.relationType = :relationType AND t3.deleteTms IS NULL "
+                + "ORDER BY t3.createTms ASC";
         TypedQuery<Object[]> q = em.createQuery(qs, Object[].class);
         q.setParameter("userId", userId);
         q.setParameter("relationType", RelationType.CUSTOMER);

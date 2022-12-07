@@ -42,12 +42,12 @@ public class PackageDao extends BaseEntityDao<TbPackage, Long> {
 
     public long getActivePackageCount(Long pudoId, Long userId) {
         String qs = "SELECT COUNT(*) "
-                    + "FROM TbPackage t1, TbPackageEvent t2 "
-                    + "WHERE t1.packageId = t2.packageId "
-                    + "AND t2.createTms = (SELECT MAX(st2.createTms) FROM TbPackageEvent st2 WHERE st2.packageId = t2.packageId) "
-                    + "AND t1.pudoId = :pudoId "
-                    + "AND t1.userId = :userId "
-                    + "AND t2.packageStatus IN :packageStatusList";
+                + "FROM TbPackage t1, TbPackageEvent t2 "
+                + "WHERE t1.packageId = t2.packageId "
+                + "AND t2.createTms = (SELECT MAX(st2.createTms) FROM TbPackageEvent st2 WHERE st2.packageId = t2.packageId) "
+                + "AND t1.pudoId = :pudoId "
+                + "AND t1.userId = :userId "
+                + "AND t2.packageStatus IN :packageStatusList";
         TypedQuery<Long> q = em.createQuery(qs, Long.class);
         q.setParameter("pudoId", pudoId);
         q.setParameter("userId", userId);
@@ -69,18 +69,18 @@ public class PackageDao extends BaseEntityDao<TbPackage, Long> {
 
     public List<Sextet<TbPackage, TbPackageEvent, TbPudo, TbAddress, TbUserProfile, TbUserPudoRelation>> getPackages(AccountType accountType, Long referenceId, List<PackageStatus> packageStatuses, boolean history, int limit, int offset) {
         String qs = "SELECT t1, t2, t3, t4, t5, t6 "
-                    + "FROM TbPackage t1, TbPackageEvent t2, TbPudo t3, TbAddress t4, TbUserProfile t5, TbUserPudoRelation t6 "
-                    // join with event, select the latest
-                    + "WHERE t2.packageId = t1.packageId "
-                    + "AND t2.createTms = (SELECT MAX(st2.createTms) FROM TbPackageEvent st2 WHERE st2.packageId = t2.packageId) "
-                    // join with pudo and address
-                    + "AND t3.pudoId = t1.pudoId "
-                    + "AND t4.pudoId = t1.pudoId "
-                    // join with user profile
-                    + "AND t5.userId = t1.userId "
-                    // join with latest user-pudo relation, no matter if closed or not
-                    + "AND t6.userId = t1.userId AND t6.pudoId = t1.pudoId AND t6.relationType = :relationType "
-                    + "AND t6.createTms = (SELECT MAX(st6.createTms) FROM TbUserPudoRelation st6 WHERE st6.userId = t6.userId AND st6.pudoId = t6.pudoId AND st6.relationType = t6.relationType) ";
+                + "FROM TbPackage t1, TbPackageEvent t2, TbPudo t3, TbAddress t4, TbUserProfile t5, TbUserPudoRelation t6 "
+                // join with event, select the latest
+                + "WHERE t2.packageId = t1.packageId "
+                + "AND t2.createTms = (SELECT MAX(st2.createTms) FROM TbPackageEvent st2 WHERE st2.packageId = t2.packageId) "
+                // join with pudo and address
+                + "AND t3.pudoId = t1.pudoId "
+                + "AND t4.pudoId = t1.pudoId "
+                // join with user profile
+                + "AND t5.userId = t1.userId "
+                // join with latest user-pudo relation, no matter if closed or not
+                + "AND t6.userId = t1.userId AND t6.pudoId = t1.pudoId AND t6.relationType = :relationType "
+                + "AND t6.createTms = (SELECT MAX(st6.createTms) FROM TbUserPudoRelation st6 WHERE st6.userId = t6.userId AND st6.pudoId = t6.pudoId AND st6.relationType = t6.relationType) ";
         if (accountType == AccountType.CUSTOMER) {
             qs += "AND t1.userId = :referenceId ";
         } else if (accountType == AccountType.PUDO) {
@@ -124,12 +124,12 @@ public class PackageDao extends BaseEntityDao<TbPackage, Long> {
 
     public List<Long> getPackageIdsToNotifySent(Instant timeThreshold) {
         String qs = "SELECT t1.packageId "
-                    + "FROM TbPackage t1, TbPackageEvent t2 "
-                    + "WHERE t2.packageId = t1.packageId "
-                    + "AND t2.createTms = (SELECT MAX(st2.createTms) FROM TbPackageEvent st2 WHERE st2.packageId = t2.packageId) "
-                    + "AND t2.createTms < :timeThreshold "
-                    + "AND t2.packageStatus = :packageStatus "
-                    + "ORDER BY t1.createTms";
+                + "FROM TbPackage t1, TbPackageEvent t2 "
+                + "WHERE t2.packageId = t1.packageId "
+                + "AND t2.createTms = (SELECT MAX(st2.createTms) FROM TbPackageEvent st2 WHERE st2.packageId = t2.packageId) "
+                + "AND t2.createTms < :timeThreshold "
+                + "AND t2.packageStatus = :packageStatus "
+                + "ORDER BY t1.createTms";
         TypedQuery<Long> q = em.createQuery(qs, Long.class);
         q.setParameter("timeThreshold", timeThreshold);
         q.setParameter("packageStatus", PackageStatus.DELIVERED);
@@ -139,12 +139,12 @@ public class PackageDao extends BaseEntityDao<TbPackage, Long> {
 
     public List<Long> getPackageIdsToExpired(Instant timeThreshold) {
         String qs = "SELECT t1.packageId "
-                    + "FROM TbPackage t1, TbPackageEvent t2 "
-                    + "WHERE t2.packageId = t1.packageId "
-                    + "AND t2.createTms = (SELECT MAX(st2.createTms) FROM TbPackageEvent st2 WHERE st2.packageId = t2.packageId) "
-                    + "AND t1.createTms < :timeThreshold "
-                    + "AND t2.packageStatus IN :packageStatuses "
-                    + "ORDER BY t1.createTms";
+                + "FROM TbPackage t1, TbPackageEvent t2 "
+                + "WHERE t2.packageId = t1.packageId "
+                + "AND t2.createTms = (SELECT MAX(st2.createTms) FROM TbPackageEvent st2 WHERE st2.packageId = t2.packageId) "
+                + "AND t1.createTms < :timeThreshold "
+                + "AND t2.packageStatus IN :packageStatuses "
+                + "ORDER BY t1.createTms";
         TypedQuery<Long> q = em.createQuery(qs, Long.class);
         q.setParameter("timeThreshold", timeThreshold);
         q.setParameter("packageStatuses", Arrays.asList(PackageStatus.NOTIFY_SENT, PackageStatus.NOTIFIED));
@@ -154,12 +154,12 @@ public class PackageDao extends BaseEntityDao<TbPackage, Long> {
 
     public List<Long> getPackageIdsToAccepted(Instant timeThreshold) {
         String qs = "SELECT t1.packageId "
-                    + "FROM TbPackage t1, TbPackageEvent t2 "
-                    + "WHERE t2.packageId = t1.packageId "
-                    + "AND t2.createTms = (SELECT MAX(st2.createTms) FROM TbPackageEvent st2 WHERE st2.packageId = t2.packageId) "
-                    + "AND t2.createTms < :timeThreshold "
-                    + "AND t2.packageStatus = :packageStatus "
-                    + "ORDER BY t1.createTms";
+                + "FROM TbPackage t1, TbPackageEvent t2 "
+                + "WHERE t2.packageId = t1.packageId "
+                + "AND t2.createTms = (SELECT MAX(st2.createTms) FROM TbPackageEvent st2 WHERE st2.packageId = t2.packageId) "
+                + "AND t2.createTms < :timeThreshold "
+                + "AND t2.packageStatus = :packageStatus "
+                + "ORDER BY t1.createTms";
         TypedQuery<Long> q = em.createQuery(qs, Long.class);
         q.setParameter("timeThreshold", timeThreshold);
         q.setParameter("packageStatus", PackageStatus.COLLECTED);
