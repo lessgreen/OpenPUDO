@@ -1,7 +1,6 @@
 package less.green.openpudo.rest.config;
 
 import less.green.openpudo.cdi.ExecutionContext;
-import less.green.openpudo.common.Encoders;
 import lombok.extern.log4j.Log4j2;
 
 import javax.annotation.Priority;
